@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<nodes>
+    <node id="Capital_Hub" x="0" y="0" type="rail_signal"/>
+    <node id="North_City" x="0" y="6000" type="rail_signal"/>
+    <node id="East_City" x="6000" y="0" type="rail_signal"/>
+    <node id="West_City" x="-5000" y="0" type="rail_signal"/>
+    <node id="Sub_North_1" x="0" y="2000" type="rail_signal"/>
+    <node id="Sub_North_2" x="0" y="4000" type="rail_signal"/>
+    <node id="Sub_East_1" x="2000" y="0" type="rail_signal"/>
+    <node id="Sub_East_2" x="4000" y="0" type="rail_signal"/>
+    <node id="Sub_West_1" x="-2500" y="0" type="rail_signal"/>
+    <node id="Junction_NE" x="4000" y="4000" type="rail_signal"/>
+</nodes>

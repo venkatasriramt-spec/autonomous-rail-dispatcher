@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<edges>
+    <edge id="track_cap_n1_fw" from="Capital_Hub" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_cap_n1_bw" from="Sub_North_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_n1_n2_fw" from="Sub_North_1" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_n1_n2_bw" from="Sub_North_2" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_n2_nCity_fw" from="Sub_North_2" to="North_City" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_n2_nCity_bw" from="North_City" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_cap_e1_fw" from="Capital_Hub" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_cap_e1_bw" from="Sub_East_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_e1_e2_fw" from="Sub_East_1" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_e1_e2_bw" from="Sub_East_2" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_e2_eCity_fw" from="Sub_East_2" to="East_City" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_e2_eCity_bw" from="East_City" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_cap_w1_fw" from="Capital_Hub" to="Sub_West_1" speed="27.78" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_cap_w1_bw" from="Sub_West_1" to="Capital_Hub" speed="27.78" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_w1_wCity_fw" from="Sub_West_1" to="West_City" speed="27.78" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_w1_wCity_bw" from="West_City" to="Sub_West_1" speed="27.78" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_bypass_n_ne_fw" from="North_City" to="Junction_NE" speed="44.44" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_bypass_n_ne_bw" from="Junction_NE" to="North_City" speed="44.44" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_bypass_ne_e_fw" from="Junction_NE" to="East_City" speed="44.44" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_bypass_ne_e_bw" from="East_City" to="Junction_NE" speed="44.44" numLanes="1" allow="rail rail_electric"/>
+</edges>

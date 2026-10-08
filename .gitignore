@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Mac/OS
+.DS_Store
+
+# We DO NOT ignore *.xml here, because the explicit goal of this repository 
+# is to version-control the final generated SUMO network for use in other projects.
