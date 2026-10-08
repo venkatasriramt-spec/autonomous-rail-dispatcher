@@ -1,23 +1,143 @@
 <?xml version="1.0" ?>
 <edges>
-    <edge id="track_cap_n1_fw" from="Capital_Hub" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_cap_n1_bw" from="Sub_North_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_n1_n2_fw" from="Sub_North_1" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_n1_n2_bw" from="Sub_North_2" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_n2_nCity_fw" from="Sub_North_2" to="North_City" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_n2_nCity_bw" from="North_City" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_cap_e1_fw" from="Capital_Hub" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_cap_e1_bw" from="Sub_East_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_e1_e2_fw" from="Sub_East_1" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_e1_e2_bw" from="Sub_East_2" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_e2_eCity_fw" from="Sub_East_2" to="East_City" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_e2_eCity_bw" from="East_City" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_cap_w1_fw" from="Capital_Hub" to="Sub_West_1" speed="27.78" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_cap_w1_bw" from="Sub_West_1" to="Capital_Hub" speed="27.78" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_w1_wCity_fw" from="Sub_West_1" to="West_City" speed="27.78" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_w1_wCity_bw" from="West_City" to="Sub_West_1" speed="27.78" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_bypass_n_ne_fw" from="North_City" to="Junction_NE" speed="44.44" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_bypass_n_ne_bw" from="Junction_NE" to="North_City" speed="44.44" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_bypass_ne_e_fw" from="Junction_NE" to="East_City" speed="44.44" numLanes="1" allow="rail rail_electric"/>
-    <edge id="track_bypass_ne_e_bw" from="East_City" to="Junction_NE" speed="44.44" numLanes="1" allow="rail rail_electric"/>
+    <edge id="track_cap_n1_fw" from="Capital_Hub" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_cap_n1_bw" from="Sub_North_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_n1_n2_fw" from="Sub_North_1" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_n1_n2_bw" from="Sub_North_2" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_n2_nCity_fw" from="Sub_North_2" to="North_City" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_n2_nCity_bw" from="North_City" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_cap_e1_fw" from="Capital_Hub" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_cap_e1_bw" from="Sub_East_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_e1_e2_fw" from="Sub_East_1" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_e1_e2_bw" from="Sub_East_2" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_e2_eCity_fw" from="Sub_East_2" to="East_City" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_e2_eCity_bw" from="East_City" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="track_cap_w1_fw" from="Capital_Hub" to="Sub_West_1" speed="22.22" numLanes="1" allow="rail" shape="0.00,0.00,0.00 -125.00,76.00,1.25 -250.00,144.00,2.50 -375.00,204.00,3.75 -500.00,256.00,5.00 -625.00,300.00,6.25 -750.00,336.00,7.50 -875.00,364.00,8.75 -1000.00,384.00,10.00 -1125.00,396.00,11.25 -1250.00,400.00,12.50 -1375.00,396.00,13.75 -1500.00,384.00,15.00 -1625.00,364.00,16.25 -1750.00,336.00,17.50 -1875.00,300.00,18.75 -2000.00,256.00,20.00 -2125.00,204.00,21.25 -2250.00,144.00,22.50 -2375.00,76.00,23.75 -2500.00,0.00,25.00">
+        <param key="capacity_tons" value="10000"/>
+        <param key="voltage" value="none"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="wear_rate" value="0.10"/>
+    </edge>
+    <edge id="track_cap_w1_bw" from="Sub_West_1" to="Capital_Hub" speed="22.22" numLanes="1" allow="rail" shape="-2500.00,0.00,25.00 -2375.00,76.00,23.75 -2250.00,144.00,22.50 -2125.00,204.00,21.25 -2000.00,256.00,20.00 -1875.00,300.00,18.75 -1750.00,336.00,17.50 -1625.00,364.00,16.25 -1500.00,384.00,15.00 -1375.00,396.00,13.75 -1250.00,400.00,12.50 -1125.00,396.00,11.25 -1000.00,384.00,10.00 -875.00,364.00,8.75 -750.00,336.00,7.50 -625.00,300.00,6.25 -500.00,256.00,5.00 -375.00,204.00,3.75 -250.00,144.00,2.50 -125.00,76.00,1.25 0.00,0.00,0.00">
+        <param key="capacity_tons" value="10000"/>
+        <param key="voltage" value="none"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="wear_rate" value="0.10"/>
+    </edge>
+    <edge id="track_w1_wCity_fw" from="Sub_West_1" to="West_City" speed="22.22" numLanes="1" allow="rail" shape="-2500.00,0.00,25.00 -2625.00,-76.00,26.25 -2750.00,-144.00,27.50 -2875.00,-204.00,28.75 -3000.00,-256.00,30.00 -3125.00,-300.00,31.25 -3250.00,-336.00,32.50 -3375.00,-364.00,33.75 -3500.00,-384.00,35.00 -3625.00,-396.00,36.25 -3750.00,-400.00,37.50 -3875.00,-396.00,38.75 -4000.00,-384.00,40.00 -4125.00,-364.00,41.25 -4250.00,-336.00,42.50 -4375.00,-300.00,43.75 -4500.00,-256.00,45.00 -4625.00,-204.00,46.25 -4750.00,-144.00,47.50 -4875.00,-76.00,48.75 -5000.00,0.00,50.00">
+        <param key="capacity_tons" value="10000"/>
+        <param key="voltage" value="none"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="wear_rate" value="0.10"/>
+    </edge>
+    <edge id="track_w1_wCity_bw" from="West_City" to="Sub_West_1" speed="22.22" numLanes="1" allow="rail" shape="-5000.00,0.00,50.00 -4875.00,-76.00,48.75 -4750.00,-144.00,47.50 -4625.00,-204.00,46.25 -4500.00,-256.00,45.00 -4375.00,-300.00,43.75 -4250.00,-336.00,42.50 -4125.00,-364.00,41.25 -4000.00,-384.00,40.00 -3875.00,-396.00,38.75 -3750.00,-400.00,37.50 -3625.00,-396.00,36.25 -3500.00,-384.00,35.00 -3375.00,-364.00,33.75 -3250.00,-336.00,32.50 -3125.00,-300.00,31.25 -3000.00,-256.00,30.00 -2875.00,-204.00,28.75 -2750.00,-144.00,27.50 -2625.00,-76.00,26.25 -2500.00,0.00,25.00">
+        <param key="capacity_tons" value="10000"/>
+        <param key="voltage" value="none"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="wear_rate" value="0.10"/>
+    </edge>
+    <edge id="track_bypass_n_ne_fw" from="North_City" to="Junction_NE" speed="83.33" numLanes="1" allow="rail_electric" shape="0.00,6000.00,150.00 263.73,6027.46,152.50 520.75,6041.50,155.00 771.06,6042.12,157.50 1014.66,6029.33,160.00 1251.56,6003.12,162.50 1481.74,5963.49,165.00 1705.22,5910.45,167.50 1921.99,5843.99,170.00 2132.06,5764.11,172.50 2335.41,5670.82,175.00 2532.06,5564.11,177.50 2721.99,5443.99,180.00 2905.22,5310.45,182.50 3081.74,5163.49,185.00 3251.56,5003.12,187.50 3414.66,4829.33,190.00 3571.06,4642.12,192.50 3720.75,4441.50,195.00 3863.73,4227.46,197.50 4000.00,4000.00,200.00">
+        <param key="capacity_tons" value="2500"/>
+        <param key="voltage" value="25000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="wear_rate" value="0.01"/>
+    </edge>
+    <edge id="track_bypass_n_ne_bw" from="Junction_NE" to="North_City" speed="83.33" numLanes="1" allow="rail_electric" shape="4000.00,4000.00,200.00 3863.73,4227.46,197.50 3720.75,4441.50,195.00 3571.06,4642.12,192.50 3414.66,4829.33,190.00 3251.56,5003.12,187.50 3081.74,5163.49,185.00 2905.22,5310.45,182.50 2721.99,5443.99,180.00 2532.06,5564.11,177.50 2335.41,5670.82,175.00 2132.06,5764.11,172.50 1921.99,5843.99,170.00 1705.22,5910.45,167.50 1481.74,5963.49,165.00 1251.56,6003.12,162.50 1014.66,6029.33,160.00 771.06,6042.12,157.50 520.75,6041.50,155.00 263.73,6027.46,152.50 0.00,6000.00,150.00">
+        <param key="capacity_tons" value="2500"/>
+        <param key="voltage" value="25000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="wear_rate" value="0.01"/>
+    </edge>
+    <edge id="track_bypass_ne_e_fw" from="Junction_NE" to="East_City" speed="83.33" numLanes="1" allow="rail_electric" shape="4000.00,4000.00,200.00 3972.54,3736.27,190.00 3958.50,3479.25,180.00 3957.88,3228.94,170.00 3970.67,2985.34,160.00 3996.88,2748.44,150.00 4036.51,2518.26,140.00 4089.55,2294.78,130.00 4156.01,2078.01,120.00 4235.89,1867.94,110.00 4329.18,1664.59,100.00 4435.89,1467.94,90.00 4556.01,1278.01,80.00 4689.55,1094.78,70.00 4836.51,918.26,60.00 4996.88,748.44,50.00 5170.67,585.34,40.00 5357.88,428.94,30.00 5558.50,279.25,20.00 5772.54,136.27,10.00 6000.00,0.00,0.00">
+        <param key="capacity_tons" value="2500"/>
+        <param key="voltage" value="25000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="wear_rate" value="0.01"/>
+    </edge>
+    <edge id="track_bypass_ne_e_bw" from="East_City" to="Junction_NE" speed="83.33" numLanes="1" allow="rail_electric" shape="6000.00,0.00,0.00 5772.54,136.27,10.00 5558.50,279.25,20.00 5357.88,428.94,30.00 5170.67,585.34,40.00 4996.88,748.44,50.00 4836.51,918.26,60.00 4689.55,1094.78,70.00 4556.01,1278.01,80.00 4435.89,1467.94,90.00 4329.18,1664.59,100.00 4235.89,1867.94,110.00 4156.01,2078.01,120.00 4089.55,2294.78,130.00 4036.51,2518.26,140.00 3996.88,2748.44,150.00 3970.67,2985.34,160.00 3957.88,3228.94,170.00 3958.50,3479.25,180.00 3972.54,3736.27,190.00 4000.00,4000.00,200.00">
+        <param key="capacity_tons" value="2500"/>
+        <param key="voltage" value="25000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="wear_rate" value="0.01"/>
+    </edge>
 </edges>

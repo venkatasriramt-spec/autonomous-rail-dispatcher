@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-08 12:34:14 by Eclipse SUMO netconvert Version 1.12.0
+<!-- generated on 2026-10-08 15:55:58 by Eclipse SUMO netconvert Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -25,190 +25,280 @@
 
 <net version="1.9" junctionCornerDetail="5" limitTurnSpeed="5.50" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/net_file.xsd">
 
-    <location netOffset="5000.00,0.00" convBoundary="0.00,0.00,11000.00,6000.00" origBoundary="-5000.00,0.00,6000.00,6000.00" projParameter="!"/>
+    <location netOffset="5000.00,400.00" convBoundary="0.00,0.00,11000.00,6442.12" origBoundary="-5000.00,-400.00,6000.00,6042.12" projParameter="!"/>
 
     <edge id=":Capital_Hub_0" function="internal">
-        <lane id=":Capital_Hub_0_0" index="0" allow="rail rail_electric" speed="5.75" length="5.00" shape="4998.40,4.70 4998.21,3.34 4997.62,2.37 4996.66,1.79 4995.30,1.60"/>
+        <lane id=":Capital_Hub_0_0" index="0" allow="rail rail_electric" speed="8.63" length="12.24" shape="4998.40,407.19,0.18 4998.79,403.34,0.12 4999.98,400.60,0.08 5001.94,398.95,0.04 5004.70,398.40"/>
     </edge>
     <edge id=":Capital_Hub_1" function="internal">
-        <lane id=":Capital_Hub_1_0" index="0" allow="rail rail_electric" speed="7.91" length="10.16" shape="4998.40,4.70 4998.79,1.94 4999.98,-0.03 5001.94,-1.21 5004.70,-1.60"/>
+        <lane id=":Capital_Hub_1_0" index="0" allow="rail rail_electric" speed="6.72" length="7.12" shape="5004.70,401.60 5003.34,401.95,0.04 5002.38,403.00,0.07 5001.79,404.74,0.12 5001.60,407.19,0.18"/>
     </edge>
     <edge id=":Capital_Hub_2" function="internal">
-        <lane id=":Capital_Hub_2_0" index="0" allow="rail rail_electric" speed="5.75" length="5.00" shape="5004.70,1.60 5003.34,1.79 5002.38,2.37 5001.79,3.34 5001.60,4.70"/>
+        <lane id=":Capital_Hub_2_0" index="0" allow="rail" speed="27.77" length="10.83" shape="5004.70,401.60 5001.63,401.78,0.02 4999.42,402.38,0.03 4997.35,403.46,0.04 4994.69,405.10,0.06"/>
     </edge>
     <edge id=":Capital_Hub_3" function="internal">
-        <lane id=":Capital_Hub_3_0" index="0" allow="rail rail_electric" speed="30.55" length="9.40" shape="5004.70,1.60 4995.30,1.60"/>
-    </edge>
-    <edge id=":Capital_Hub_4" function="internal">
-        <lane id=":Capital_Hub_4_0" index="0" allow="rail rail_electric" speed="30.55" length="9.40" shape="4995.30,-1.60 5004.70,-1.60"/>
-    </edge>
-    <edge id=":Capital_Hub_5" function="internal">
-        <lane id=":Capital_Hub_5_0" index="0" allow="rail rail_electric" speed="7.91" length="10.16" shape="4995.30,-1.60 4998.06,-1.21 5000.02,-0.03 5001.21,1.94 5001.60,4.70"/>
+        <lane id=":Capital_Hub_3_0" index="0" allow="rail" speed="27.77" length="12.53" shape="4993.02,402.37,0.06 4995.95,400.65,0.04 4998.59,399.41,0.03 5001.37,398.65,0.02 5004.70,398.40"/>
     </edge>
     <edge id=":East_City_0" function="internal">
-        <lane id=":East_City_0_0" index="0" allow="rail rail_electric" speed="6.80" length="10.83" shape="10994.82,-1.60 10998.00,-1.17 10999.78,0.14 11000.15,2.31 10999.12,5.35"/>
+        <lane id=":East_City_0_0" index="0" allow="rail_electric" speed="7.65" length="19.61" shape="10988.43,398.40 10995.09,398.96,0.15 10997.72,400.63,0.22 10996.33,403.42,0.29 10990.90,407.32,0.44"/>
     </edge>
     <edge id=":East_City_1" function="internal">
-        <lane id=":East_City_1_0" index="0" allow="rail rail_electric" speed="4.28" length="3.61" shape="10996.25,3.92 10996.60,2.90 10996.47,2.18 10995.88,1.74 10994.82,1.60"/>
+        <lane id=":East_City_1_0" index="0" allow="rail_electric" speed="4.74" length="6.55" shape="10989.25,404.57,0.44 10991.06,403.27,0.29 10991.53,402.34,0.22 10990.65,401.79,0.15 10988.43,401.60"/>
     </edge>
     <edge id=":Junction_NE_0" function="internal">
-        <lane id=":Junction_NE_0_0" index="0" allow="rail rail_electric" speed="23.06" length="3.13" shape="9001.91,3999.76 9001.48,4000.57 9001.09,4001.09 9000.57,4001.48 8999.76,4001.91"/>
+        <lane id=":Junction_NE_0_0" index="0" allow="rail_electric" speed="23.06" length="3.13" shape="9001.48,4398.77,199.96 9001.55,4399.69,199.97 9001.50,4400.33,199.97 9001.28,4400.94,199.98 9000.82,4401.74,199.99"/>
     </edge>
     <edge id=":Junction_NE_1" function="internal">
-        <lane id=":Junction_NE_1_0" index="0" allow="rail rail_electric" speed="13.42" length="1.04" shape="8998.33,3999.05 8998.60,3998.90 8998.77,3998.77 8998.90,3998.60 8999.05,3998.33"/>
+        <lane id=":Junction_NE_1_0" index="0" allow="rail_electric" speed="13.42" length="1.04" shape="8998.08,4400.09,199.99 8998.23,4399.83,199.98 8998.31,4399.62,199.97 8998.32,4399.41,199.97 8998.30,4399.10,199.96"/>
     </edge>
     <edge id=":North_City_0" function="internal">
-        <lane id=":North_City_0_0" index="0" allow="rail rail_electric" speed="6.80" length="10.83" shape="5005.35,5999.12 5002.31,6000.15 5000.14,5999.78 4998.83,5998.00 4998.40,5994.82"/>
+        <lane id=":North_City_0_0" index="0" allow="rail_electric" speed="7.10" length="7.17" shape="5002.70,6401.89,150.03 5000.82,6401.42,150.00 4999.48,6400.47,149.98 4998.67,6399.04,149.95 4998.40,6397.12,149.93"/>
     </edge>
     <edge id=":North_City_1" function="internal">
-        <lane id=":North_City_1_0" index="0" allow="rail rail_electric" speed="4.28" length="3.61" shape="5001.60,5994.82 5001.74,5995.88 5002.18,5996.47 5002.90,5996.60 5003.92,5996.25"/>
+        <lane id=":North_City_1_0" index="0" allow="rail_electric" speed="4.45" length="2.39" shape="5001.60,6397.12,149.93 5001.69,6397.76,149.95 5001.96,6398.23,149.98 5002.41,6398.55,150.00 5003.03,6398.71,150.03"/>
     </edge>
     <edge id=":Sub_East_1_0" function="internal">
-        <lane id=":Sub_East_1_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="7000.00,1.60 7000.00,1.60"/>
+        <lane id=":Sub_East_1_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="7000.00,401.60 7000.00,401.60"/>
     </edge>
     <edge id=":Sub_East_1_1" function="internal">
-        <lane id=":Sub_East_1_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="7000.00,-1.60 7000.00,-1.60"/>
+        <lane id=":Sub_East_1_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="7000.00,398.40 7000.00,398.40"/>
     </edge>
     <edge id=":Sub_East_2_0" function="internal">
-        <lane id=":Sub_East_2_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="9000.00,1.60 9000.00,1.60"/>
+        <lane id=":Sub_East_2_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="9000.00,401.60 9000.00,401.60"/>
     </edge>
     <edge id=":Sub_East_2_1" function="internal">
-        <lane id=":Sub_East_2_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="9000.00,-1.60 9000.00,-1.60"/>
+        <lane id=":Sub_East_2_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="9000.00,398.40 9000.00,398.40"/>
     </edge>
     <edge id=":Sub_North_1_0" function="internal">
-        <lane id=":Sub_North_1_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="4998.40,2000.00 4998.40,2000.00"/>
+        <lane id=":Sub_North_1_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="4998.40,2400.00,50.00 4998.40,2400.00,50.00"/>
     </edge>
     <edge id=":Sub_North_1_1" function="internal">
-        <lane id=":Sub_North_1_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="5001.60,2000.00 5001.60,2000.00"/>
+        <lane id=":Sub_North_1_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="5001.60,2400.00,50.00 5001.60,2400.00,50.00"/>
     </edge>
     <edge id=":Sub_North_2_0" function="internal">
-        <lane id=":Sub_North_2_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="4998.40,4000.00 4998.40,4000.00"/>
+        <lane id=":Sub_North_2_0_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="4998.40,4400.00,100.00 4998.40,4400.00,100.00"/>
     </edge>
     <edge id=":Sub_North_2_1" function="internal">
-        <lane id=":Sub_North_2_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="5001.60,4000.00 5001.60,4000.00"/>
+        <lane id=":Sub_North_2_1_0" index="0" allow="rail rail_electric" speed="33.33" length="0.10" shape="5001.60,4400.00,100.00 5001.60,4400.00,100.00"/>
     </edge>
     <edge id=":Sub_West_1_0" function="internal">
-        <lane id=":Sub_West_1_0_0" index="0" allow="rail rail_electric" speed="27.78" length="0.10" shape="2500.00,1.60 2500.00,1.60"/>
+        <lane id=":Sub_West_1_0_0" index="0" allow="rail" speed="22.22" length="0.10" shape="2499.17,401.37,25.00 2499.17,401.37,25.00"/>
     </edge>
     <edge id=":Sub_West_1_1" function="internal">
-        <lane id=":Sub_West_1_1_0" index="0" allow="rail rail_electric" speed="27.78" length="0.10" shape="2500.00,-1.60 2500.00,-1.60"/>
+        <lane id=":Sub_West_1_1_0" index="0" allow="rail" speed="22.22" length="0.10" shape="2500.83,398.63,25.00 2500.83,398.63,25.00"/>
     </edge>
 
-    <edge id="track_bypass_n_ne_bw" from="Junction_NE" to="North_City" priority="-1">
-        <lane id="track_bypass_n_ne_bw_0" index="0" allow="rail rail_electric" speed="44.44" length="4465.89" shape="8999.76,4001.91 5005.35,5999.12"/>
+    <edge id="track_bypass_n_ne_bw" from="Junction_NE" to="North_City" priority="-1" shape="9000.00,4400.00,200.00 8863.73,4627.46,197.50 8720.75,4841.50,195.00 8571.06,5042.12,192.50 8414.66,5229.33,190.00 8251.56,5403.12,187.50 8081.74,5563.49,185.00 7905.22,5710.45,182.50 7721.99,5843.99,180.00 7532.06,5964.11,177.50 7335.41,6070.82,175.00 7132.06,6164.11,172.50 6921.99,6243.99,170.00 6705.22,6310.45,167.50 6481.74,6363.49,165.00 6251.56,6403.12,162.50 6014.66,6429.33,160.00 5771.06,6442.12,157.50 5520.75,6441.50,155.00 5263.73,6427.46,152.50 5000.00,6400.00,150.00">
+        <lane id="track_bypass_n_ne_bw_0" index="0" allow="rail_electric" speed="83.33" length="4785.34" shape="9000.82,4401.74,199.99 8865.08,4628.32,197.50 8722.06,4842.42,195.00 8572.32,5043.11,192.50 8415.86,5230.39,190.00 8252.69,5404.25,187.50 8082.80,5564.69,185.00 7906.20,5711.71,182.50 7722.89,5845.31,180.00 7532.87,5965.49,177.50 7336.13,6072.25,175.00 7132.68,6165.59,172.50 6922.51,6245.50,170.00 6705.64,6311.99,167.50 6482.06,6365.06,165.00 6251.78,6404.70,162.50 6014.79,6430.93,160.00 5771.10,6443.72,157.50 5520.70,6443.10,155.00 5263.60,6429.06,152.50 5002.70,6401.89,150.03"/>
+        <param key="capacity_tons" value="2500"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="voltage" value="25000"/>
+        <param key="wear_rate" value="0.01"/>
     </edge>
-    <edge id="track_bypass_n_ne_fw" from="North_City" to="Junction_NE" priority="-1">
-        <lane id="track_bypass_n_ne_fw_0" index="0" allow="rail rail_electric" speed="44.44" length="4465.89" shape="5003.92,5996.25 8998.33,3999.05"/>
+    <edge id="track_bypass_n_ne_fw" from="North_City" to="Junction_NE" priority="-1" shape="5000.00,6400.00,150.00 5263.73,6427.46,152.50 5520.75,6441.50,155.00 5771.06,6442.12,157.50 6014.66,6429.33,160.00 6251.56,6403.12,162.50 6481.74,6363.49,165.00 6705.22,6310.45,167.50 6921.99,6243.99,170.00 7132.06,6164.11,172.50 7335.41,6070.82,175.00 7532.06,5964.11,177.50 7721.99,5843.99,180.00 7905.22,5710.45,182.50 8081.74,5563.49,185.00 8251.56,5403.12,187.50 8414.66,5229.33,190.00 8571.06,5042.12,192.50 8720.75,4841.50,195.00 8863.73,4627.46,197.50 9000.00,4400.00,200.00">
+        <lane id="track_bypass_n_ne_fw_0" index="0" allow="rail_electric" speed="83.33" length="4781.71" shape="5003.03,6398.71,150.03 5263.86,6425.86,152.50 5520.80,6439.90,155.00 5771.02,6440.52,157.50 6014.53,6427.73,160.00 6251.34,6401.54,162.50 6481.42,6361.92,165.00 6704.80,6308.91,167.50 6921.47,6242.48,170.00 7131.44,6162.63,172.50 7334.69,6069.39,175.00 7531.25,5962.73,177.50 7721.09,5842.67,180.00 7904.24,5709.19,182.50 8080.68,5562.29,185.00 8250.43,5401.99,187.50 8413.46,5228.27,190.00 8569.80,5041.13,192.50 8719.44,4840.58,195.00 8862.38,4626.60,197.50 8998.08,4400.09,199.99"/>
+        <param key="capacity_tons" value="2500"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="voltage" value="25000"/>
+        <param key="wear_rate" value="0.01"/>
     </edge>
-    <edge id="track_bypass_ne_e_bw" from="East_City" to="Junction_NE" priority="-1">
-        <lane id="track_bypass_ne_e_bw_0" index="0" allow="rail rail_electric" speed="44.44" length="4465.89" shape="10999.12,5.35 9001.91,3999.76"/>
+    <edge id="track_bypass_ne_e_bw" from="East_City" to="Junction_NE" priority="-1" shape="11000.00,400.00 10772.54,536.27,10.00 10558.50,679.25,20.00 10357.88,828.94,30.00 10170.67,985.34,40.00 9996.88,1148.44,50.00 9836.51,1318.26,60.00 9689.55,1494.78,70.00 9556.01,1678.01,80.00 9435.89,1867.94,90.00 9329.18,2064.59,100.00 9235.89,2267.94,110.00 9156.01,2478.01,120.00 9089.55,2694.78,130.00 9036.51,2918.26,140.00 8996.88,3148.44,150.00 8970.67,3385.34,160.00 8957.88,3628.94,170.00 8958.50,3879.25,180.00 8972.54,4136.27,190.00 9000.00,4400.00,200.00">
+        <lane id="track_bypass_ne_e_bw_0" index="0" allow="rail_electric" speed="83.33" length="4776.95" shape="10990.90,407.32,0.44 10773.40,537.62,10.00 10559.42,680.56,20.00 10358.87,830.20,30.00 10171.73,986.54,40.00 9998.01,1149.57,50.00 9837.71,1319.32,60.00 9690.81,1495.76,70.00 9557.33,1678.91,80.00 9437.27,1868.75,90.00 9330.61,2065.31,100.00 9237.37,2268.56,110.00 9157.52,2478.53,120.00 9091.09,2695.20,130.00 9038.08,2918.58,140.00 8998.46,3148.66,150.00 8972.27,3385.47,160.00 8959.48,3628.98,170.00 8960.10,3879.20,180.00 8974.14,4136.14,190.00 9001.48,4398.77,199.96"/>
+        <param key="capacity_tons" value="2500"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="voltage" value="25000"/>
+        <param key="wear_rate" value="0.01"/>
     </edge>
-    <edge id="track_bypass_ne_e_fw" from="Junction_NE" to="East_City" priority="-1">
-        <lane id="track_bypass_ne_e_fw_0" index="0" allow="rail rail_electric" speed="44.44" length="4465.89" shape="8999.05,3998.33 10996.25,3.92"/>
+    <edge id="track_bypass_ne_e_fw" from="Junction_NE" to="East_City" priority="-1" shape="9000.00,4400.00,200.00 8972.54,4136.27,190.00 8958.50,3879.25,180.00 8957.88,3628.94,170.00 8970.67,3385.34,160.00 8996.88,3148.44,150.00 9036.51,2918.26,140.00 9089.55,2694.78,130.00 9156.01,2478.01,120.00 9235.89,2267.94,110.00 9329.18,2064.59,100.00 9435.89,1867.94,90.00 9556.01,1678.01,80.00 9689.55,1494.78,70.00 9836.51,1318.26,60.00 9996.88,1148.44,50.00 10170.67,985.34,40.00 10357.88,828.94,30.00 10558.50,679.25,20.00 10772.54,536.27,10.00 11000.00,400.00">
+        <lane id="track_bypass_ne_e_fw_0" index="0" allow="rail_electric" speed="83.33" length="4780.57" shape="8998.30,4399.10,199.96 8970.94,4136.40,190.00 8956.90,3879.30,180.00 8956.28,3628.90,170.00 8969.07,3385.21,160.00 8995.30,3148.22,150.00 9034.94,2917.94,140.00 9088.01,2694.36,130.00 9154.50,2477.49,120.00 9234.41,2267.32,110.00 9327.75,2063.87,100.00 9434.51,1867.13,90.00 9554.69,1677.11,80.00 9688.29,1493.80,70.00 9835.31,1317.20,60.00 9995.75,1147.31,50.00 10169.61,984.14,40.00 10356.89,827.68,30.00 10557.58,677.94,20.00 10771.68,534.92,10.00 10989.25,404.57,0.44"/>
+        <param key="capacity_tons" value="2500"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="concrete_slab"/>
+        <param key="voltage" value="25000"/>
+        <param key="wear_rate" value="0.01"/>
     </edge>
     <edge id="track_cap_e1_bw" from="Sub_East_1" to="Capital_Hub" priority="-1">
-        <lane id="track_cap_e1_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1995.30" shape="7000.00,1.60 5004.70,1.60"/>
+        <lane id="track_cap_e1_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1995.30" shape="7000.00,401.60 5004.70,401.60"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_cap_e1_fw" from="Capital_Hub" to="Sub_East_1" priority="-1">
-        <lane id="track_cap_e1_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1995.30" shape="5004.70,-1.60 7000.00,-1.60"/>
+        <lane id="track_cap_e1_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1995.30" shape="5004.70,398.40 7000.00,398.40"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_cap_n1_bw" from="Sub_North_1" to="Capital_Hub" priority="-1">
-        <lane id="track_cap_n1_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1995.30" shape="4998.40,2000.00 4998.40,4.70"/>
+        <lane id="track_cap_n1_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1993.43" shape="4998.40,2400.00,50.00 4998.40,407.19,0.18"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_cap_n1_fw" from="Capital_Hub" to="Sub_North_1" priority="-1">
-        <lane id="track_cap_n1_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1995.30" shape="5001.60,4.70 5001.60,2000.00"/>
+        <lane id="track_cap_n1_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1993.43" shape="5001.60,407.19,0.18 5001.60,2400.00,50.00"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_cap_w1_bw" from="Sub_West_1" to="Capital_Hub" priority="-1">
-        <lane id="track_cap_w1_bw_0" index="0" allow="rail rail_electric" speed="27.78" length="2495.30" shape="2500.00,-1.60 4995.30,-1.60"/>
+    <edge id="track_cap_w1_bw" from="Sub_West_1" to="Capital_Hub" priority="-1" shape="2500.00,400.00,25.00 2625.00,476.00,23.75 2750.00,544.00,22.50 2875.00,604.00,21.25 3000.00,656.00,20.00 3125.00,700.00,18.75 3250.00,736.00,17.50 3375.00,764.00,16.25 3500.00,784.00,15.00 3625.00,796.00,13.75 3750.00,800.00,12.50 3875.00,796.00,11.25 4000.00,784.00,10.00 4125.00,764.00,8.75 4250.00,736.00,7.50 4375.00,700.00,6.25 4500.00,656.00,5.00 4625.00,604.00,3.75 4750.00,544.00,2.50 4875.00,476.00,1.25 5000.00,400.00">
+        <lane id="track_cap_w1_bw_0" index="0" allow="rail" speed="22.22" length="2652.29" shape="2500.83,398.63,25.00 2625.80,474.61,23.75 2750.73,542.58,22.50 2875.65,602.54,21.25 3000.57,654.51,20.00 3125.49,698.48,18.75 3250.40,734.45,17.50 3375.30,762.43,16.25 3500.20,782.41,15.00 3625.10,794.40,13.75 3750.00,798.40,12.50 3874.90,794.40,11.25 3999.80,782.41,10.00 4124.70,762.43,8.75 4249.60,734.45,7.50 4374.51,698.48,6.25 4499.43,654.51,5.00 4624.35,602.54,3.75 4749.27,542.58,2.50 4874.20,474.61,1.25 4993.02,402.37,0.06"/>
+        <param key="capacity_tons" value="10000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="voltage" value="none"/>
+        <param key="wear_rate" value="0.10"/>
     </edge>
-    <edge id="track_cap_w1_fw" from="Capital_Hub" to="Sub_West_1" priority="-1">
-        <lane id="track_cap_w1_fw_0" index="0" allow="rail rail_electric" speed="27.78" length="2495.30" shape="4995.30,1.60 2500.00,1.60"/>
+    <edge id="track_cap_w1_fw" from="Capital_Hub" to="Sub_West_1" priority="-1" shape="5000.00,400.00 4875.00,476.00,1.25 4750.00,544.00,2.50 4625.00,604.00,3.75 4500.00,656.00,5.00 4375.00,700.00,6.25 4250.00,736.00,7.50 4125.00,764.00,8.75 4000.00,784.00,10.00 3875.00,796.00,11.25 3750.00,800.00,12.50 3625.00,796.00,13.75 3500.00,784.00,15.00 3375.00,764.00,16.25 3250.00,736.00,17.50 3125.00,700.00,18.75 3000.00,656.00,20.00 2875.00,604.00,21.25 2750.00,544.00,22.50 2625.00,476.00,23.75 2500.00,400.00,25.00">
+        <lane id="track_cap_w1_fw_0" index="0" allow="rail" speed="22.22" length="2655.78" shape="4994.69,405.10,0.06 4875.80,477.39,1.25 4750.73,545.42,2.50 4625.65,605.46,3.75 4500.57,657.49,5.00 4375.49,701.52,6.25 4250.40,737.55,7.50 4125.30,765.57,8.75 4000.20,785.59,10.00 3875.10,797.60,11.25 3750.00,801.60,12.50 3624.90,797.60,13.75 3499.80,785.59,15.00 3374.70,765.57,16.25 3249.60,737.55,17.50 3124.51,701.52,18.75 2999.43,657.49,20.00 2874.35,605.46,21.25 2749.27,545.42,22.50 2624.20,477.39,23.75 2499.17,401.37,25.00"/>
+        <param key="capacity_tons" value="10000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="voltage" value="none"/>
+        <param key="wear_rate" value="0.10"/>
     </edge>
     <edge id="track_e1_e2_bw" from="Sub_East_2" to="Sub_East_1" priority="-1">
-        <lane id="track_e1_e2_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.00" shape="9000.00,1.60 7000.00,1.60"/>
+        <lane id="track_e1_e2_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.00" shape="9000.00,401.60 7000.00,401.60"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_e1_e2_fw" from="Sub_East_1" to="Sub_East_2" priority="-1">
-        <lane id="track_e1_e2_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.00" shape="7000.00,-1.60 9000.00,-1.60"/>
+        <lane id="track_e1_e2_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.00" shape="7000.00,398.40 9000.00,398.40"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_e2_eCity_bw" from="East_City" to="Sub_East_2" priority="-1">
-        <lane id="track_e2_eCity_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1994.82" shape="10994.82,1.60 9000.00,1.60"/>
+        <lane id="track_e2_eCity_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1988.43" shape="10988.43,401.60 9000.00,401.60"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_e2_eCity_fw" from="Sub_East_2" to="East_City" priority="-1">
-        <lane id="track_e2_eCity_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1994.82" shape="9000.00,-1.60 10994.82,-1.60"/>
+        <lane id="track_e2_eCity_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1988.43" shape="9000.00,398.40 10988.43,398.40"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_n1_n2_bw" from="Sub_North_2" to="Sub_North_1" priority="-1">
-        <lane id="track_n1_n2_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.00" shape="4998.40,4000.00 4998.40,2000.00"/>
+        <lane id="track_n1_n2_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.62" shape="4998.40,4400.00,100.00 4998.40,2400.00,50.00"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_n1_n2_fw" from="Sub_North_1" to="Sub_North_2" priority="-1">
-        <lane id="track_n1_n2_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.00" shape="5001.60,2000.00 5001.60,4000.00"/>
+        <lane id="track_n1_n2_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="2000.62" shape="5001.60,2400.00,50.00 5001.60,4400.00,100.00"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_n2_nCity_bw" from="North_City" to="Sub_North_2" priority="-1">
-        <lane id="track_n2_nCity_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1994.82" shape="4998.40,5994.82 4998.40,4000.00"/>
+        <lane id="track_n2_nCity_bw_0" index="0" allow="rail rail_electric" speed="33.33" length="1997.74" shape="4998.40,6397.12,149.93 4998.40,4400.00,100.00"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
     <edge id="track_n2_nCity_fw" from="Sub_North_2" to="North_City" priority="-1">
-        <lane id="track_n2_nCity_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1994.82" shape="5001.60,4000.00 5001.60,5994.82"/>
+        <lane id="track_n2_nCity_fw_0" index="0" allow="rail rail_electric" speed="33.33" length="1997.74" shape="5001.60,4400.00,100.00 5001.60,6397.12,149.93"/>
+        <param key="capacity_tons" value="5000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="voltage" value="15000"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_w1_wCity_bw" from="West_City" to="Sub_West_1" priority="-1">
-        <lane id="track_w1_wCity_bw_0" index="0" allow="rail rail_electric" speed="27.78" length="2500.00" shape="0.00,-1.60 2500.00,-1.60"/>
+    <edge id="track_w1_wCity_bw" from="West_City" to="Sub_West_1" priority="-1" shape="0.00,400.00,50.00 125.00,324.00,48.75 250.00,256.00,47.50 375.00,196.00,46.25 500.00,144.00,45.00 625.00,100.00,43.75 750.00,64.00,42.50 875.00,36.00,41.25 1000.00,16.00,40.00 1125.00,4.00,38.75 1250.00,0.00,37.50 1375.00,4.00,36.25 1500.00,16.00,35.00 1625.00,36.00,33.75 1750.00,64.00,32.50 1875.00,100.00,31.25 2000.00,144.00,30.00 2125.00,196.00,28.75 2250.00,256.00,27.50 2375.00,324.00,26.25 2500.00,400.00,25.00">
+        <lane id="track_w1_wCity_bw_0" index="0" allow="rail" speed="22.22" length="2662.97" shape="-0.83,398.63,50.00 124.20,322.61,48.75 249.27,254.58,47.50 374.35,194.54,46.25 499.43,142.51,45.00 624.51,98.48,43.75 749.60,62.45,42.50 874.70,34.43,41.25 999.80,14.41,40.00 1124.90,2.40,38.75 1250.00,-1.60,37.50 1375.10,2.40,36.25 1500.20,14.41,35.00 1625.30,34.43,33.75 1750.40,62.45,32.50 1875.49,98.48,31.25 2000.57,142.51,30.00 2125.65,194.54,28.75 2250.73,254.58,27.50 2375.80,322.61,26.25 2500.83,398.63,25.00"/>
+        <param key="capacity_tons" value="10000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="voltage" value="none"/>
+        <param key="wear_rate" value="0.10"/>
     </edge>
-    <edge id="track_w1_wCity_fw" from="Sub_West_1" to="West_City" priority="-1">
-        <lane id="track_w1_wCity_fw_0" index="0" allow="rail rail_electric" speed="27.78" length="2500.00" shape="2500.00,1.60 0.00,1.60"/>
+    <edge id="track_w1_wCity_fw" from="Sub_West_1" to="West_City" priority="-1" shape="2500.00,400.00,25.00 2375.00,324.00,26.25 2250.00,256.00,27.50 2125.00,196.00,28.75 2000.00,144.00,30.00 1875.00,100.00,31.25 1750.00,64.00,32.50 1625.00,36.00,33.75 1500.00,16.00,35.00 1375.00,4.00,36.25 1250.00,0.00,37.50 1125.00,4.00,38.75 1000.00,16.00,40.00 875.00,36.00,41.25 750.00,64.00,42.50 625.00,100.00,43.75 500.00,144.00,45.00 375.00,196.00,46.25 250.00,256.00,47.50 125.00,324.00,48.75 0.00,400.00,50.00">
+        <lane id="track_w1_wCity_fw_0" index="0" allow="rail" speed="22.22" length="2659.48" shape="2499.17,401.37,25.00 2374.20,325.39,26.25 2249.27,257.42,27.50 2124.35,197.46,28.75 1999.43,145.49,30.00 1874.51,101.52,31.25 1749.60,65.55,32.50 1624.70,37.57,33.75 1499.80,17.59,35.00 1374.90,5.60,36.25 1250.00,1.60,37.50 1125.10,5.60,38.75 1000.20,17.59,40.00 875.30,37.57,41.25 750.40,65.55,42.50 625.49,101.52,43.75 500.57,145.49,45.00 375.65,197.46,46.25 250.73,257.42,47.50 125.80,325.39,48.75 0.83,401.37,50.00"/>
+        <param key="capacity_tons" value="10000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast_wood_sleeper"/>
+        <param key="voltage" value="none"/>
+        <param key="wear_rate" value="0.10"/>
     </edge>
 
-    <junction id="Capital_Hub" type="rail_signal" x="5000.00" y="0.00" incLanes="track_cap_n1_bw_0 track_cap_e1_bw_0 track_cap_w1_bw_0" intLanes=":Capital_Hub_0_0 :Capital_Hub_1_0 :Capital_Hub_2_0 :Capital_Hub_3_0 :Capital_Hub_4_0 :Capital_Hub_5_0" shape="4996.80,4.70 5003.20,4.70 5003.37,3.87 5003.58,3.57 5003.87,3.37 5004.24,3.24 5004.70,3.20 5004.70,-3.20 4995.30,-3.20 4995.30,3.20 4996.13,3.37 4996.42,3.57 4996.63,3.87 4996.76,4.24">
-        <request index="0" response="000000" foes="001000" cont="0"/>
-        <request index="1" response="000000" foes="111000" cont="0"/>
-        <request index="2" response="000000" foes="100000" cont="0"/>
-        <request index="3" response="000011" foes="100011" cont="0"/>
-        <request index="4" response="000010" foes="000010" cont="0"/>
-        <request index="5" response="001110" foes="001110" cont="0"/>
+    <junction id="Capital_Hub" type="rail_signal" x="5000.00" y="400.00" incLanes="track_cap_n1_bw_0 track_cap_e1_bw_0 track_cap_w1_bw_0" intLanes=":Capital_Hub_0_0 :Capital_Hub_1_0 :Capital_Hub_2_0 :Capital_Hub_3_0" shape="4996.80,407.19 5003.20,407.19 5003.37,404.97 5003.58,404.20 5003.87,403.64 5004.24,403.31 5004.70,403.20 5004.70,396.80 5001.87,396.87 4999.78,397.13 4998.09,397.62 4996.48,398.39 4994.62,399.50 4992.19,401.00 4995.52,406.47 4996.23,406.20 4996.48,406.26 4996.66,406.44 4996.76,406.75">
+        <request index="0" response="0000" foes="1100" cont="0"/>
+        <request index="1" response="0000" foes="0000" cont="0"/>
+        <request index="2" response="0001" foes="0001" cont="0"/>
+        <request index="3" response="0001" foes="0001" cont="0"/>
     </junction>
-    <junction id="East_City" type="rail_signal" x="11000.00" y="0.00" incLanes="track_e2_eCity_fw_0 track_bypass_ne_e_fw_0" intLanes=":East_City_0_0 :East_City_1_0" shape="10994.82,-3.20 10994.82,3.20 11000.55,6.06 11001.67,3.23 11001.97,0.92 11001.43,-0.88 11000.06,-2.17 10997.86,-2.94">
+    <junction id="East_City" type="rail_signal" x="11000.00" y="400.00" incLanes="track_e2_eCity_fw_0 track_bypass_ne_e_fw_0" intLanes=":East_City_0_0 :East_City_1_0" shape="10988.43,396.80 10988.43,403.20 10991.72,408.69 10997.14,405.06 11000.18,402.08 11000.82,399.77 10999.08,398.12 10994.95,397.13">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="Junction_NE" type="rail_signal" x="9000.00" y="4000.00" incLanes="track_bypass_ne_e_bw_0 track_bypass_n_ne_fw_0" intLanes=":Junction_NE_0_0 :Junction_NE_1_0" shape="9003.34,4000.48 8997.61,3997.61 9000.48,4003.34 9001.82,4002.60 9002.25,4002.25 9002.60,4001.82 9002.94,4001.25">
+    <junction id="Junction_NE" type="rail_signal" x="9000.00" y="4400.00" z="200.00" incLanes="track_bypass_ne_e_bw_0 track_bypass_n_ne_fw_0" intLanes=":Junction_NE_0_0 :Junction_NE_1_0" shape="9003.07,4398.61,200.00 8996.71,4399.27,200.00 9002.20,4402.56,200.00 9002.93,4401.21,200.00 9003.10,4400.69,200.00 9003.17,4400.14,200.00 9003.15,4399.48,200.00">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="North_City" type="rail_signal" x="5000.00" y="6000.00" incLanes="track_bypass_n_ne_bw_0 track_n2_nCity_fw_0" intLanes=":North_City_0_0 :North_City_1_0" shape="5006.06,6000.55 5003.20,5994.82 4996.80,5994.82 4997.06,5997.86 4997.83,6000.06 4999.12,6001.43 5000.92,6001.97 5003.23,6001.67">
+    <junction id="North_City" type="rail_signal" x="5000.00" y="6400.00" z="150.00" incLanes="track_bypass_n_ne_bw_0 track_n2_nCity_fw_0" intLanes=":North_City_0_0 :North_City_1_0" shape="5002.54,6403.48,150.00 5003.20,6397.12,150.00 4996.80,6397.12,150.00 4997.44,6400.39,150.00 4998.23,6401.59,150.00 4999.35,6402.51,150.00 5000.78,6403.14,150.00">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="Sub_East_1" type="rail_signal" x="7000.00" y="0.00" incLanes="track_e1_e2_bw_0 track_cap_e1_fw_0" intLanes=":Sub_East_1_0_0 :Sub_East_1_1_0" shape="7000.00,3.20 7000.00,-3.20 7000.00,3.20">
+    <junction id="Sub_East_1" type="rail_signal" x="7000.00" y="400.00" incLanes="track_e1_e2_bw_0 track_cap_e1_fw_0" intLanes=":Sub_East_1_0_0 :Sub_East_1_1_0" shape="7000.00,403.20 7000.00,396.80 7000.00,403.20">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="Sub_East_2" type="rail_signal" x="9000.00" y="0.00" incLanes="track_e2_eCity_bw_0 track_e1_e2_fw_0" intLanes=":Sub_East_2_0_0 :Sub_East_2_1_0" shape="9000.00,3.20 9000.00,-3.20 9000.00,3.20">
+    <junction id="Sub_East_2" type="rail_signal" x="9000.00" y="400.00" incLanes="track_e2_eCity_bw_0 track_e1_e2_fw_0" intLanes=":Sub_East_2_0_0 :Sub_East_2_1_0" shape="9000.00,403.20 9000.00,396.80 9000.00,403.20">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="Sub_North_1" type="rail_signal" x="5000.00" y="2000.00" incLanes="track_n1_n2_bw_0 track_cap_n1_fw_0" intLanes=":Sub_North_1_0_0 :Sub_North_1_1_0" shape="4996.80,2000.00 5003.20,2000.00 4996.80,2000.00">
+    <junction id="Sub_North_1" type="rail_signal" x="5000.00" y="2400.00" z="50.00" incLanes="track_n1_n2_bw_0 track_cap_n1_fw_0" intLanes=":Sub_North_1_0_0 :Sub_North_1_1_0" shape="4996.80,2400.00,50.00 5003.20,2400.00,50.00 4996.80,2400.00,50.00">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="Sub_North_2" type="rail_signal" x="5000.00" y="4000.00" incLanes="track_n2_nCity_bw_0 track_n1_n2_fw_0" intLanes=":Sub_North_2_0_0 :Sub_North_2_1_0" shape="4996.80,4000.00 5003.20,4000.00 4996.80,4000.00">
+    <junction id="Sub_North_2" type="rail_signal" x="5000.00" y="4400.00" z="100.00" incLanes="track_n2_nCity_bw_0 track_n1_n2_fw_0" intLanes=":Sub_North_2_0_0 :Sub_North_2_1_0" shape="4996.80,4400.00,100.00 5003.20,4400.00,100.00 4996.80,4400.00,100.00">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="Sub_West_1" type="rail_signal" x="2500.00" y="0.00" incLanes="track_cap_w1_fw_0 track_w1_wCity_bw_0" intLanes=":Sub_West_1_0_0 :Sub_West_1_1_0" shape="2500.00,3.20 2500.00,-3.20 2500.00,3.20">
+    <junction id="Sub_West_1" type="rail_signal" x="2500.00" y="400.00" z="25.00" incLanes="track_cap_w1_fw_0 track_w1_wCity_bw_0" intLanes=":Sub_West_1_0_0 :Sub_West_1_1_0" shape="2498.34,402.73,25.00 2501.66,397.27,25.00 2498.34,402.73,25.00">
         <request index="0" response="00" foes="00" cont="0"/>
         <request index="1" response="00" foes="00" cont="0"/>
     </junction>
-    <junction id="West_City" type="dead_end" x="0.00" y="0.00" incLanes="track_w1_wCity_fw_0" intLanes="" shape="0.00,0.00 0.00,3.20 0.00,0.00"/>
+    <junction id="West_City" type="dead_end" x="0.00" y="400.00" z="50.00" incLanes="track_w1_wCity_fw_0" intLanes="" shape="0.00,400.00,50.00 1.66,402.73,50.00 0.00,400.00,50.00"/>
 
     <connection from="track_bypass_n_ne_bw" to="track_n2_nCity_bw" fromLane="0" toLane="0" via=":North_City_0_0" tl="North_City" linkIndex="0" dir="l" state="O"/>
     <connection from="track_bypass_n_ne_fw" to="track_bypass_ne_e_fw" fromLane="0" toLane="0" via=":Junction_NE_1_0" tl="Junction_NE" linkIndex="1" dir="s" state="O"/>
     <connection from="track_bypass_ne_e_bw" to="track_bypass_n_ne_bw" fromLane="0" toLane="0" via=":Junction_NE_0_0" tl="Junction_NE" linkIndex="0" dir="s" state="O"/>
     <connection from="track_bypass_ne_e_fw" to="track_e2_eCity_bw" fromLane="0" toLane="0" via=":East_City_1_0" tl="East_City" linkIndex="1" dir="r" state="O"/>
-    <connection from="track_cap_e1_bw" to="track_cap_n1_fw" fromLane="0" toLane="0" via=":Capital_Hub_2_0" tl="Capital_Hub" linkIndex="2" dir="r" state="O"/>
-    <connection from="track_cap_e1_bw" to="track_cap_w1_fw" fromLane="0" toLane="0" via=":Capital_Hub_3_0" tl="Capital_Hub" linkIndex="3" dir="s" state="o"/>
+    <connection from="track_cap_e1_bw" to="track_cap_n1_fw" fromLane="0" toLane="0" via=":Capital_Hub_1_0" tl="Capital_Hub" linkIndex="1" dir="r" state="O"/>
+    <connection from="track_cap_e1_bw" to="track_cap_w1_fw" fromLane="0" toLane="0" via=":Capital_Hub_2_0" tl="Capital_Hub" linkIndex="2" dir="s" state="o"/>
     <connection from="track_cap_e1_fw" to="track_e1_e2_fw" fromLane="0" toLane="0" via=":Sub_East_1_1_0" tl="Sub_East_1" linkIndex="1" dir="s" state="O"/>
-    <connection from="track_cap_n1_bw" to="track_cap_w1_fw" fromLane="0" toLane="0" via=":Capital_Hub_0_0" tl="Capital_Hub" linkIndex="0" dir="r" state="O"/>
-    <connection from="track_cap_n1_bw" to="track_cap_e1_fw" fromLane="0" toLane="0" via=":Capital_Hub_1_0" tl="Capital_Hub" linkIndex="1" dir="l" state="O"/>
+    <connection from="track_cap_n1_bw" to="track_cap_e1_fw" fromLane="0" toLane="0" via=":Capital_Hub_0_0" tl="Capital_Hub" linkIndex="0" dir="l" state="O"/>
     <connection from="track_cap_n1_fw" to="track_n1_n2_fw" fromLane="0" toLane="0" via=":Sub_North_1_1_0" tl="Sub_North_1" linkIndex="1" dir="s" state="O"/>
-    <connection from="track_cap_w1_bw" to="track_cap_e1_fw" fromLane="0" toLane="0" via=":Capital_Hub_4_0" tl="Capital_Hub" linkIndex="4" dir="s" state="o"/>
-    <connection from="track_cap_w1_bw" to="track_cap_n1_fw" fromLane="0" toLane="0" via=":Capital_Hub_5_0" tl="Capital_Hub" linkIndex="5" dir="l" state="o"/>
+    <connection from="track_cap_w1_bw" to="track_cap_e1_fw" fromLane="0" toLane="0" via=":Capital_Hub_3_0" tl="Capital_Hub" linkIndex="3" dir="s" state="o"/>
     <connection from="track_cap_w1_fw" to="track_w1_wCity_fw" fromLane="0" toLane="0" via=":Sub_West_1_0_0" tl="Sub_West_1" linkIndex="0" dir="s" state="O"/>
     <connection from="track_e1_e2_bw" to="track_cap_e1_bw" fromLane="0" toLane="0" via=":Sub_East_1_0_0" tl="Sub_East_1" linkIndex="0" dir="s" state="O"/>
     <connection from="track_e1_e2_fw" to="track_e2_eCity_fw" fromLane="0" toLane="0" via=":Sub_East_2_1_0" tl="Sub_East_2" linkIndex="1" dir="s" state="O"/>
@@ -220,12 +310,10 @@
     <connection from="track_n2_nCity_fw" to="track_bypass_n_ne_fw" fromLane="0" toLane="0" via=":North_City_1_0" tl="North_City" linkIndex="1" dir="r" state="O"/>
     <connection from="track_w1_wCity_bw" to="track_cap_w1_bw" fromLane="0" toLane="0" via=":Sub_West_1_1_0" tl="Sub_West_1" linkIndex="1" dir="s" state="O"/>
 
-    <connection from=":Capital_Hub_0" to="track_cap_w1_fw" fromLane="0" toLane="0" dir="r" state="M"/>
-    <connection from=":Capital_Hub_1" to="track_cap_e1_fw" fromLane="0" toLane="0" dir="l" state="M"/>
-    <connection from=":Capital_Hub_2" to="track_cap_n1_fw" fromLane="0" toLane="0" dir="r" state="M"/>
-    <connection from=":Capital_Hub_3" to="track_cap_w1_fw" fromLane="0" toLane="0" dir="s" state="M"/>
-    <connection from=":Capital_Hub_4" to="track_cap_e1_fw" fromLane="0" toLane="0" dir="s" state="M"/>
-    <connection from=":Capital_Hub_5" to="track_cap_n1_fw" fromLane="0" toLane="0" dir="l" state="M"/>
+    <connection from=":Capital_Hub_0" to="track_cap_e1_fw" fromLane="0" toLane="0" dir="l" state="M"/>
+    <connection from=":Capital_Hub_1" to="track_cap_n1_fw" fromLane="0" toLane="0" dir="r" state="M"/>
+    <connection from=":Capital_Hub_2" to="track_cap_w1_fw" fromLane="0" toLane="0" dir="s" state="M"/>
+    <connection from=":Capital_Hub_3" to="track_cap_e1_fw" fromLane="0" toLane="0" dir="s" state="M"/>
     <connection from=":East_City_0" to="track_bypass_ne_e_bw" fromLane="0" toLane="0" dir="l" state="M"/>
     <connection from=":East_City_1" to="track_e2_eCity_bw" fromLane="0" toLane="0" dir="r" state="M"/>
     <connection from=":Junction_NE_0" to="track_bypass_n_ne_bw" fromLane="0" toLane="0" dir="s" state="M"/>
