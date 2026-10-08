@@ -37,3 +37,21 @@ A chronological log of how this abstract SUMO railway network evolved, from init
 - Created a `.gitignore` to explicitly ignore Python caches while ensuring the generated `.xml` network files *are* tracked by Git (since the goal of this repo is to produce those exact files).
 - Created the main `README.md` to document execution instructions and `netedit` viewing commands.
 - Initialized Git tracking and staged the initial files for commit.
+
+#### Phase 5: Curves, Elevation, and Physics Profiles
+- Rewrote the generator to use **cubic Bezier curves** (via custom `cubic_bezier` function) for smooth track routing instead of straight segments.
+- Added a third axis (**elevation, z-coordinate**) to every node, enabling realistic terrain: mountains, valleys, overpasses, and grade changes.
+- Embedded **physics profiles** directly into each track as edge parameters: speed limit, vehicle allow-list (rail, rail_electric), maximum tonnage, electrification voltage, track gauge, rail material, and wear rate — these become core state variables for future RL environments.
+- Updated track profiles:
+  - `high_speed`: 300 km/h, concrete slab, 25 kV, 2500 ton capacity
+  - `regional`: 120 km/h, ballast/concrete, 15 kV, 5000 ton capacity
+  - `freight`: 80 km/h, wood sleepers, no voltage, 12000 ton capacity
+- These changes were committed as `950f466: feat: add curves, elevation, and physics profiles`.
+
+#### Phase 6: Pivot to Fully Random Procedural Layouts
+- Redesigned the generator from a deterministic 10-station layout to a **fully random but reproducible** network (via `random.seed(42)`).
+- **Location types:** 6 cities (major hubs), 12 towns (regional stops), and 4 depots (freight/maintenance yards — no passenger platforms). Each has a random position (±15 km), elevation (0–400 m), and track orientation.
+- **Connectivity:** Built a **minimum spanning tree (Kruskal's algorithm)** to guarantee full connectivity, then added extra random "loop" edges to create alternative routes and redundancy.
+- **Complex yards:** Each location is a multi-track yard with platform tracks, yard/storage tracks, and dedicated "throat" junctions for smooth merging/diverging. Tracks connect throat-to-throat across the network using cubic Bezier curves that follow terrain.
+- **Output:** The same three XML sources (`nod.xml`, `edg.xml`, `add.xml`) are generated and compiled via `netconvert` into `dense_network.net.xml`, preserving bi-directional tracks, curved shapes, elevation, and physics profiles.
+- This phase represents the current state of the working tree — run the generator to produce a fresh, valid SUMO network ready for RL experiments.

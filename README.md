@@ -15,7 +15,9 @@ This network is intended to be used as the foundational map for future Reinforce
 │   ├── dense_network.edg.xml     # Generated tracks (edges & speeds)
 │   ├── dense_network.add.xml     # Generated platform placements
 │   └── dense_network.net.xml     # The compiled, routable SUMO network
-└── README.md
+├── project_history.md            # Chronological log of how the network evolved
+├── README.md
+└── .gitignore
 ```
 
 ## How to Build the Network
@@ -37,3 +39,9 @@ Run the following command from the root of this project:
 ```bash
 netedit -s network_data/dense_network.net.xml -a network_data/dense_network.add.xml
 ```
+
+## Repository Conventions
+
+- The generated `.xml` network files are intentionally tracked by Git — they are the primary deliverable of this repository.
+- Python caches and virtual environments are ignored via `.gitignore`.
+- The generator script is seeded (`random.seed(42)`), so rebuilding always produces the same network.

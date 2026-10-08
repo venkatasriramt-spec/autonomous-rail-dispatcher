@@ -1,143 +1,617 @@
 <?xml version="1.0" ?>
 <edges>
-    <edge id="track_cap_n1_fw" from="Capital_Hub" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="City_1_plat_1" from="City_1_Throat1" to="City_1_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14279.68,110.01 4562.80,-14279.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_plat_2" from="City_1_Throat2" to="City_1_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14273.68,110.01 4562.80,-14273.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_plat_3" from="City_1_Throat1" to="City_1_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14267.68,110.01 4562.80,-14267.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_plat_4" from="City_1_Throat2" to="City_1_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14261.68,110.01 4562.80,-14261.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_plat_5" from="City_1_Throat1" to="City_1_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14255.68,110.01 4562.80,-14255.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_plat_6" from="City_1_Throat2" to="City_1_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14249.68,110.01 4562.80,-14249.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_plat_7" from="City_1_Throat1" to="City_1_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14243.68,110.01 4562.80,-14243.68,110.01 4812.80,-14249.68,110.01"/>
+    <edge id="City_1_yard_8" from="City_1_Throat2" to="City_1_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14237.68,110.01 4562.80,-14237.68,110.01 4812.80,-14249.68,110.01">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_1_yard_9" from="City_1_Throat1" to="City_1_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14231.68,110.01 4562.80,-14231.68,110.01 4812.80,-14249.68,110.01">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_1_yard_10" from="City_1_Throat2" to="City_1_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14225.68,110.01 4562.80,-14225.68,110.01 4812.80,-14249.68,110.01">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_1_yard_11" from="City_1_Throat1" to="City_1_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3802.80,-14219.68,110.01 4562.80,-14219.68,110.01 4812.80,-14249.68,110.01">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_2_plat_1" from="City_2_Throat1" to="City_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11958.14,296.27 -10370.86,-11958.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_2" from="City_2_Throat2" to="City_2_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11952.14,296.27 -10370.86,-11952.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_3" from="City_2_Throat1" to="City_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11946.14,296.27 -10370.86,-11946.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_4" from="City_2_Throat2" to="City_2_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11940.14,296.27 -10370.86,-11940.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_5" from="City_2_Throat1" to="City_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11934.14,296.27 -10370.86,-11934.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_6" from="City_2_Throat2" to="City_2_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11928.14,296.27 -10370.86,-11928.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_7" from="City_2_Throat1" to="City_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11922.14,296.27 -10370.86,-11922.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_8" from="City_2_Throat2" to="City_2_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11916.14,296.27 -10370.86,-11916.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_plat_9" from="City_2_Throat1" to="City_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11910.14,296.27 -10370.86,-11910.14,296.27 -10120.86,-11925.14,296.27"/>
+    <edge id="City_2_yard_10" from="City_2_Throat2" to="City_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11904.14,296.27 -10370.86,-11904.14,296.27 -10120.86,-11925.14,296.27">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_2_yard_11" from="City_2_Throat1" to="City_2_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11898.14,296.27 -10370.86,-11898.14,296.27 -10120.86,-11925.14,296.27">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_2_yard_12" from="City_2_Throat2" to="City_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11256.86,-11892.14,296.27 -10370.86,-11892.14,296.27 -10120.86,-11925.14,296.27">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_3_plat_1" from="City_3_Throat1" to="City_3_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14070.52,37.48 3003.78,-14070.52,37.48 3253.78,-14046.52,37.48"/>
+    <edge id="City_3_plat_2" from="City_3_Throat2" to="City_3_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14064.52,37.48 3003.78,-14064.52,37.48 3253.78,-14046.52,37.48"/>
+    <edge id="City_3_plat_3" from="City_3_Throat1" to="City_3_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14058.52,37.48 3003.78,-14058.52,37.48 3253.78,-14046.52,37.48"/>
+    <edge id="City_3_plat_4" from="City_3_Throat2" to="City_3_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14052.52,37.48 3003.78,-14052.52,37.48 3253.78,-14046.52,37.48"/>
+    <edge id="City_3_plat_5" from="City_3_Throat1" to="City_3_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14046.52,37.48 3003.78,-14046.52,37.48 3253.78,-14046.52,37.48"/>
+    <edge id="City_3_plat_6" from="City_3_Throat2" to="City_3_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14040.52,37.48 3003.78,-14040.52,37.48 3253.78,-14046.52,37.48"/>
+    <edge id="City_3_yard_7" from="City_3_Throat1" to="City_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14034.52,37.48 3003.78,-14034.52,37.48 3253.78,-14046.52,37.48">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_3_yard_8" from="City_3_Throat2" to="City_3_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14028.52,37.48 3003.78,-14028.52,37.48 3253.78,-14046.52,37.48">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_3_yard_9" from="City_3_Throat1" to="City_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2425.78,-14022.52,37.48 3003.78,-14022.52,37.48 3253.78,-14046.52,37.48">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_4_plat_1" from="City_4_Throat1" to="City_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 118.66,-14656.42,79.54 118.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_2" from="City_4_Throat2" to="City_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 124.66,-14656.42,79.54 124.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_3" from="City_4_Throat1" to="City_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 130.66,-14656.42,79.54 130.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_4" from="City_4_Throat2" to="City_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 136.66,-14656.42,79.54 136.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_5" from="City_4_Throat1" to="City_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 142.66,-14656.42,79.54 142.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_6" from="City_4_Throat2" to="City_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 148.66,-14656.42,79.54 148.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_7" from="City_4_Throat1" to="City_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 154.66,-14656.42,79.54 154.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_8" from="City_4_Throat2" to="City_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 160.66,-14656.42,79.54 160.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_9" from="City_4_Throat1" to="City_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 166.66,-14656.42,79.54 166.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_10" from="City_4_Throat2" to="City_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 172.66,-14656.42,79.54 172.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_plat_11" from="City_4_Throat1" to="City_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 178.66,-14656.42,79.54 178.66,-13751.42,79.54 160.66,-13501.42,79.54"/>
+    <edge id="City_4_yard_12" from="City_4_Throat2" to="City_4_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 184.66,-14656.42,79.54 184.66,-13751.42,79.54 160.66,-13501.42,79.54">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_4_yard_13" from="City_4_Throat1" to="City_4_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 190.66,-14656.42,79.54 190.66,-13751.42,79.54 160.66,-13501.42,79.54">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_4_yard_14" from="City_4_Throat2" to="City_4_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 196.66,-14656.42,79.54 196.66,-13751.42,79.54 160.66,-13501.42,79.54">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_4_yard_15" from="City_4_Throat1" to="City_4_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 202.66,-14656.42,79.54 202.66,-13751.42,79.54 160.66,-13501.42,79.54">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_5_plat_1" from="City_5_Throat1" to="City_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2629.97,323.77 -7984.28,2629.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_2" from="City_5_Throat2" to="City_5_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2635.97,323.77 -7984.28,2635.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_3" from="City_5_Throat1" to="City_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2641.97,323.77 -7984.28,2641.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_4" from="City_5_Throat2" to="City_5_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2647.97,323.77 -7984.28,2647.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_5" from="City_5_Throat1" to="City_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2653.97,323.77 -7984.28,2653.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_6" from="City_5_Throat2" to="City_5_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2659.97,323.77 -7984.28,2659.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_7" from="City_5_Throat1" to="City_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2665.97,323.77 -7984.28,2665.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_8" from="City_5_Throat2" to="City_5_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2671.97,323.77 -7984.28,2671.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_9" from="City_5_Throat1" to="City_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2677.97,323.77 -7984.28,2677.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_10" from="City_5_Throat2" to="City_5_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2683.97,323.77 -7984.28,2683.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_plat_11" from="City_5_Throat1" to="City_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2689.97,323.77 -7984.28,2689.97,323.77 -7734.28,2677.97,323.77"/>
+    <edge id="City_5_yard_12" from="City_5_Throat2" to="City_5_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2695.97,323.77 -7984.28,2695.97,323.77 -7734.28,2677.97,323.77">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_5_yard_13" from="City_5_Throat1" to="City_5_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2701.97,323.77 -7984.28,2701.97,323.77 -7734.28,2677.97,323.77">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_5_yard_14" from="City_5_Throat2" to="City_5_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2707.97,323.77 -7984.28,2707.97,323.77 -7734.28,2677.97,323.77">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_5_yard_15" from="City_5_Throat1" to="City_5_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2713.97,323.77 -7984.28,2713.97,323.77 -7734.28,2677.97,323.77">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_5_yard_16" from="City_5_Throat2" to="City_5_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2719.97,323.77 -7984.28,2719.97,323.77 -7734.28,2677.97,323.77">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_5_yard_17" from="City_5_Throat1" to="City_5_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -8789.28,2725.97,323.77 -7984.28,2725.97,323.77 -7734.28,2677.97,323.77">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_6_plat_1" from="City_6_Throat1" to="City_6_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7731.22,-10557.72,169.05 7731.22,-9862.72,169.05 7764.22,-9612.72,169.05"/>
+    <edge id="City_6_plat_2" from="City_6_Throat2" to="City_6_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7737.22,-10557.72,169.05 7737.22,-9862.72,169.05 7764.22,-9612.72,169.05"/>
+    <edge id="City_6_plat_3" from="City_6_Throat1" to="City_6_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7743.22,-10557.72,169.05 7743.22,-9862.72,169.05 7764.22,-9612.72,169.05"/>
+    <edge id="City_6_plat_4" from="City_6_Throat2" to="City_6_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7749.22,-10557.72,169.05 7749.22,-9862.72,169.05 7764.22,-9612.72,169.05"/>
+    <edge id="City_6_plat_5" from="City_6_Throat1" to="City_6_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7755.22,-10557.72,169.05 7755.22,-9862.72,169.05 7764.22,-9612.72,169.05"/>
+    <edge id="City_6_plat_6" from="City_6_Throat2" to="City_6_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7761.22,-10557.72,169.05 7761.22,-9862.72,169.05 7764.22,-9612.72,169.05"/>
+    <edge id="City_6_yard_7" from="City_6_Throat1" to="City_6_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7767.22,-10557.72,169.05 7767.22,-9862.72,169.05 7764.22,-9612.72,169.05">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_6_yard_8" from="City_6_Throat2" to="City_6_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7773.22,-10557.72,169.05 7773.22,-9862.72,169.05 7764.22,-9612.72,169.05">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_6_yard_9" from="City_6_Throat1" to="City_6_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7779.22,-10557.72,169.05 7779.22,-9862.72,169.05 7764.22,-9612.72,169.05">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_6_yard_10" from="City_6_Throat2" to="City_6_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7785.22,-10557.72,169.05 7785.22,-9862.72,169.05 7764.22,-9612.72,169.05">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_6_yard_11" from="City_6_Throat1" to="City_6_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7791.22,-10557.72,169.05 7791.22,-9862.72,169.05 7764.22,-9612.72,169.05">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="City_6_yard_12" from="City_6_Throat2" to="City_6_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7764.22,-10807.72,169.05 7797.22,-10557.72,169.05 7797.22,-9862.72,169.05 7764.22,-9612.72,169.05">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_1_plat_1" from="Town_1_Throat1" to="Town_1_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-10753.12,13716.39,134.64 -10503.12,13704.39,134.64 -10168.12,13704.39,134.64 -9918.12,13716.39,134.64"/>
+    <edge id="Town_1_plat_2" from="Town_1_Throat2" to="Town_1_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-10753.12,13716.39,134.64 -10503.12,13710.39,134.64 -10168.12,13710.39,134.64 -9918.12,13716.39,134.64"/>
+    <edge id="Town_1_plat_3" from="Town_1_Throat1" to="Town_1_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-10753.12,13716.39,134.64 -10503.12,13716.39,134.64 -10168.12,13716.39,134.64 -9918.12,13716.39,134.64"/>
+    <edge id="Town_1_plat_4" from="Town_1_Throat2" to="Town_1_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-10753.12,13716.39,134.64 -10503.12,13722.39,134.64 -10168.12,13722.39,134.64 -9918.12,13716.39,134.64"/>
+    <edge id="Town_1_yard_5" from="Town_1_Throat1" to="Town_1_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10753.12,13716.39,134.64 -10503.12,13728.39,134.64 -10168.12,13728.39,134.64 -9918.12,13716.39,134.64">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_2_plat_1" from="Town_2_Throat1" to="Town_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-3602.18,-4581.62,137.58 -3614.18,-4331.62,137.58 -3614.18,-4129.62,137.58 -3602.18,-3879.62,137.58"/>
+    <edge id="Town_2_plat_2" from="Town_2_Throat2" to="Town_2_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-3602.18,-4581.62,137.58 -3608.18,-4331.62,137.58 -3608.18,-4129.62,137.58 -3602.18,-3879.62,137.58"/>
+    <edge id="Town_2_plat_3" from="Town_2_Throat1" to="Town_2_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-3602.18,-4581.62,137.58 -3602.18,-4331.62,137.58 -3602.18,-4129.62,137.58 -3602.18,-3879.62,137.58"/>
+    <edge id="Town_2_yard_4" from="Town_2_Throat2" to="Town_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-3602.18,-4581.62,137.58 -3596.18,-4331.62,137.58 -3596.18,-4129.62,137.58 -3602.18,-3879.62,137.58">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_2_yard_5" from="Town_2_Throat1" to="Town_2_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-3602.18,-4581.62,137.58 -3590.18,-4331.62,137.58 -3590.18,-4129.62,137.58 -3602.18,-3879.62,137.58">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_3_plat_1" from="Town_3_Throat1" to="Town_3_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9198.85,6777.45,214.49 9198.85,7006.45,214.49 9213.85,7256.45,214.49"/>
+    <edge id="Town_3_plat_2" from="Town_3_Throat2" to="Town_3_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9204.85,6777.45,214.49 9204.85,7006.45,214.49 9213.85,7256.45,214.49"/>
+    <edge id="Town_3_plat_3" from="Town_3_Throat1" to="Town_3_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9210.85,6777.45,214.49 9210.85,7006.45,214.49 9213.85,7256.45,214.49"/>
+    <edge id="Town_3_plat_4" from="Town_3_Throat2" to="Town_3_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9216.85,6777.45,214.49 9216.85,7006.45,214.49 9213.85,7256.45,214.49"/>
+    <edge id="Town_3_yard_5" from="Town_3_Throat1" to="Town_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9222.85,6777.45,214.49 9222.85,7006.45,214.49 9213.85,7256.45,214.49">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_3_yard_6" from="Town_3_Throat2" to="Town_3_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9228.85,6777.45,214.49 9228.85,7006.45,214.49 9213.85,7256.45,214.49">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_4_plat_1" from="Town_4_Throat1" to="Town_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12650.99,-6400.65,251.46 -12650.99,-6008.65,251.46 -12635.99,-5758.65,251.46"/>
+    <edge id="Town_4_plat_2" from="Town_4_Throat2" to="Town_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12644.99,-6400.65,251.46 -12644.99,-6008.65,251.46 -12635.99,-5758.65,251.46"/>
+    <edge id="Town_4_plat_3" from="Town_4_Throat1" to="Town_4_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12638.99,-6400.65,251.46 -12638.99,-6008.65,251.46 -12635.99,-5758.65,251.46"/>
+    <edge id="Town_4_plat_4" from="Town_4_Throat2" to="Town_4_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12632.99,-6400.65,251.46 -12632.99,-6008.65,251.46 -12635.99,-5758.65,251.46"/>
+    <edge id="Town_4_yard_5" from="Town_4_Throat1" to="Town_4_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12626.99,-6400.65,251.46 -12626.99,-6008.65,251.46 -12635.99,-5758.65,251.46">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_4_yard_6" from="Town_4_Throat2" to="Town_4_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12620.99,-6400.65,251.46 -12620.99,-6008.65,251.46 -12635.99,-5758.65,251.46">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_5_plat_1" from="Town_5_Throat1" to="Town_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="1927.06,6137.16,18.33 2177.06,6125.16,18.33 2464.06,6125.16,18.33 2714.06,6137.16,18.33"/>
+    <edge id="Town_5_plat_2" from="Town_5_Throat2" to="Town_5_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="1927.06,6137.16,18.33 2177.06,6131.16,18.33 2464.06,6131.16,18.33 2714.06,6137.16,18.33"/>
+    <edge id="Town_5_plat_3" from="Town_5_Throat1" to="Town_5_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="1927.06,6137.16,18.33 2177.06,6137.16,18.33 2464.06,6137.16,18.33 2714.06,6137.16,18.33"/>
+    <edge id="Town_5_yard_4" from="Town_5_Throat2" to="Town_5_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="1927.06,6137.16,18.33 2177.06,6143.16,18.33 2464.06,6143.16,18.33 2714.06,6137.16,18.33">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_5_yard_5" from="Town_5_Throat1" to="Town_5_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="1927.06,6137.16,18.33 2177.06,6149.16,18.33 2464.06,6149.16,18.33 2714.06,6137.16,18.33">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_6_plat_1" from="Town_6_Throat1" to="Town_6_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7786.55,14556.65,342.13 8036.55,14550.65,342.13 8347.55,14550.65,342.13 8597.55,14556.65,342.13"/>
+    <edge id="Town_6_plat_2" from="Town_6_Throat2" to="Town_6_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="7786.55,14556.65,342.13 8036.55,14556.65,342.13 8347.55,14556.65,342.13 8597.55,14556.65,342.13"/>
+    <edge id="Town_6_yard_3" from="Town_6_Throat1" to="Town_6_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7786.55,14556.65,342.13 8036.55,14562.65,342.13 8347.55,14562.65,342.13 8597.55,14556.65,342.13">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_7_plat_1" from="Town_7_Throat1" to="Town_7_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-3946.21,-1397.69,333.64 -3696.21,-1403.69,333.64 -3496.21,-1403.69,333.64 -3246.21,-1397.69,333.64"/>
+    <edge id="Town_7_plat_2" from="Town_7_Throat2" to="Town_7_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-3946.21,-1397.69,333.64 -3696.21,-1397.69,333.64 -3496.21,-1397.69,333.64 -3246.21,-1397.69,333.64"/>
+    <edge id="Town_7_yard_3" from="Town_7_Throat1" to="Town_7_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-3946.21,-1397.69,333.64 -3696.21,-1391.69,333.64 -3496.21,-1391.69,333.64 -3246.21,-1397.69,333.64">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_8_plat_1" from="Town_8_Throat1" to="Town_8_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4028.07,-8729.79,106.79 -3761.07,-8729.79,106.79 -3511.07,-8714.79,106.79"/>
+    <edge id="Town_8_plat_2" from="Town_8_Throat2" to="Town_8_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4028.07,-8723.79,106.79 -3761.07,-8723.79,106.79 -3511.07,-8714.79,106.79"/>
+    <edge id="Town_8_plat_3" from="Town_8_Throat1" to="Town_8_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4028.07,-8717.79,106.79 -3761.07,-8717.79,106.79 -3511.07,-8714.79,106.79"/>
+    <edge id="Town_8_plat_4" from="Town_8_Throat2" to="Town_8_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4028.07,-8711.79,106.79 -3761.07,-8711.79,106.79 -3511.07,-8714.79,106.79"/>
+    <edge id="Town_8_yard_5" from="Town_8_Throat1" to="Town_8_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4028.07,-8705.79,106.79 -3761.07,-8705.79,106.79 -3511.07,-8714.79,106.79">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_8_yard_6" from="Town_8_Throat2" to="Town_8_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4028.07,-8699.79,106.79 -3761.07,-8699.79,106.79 -3511.07,-8714.79,106.79">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_9_plat_1" from="Town_9_Throat1" to="Town_9_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2859.43,-9865.84,291.65 3109.43,-9874.84,291.65 3438.43,-9874.84,291.65 3688.43,-9865.84,291.65"/>
+    <edge id="Town_9_plat_2" from="Town_9_Throat2" to="Town_9_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2859.43,-9865.84,291.65 3109.43,-9868.84,291.65 3438.43,-9868.84,291.65 3688.43,-9865.84,291.65"/>
+    <edge id="Town_9_plat_3" from="Town_9_Throat1" to="Town_9_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2859.43,-9865.84,291.65 3109.43,-9862.84,291.65 3438.43,-9862.84,291.65 3688.43,-9865.84,291.65"/>
+    <edge id="Town_9_plat_4" from="Town_9_Throat2" to="Town_9_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="2859.43,-9865.84,291.65 3109.43,-9856.84,291.65 3438.43,-9856.84,291.65 3688.43,-9865.84,291.65"/>
+    <edge id="Town_10_plat_1" from="Town_10_Throat1" to="Town_10_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-1520.19,-6901.57,370.16 -1270.19,-6910.57,370.16 -994.19,-6910.57,370.16 -744.19,-6901.57,370.16"/>
+    <edge id="Town_10_plat_2" from="Town_10_Throat2" to="Town_10_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="-1520.19,-6901.57,370.16 -1270.19,-6904.57,370.16 -994.19,-6904.57,370.16 -744.19,-6901.57,370.16"/>
+    <edge id="Town_10_yard_3" from="Town_10_Throat1" to="Town_10_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-1520.19,-6901.57,370.16 -1270.19,-6898.57,370.16 -994.19,-6898.57,370.16 -744.19,-6901.57,370.16">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_10_yard_4" from="Town_10_Throat2" to="Town_10_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-1520.19,-6901.57,370.16 -1270.19,-6892.57,370.16 -994.19,-6892.57,370.16 -744.19,-6901.57,370.16">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_11_plat_1" from="Town_11_Throat1" to="Town_11_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5360.93,10270.56,310.40 5715.93,10270.56,310.40 5965.93,10285.56,310.40"/>
+    <edge id="Town_11_plat_2" from="Town_11_Throat2" to="Town_11_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5360.93,10276.56,310.40 5715.93,10276.56,310.40 5965.93,10285.56,310.40"/>
+    <edge id="Town_11_plat_3" from="Town_11_Throat1" to="Town_11_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5360.93,10282.56,310.40 5715.93,10282.56,310.40 5965.93,10285.56,310.40"/>
+    <edge id="Town_11_plat_4" from="Town_11_Throat2" to="Town_11_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5360.93,10288.56,310.40 5715.93,10288.56,310.40 5965.93,10285.56,310.40"/>
+    <edge id="Town_11_yard_5" from="Town_11_Throat1" to="Town_11_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5360.93,10294.56,310.40 5715.93,10294.56,310.40 5965.93,10285.56,310.40">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_11_yard_6" from="Town_11_Throat2" to="Town_11_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5360.93,10300.56,310.40 5715.93,10300.56,310.40 5965.93,10285.56,310.40">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Town_12_plat_1" from="Town_12_Throat1" to="Town_12_Throat2" speed="13.89" numLanes="1" allow="rail rail_electric" shape="9256.58,9151.37,160.47 9506.58,9148.37,160.47 9801.58,9148.37,160.47 10051.58,9151.37,160.47"/>
+    <edge id="Town_12_plat_2" from="Town_12_Throat2" to="Town_12_Throat1" speed="13.89" numLanes="1" allow="rail rail_electric" shape="9256.58,9151.37,160.47 9506.58,9154.37,160.47 9801.58,9154.37,160.47 10051.58,9151.37,160.47"/>
+    <edge id="Depot_1_yard_1" from="Depot_1_Throat1" to="Depot_1_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8670.51,12837.29,350.55 -8682.51,13087.29,350.55 -8682.51,13487.29,350.55 -8670.51,13737.29,350.55">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_1_yard_2" from="Depot_1_Throat2" to="Depot_1_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8670.51,12837.29,350.55 -8676.51,13087.29,350.55 -8676.51,13487.29,350.55 -8670.51,13737.29,350.55">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_1_yard_3" from="Depot_1_Throat1" to="Depot_1_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8670.51,12837.29,350.55 -8670.51,13087.29,350.55 -8670.51,13487.29,350.55 -8670.51,13737.29,350.55">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_1_yard_4" from="Depot_1_Throat2" to="Depot_1_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8670.51,12837.29,350.55 -8664.51,13087.29,350.55 -8664.51,13487.29,350.55 -8670.51,13737.29,350.55">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_1_yard_5" from="Depot_1_Throat1" to="Depot_1_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8670.51,12837.29,350.55 -8658.51,13087.29,350.55 -8658.51,13487.29,350.55 -8670.51,13737.29,350.55">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_1" from="Depot_2_Throat1" to="Depot_2_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8642.20,-223.06,353.87 -8642.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_2" from="Depot_2_Throat2" to="Depot_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8636.20,-223.06,353.87 -8636.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_3" from="Depot_2_Throat1" to="Depot_2_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8630.20,-223.06,353.87 -8630.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_4" from="Depot_2_Throat2" to="Depot_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8624.20,-223.06,353.87 -8624.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_5" from="Depot_2_Throat1" to="Depot_2_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8618.20,-223.06,353.87 -8618.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_6" from="Depot_2_Throat2" to="Depot_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8612.20,-223.06,353.87 -8612.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_7" from="Depot_2_Throat1" to="Depot_2_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8606.20,-223.06,353.87 -8606.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_2_yard_8" from="Depot_2_Throat2" to="Depot_2_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8600.20,-223.06,353.87 -8600.20,176.94,353.87 -8621.20,426.94,353.87">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_1" from="Depot_3_Throat1" to="Depot_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10734.85,-11011.09,298.00 -10734.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_2" from="Depot_3_Throat2" to="Depot_3_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10728.85,-11011.09,298.00 -10728.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_3" from="Depot_3_Throat1" to="Depot_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10722.85,-11011.09,298.00 -10722.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_4" from="Depot_3_Throat2" to="Depot_3_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10716.85,-11011.09,298.00 -10716.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_5" from="Depot_3_Throat1" to="Depot_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10710.85,-11011.09,298.00 -10710.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_6" from="Depot_3_Throat2" to="Depot_3_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10704.85,-11011.09,298.00 -10704.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_7" from="Depot_3_Throat1" to="Depot_3_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10698.85,-11011.09,298.00 -10698.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_3_yard_8" from="Depot_3_Throat2" to="Depot_3_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10692.85,-11011.09,298.00 -10692.85,-10611.09,298.00 -10713.85,-10361.09,298.00">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_4_yard_1" from="Depot_4_Throat1" to="Depot_4_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7410.41,-2596.99,233.41 7401.41,-2346.99,233.41 7401.41,-1946.99,233.41 7410.41,-1696.99,233.41">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_4_yard_2" from="Depot_4_Throat2" to="Depot_4_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7410.41,-2596.99,233.41 7407.41,-2346.99,233.41 7407.41,-1946.99,233.41 7410.41,-1696.99,233.41">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_4_yard_3" from="Depot_4_Throat1" to="Depot_4_Throat2" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7410.41,-2596.99,233.41 7413.41,-2346.99,233.41 7413.41,-1946.99,233.41 7410.41,-1696.99,233.41">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="Depot_4_yard_4" from="Depot_4_Throat2" to="Depot_4_Throat1" speed="5.55" numLanes="1" allow="rail rail_electric" shape="7410.41,-2596.99,233.41 7419.41,-2346.99,233.41 7419.41,-1946.99,233.41 7410.41,-1696.99,233.41">
+        <param key="is_yard" value="true"/>
+    </edge>
+    <edge id="mst_City_2_Depot_3_fw" from="City_2_Throat2" to="Depot_3_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-10120.86,-11925.14,296.27 -10100.47,-11928.94,296.32 -10087.17,-11929.85,296.38 -10080.51,-11928.00,296.44 -10080.01,-11923.50,296.50 -10085.22,-11916.47,296.55 -10095.67,-11907.03,296.61 -10110.90,-11895.29,296.67 -10130.45,-11881.38,296.72 -10153.84,-11865.40,296.78 -10180.63,-11847.48,296.84 -10210.34,-11827.74,296.90 -10242.50,-11806.28,296.95 -10276.67,-11783.23,297.01 -10312.37,-11758.70,297.07 -10349.14,-11732.82,297.12 -10386.51,-11705.69,297.18 -10424.03,-11677.44,297.24 -10461.23,-11648.18,297.30 -10497.64,-11618.03,297.36 -10532.81,-11587.11,297.41 -10566.26,-11555.53,297.47 -10597.54,-11523.41,297.53 -10626.18,-11490.87,297.59 -10651.72,-11458.02,297.64 -10673.69,-11424.99,297.70 -10691.64,-11391.88,297.76 -10705.09,-11358.82,297.82 -10713.58,-11325.92,297.88 -10716.66,-11293.31,297.94 -10713.85,-11261.09,298.00">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_cap_n1_bw" from="Sub_North_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_2_Depot_3_bw" from="Depot_3_Throat1" to="City_2_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-10713.85,-11261.09,298.00 -10716.66,-11293.31,297.94 -10713.58,-11325.92,297.88 -10705.09,-11358.82,297.82 -10691.64,-11391.88,297.76 -10673.69,-11424.99,297.70 -10651.72,-11458.02,297.64 -10626.18,-11490.87,297.59 -10597.54,-11523.41,297.53 -10566.26,-11555.53,297.47 -10532.81,-11587.11,297.41 -10497.64,-11618.03,297.36 -10461.23,-11648.18,297.30 -10424.03,-11677.44,297.24 -10386.51,-11705.69,297.18 -10349.14,-11732.82,297.12 -10312.37,-11758.70,297.07 -10276.67,-11783.23,297.01 -10242.50,-11806.28,296.95 -10210.34,-11827.74,296.90 -10180.63,-11847.48,296.84 -10153.84,-11865.40,296.78 -10130.45,-11881.38,296.72 -10110.90,-11895.29,296.67 -10095.67,-11907.03,296.61 -10085.22,-11916.47,296.55 -10080.01,-11923.50,296.50 -10080.51,-11928.00,296.44 -10087.17,-11929.85,296.38 -10100.47,-11928.94,296.32 -10120.86,-11925.14,296.27">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_n1_n2_fw" from="Sub_North_1" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_1_City_3_fw" from="City_1_Throat1" to="City_3_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3542.54,-14248.29,107.62 3532.40,-14245.68,105.22 3522.39,-14241.95,102.83 3512.48,-14237.19,100.44 3502.66,-14231.49,98.04 3492.93,-14224.93,95.64 3483.27,-14217.61,93.25 3473.67,-14209.62,90.85 3464.11,-14201.05,88.45 3454.59,-14191.98,86.05 3445.10,-14182.51,83.65 3435.62,-14172.74,81.24 3426.14,-14162.74,78.84 3416.65,-14152.61,76.43 3407.13,-14142.44,74.02 3397.58,-14132.33,71.60 3387.99,-14122.35,69.19 3378.34,-14112.60,66.77 3368.62,-14103.18,64.35 3358.82,-14094.16,61.92 3348.92,-14085.65,59.50 3338.92,-14077.73,57.07 3328.81,-14070.49,54.63 3318.57,-14064.03,52.19 3308.19,-14058.43,49.75 3297.65,-14053.78,47.31 3286.96,-14050.17,44.86 3276.09,-14047.70,42.40 3265.03,-14046.45,39.94 3253.78,-14046.52,37.48">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_n1_n2_bw" from="Sub_North_2" to="Sub_North_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_1_City_3_bw" from="City_3_Throat2" to="City_1_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="3253.78,-14046.52,37.48 3265.03,-14046.45,39.94 3276.09,-14047.70,42.40 3286.96,-14050.17,44.86 3297.65,-14053.78,47.31 3308.19,-14058.43,49.75 3318.57,-14064.03,52.19 3328.81,-14070.49,54.63 3338.92,-14077.73,57.07 3348.92,-14085.65,59.50 3358.82,-14094.16,61.92 3368.62,-14103.18,64.35 3378.34,-14112.60,66.77 3387.99,-14122.35,69.19 3397.58,-14132.33,71.60 3407.13,-14142.44,74.02 3416.65,-14152.61,76.43 3426.14,-14162.74,78.84 3435.62,-14172.74,81.24 3445.10,-14182.51,83.65 3454.59,-14191.98,86.05 3464.11,-14201.05,88.45 3473.67,-14209.62,90.85 3483.27,-14217.61,93.25 3492.93,-14224.93,95.64 3502.66,-14231.49,98.04 3512.48,-14237.19,100.44 3522.39,-14241.95,102.83 3532.40,-14245.68,105.22 3542.54,-14248.29,107.62 3552.80,-14249.68,110.01">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_n2_nCity_fw" from="Sub_North_2" to="North_City" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_Town_1_Depot_1_fw" from="Town_1_Throat2" to="Depot_1_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-9918.12,13716.39,134.64 -9878.57,13687.42,141.76 -9836.03,13662.44,148.89 -9790.82,13641.25,156.01 -9743.22,13623.65,163.14 -9693.56,13609.41,170.27 -9642.12,13598.34,177.41 -9589.23,13590.23,184.54 -9535.18,13584.85,191.68 -9480.28,13582.02,198.82 -9424.83,13581.50,205.97 -9369.13,13583.11,213.12 -9313.50,13586.62,220.28 -9258.24,13591.82,227.44 -9203.65,13598.52,234.61 -9150.04,13606.50,241.78 -9097.71,13615.54,248.97 -9046.97,13625.45,256.16 -8998.12,13636.00,263.35 -8951.46,13647.00,270.56 -8907.31,13658.23,277.78 -8865.97,13669.49,285.00 -8827.74,13680.55,292.24 -8792.93,13691.23,299.49 -8761.83,13701.30,306.74 -8734.77,13710.55,314.01 -8712.03,13718.78,321.29 -8693.94,13725.78,328.59 -8680.78,13731.34,335.89 -8672.87,13735.25,343.21 -8670.51,13737.29,350.55">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_n2_nCity_bw" from="North_City" to="Sub_North_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_Town_1_Depot_1_bw" from="Depot_1_Throat2" to="Town_1_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-8670.51,13737.29,350.55 -8672.87,13735.25,343.21 -8680.78,13731.34,335.89 -8693.94,13725.78,328.59 -8712.03,13718.78,321.29 -8734.77,13710.55,314.01 -8761.83,13701.30,306.74 -8792.93,13691.23,299.49 -8827.74,13680.55,292.24 -8865.97,13669.49,285.00 -8907.31,13658.23,277.78 -8951.46,13647.00,270.56 -8998.12,13636.00,263.35 -9046.97,13625.45,256.16 -9097.71,13615.54,248.97 -9150.04,13606.50,241.78 -9203.65,13598.52,234.61 -9258.24,13591.82,227.44 -9313.50,13586.62,220.28 -9369.13,13583.11,213.12 -9424.83,13581.50,205.97 -9480.28,13582.02,198.82 -9535.18,13584.85,191.68 -9589.23,13590.23,184.54 -9642.12,13598.34,177.41 -9693.56,13609.41,170.27 -9743.22,13623.65,163.14 -9790.82,13641.25,156.01 -9836.03,13662.44,148.89 -9878.57,13687.42,141.76 -9918.12,13716.39,134.64">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_cap_e1_fw" from="Capital_Hub" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_Town_3_Town_12_fw" from="Town_3_Throat2" to="Town_12_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="9213.85,7256.45,214.49 9222.75,7315.53,212.71 9227.77,7379.20,210.93 9229.28,7447.02,209.14 9227.63,7518.51,207.36 9223.19,7593.23,205.57 9216.31,7670.69,203.79 9207.35,7750.44,202.00 9196.68,7832.02,200.22 9184.65,7914.96,198.43 9171.62,7998.80,196.64 9157.96,8083.08,194.85 9144.03,8167.33,193.06 9130.18,8251.09,191.27 9116.77,8333.90,189.48 9104.17,8415.29,187.68 9092.73,8494.81,185.88 9082.82,8571.98,184.08 9074.80,8646.35,182.28 9069.01,8717.44,180.48 9065.84,8784.81,178.67 9065.63,8847.98,176.87 9068.74,8906.50,175.06 9075.54,8959.89,173.24 9086.39,9007.70,171.43 9101.64,9049.47,169.61 9121.65,9084.72,167.79 9146.80,9113.00,165.96 9177.42,9133.85,164.13 9213.90,9146.79,162.30 9256.58,9151.37,160.47">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_cap_e1_bw" from="Sub_East_1" to="Capital_Hub" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_Town_3_Town_12_bw" from="Town_12_Throat1" to="Town_3_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="9256.58,9151.37,160.47 9213.90,9146.79,162.30 9177.42,9133.85,164.13 9146.80,9113.00,165.96 9121.65,9084.72,167.79 9101.64,9049.47,169.61 9086.39,9007.70,171.43 9075.54,8959.89,173.24 9068.74,8906.50,175.06 9065.63,8847.98,176.87 9065.84,8784.81,178.67 9069.01,8717.44,180.48 9074.80,8646.35,182.28 9082.82,8571.98,184.08 9092.73,8494.81,185.88 9104.17,8415.29,187.68 9116.77,8333.90,189.48 9130.18,8251.09,191.27 9144.03,8167.33,193.06 9157.96,8083.08,194.85 9171.62,7998.80,196.64 9184.65,7914.96,198.43 9196.68,7832.02,200.22 9207.35,7750.44,202.00 9216.31,7670.69,203.79 9223.19,7593.23,205.57 9227.63,7518.51,207.36 9229.28,7447.02,209.14 9227.77,7379.20,210.93 9222.75,7315.53,212.71 9213.85,7256.45,214.49">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_e1_e2_fw" from="Sub_East_1" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_3_City_4_fw" from="City_3_Throat1" to="City_4_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="2175.78,-14046.52,37.48 2100.89,-14080.01,38.87 2022.07,-14105.80,40.25 1939.80,-14124.35,41.64 1854.55,-14136.09,43.03 1766.81,-14141.47,44.42 1677.06,-14140.93,45.81 1585.76,-14134.91,47.20 1493.40,-14123.85,48.59 1400.46,-14108.19,49.98 1307.41,-14088.39,51.37 1214.74,-14064.87,52.77 1122.91,-14038.09,54.16 1032.42,-14008.48,55.55 943.73,-13976.49,56.95 857.33,-13942.56,58.35 773.69,-13907.13,59.75 693.30,-13870.64,61.15 616.62,-13833.54,62.55 544.14,-13796.27,63.95 476.34,-13759.27,65.36 413.69,-13722.98,66.77 356.67,-13687.84,68.18 305.77,-13654.31,69.59 261.45,-13622.81,71.00 224.19,-13593.79,72.42 194.49,-13567.70,73.84 172.80,-13544.98,75.26 159.61,-13526.06,76.68 155.41,-13511.39,78.11 160.66,-13501.42,79.54">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_e1_e2_bw" from="Sub_East_2" to="Sub_East_1" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_3_City_4_bw" from="City_4_Throat2" to="City_3_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="160.66,-13501.42,79.54 155.41,-13511.39,78.11 159.61,-13526.06,76.68 172.80,-13544.98,75.26 194.49,-13567.70,73.84 224.19,-13593.79,72.42 261.45,-13622.81,71.00 305.77,-13654.31,69.59 356.67,-13687.84,68.18 413.69,-13722.98,66.77 476.34,-13759.27,65.36 544.14,-13796.27,63.95 616.62,-13833.54,62.55 693.30,-13870.64,61.15 773.69,-13907.13,59.75 857.33,-13942.56,58.35 943.73,-13976.49,56.95 1032.42,-14008.48,55.55 1122.91,-14038.09,54.16 1214.74,-14064.87,52.77 1307.41,-14088.39,51.37 1400.46,-14108.19,49.98 1493.40,-14123.85,48.59 1585.76,-14134.91,47.20 1677.06,-14140.93,45.81 1766.81,-14141.47,44.42 1854.55,-14136.09,43.03 1939.80,-14124.35,41.64 2022.07,-14105.80,40.25 2100.89,-14080.01,38.87 2175.78,-14046.52,37.48">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_e2_eCity_fw" from="Sub_East_2" to="East_City" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_5_Depot_2_fw" from="City_5_Throat1" to="Depot_2_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -9042.63,2677.18,324.77 -9041.18,2666.20,325.76 -9035.33,2645.59,326.75 -9025.45,2615.87,327.75 -9011.94,2577.60,328.74 -8995.18,2531.31,329.73 -8975.56,2477.56,330.73 -8953.46,2416.87,331.72 -8929.26,2349.80,332.72 -8903.36,2276.88,333.72 -8876.14,2198.66,334.71 -8847.99,2115.69,335.71 -8819.28,2028.50,336.71 -8790.42,1937.63,337.71 -8761.77,1843.64,338.71 -8733.74,1747.05,339.71 -8706.70,1648.42,340.71 -8681.04,1548.29,341.72 -8657.14,1447.20,342.72 -8635.40,1345.69,343.73 -8616.19,1244.30,344.74 -8599.91,1143.58,345.74 -8586.94,1044.07,346.75 -8577.66,946.31,347.77 -8572.47,850.85,348.78 -8571.74,758.22,349.79 -8575.86,668.97,350.81 -8585.22,583.65,351.83 -8600.21,502.79,352.85 -8621.20,426.94,353.87">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_e2_eCity_bw" from="East_City" to="Sub_East_2" speed="33.33" numLanes="1" allow="rail rail_electric">
+    <edge id="mst_City_5_Depot_2_bw" from="Depot_2_Throat2" to="City_5_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-8621.20,426.94,353.87 -8600.21,502.79,352.85 -8585.22,583.65,351.83 -8575.86,668.97,350.81 -8571.74,758.22,349.79 -8572.47,850.85,348.78 -8577.66,946.31,347.77 -8586.94,1044.07,346.75 -8599.91,1143.58,345.74 -8616.19,1244.30,344.74 -8635.40,1345.69,343.73 -8657.14,1447.20,342.72 -8681.04,1548.29,341.72 -8706.70,1648.42,340.71 -8733.74,1747.05,339.71 -8761.77,1843.64,338.71 -8790.42,1937.63,337.71 -8819.28,2028.50,336.71 -8847.99,2115.69,335.71 -8876.14,2198.66,334.71 -8903.36,2276.88,333.72 -8929.26,2349.80,332.72 -8953.46,2416.87,331.72 -8975.56,2477.56,330.73 -8995.18,2531.31,329.73 -9011.94,2577.60,328.74 -9025.45,2615.87,327.75 -9035.33,2645.59,326.75 -9041.18,2666.20,325.76 -9042.63,2677.18,324.77 -9039.28,2677.97,323.77">
         <param key="capacity_tons" value="5000"/>
         <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_concrete_sleeper"/>
+        <param key="material" value="ballast"/>
         <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_cap_w1_fw" from="Capital_Hub" to="Sub_West_1" speed="22.22" numLanes="1" allow="rail" shape="0.00,0.00,0.00 -125.00,76.00,1.25 -250.00,144.00,2.50 -375.00,204.00,3.75 -500.00,256.00,5.00 -625.00,300.00,6.25 -750.00,336.00,7.50 -875.00,364.00,8.75 -1000.00,384.00,10.00 -1125.00,396.00,11.25 -1250.00,400.00,12.50 -1375.00,396.00,13.75 -1500.00,384.00,15.00 -1625.00,364.00,16.25 -1750.00,336.00,17.50 -1875.00,300.00,18.75 -2000.00,256.00,20.00 -2125.00,204.00,21.25 -2250.00,144.00,22.50 -2375.00,76.00,23.75 -2500.00,0.00,25.00">
-        <param key="capacity_tons" value="10000"/>
-        <param key="voltage" value="none"/>
+    <edge id="mst_Town_2_Town_7_fw" from="Town_2_Throat2" to="Town_7_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-3602.18,-3879.62,137.58 -3584.31,-3798.52,144.05 -3571.76,-3711.69,150.52 -3564.17,-3619.73,156.99 -3561.19,-3523.25,163.47 -3562.47,-3422.84,169.94 -3567.66,-3319.11,176.42 -3576.40,-3212.66,182.90 -3588.33,-3104.08,189.38 -3603.12,-2993.99,195.87 -3620.40,-2882.99,202.36 -3639.82,-2771.67,208.85 -3661.03,-2660.64,215.35 -3683.67,-2550.50,221.85 -3707.39,-2441.86,228.36 -3731.85,-2335.30,234.88 -3756.68,-2231.45,241.40 -3781.53,-2130.89,247.93 -3806.06,-2034.23,254.47 -3829.90,-1942.08,261.01 -3852.71,-1855.03,267.56 -3874.13,-1773.69,274.13 -3893.81,-1698.65,280.70 -3911.39,-1630.53,287.28 -3926.53,-1569.91,293.87 -3938.87,-1517.41,300.47 -3948.05,-1473.63,307.08 -3953.74,-1439.16,313.70 -3955.56,-1414.62,320.34 -3953.17,-1400.59,326.98 -3946.21,-1397.69,333.64">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_wood_sleeper"/>
-        <param key="wear_rate" value="0.10"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_cap_w1_bw" from="Sub_West_1" to="Capital_Hub" speed="22.22" numLanes="1" allow="rail" shape="-2500.00,0.00,25.00 -2375.00,76.00,23.75 -2250.00,144.00,22.50 -2125.00,204.00,21.25 -2000.00,256.00,20.00 -1875.00,300.00,18.75 -1750.00,336.00,17.50 -1625.00,364.00,16.25 -1500.00,384.00,15.00 -1375.00,396.00,13.75 -1250.00,400.00,12.50 -1125.00,396.00,11.25 -1000.00,384.00,10.00 -875.00,364.00,8.75 -750.00,336.00,7.50 -625.00,300.00,6.25 -500.00,256.00,5.00 -375.00,204.00,3.75 -250.00,144.00,2.50 -125.00,76.00,1.25 0.00,0.00,0.00">
-        <param key="capacity_tons" value="10000"/>
-        <param key="voltage" value="none"/>
+    <edge id="mst_Town_2_Town_7_bw" from="Town_7_Throat1" to="Town_2_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-3946.21,-1397.69,333.64 -3953.17,-1400.59,326.98 -3955.56,-1414.62,320.34 -3953.74,-1439.16,313.70 -3948.05,-1473.63,307.08 -3938.87,-1517.41,300.47 -3926.53,-1569.91,293.87 -3911.39,-1630.53,287.28 -3893.81,-1698.65,280.70 -3874.13,-1773.69,274.13 -3852.71,-1855.03,267.56 -3829.90,-1942.08,261.01 -3806.06,-2034.23,254.47 -3781.53,-2130.89,247.93 -3756.68,-2231.45,241.40 -3731.85,-2335.30,234.88 -3707.39,-2441.86,228.36 -3683.67,-2550.50,221.85 -3661.03,-2660.64,215.35 -3639.82,-2771.67,208.85 -3620.40,-2882.99,202.36 -3603.12,-2993.99,195.87 -3588.33,-3104.08,189.38 -3576.40,-3212.66,182.90 -3567.66,-3319.11,176.42 -3562.47,-3422.84,169.94 -3561.19,-3523.25,163.47 -3564.17,-3619.73,156.99 -3571.76,-3711.69,150.52 -3584.31,-3798.52,144.05 -3602.18,-3879.62,137.58">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_wood_sleeper"/>
-        <param key="wear_rate" value="0.10"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_w1_wCity_fw" from="Sub_West_1" to="West_City" speed="22.22" numLanes="1" allow="rail" shape="-2500.00,0.00,25.00 -2625.00,-76.00,26.25 -2750.00,-144.00,27.50 -2875.00,-204.00,28.75 -3000.00,-256.00,30.00 -3125.00,-300.00,31.25 -3250.00,-336.00,32.50 -3375.00,-364.00,33.75 -3500.00,-384.00,35.00 -3625.00,-396.00,36.25 -3750.00,-400.00,37.50 -3875.00,-396.00,38.75 -4000.00,-384.00,40.00 -4125.00,-364.00,41.25 -4250.00,-336.00,42.50 -4375.00,-300.00,43.75 -4500.00,-256.00,45.00 -4625.00,-204.00,46.25 -4750.00,-144.00,47.50 -4875.00,-76.00,48.75 -5000.00,0.00,50.00">
-        <param key="capacity_tons" value="10000"/>
-        <param key="voltage" value="none"/>
+    <edge id="mst_Town_8_Town_10_fw" from="Town_8_Throat2" to="Town_10_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-3511.07,-8714.79,106.79 -3418.20,-8723.69,115.48 -3328.96,-8720.30,124.17 -3243.14,-8705.40,132.87 -3160.57,-8679.81,141.56 -3081.03,-8644.34,150.26 -3004.36,-8599.78,158.96 -2930.34,-8546.95,167.66 -2858.79,-8486.65,176.37 -2789.52,-8419.69,185.08 -2722.34,-8346.87,193.80 -2657.04,-8269.00,202.52 -2593.45,-8186.88,211.25 -2531.36,-8101.33,219.99 -2470.59,-8013.14,228.73 -2410.94,-7923.12,237.49 -2352.22,-7832.09,246.25 -2294.24,-7740.83,255.02 -2236.81,-7650.17,263.80 -2179.73,-7560.90,272.59 -2122.81,-7473.84,281.39 -2065.86,-7389.78,290.21 -2008.69,-7309.53,299.03 -1951.10,-7233.91,307.87 -1892.90,-7163.71,316.72 -1833.91,-7099.74,325.59 -1773.92,-7042.81,334.47 -1712.75,-6993.72,343.37 -1650.19,-6953.28,352.28 -1586.08,-6922.29,361.21 -1520.19,-6901.57,370.16">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_wood_sleeper"/>
-        <param key="wear_rate" value="0.10"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_w1_wCity_bw" from="West_City" to="Sub_West_1" speed="22.22" numLanes="1" allow="rail" shape="-5000.00,0.00,50.00 -4875.00,-76.00,48.75 -4750.00,-144.00,47.50 -4625.00,-204.00,46.25 -4500.00,-256.00,45.00 -4375.00,-300.00,43.75 -4250.00,-336.00,42.50 -4125.00,-364.00,41.25 -4000.00,-384.00,40.00 -3875.00,-396.00,38.75 -3750.00,-400.00,37.50 -3625.00,-396.00,36.25 -3500.00,-384.00,35.00 -3375.00,-364.00,33.75 -3250.00,-336.00,32.50 -3125.00,-300.00,31.25 -3000.00,-256.00,30.00 -2875.00,-204.00,28.75 -2750.00,-144.00,27.50 -2625.00,-76.00,26.25 -2500.00,0.00,25.00">
-        <param key="capacity_tons" value="10000"/>
-        <param key="voltage" value="none"/>
+    <edge id="mst_Town_8_Town_10_bw" from="Town_10_Throat1" to="Town_8_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-1520.19,-6901.57,370.16 -1586.08,-6922.29,361.21 -1650.19,-6953.28,352.28 -1712.75,-6993.72,343.37 -1773.92,-7042.81,334.47 -1833.91,-7099.74,325.59 -1892.90,-7163.71,316.72 -1951.10,-7233.91,307.87 -2008.69,-7309.53,299.03 -2065.86,-7389.78,290.21 -2122.81,-7473.84,281.39 -2179.73,-7560.90,272.59 -2236.81,-7650.17,263.80 -2294.24,-7740.83,255.02 -2352.22,-7832.09,246.25 -2410.94,-7923.12,237.49 -2470.59,-8013.14,228.73 -2531.36,-8101.33,219.99 -2593.45,-8186.88,211.25 -2657.04,-8269.00,202.52 -2722.34,-8346.87,193.80 -2789.52,-8419.69,185.08 -2858.79,-8486.65,176.37 -2930.34,-8546.95,167.66 -3004.36,-8599.78,158.96 -3081.03,-8644.34,150.26 -3160.57,-8679.81,141.56 -3243.14,-8705.40,132.87 -3328.96,-8720.30,124.17 -3418.20,-8723.69,115.48 -3511.07,-8714.79,106.79">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="ballast_wood_sleeper"/>
-        <param key="wear_rate" value="0.10"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_bypass_n_ne_fw" from="North_City" to="Junction_NE" speed="83.33" numLanes="1" allow="rail_electric" shape="0.00,6000.00,150.00 263.73,6027.46,152.50 520.75,6041.50,155.00 771.06,6042.12,157.50 1014.66,6029.33,160.00 1251.56,6003.12,162.50 1481.74,5963.49,165.00 1705.22,5910.45,167.50 1921.99,5843.99,170.00 2132.06,5764.11,172.50 2335.41,5670.82,175.00 2532.06,5564.11,177.50 2721.99,5443.99,180.00 2905.22,5310.45,182.50 3081.74,5163.49,185.00 3251.56,5003.12,187.50 3414.66,4829.33,190.00 3571.06,4642.12,192.50 3720.75,4441.50,195.00 3863.73,4227.46,197.50 4000.00,4000.00,200.00">
-        <param key="capacity_tons" value="2500"/>
-        <param key="voltage" value="25000"/>
+    <edge id="mst_Town_2_Town_10_fw" from="Town_2_Throat1" to="Town_10_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-3602.18,-4581.62,137.58 -3594.53,-4673.09,145.26 -3579.81,-4767.38,152.93 -3558.31,-4864.10,160.61 -3530.33,-4962.84,168.29 -3496.19,-5063.18,175.97 -3456.18,-5164.72,183.65 -3410.60,-5267.05,191.34 -3359.76,-5369.76,199.03 -3303.95,-5472.46,206.72 -3243.48,-5574.72,214.42 -3178.66,-5676.14,222.12 -3109.77,-5776.31,229.83 -3037.13,-5874.83,237.55 -2961.04,-5971.29,245.27 -2881.79,-6065.28,253.00 -2799.70,-6156.39,260.73 -2715.05,-6244.22,268.48 -2628.17,-6328.36,276.23 -2539.33,-6408.39,284.00 -2448.86,-6483.92,291.77 -2357.04,-6554.53,299.55 -2264.19,-6619.81,307.35 -2170.60,-6679.37,315.15 -2076.57,-6732.79,322.97 -1982.41,-6779.66,330.80 -1888.42,-6819.58,338.64 -1794.90,-6852.14,346.50 -1702.16,-6876.93,354.37 -1610.49,-6893.54,362.26 -1520.19,-6901.57,370.16">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="concrete_slab"/>
-        <param key="wear_rate" value="0.01"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_bypass_n_ne_bw" from="Junction_NE" to="North_City" speed="83.33" numLanes="1" allow="rail_electric" shape="4000.00,4000.00,200.00 3863.73,4227.46,197.50 3720.75,4441.50,195.00 3571.06,4642.12,192.50 3414.66,4829.33,190.00 3251.56,5003.12,187.50 3081.74,5163.49,185.00 2905.22,5310.45,182.50 2721.99,5443.99,180.00 2532.06,5564.11,177.50 2335.41,5670.82,175.00 2132.06,5764.11,172.50 1921.99,5843.99,170.00 1705.22,5910.45,167.50 1481.74,5963.49,165.00 1251.56,6003.12,162.50 1014.66,6029.33,160.00 771.06,6042.12,157.50 520.75,6041.50,155.00 263.73,6027.46,152.50 0.00,6000.00,150.00">
-        <param key="capacity_tons" value="2500"/>
-        <param key="voltage" value="25000"/>
+    <edge id="mst_Town_2_Town_10_bw" from="Town_10_Throat1" to="Town_2_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-1520.19,-6901.57,370.16 -1610.49,-6893.54,362.26 -1702.16,-6876.93,354.37 -1794.90,-6852.14,346.50 -1888.42,-6819.58,338.64 -1982.41,-6779.66,330.80 -2076.57,-6732.79,322.97 -2170.60,-6679.37,315.15 -2264.19,-6619.81,307.35 -2357.04,-6554.53,299.55 -2448.86,-6483.92,291.77 -2539.33,-6408.39,284.00 -2628.17,-6328.36,276.23 -2715.05,-6244.22,268.48 -2799.70,-6156.39,260.73 -2881.79,-6065.28,253.00 -2961.04,-5971.29,245.27 -3037.13,-5874.83,237.55 -3109.77,-5776.31,229.83 -3178.66,-5676.14,222.12 -3243.48,-5574.72,214.42 -3303.95,-5472.46,206.72 -3359.76,-5369.76,199.03 -3410.60,-5267.05,191.34 -3456.18,-5164.72,183.65 -3496.19,-5063.18,175.97 -3530.33,-4962.84,168.29 -3558.31,-4864.10,160.61 -3579.81,-4767.38,152.93 -3594.53,-4673.09,145.26 -3602.18,-4581.62,137.58">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="concrete_slab"/>
-        <param key="wear_rate" value="0.01"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_bypass_ne_e_fw" from="Junction_NE" to="East_City" speed="83.33" numLanes="1" allow="rail_electric" shape="4000.00,4000.00,200.00 3972.54,3736.27,190.00 3958.50,3479.25,180.00 3957.88,3228.94,170.00 3970.67,2985.34,160.00 3996.88,2748.44,150.00 4036.51,2518.26,140.00 4089.55,2294.78,130.00 4156.01,2078.01,120.00 4235.89,1867.94,110.00 4329.18,1664.59,100.00 4435.89,1467.94,90.00 4556.01,1278.01,80.00 4689.55,1094.78,70.00 4836.51,918.26,60.00 4996.88,748.44,50.00 5170.67,585.34,40.00 5357.88,428.94,30.00 5558.50,279.25,20.00 5772.54,136.27,10.00 6000.00,0.00,0.00">
-        <param key="capacity_tons" value="2500"/>
-        <param key="voltage" value="25000"/>
+    <edge id="mst_City_3_Town_9_fw" from="City_3_Throat2" to="Town_9_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="3253.78,-14046.52,37.48 3322.81,-14029.83,45.87 3379.31,-13987.35,54.25 3424.02,-13920.92,62.64 3457.68,-13832.40,71.03 3481.00,-13723.65,79.43 3494.74,-13596.54,87.82 3499.63,-13452.91,96.22 3496.40,-13294.63,104.63 3485.79,-13123.56,113.04 3468.52,-12941.54,121.45 3445.35,-12750.45,129.87 3417.00,-12552.13,138.29 3384.20,-12348.46,146.72 3347.70,-12141.27,155.16 3308.23,-11932.45,163.61 3266.52,-11723.83,172.07 3223.31,-11517.28,180.53 3179.33,-11314.65,189.01 3135.33,-11117.82,197.49 3092.02,-10928.62,205.99 3050.16,-10748.93,214.49 3010.47,-10580.60,223.01 2973.68,-10425.48,231.54 2940.55,-10285.44,240.08 2911.79,-10162.33,248.64 2888.15,-10058.02,257.21 2870.35,-9974.35,265.80 2859.15,-9913.20,274.40 2855.26,-9876.41,283.02 2859.43,-9865.84,291.65">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="concrete_slab"/>
-        <param key="wear_rate" value="0.01"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
-    <edge id="track_bypass_ne_e_bw" from="East_City" to="Junction_NE" speed="83.33" numLanes="1" allow="rail_electric" shape="6000.00,0.00,0.00 5772.54,136.27,10.00 5558.50,279.25,20.00 5357.88,428.94,30.00 5170.67,585.34,40.00 4996.88,748.44,50.00 4836.51,918.26,60.00 4689.55,1094.78,70.00 4556.01,1278.01,80.00 4435.89,1467.94,90.00 4329.18,1664.59,100.00 4235.89,1867.94,110.00 4156.01,2078.01,120.00 4089.55,2294.78,130.00 4036.51,2518.26,140.00 3996.88,2748.44,150.00 3970.67,2985.34,160.00 3957.88,3228.94,170.00 3958.50,3479.25,180.00 3972.54,3736.27,190.00 4000.00,4000.00,200.00">
-        <param key="capacity_tons" value="2500"/>
-        <param key="voltage" value="25000"/>
+    <edge id="mst_City_3_Town_9_bw" from="Town_9_Throat1" to="City_3_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="2859.43,-9865.84,291.65 2855.26,-9876.41,283.02 2859.15,-9913.20,274.40 2870.35,-9974.35,265.80 2888.15,-10058.02,257.21 2911.79,-10162.33,248.64 2940.55,-10285.44,240.08 2973.68,-10425.48,231.54 3010.47,-10580.60,223.01 3050.16,-10748.93,214.49 3092.02,-10928.62,205.99 3135.33,-11117.82,197.49 3179.33,-11314.65,189.01 3223.31,-11517.28,180.53 3266.52,-11723.83,172.07 3308.23,-11932.45,163.61 3347.70,-12141.27,155.16 3384.20,-12348.46,146.72 3417.00,-12552.13,138.29 3445.35,-12750.45,129.87 3468.52,-12941.54,121.45 3485.79,-13123.56,113.04 3496.40,-13294.63,104.63 3499.63,-13452.91,96.22 3494.74,-13596.54,87.82 3481.00,-13723.65,79.43 3457.68,-13832.40,71.03 3424.02,-13920.92,62.64 3379.31,-13987.35,54.25 3322.81,-14029.83,45.87 3253.78,-14046.52,37.48">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
         <param key="gauge" value="1435"/>
-        <param key="material" value="concrete_slab"/>
-        <param key="wear_rate" value="0.01"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_11_Town_12_fw" from="Town_11_Throat2" to="Town_12_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="5965.93,10285.56,310.40 6072.72,10298.82,305.45 6180.92,10303.85,300.50 6290.39,10301.16,295.55 6401.01,10291.25,290.61 6512.65,10274.63,285.65 6625.17,10251.79,280.70 6738.46,10223.26,275.75 6852.38,10189.51,270.79 6966.79,10151.08,265.83 7081.58,10108.44,260.87 7196.62,10062.12,255.90 7311.76,10012.61,250.93 7426.89,9960.42,245.96 7541.88,9906.06,240.98 7656.59,9850.02,236.00 7770.90,9792.81,231.01 7884.68,9734.93,226.01 7997.80,9676.89,221.02 8110.12,9619.20,216.01 8221.53,9562.35,211.00 8331.88,9506.86,205.98 8441.06,9453.22,200.96 8548.93,9401.94,195.92 8655.37,9353.52,190.88 8760.24,9308.47,185.84 8863.41,9267.29,180.78 8964.76,9230.49,175.72 9064.16,9198.57,170.64 9161.47,9172.03,165.56 9256.58,9151.37,160.47">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_11_Town_12_bw" from="Town_12_Throat1" to="Town_11_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="9256.58,9151.37,160.47 9161.47,9172.03,165.56 9064.16,9198.57,170.64 8964.76,9230.49,175.72 8863.41,9267.29,180.78 8760.24,9308.47,185.84 8655.37,9353.52,190.88 8548.93,9401.94,195.92 8441.06,9453.22,200.96 8331.88,9506.86,205.98 8221.53,9562.35,211.00 8110.12,9619.20,216.01 7997.80,9676.89,221.02 7884.68,9734.93,226.01 7770.90,9792.81,231.01 7656.59,9850.02,236.00 7541.88,9906.06,240.98 7426.89,9960.42,245.96 7311.76,10012.61,250.93 7196.62,10062.12,255.90 7081.58,10108.44,260.87 6966.79,10151.08,265.83 6852.38,10189.51,270.79 6738.46,10223.26,275.75 6625.17,10251.79,280.70 6512.65,10274.63,285.65 6401.01,10291.25,290.61 6290.39,10301.16,295.55 6180.92,10303.85,300.50 6072.72,10298.82,305.45 5965.93,10285.56,310.40">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_City_6_Town_9_fw" from="City_6_Throat2" to="Town_9_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="7764.22,-9612.72,169.05 7755.67,-9599.78,173.09 7727.66,-9591.90,177.14 7681.33,-9588.71,181.18 7617.82,-9589.80,185.23 7538.28,-9594.82,189.28 7443.86,-9603.35,193.33 7335.70,-9615.03,197.38 7214.94,-9629.47,201.44 7082.72,-9646.28,205.49 6940.20,-9665.07,209.55 6788.52,-9685.47,213.61 6628.83,-9707.08,217.68 6462.26,-9729.53,221.74 6289.96,-9752.43,225.81 6113.08,-9775.39,229.89 5932.76,-9798.03,233.97 5750.15,-9819.97,238.05 5566.39,-9840.81,242.14 5382.63,-9860.18,246.23 5200.01,-9877.69,250.33 5019.67,-9892.96,254.43 4842.77,-9905.59,258.54 4670.44,-9915.21,262.66 4503.83,-9921.43,266.78 4344.09,-9923.87,270.90 4192.36,-9922.14,275.04 4049.78,-9915.86,279.18 3917.51,-9904.64,283.33 3796.67,-9888.09,287.49 3688.43,-9865.84,291.65">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_City_6_Town_9_bw" from="Town_9_Throat2" to="City_6_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="3688.43,-9865.84,291.65 3796.67,-9888.09,287.49 3917.51,-9904.64,283.33 4049.78,-9915.86,279.18 4192.36,-9922.14,275.04 4344.09,-9923.87,270.90 4503.83,-9921.43,266.78 4670.44,-9915.21,262.66 4842.77,-9905.59,258.54 5019.67,-9892.96,254.43 5200.01,-9877.69,250.33 5382.63,-9860.18,246.23 5566.39,-9840.81,242.14 5750.15,-9819.97,238.05 5932.76,-9798.03,233.97 6113.08,-9775.39,229.89 6289.96,-9752.43,225.81 6462.26,-9729.53,221.74 6628.83,-9707.08,217.68 6788.52,-9685.47,213.61 6940.20,-9665.07,209.55 7082.72,-9646.28,205.49 7214.94,-9629.47,201.44 7335.70,-9615.03,197.38 7443.86,-9603.35,193.33 7538.28,-9594.82,189.28 7617.82,-9589.80,185.23 7681.33,-9588.71,181.18 7727.66,-9591.90,177.14 7755.67,-9599.78,173.09 7764.22,-9612.72,169.05">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_4_Depot_3_fw" from="Town_4_Throat1" to="Depot_3_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12596.91,-6735.96,252.99 -12548.13,-6826.87,254.53 -12490.50,-6923.05,256.06 -12424.89,-7024.20,257.60 -12352.14,-7129.99,259.14 -12273.12,-7240.11,260.67 -12188.66,-7354.24,262.21 -12099.64,-7472.08,263.75 -12006.91,-7593.30,265.29 -11911.31,-7717.58,266.83 -11813.70,-7844.61,268.37 -11714.94,-7974.08,269.92 -11615.88,-8105.68,271.46 -11517.37,-8239.07,273.00 -11420.27,-8373.95,274.55 -11325.44,-8510.01,276.10 -11233.73,-8646.92,277.65 -11145.98,-8784.37,279.20 -11063.07,-8922.05,280.75 -10985.83,-9059.64,282.31 -10915.13,-9196.82,283.87 -10851.82,-9333.29,285.43 -10796.75,-9468.71,286.99 -10750.78,-9602.78,288.55 -10714.76,-9735.18,290.12 -10689.55,-9865.59,291.69 -10676.00,-9993.71,293.26 -10674.96,-10119.21,294.84 -10687.30,-10241.77,296.41 -10713.85,-10361.09,298.00">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_4_Depot_3_bw" from="Depot_3_Throat2" to="Town_4_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-10713.85,-10361.09,298.00 -10687.30,-10241.77,296.41 -10674.96,-10119.21,294.84 -10676.00,-9993.71,293.26 -10689.55,-9865.59,291.69 -10714.76,-9735.18,290.12 -10750.78,-9602.78,288.55 -10796.75,-9468.71,286.99 -10851.82,-9333.29,285.43 -10915.13,-9196.82,283.87 -10985.83,-9059.64,282.31 -11063.07,-8922.05,280.75 -11145.98,-8784.37,279.20 -11233.73,-8646.92,277.65 -11325.44,-8510.01,276.10 -11420.27,-8373.95,274.55 -11517.37,-8239.07,273.00 -11615.88,-8105.68,271.46 -11714.94,-7974.08,269.92 -11813.70,-7844.61,268.37 -11911.31,-7717.58,266.83 -12006.91,-7593.30,265.29 -12099.64,-7472.08,263.75 -12188.66,-7354.24,262.21 -12273.12,-7240.11,260.67 -12352.14,-7129.99,259.14 -12424.89,-7024.20,257.60 -12490.50,-6923.05,256.06 -12548.13,-6826.87,254.53 -12596.91,-6735.96,252.99 -12635.99,-6650.65,251.46">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_6_Town_11_fw" from="Town_6_Throat1" to="Town_11_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="7786.55,14556.65,342.13 7692.72,14541.73,341.08 7606.07,14500.31,340.03 7526.07,14434.28,338.99 7452.20,14345.55,337.94 7383.94,14235.99,336.89 7320.76,14107.53,335.84 7262.13,13962.05,334.79 7207.54,13801.45,333.75 7156.46,13627.63,332.70 7108.36,13442.49,331.65 7062.72,13247.92,330.59 7019.02,13045.84,329.54 6976.73,12838.12,328.49 6935.33,12626.68,327.44 6894.29,12413.41,326.38 6853.09,12200.20,325.33 6811.21,11988.97,324.27 6768.12,11781.59,323.21 6723.29,11579.98,322.15 6676.21,11386.04,321.09 6626.35,11201.65,320.03 6573.18,11028.72,318.97 6516.18,10869.15,317.90 6454.83,10724.83,316.84 6388.60,10597.66,315.77 6316.96,10489.54,314.70 6239.40,10402.38,313.63 6155.39,10338.06,312.55 6064.41,10298.49,311.48 5965.93,10285.56,310.40">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_6_Town_11_bw" from="Town_11_Throat2" to="Town_6_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="5965.93,10285.56,310.40 6064.41,10298.49,311.48 6155.39,10338.06,312.55 6239.40,10402.38,313.63 6316.96,10489.54,314.70 6388.60,10597.66,315.77 6454.83,10724.83,316.84 6516.18,10869.15,317.90 6573.18,11028.72,318.97 6626.35,11201.65,320.03 6676.21,11386.04,321.09 6723.29,11579.98,322.15 6768.12,11781.59,323.21 6811.21,11988.97,324.27 6853.09,12200.20,325.33 6894.29,12413.41,326.38 6935.33,12626.68,327.44 6976.73,12838.12,328.49 7019.02,13045.84,329.54 7062.72,13247.92,330.59 7108.36,13442.49,331.65 7156.46,13627.63,332.70 7207.54,13801.45,333.75 7262.13,13962.05,334.79 7320.76,14107.53,335.84 7383.94,14235.99,336.89 7452.20,14345.55,337.94 7526.07,14434.28,338.99 7606.07,14500.31,340.03 7692.72,14541.73,341.08 7786.55,14556.65,342.13">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_7_Depot_2_fw" from="Town_7_Throat1" to="Depot_2_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-3946.21,-1397.69,333.64 -4049.28,-1369.51,334.31 -4169.16,-1343.53,334.98 -4304.43,-1319.50,335.65 -4453.69,-1297.17,336.31 -4615.53,-1276.27,336.98 -4788.53,-1256.55,337.65 -4971.29,-1237.76,338.32 -5162.38,-1219.64,338.99 -5360.42,-1201.94,339.66 -5563.97,-1184.39,340.33 -5771.63,-1166.75,341.00 -5981.99,-1148.76,341.67 -6193.63,-1130.15,342.34 -6405.15,-1110.69,343.01 -6615.14,-1090.10,343.68 -6822.18,-1068.14,344.36 -7024.87,-1044.55,345.03 -7221.78,-1019.07,345.70 -7411.52,-991.44,346.38 -7592.67,-961.42,347.06 -7763.81,-928.75,347.73 -7923.54,-893.17,348.41 -8070.45,-854.42,349.09 -8203.12,-812.25,349.77 -8320.15,-766.40,350.45 -8420.12,-716.62,351.13 -8501.62,-662.65,351.82 -8563.24,-604.24,352.50 -8603.57,-541.13,353.19 -8621.20,-473.06,353.87">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_7_Depot_2_bw" from="Depot_2_Throat1" to="Town_7_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-8621.20,-473.06,353.87 -8603.57,-541.13,353.19 -8563.24,-604.24,352.50 -8501.62,-662.65,351.82 -8420.12,-716.62,351.13 -8320.15,-766.40,350.45 -8203.12,-812.25,349.77 -8070.45,-854.42,349.09 -7923.54,-893.17,348.41 -7763.81,-928.75,347.73 -7592.67,-961.42,347.06 -7411.52,-991.44,346.38 -7221.78,-1019.07,345.70 -7024.87,-1044.55,345.03 -6822.18,-1068.14,344.36 -6615.14,-1090.10,343.68 -6405.15,-1110.69,343.01 -6193.63,-1130.15,342.34 -5981.99,-1148.76,341.67 -5771.63,-1166.75,341.00 -5563.97,-1184.39,340.33 -5360.42,-1201.94,339.66 -5162.38,-1219.64,338.99 -4971.29,-1237.76,338.32 -4788.53,-1256.55,337.65 -4615.53,-1276.27,336.98 -4453.69,-1297.17,336.31 -4304.43,-1319.50,335.65 -4169.16,-1343.53,334.98 -4049.28,-1369.51,334.31 -3946.21,-1397.69,333.64">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_5_Town_11_fw" from="Town_5_Throat2" to="Town_11_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="2714.06,6137.16,18.33 2801.40,6156.86,27.97 2885.72,6201.94,37.61 2967.30,6270.57,47.25 3046.39,6360.90,56.89 3123.28,6471.08,66.53 3198.22,6599.28,76.18 3271.49,6743.64,85.84 3343.35,6902.32,95.49 3414.07,7073.49,105.15 3483.92,7255.29,114.82 3553.17,7445.88,124.50 3622.09,7643.43,134.18 3690.93,7846.07,143.87 3759.98,8051.98,153.56 3829.50,8259.31,163.27 3899.76,8466.21,172.99 3971.02,8670.84,182.71 4043.56,8871.35,192.45 4117.64,9065.91,202.20 4193.52,9252.67,211.96 4271.49,9429.78,221.74 4351.80,9595.41,231.52 4434.73,9747.70,241.33 4520.54,9884.81,251.14 4609.50,10004.91,260.98 4701.87,10106.14,270.83 4797.94,10186.67,280.69 4897.96,10244.64,290.58 5002.20,10278.22,300.48 5110.93,10285.56,310.40">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_5_Town_11_bw" from="Town_11_Throat1" to="Town_5_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="5110.93,10285.56,310.40 5002.20,10278.22,300.48 4897.96,10244.64,290.58 4797.94,10186.67,280.69 4701.87,10106.14,270.83 4609.50,10004.91,260.98 4520.54,9884.81,251.14 4434.73,9747.70,241.33 4351.80,9595.41,231.52 4271.49,9429.78,221.74 4193.52,9252.67,211.96 4117.64,9065.91,202.20 4043.56,8871.35,192.45 3971.02,8670.84,182.71 3899.76,8466.21,172.99 3829.50,8259.31,163.27 3759.98,8051.98,153.56 3690.93,7846.07,143.87 3622.09,7643.43,134.18 3553.17,7445.88,124.50 3483.92,7255.29,114.82 3414.07,7073.49,105.15 3343.35,6902.32,95.49 3271.49,6743.64,85.84 3198.22,6599.28,76.18 3123.28,6471.08,66.53 3046.39,6360.90,56.89 2967.30,6270.57,47.25 2885.72,6201.94,37.61 2801.40,6156.86,27.97 2714.06,6137.16,18.33">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_9_Town_10_fw" from="Town_9_Throat1" to="Town_10_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="2859.43,-9865.84,291.65 2735.51,-9882.87,294.24 2609.35,-9879.61,296.83 2481.21,-9857.38,299.42 2351.37,-9817.51,302.02 2220.09,-9761.30,304.61 2087.65,-9690.07,307.20 1954.30,-9605.15,309.80 1820.32,-9507.85,312.39 1685.98,-9399.49,314.99 1551.54,-9281.38,317.59 1417.27,-9154.84,320.19 1283.45,-9021.19,322.79 1150.33,-8881.75,325.39 1018.19,-8737.83,328.00 887.30,-8590.76,330.61 757.92,-8441.85,333.22 630.32,-8292.41,335.84 504.77,-8143.77,338.45 381.54,-7997.23,341.07 260.90,-7854.13,343.70 143.12,-7715.78,346.32 28.46,-7583.49,348.96 -82.81,-7458.58,351.59 -190.42,-7342.37,354.23 -294.10,-7236.17,356.87 -393.59,-7141.31,359.52 -488.61,-7059.11,362.17 -578.89,-6990.87,364.83 -664.18,-6937.91,367.49 -744.19,-6901.57,370.16">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_9_Town_10_bw" from="Town_10_Throat2" to="Town_9_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-744.19,-6901.57,370.16 -664.18,-6937.91,367.49 -578.89,-6990.87,364.83 -488.61,-7059.11,362.17 -393.59,-7141.31,359.52 -294.10,-7236.17,356.87 -190.42,-7342.37,354.23 -82.81,-7458.58,351.59 28.46,-7583.49,348.96 143.12,-7715.78,346.32 260.90,-7854.13,343.70 381.54,-7997.23,341.07 504.77,-8143.77,338.45 630.32,-8292.41,335.84 757.92,-8441.85,333.22 887.30,-8590.76,330.61 1018.19,-8737.83,328.00 1150.33,-8881.75,325.39 1283.45,-9021.19,322.79 1417.27,-9154.84,320.19 1551.54,-9281.38,317.59 1685.98,-9399.49,314.99 1820.32,-9507.85,312.39 1954.30,-9605.15,309.80 2087.65,-9690.07,307.20 2220.09,-9761.30,304.61 2351.37,-9817.51,302.02 2481.21,-9857.38,299.42 2609.35,-9879.61,296.83 2735.51,-9882.87,294.24 2859.43,-9865.84,291.65">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_8_Depot_3_fw" from="Town_8_Throat1" to="Depot_3_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-4278.07,-8714.79,106.79 -4398.91,-8691.84,113.10 -4546.68,-8674.87,119.41 -4719.20,-8663.81,125.72 -4914.26,-8658.59,132.03 -5129.68,-8659.15,138.35 -5363.26,-8665.42,144.66 -5612.81,-8677.35,150.98 -5876.13,-8694.85,157.31 -6151.03,-8717.88,163.63 -6435.31,-8746.36,169.96 -6726.79,-8780.23,176.29 -7023.27,-8819.42,182.63 -7322.55,-8863.87,188.97 -7622.44,-8913.51,195.32 -7920.76,-8968.28,201.68 -8215.29,-9028.12,208.04 -8503.86,-9092.95,214.40 -8784.26,-9162.72,220.78 -9054.30,-9237.36,227.16 -9311.80,-9316.80,233.55 -9554.55,-9400.98,239.95 -9780.36,-9489.83,246.36 -9987.04,-9583.29,252.78 -10172.40,-9681.30,259.20 -10334.24,-9783.78,265.64 -10470.36,-9890.67,272.09 -10578.58,-10001.92,278.55 -10656.69,-10117.45,285.02 -10702.52,-10237.19,291.50 -10713.85,-10361.09,298.00">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_8_Depot_3_bw" from="Depot_3_Throat2" to="Town_8_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-10713.85,-10361.09,298.00 -10702.52,-10237.19,291.50 -10656.69,-10117.45,285.02 -10578.58,-10001.92,278.55 -10470.36,-9890.67,272.09 -10334.24,-9783.78,265.64 -10172.40,-9681.30,259.20 -9987.04,-9583.29,252.78 -9780.36,-9489.83,246.36 -9554.55,-9400.98,239.95 -9311.80,-9316.80,233.55 -9054.30,-9237.36,227.16 -8784.26,-9162.72,220.78 -8503.86,-9092.95,214.40 -8215.29,-9028.12,208.04 -7920.76,-8968.28,201.68 -7622.44,-8913.51,195.32 -7322.55,-8863.87,188.97 -7023.27,-8819.42,182.63 -6726.79,-8780.23,176.29 -6435.31,-8746.36,169.96 -6151.03,-8717.88,163.63 -5876.13,-8694.85,157.31 -5612.81,-8677.35,150.98 -5363.26,-8665.42,144.66 -5129.68,-8659.15,138.35 -4914.26,-8658.59,132.03 -4719.20,-8663.81,125.72 -4546.68,-8674.87,119.41 -4398.91,-8691.84,113.10 -4278.07,-8714.79,106.79">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_City_6_Depot_4_fw" from="City_6_Throat2" to="Depot_4_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="7764.22,-9612.72,169.05 7760.93,-9499.74,171.17 7755.59,-9361.77,173.29 7748.34,-9200.58,175.42 7739.36,-9017.97,177.54 7728.80,-8815.72,179.67 7716.81,-8595.62,181.80 7703.56,-8359.44,183.92 7689.19,-8108.98,186.05 7673.87,-7846.02,188.18 7657.75,-7572.35,190.31 7641.00,-7289.74,192.44 7623.76,-6999.98,194.58 7606.20,-6704.87,196.71 7588.47,-6406.17,198.85 7570.73,-6105.69,200.99 7553.14,-5805.20,203.13 7535.86,-5506.48,205.27 7519.03,-5211.33,207.42 7502.83,-4921.52,209.57 7487.40,-4638.85,211.72 7472.91,-4365.09,213.87 7459.50,-4102.03,216.03 7447.35,-3851.46,218.19 7436.60,-3615.16,220.35 7427.41,-3394.91,222.52 7419.94,-3192.51,224.69 7414.35,-3009.73,226.87 7410.79,-2848.36,229.04 7409.43,-2710.18,231.23 7410.41,-2596.99,233.41">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_City_6_Depot_4_bw" from="Depot_4_Throat1" to="City_6_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="7410.41,-2596.99,233.41 7409.43,-2710.18,231.23 7410.79,-2848.36,229.04 7414.35,-3009.73,226.87 7419.94,-3192.51,224.69 7427.41,-3394.91,222.52 7436.60,-3615.16,220.35 7447.35,-3851.46,218.19 7459.50,-4102.03,216.03 7472.91,-4365.09,213.87 7487.40,-4638.85,211.72 7502.83,-4921.52,209.57 7519.03,-5211.33,207.42 7535.86,-5506.48,205.27 7553.14,-5805.20,203.13 7570.73,-6105.69,200.99 7588.47,-6406.17,198.85 7606.20,-6704.87,196.71 7623.76,-6999.98,194.58 7641.00,-7289.74,192.44 7657.75,-7572.35,190.31 7673.87,-7846.02,188.18 7689.19,-8108.98,186.05 7703.56,-8359.44,183.92 7716.81,-8595.62,181.80 7728.80,-8815.72,179.67 7739.36,-9017.97,177.54 7748.34,-9200.58,175.42 7755.59,-9361.77,173.29 7760.93,-9499.74,171.17 7764.22,-9612.72,169.05">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_3_Depot_4_fw" from="Town_3_Throat1" to="Depot_4_Throat2" speed="33.33" numLanes="1" allow="rail rail_electric" shape="9213.85,6527.45,214.49 9216.02,6408.66,215.12 9206.42,6257.48,215.74 9185.84,6076.24,216.36 9155.09,5867.25,216.99 9114.97,5632.85,217.61 9066.27,5375.34,218.24 9009.81,5097.07,218.86 8946.38,4800.33,219.49 8876.78,4487.47,220.12 8801.82,4160.79,220.74 8722.30,3822.63,221.37 8639.01,3475.30,222.00 8552.77,3121.13,222.62 8464.36,2762.43,223.25 8374.60,2401.54,223.88 8284.29,2040.76,224.51 8194.22,1682.43,225.14 8105.20,1328.87,225.77 8018.02,982.39,226.40 7933.50,645.32,227.04 7852.43,319.99,227.67 7775.62,8.70,228.30 7703.86,-286.20,228.94 7637.95,-562.41,229.57 7578.71,-817.60,230.21 7526.92,-1049.45,230.85 7483.40,-1255.63,231.49 7448.94,-1433.83,232.13 7424.34,-1581.72,232.77 7410.41,-1696.99,233.41">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_Town_3_Depot_4_bw" from="Depot_4_Throat2" to="Town_3_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="7410.41,-1696.99,233.41 7424.34,-1581.72,232.77 7448.94,-1433.83,232.13 7483.40,-1255.63,231.49 7526.92,-1049.45,230.85 7578.71,-817.60,230.21 7637.95,-562.41,229.57 7703.86,-286.20,228.94 7775.62,8.70,228.30 7852.43,319.99,227.67 7933.50,645.32,227.04 8018.02,982.39,226.40 8105.20,1328.87,225.77 8194.22,1682.43,225.14 8284.29,2040.76,224.51 8374.60,2401.54,223.88 8464.36,2762.43,223.25 8552.77,3121.13,222.62 8639.01,3475.30,222.00 8722.30,3822.63,221.37 8801.82,4160.79,220.74 8876.78,4487.47,220.12 8946.38,4800.33,219.49 9009.81,5097.07,218.86 9066.27,5375.34,218.24 9114.97,5632.85,217.61 9155.09,5867.25,216.99 9185.84,6076.24,216.36 9206.42,6257.48,215.74 9216.02,6408.66,215.12 9213.85,6527.45,214.49">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_City_5_Depot_1_fw" from="City_5_Throat1" to="Depot_1_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-9039.28,2677.97,323.77 -9167.41,2709.16,324.66 -9278.10,2797.48,325.54 -9372.19,2939.07,326.42 -9450.51,3130.09,327.31 -9513.87,3366.68,328.19 -9563.13,3645.01,329.08 -9599.10,3961.21,329.96 -9622.62,4311.45,330.85 -9634.51,4691.87,331.73 -9635.62,5098.63,332.62 -9626.76,5527.87,333.50 -9608.77,5975.75,334.39 -9582.49,6438.42,335.28 -9548.73,6912.03,336.17 -9508.33,7392.74,337.06 -9462.13,7876.68,337.95 -9410.95,8360.03,338.84 -9355.62,8838.91,339.73 -9296.97,9309.50,340.63 -9235.84,9767.93,341.52 -9173.05,10210.37,342.42 -9109.44,10632.95,343.32 -9045.83,11031.85,344.21 -8983.06,11403.19,345.11 -8921.96,11743.14,346.02 -8863.35,12047.85,346.92 -8808.08,12313.47,347.82 -8756.96,12536.15,348.73 -8710.83,12712.04,349.64 -8670.51,12837.29,350.55">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="mst_City_5_Depot_1_bw" from="Depot_1_Throat1" to="City_5_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-8670.51,12837.29,350.55 -8710.83,12712.04,349.64 -8756.96,12536.15,348.73 -8808.08,12313.47,347.82 -8863.35,12047.85,346.92 -8921.96,11743.14,346.02 -8983.06,11403.19,345.11 -9045.83,11031.85,344.21 -9109.44,10632.95,343.32 -9173.05,10210.37,342.42 -9235.84,9767.93,341.52 -9296.97,9309.50,340.63 -9355.62,8838.91,339.73 -9410.95,8360.03,338.84 -9462.13,7876.68,337.95 -9508.33,7392.74,337.06 -9548.73,6912.03,336.17 -9582.49,6438.42,335.28 -9608.77,5975.75,334.39 -9626.76,5527.87,333.50 -9635.62,5098.63,332.62 -9634.51,4691.87,331.73 -9622.62,4311.45,330.85 -9599.10,3961.21,329.96 -9563.13,3645.01,329.08 -9513.87,3366.68,328.19 -9450.51,3130.09,327.31 -9372.19,2939.07,326.42 -9278.10,2797.48,325.54 -9167.41,2709.16,324.66 -9039.28,2677.97,323.77">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="loop_City_2_Town_4_fw" from="City_2_Throat1" to="Town_4_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-11506.86,-11925.14,296.27 -11581.07,-11906.27,294.79 -11651.22,-11860.92,293.31 -11717.47,-11790.76,291.83 -11780.00,-11697.47,290.35 -11838.95,-11582.74,288.87 -11894.51,-11448.24,287.39 -11946.83,-11295.64,285.91 -11996.07,-11126.63,284.43 -12042.41,-10942.88,282.95 -12086.01,-10746.08,281.46 -12127.03,-10537.88,279.98 -12165.64,-10319.99,278.49 -12202.00,-10094.06,277.01 -12236.28,-9861.79,275.52 -12268.64,-9624.84,274.03 -12299.25,-9384.90,272.54 -12328.27,-9143.64,271.05 -12355.87,-8902.74,269.55 -12382.20,-8663.87,268.06 -12407.45,-8428.73,266.56 -12431.76,-8198.97,265.06 -12455.31,-7976.29,263.56 -12478.26,-7762.35,262.05 -12500.78,-7558.84,260.55 -12523.03,-7367.43,259.04 -12545.17,-7189.81,257.53 -12567.38,-7027.64,256.01 -12589.80,-6882.60,254.50 -12612.62,-6756.38,252.98 -12635.99,-6650.65,251.46">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="loop_City_2_Town_4_bw" from="Town_4_Throat1" to="City_2_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="-12635.99,-6650.65,251.46 -12612.62,-6756.38,252.98 -12589.80,-6882.60,254.50 -12567.38,-7027.64,256.01 -12545.17,-7189.81,257.53 -12523.03,-7367.43,259.04 -12500.78,-7558.84,260.55 -12478.26,-7762.35,262.05 -12455.31,-7976.29,263.56 -12431.76,-8198.97,265.06 -12407.45,-8428.73,266.56 -12382.20,-8663.87,268.06 -12355.87,-8902.74,269.55 -12328.27,-9143.64,271.05 -12299.25,-9384.90,272.54 -12268.64,-9624.84,274.03 -12236.28,-9861.79,275.52 -12202.00,-10094.06,277.01 -12165.64,-10319.99,278.49 -12127.03,-10537.88,279.98 -12086.01,-10746.08,281.46 -12042.41,-10942.88,282.95 -11996.07,-11126.63,284.43 -11946.83,-11295.64,285.91 -11894.51,-11448.24,287.39 -11838.95,-11582.74,288.87 -11780.00,-11697.47,290.35 -11717.47,-11790.76,291.83 -11651.22,-11860.92,293.31 -11581.07,-11906.27,294.79 -11506.86,-11925.14,296.27">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="loop_City_4_City_1_fw" from="City_4_Throat1" to="City_1_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="160.66,-14906.42,79.54 150.87,-14845.55,80.54 157.40,-14782.49,81.55 179.42,-14717.76,82.55 216.07,-14651.90,83.56 266.53,-14585.41,84.57 329.94,-14518.83,85.57 405.47,-14452.68,86.58 492.27,-14387.47,87.59 589.51,-14323.73,88.59 696.35,-14261.99,89.60 811.94,-14202.76,90.61 935.44,-14146.56,91.62 1066.01,-14093.93,92.63 1202.81,-14045.38,93.65 1345.01,-14001.42,94.66 1491.75,-13962.60,95.67 1642.20,-13929.42,96.69 1795.51,-13902.41,97.70 1950.86,-13882.10,98.72 2107.38,-13869.00,99.74 2264.25,-13863.63,100.76 2420.63,-13866.53,101.78 2575.66,-13878.21,102.80 2728.52,-13899.19,103.83 2878.35,-13929.99,104.85 3024.33,-13971.14,105.88 3165.60,-14023.17,106.91 3301.33,-14086.58,107.94 3430.68,-14161.91,108.98 3552.80,-14249.68,110.01">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
+    </edge>
+    <edge id="loop_City_4_City_1_bw" from="City_1_Throat1" to="City_4_Throat1" speed="33.33" numLanes="1" allow="rail rail_electric" shape="3552.80,-14249.68,110.01 3430.68,-14161.91,108.98 3301.33,-14086.58,107.94 3165.60,-14023.17,106.91 3024.33,-13971.14,105.88 2878.35,-13929.99,104.85 2728.52,-13899.19,103.83 2575.66,-13878.21,102.80 2420.63,-13866.53,101.78 2264.25,-13863.63,100.76 2107.38,-13869.00,99.74 1950.86,-13882.10,98.72 1795.51,-13902.41,97.70 1642.20,-13929.42,96.69 1491.75,-13962.60,95.67 1345.01,-14001.42,94.66 1202.81,-14045.38,93.65 1066.01,-14093.93,92.63 935.44,-14146.56,91.62 811.94,-14202.76,90.61 696.35,-14261.99,89.60 589.51,-14323.73,88.59 492.27,-14387.47,87.59 405.47,-14452.68,86.58 329.94,-14518.83,85.57 266.53,-14585.41,84.57 216.07,-14651.90,83.56 179.42,-14717.76,82.55 157.40,-14782.49,81.55 150.87,-14845.55,80.54 160.66,-14906.42,79.54">
+        <param key="capacity_tons" value="5000"/>
+        <param key="voltage" value="15000"/>
+        <param key="gauge" value="1435"/>
+        <param key="material" value="ballast"/>
+        <param key="wear_rate" value="0.05"/>
     </edge>
 </edges>

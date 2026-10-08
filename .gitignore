@@ -3,8 +3,19 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Mac/OS
-.DS_Store
+# Virtual environments
+.venv/
+venv/
 
-# We DO NOT ignore *.xml here, because the explicit goal of this repository 
+# Environment variables
+.env
+*.env
+
+# OS / Editor
+.DS_Store
+*.swp
+*~
+.vscode/
+
+# We DO NOT ignore *.xml here, because the explicit goal of this repository
 # is to version-control the final generated SUMO network for use in other projects.
