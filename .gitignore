@@ -6,10 +6,14 @@ __pycache__/
 # Virtual environments
 .venv/
 venv/
+test_venv/
 
 # Environment variables
 .env
 *.env
+
+# playwright
+.playwright-mcp/
 
 # OS / Editor
 .DS_Store
