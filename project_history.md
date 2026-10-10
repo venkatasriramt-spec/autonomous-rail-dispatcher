@@ -55,3 +55,14 @@ A chronological log of how this abstract SUMO railway network evolved, from init
 - **Complex yards:** Each location is a multi-track yard with platform tracks, yard/storage tracks, and dedicated "throat" junctions for smooth merging/diverging. Tracks connect throat-to-throat across the network using cubic Bezier curves that follow terrain.
 - **Output:** The same three XML sources (`nod.xml`, `edg.xml`, `add.xml`) are generated and compiled via `netconvert` into `dense_network.net.xml`, preserving bi-directional tracks, curved shapes, elevation, and physics profiles.
 - This phase represents the current state of the working tree — run the generator to produce a fresh, valid SUMO network ready for RL experiments.
+
+### 10 October 2026 — Realism Overhaul & Simulation Verification
+
+**Objective:** Eliminate critical topological and geometric flaws (disconnected entry lanes, 14% grade spikes, switch angle conflicts) and establish an operational train simulation pipeline.
+
+#### Phase 7: Geometry, Interlocking, and Physics Fixes
+- **Tangent Vector Alignment & Lead Tracks:** Introduced straight tangent approach leads at station throats and wide turning radii for reverse curves, ensuring zero angular discrepancy at switch nodes.
+- **Arc-Length Parameterized Elevation:** Replaced parametric $t$ elevation interpolation with cumulative 2D horizontal arc-length ($s$) parameterization and flat throat approaches, guaranteeing maximum track gradient $\le 1.5\%\text{--}2.0\%$ everywhere and eliminating all 14% micro-segment slope anomalies.
+- **Explicit Throat Interlocking (`dense_network.con.xml`):** Generated formal interlocking connection tables mapping inbound mainline tracks cleanly to station platforms, and platform exits to outbound mainlines, eliminating hairpin turns across throats and reducing topology error nodes to zero (`broken="0"`).
+- **Curvature-Aware Speed Profiling:** Embedded dynamic civil engineering speed limit calculations ($v = \sqrt{R_{\min} \cdot a_{\text{lat}}}$) into block generation.
+- **Simulation Pipeline (`duarouter` & `.sumocfg`):** Added automated generation of 70 multi-class train routes (high-speed express, regional commuter, and freight) compiled via `duarouter`, along with `dense_network.sumocfg` for immediate testing in `sumo` or `sumo-gui`.

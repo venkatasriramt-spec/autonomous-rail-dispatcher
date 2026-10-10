@@ -13,7 +13,10 @@ This network is intended to be used as the foundational map for future Reinforce
 ├── network_data/
 │   ├── dense_network.nod.xml     # Generated nodes (stations/junctions)
 │   ├── dense_network.edg.xml     # Generated tracks (edges & speeds)
+│   ├── dense_network.con.xml     # Station throat interlocking connections
 │   ├── dense_network.add.xml     # Generated platform placements
+│   ├── dense_network.rou.xml     # Validated train schedules/routes
+│   ├── dense_network.sumocfg     # Ready-to-run SUMO simulation configuration
 │   └── dense_network.net.xml     # The compiled, routable SUMO network
 ├── project_history.md            # Chronological log of how the network evolved
 ├── README.md
@@ -28,16 +31,28 @@ If you make any changes to the network layout in the generator script, you can r
 python3 scripts/generate_sumo_network.py
 ```
 
-This will instantly output fresh XML files into the `network_data/` directory and run `netconvert` to compile them.
+This will instantly output fresh XML files into the `network_data/` directory, compile the network with `netconvert`, route traffic with `duarouter`, and update `dense_network.sumocfg`.
 
-## Viewing the Network Visually
+## Viewing and Simulating the Network
 
-To see and interact with the physical tracks, you can open the compiled network in Netedit (SUMO's GUI editor).
-
-Run the following command from the root of this project:
+### Option 1: Track Editor (Netedit)
+To inspect track geometry and signals in Netedit:
 
 ```bash
 netedit -s network_data/dense_network.net.xml -a network_data/dense_network.add.xml
+```
+
+### Option 2: Live Train Simulation (SUMO GUI)
+To run the live train simulation with animated rolling stock:
+
+```bash
+sumo-gui -c network_data/dense_network.sumocfg
+```
+
+Or run headlessly for benchmarking:
+
+```bash
+sumo -c network_data/dense_network.sumocfg --end 3600
 ```
 
 ## Repository Conventions
