@@ -77,3 +77,23 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - *Diagonal Bypass & Spurs:* Direct high-speed bypass ($R = 11,304\text{ m}$) and smooth logistics depot spurs ($R \ge 960\text{ m}$).
 - **Topology Verification:** `railway_topology.xml` confirmed with **0 broken nodes**, 0 driving angle conflicts, and 0 disconnected lanes.
 
+#### Phase 9: Grade-Separated Bi-Level Hub & Flyover Interchange Ramp at City_3
+- **Motivation:** In Phase 8, `City_3` served as the central junction where Corridor 1 (East-West High-Speed Trunk) and Corridor 2 (North-South Regional Spine) intersected at a shared vertical grade ($Z = 20\text{ m}$). While functional, this flat junction risked severe throughput bottlenecks, scheduling gridlock, and conflicting crossing movements between high-speed and regional trains.
+- **Bi-Level Station Architecture:**
+  - Split `City_3` into two vertically segregated, grade-separated levels:
+    - **Lower Level (`City_3_EW`):** Sub-grade concourse at elevation $Z = 12.0\text{ m}$ servicing the East-West High-Speed Trunk with 4 passenger platforms ($900\text{ m}$ length) and 2 storage/staging yards.
+    - **Upper Level (`City_3_NS`):** Elevated viaduct structure at elevation $Z = 26.0\text{ m}$ servicing the North-South Regional Spine with 4 passenger platforms ($900\text{ m}$ length) and 1 storage/staging yard.
+    - **Vertical Headroom:** A full $14.0\text{ m}$ of vertical clearance between the crossing alignments, completely eliminating at-grade diamond crossings and collision hazards.
+- **Grade-Separated Flyover Interchange Ramp (`transfer_City_3_EW_NS`):**
+  - Designed and constructed a dedicated $789\text{ m}$ connecting track in the Northwest quadrant linking the western throat of `City_3_EW` (`City_3_EW_Throat1`) to the northern throat of `City_3_NS` (`City_3_NS_Throat1`).
+  - Climbs from $Z = 12.0\text{ m}$ to $Z = 26.0\text{ m}$ with a gentle $1.77\%$ civil engineering gradient, comfortably below the maximum permissible railway grade ($\le 2.0\%$).
+  - Smooth curvature with minimum turning radius $R_{\min} \ge 1,167\text{ m}$, enabling safe, high-capacity bidirectional transfers between Corridor 1 and Corridor 2 without interfering with through traffic.
+- **Dedicated Visualization Tooling:**
+  - Implemented `scripts/plot_bilevel_hub.py` to generate a high-resolution dual-panel diagnostic visualizer:
+    1. A spatial plan view mapping platform alignments, yard tracks, throat junctions, and the curved flyover ramp in the junction bounding box ($X \in [4200, 6200]$, $Y \in [500, 2500]$).
+    2. A cross-sectional elevation profile along the intersecting corridors demonstrating the $14\text{ m}$ vertical clearance and the $1.77\%$ ramp gradient.
+  - Automatically exports to `scripts/city3_bilevel_hub.png`.
+- **Topological & Compilation Verification:**
+  - Recompiled the entire network via `netconvert` with zero fatal errors or broken nodes.
+  - Validated `network_data/railway_topology.xml`: confirmed clean topology across all 164 nodes, 374 edges, 126 train stops, and 458 explicit connections.
+

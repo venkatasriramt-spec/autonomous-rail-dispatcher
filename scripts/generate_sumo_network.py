@@ -276,15 +276,15 @@ def generate_sumo_network():
         'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=3, yards=1, length=400),
         'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900),
         'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400),
-        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 20, -6.0, platforms=4, yards=2, length=900),
+        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=2, length=900),
         'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=3, yards=1, length=400),
         'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=2, length=800),
 
-        # Corridor 2: North-South Inter-City Trunk (passes straight through City_3_NS)
+        # Corridor 2: North-South Inter-City Trunk (elevated viaduct passing overhead through City_3_NS)
         'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=2, length=800),
         'Town_4': StationSpec('Town_4', 4500, 8800, 45, -85.4, platforms=2, yards=1, length=400),
         'Town_5': StationSpec('Town_5', 4850, 5100, 32, -84.6, platforms=3, yards=1, length=400),
-        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 20, -83.7, platforms=4, yards=1, length=900),
+        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 26, -83.7, platforms=4, yards=1, length=900),
         'Town_6': StationSpec('Town_6', 5650, -2200, 14, -83.8, platforms=3, yards=1, length=400),
         'Town_7': StationSpec('Town_7', 6050, -5900, 8, -83.8, platforms=2, yards=1, length=400),
         'City_6': StationSpec('City_6', 6500, -10000, 2, -83.7, platforms=5, yards=2, length=800),

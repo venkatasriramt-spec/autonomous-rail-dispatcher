@@ -10,7 +10,8 @@ This network provides the foundational physical infrastructure for future downst
 .
 ├── scripts/
 │   ├── generate_sumo_network.py  # Procedural corridor railway network generator
-│   └── plot_network.py           # Network topology visualization & rendering tool
+│   ├── plot_network.py           # Network topology visualization & rendering tool
+│   └── plot_bilevel_hub.py       # City_3 bi-level station hub plan & elevation renderer
 ├── network_data/
 │   ├── dense_network.nod.xml     # Generated nodes (stations, throats & signals)
 │   ├── dense_network.edg.xml     # Generated tracks (edges, lanes & physical speeds)
@@ -19,8 +20,8 @@ This network provides the foundational physical infrastructure for future downst
 │   ├── dense_network.net.xml     # The compiled, routable SUMO railway network
 │   └── railway_topology.xml      # SUMO topology analyzer report (0 error nodes)
 ├── project_history.md            # Chronological log of how the network evolved
-├── README.md
-└── .gitignore
+├── README.md                     # Comprehensive architecture and downstream usage guide
+└── .gitignore                    # Git ignore specifications
 ```
 
 ## How to Build the Network
@@ -35,17 +36,64 @@ This will instantly output fresh XML files into the `network_data/` directory an
 
 ## Viewing the Network Visually
 
-To inspect and interact with the physical tracks, junctions, and block signals in Netedit:
+### Interactive Inspection with Netedit
+To inspect and interact with the physical tracks, junctions, and block signals in SUMO's graphical network editor:
 
 ```bash
 netedit -s network_data/dense_network.net.xml -a network_data/dense_network.add.xml
 ```
 
-To render a 2D high-resolution map of the entire network:
+### Full Network Topology Visualization
+To render a high-resolution 2D overview map of the complete railway network topology, station locations, and corridor paths:
 
 ```bash
 python3 scripts/plot_network.py
 ```
+*(Saves diagram to `scripts/current_network_preview.png`)*
+
+### City_3 Bi-Level Hub Plan & Elevation Profile
+To render the dedicated plan view and cross-sectional elevation profile of the grade-separated **City_3 Bi-Level Hub**:
+
+```bash
+python3 scripts/plot_bilevel_hub.py
+```
+*(Saves diagram to `scripts/city3_bilevel_hub.png`)*
+
+## Network Architecture & Key Corridors
+
+The physical network consists of four major operational railway corridors, a high-speed bypass, dedicated freight spurs, and a signature grade-separated interchange hub:
+
+### 1. Corridor 1: East–West High-Speed Trunk
+- **Route:** `City_1` $\leftrightarrow$ `Town_1` $\leftrightarrow$ `City_2` $\leftrightarrow$ `Town_2` $\leftrightarrow$ `City_3_EW` $\leftrightarrow$ `Town_3` $\leftrightarrow$ `City_4`
+- **Characteristics:** Spans 27 km of double-track electrified mainline with wide horizontal curve radii ($R \ge 4,000\text{ m}$ to $17,000\text{ m}$), engineered for continuous $300\text{ km/h}$ ($83.33\text{ m/s}$) high-speed express services on concrete slab track.
+
+### 2. Corridor 2: North–South Regional Spine
+- **Route:** `City_5` $\leftrightarrow$ `Town_4` $\leftrightarrow$ `Town_5` $\leftrightarrow$ `City_3_NS` $\leftrightarrow$ `Town_6` $\leftrightarrow$ `Town_7` $\leftrightarrow$ `City_6`
+- **Characteristics:** Monotonic north-south inter-city mainline with gentle curvature ($R \ge 25,000\text{ m}$), permitting speeds up to $120\text{ km/h}$ ($33.33\text{ m/s}$). It traverses `City_3` via an elevated viaduct level.
+
+### 3. Corridor 3: Northwest Alpine Mountain Line
+- **Route:** `City_2` $\leftrightarrow$ `Town_8` $\leftrightarrow$ `Town_9` $\leftrightarrow$ `Depot_1`
+- **Characteristics:** Branches naturally northwest from `City_2` with smooth turnout geometry ($R = 1,974\text{ m}$) into mountain terrain, accommodating regional commuter and heavy freight trains up to $80\text{--}120\text{ km/h}$.
+
+### 4. Corridor 4: Southern Coastal Arc
+- **Route:** `City_1` $\leftrightarrow$ `Town_10` $\leftrightarrow$ `Town_11` $\leftrightarrow$ `Depot_2` $\leftrightarrow$ `Town_12` $\leftrightarrow$ `City_6`
+- **Characteristics:** Sweeping parabolic arc along the southern perimeter ($R \ge 1,076\text{ m}$ to $3,400\text{ m}$) providing freight routing and regional bypass capabilities.
+
+### 5. High-Speed Diagonal Bypass & Logistics Spurs
+- **High-Speed Bypass (`bypass_City_2_City_5`):** A direct 160–300 km/h chord ($R = 11,304\text{ m}$) allowing express trains to transit directly between `City_2` and `City_5` without traversing the central hub.
+- **Logistics Spurs:** Dedicated spur tracks connecting `City_5` to `Depot_3` and `City_3_EW` to `Depot_4`.
+
+### 6. Grade-Separated Bi-Level Hub (`City_3`)
+At the grand crossing of Corridor 1 (East–West High-Speed Trunk) and Corridor 2 (North–South Spine), the network features a **Grade-Separated Bi-Level Station Hub**:
+- **Lower Level (`City_3_EW`):** Ground / sub-grade concourse at elevation $Z = 12.0\text{ m}$ (4 passenger platforms + 2 storage yards).
+- **Upper Level (`City_3_NS`):** Elevated viaduct structure at elevation $Z = 26.0\text{ m}$ (4 passenger platforms + 1 storage yard).
+- **Vertical Clearance:** $14.0\text{ m}$ of clear vertical headroom between tracks, completely eliminating flat at-grade crossings and train deadlock conflicts.
+- **Flyover Interchange Ramp (`transfer_City_3_EW_NS`):** A $789\text{ m}$ connecting track in the Northwest quadrant climbing at a gentle $1.77\%$ gradient ($R_{\text{min}} \ge 1,167\text{ m}$) enabling seamless bidirectional transfers between corridors.
+
+### 7. Station Hierarchy & Capacities
+- **Cities (`City_1` through `City_6`):** Major hub terminals with 4–6 passenger platforms ($800\text{--}900\text{ m}$ length) and 1–2 yard storage sidings.
+- **Towns (`Town_1` through `Town_12`):** Regional intermediate stops with 2–3 passenger platforms ($400\text{ m}$ length) and 1 yard siding.
+- **Depots (`Depot_1` through `Depot_4`):** Dedicated logistics, freight, and rolling stock maintenance yards with 3–4 siding tracks ($500\text{ m}$ length) and no passenger platforms.
 
 ## Repository Conventions
 

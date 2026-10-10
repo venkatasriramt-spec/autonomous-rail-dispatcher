@@ -1,29 +1,97 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyo
+*.pyd
+
+# C extensions
+*.so
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & code coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Type checking & linting
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
 
 # Virtual environments
 .venv/
 venv/
 test_venv/
+env/
+ENV/
+env.bak/
+venv.bak/
 
-# Environment variables
+# Environment variables & local secrets
 .env
 *.env
+.env.*
+*.local
 
-# playwright
+# Playwright & Browser automation / MCP
 .playwright-mcp/
+.playwright/
 
-# OS / Editor
+# OS & Editor files
 .DS_Store
+Thumbs.db
+desktop.ini
 *.swp
+*.swo
 *~
 .vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
 
-# Generated preview images
+# Logs and simulation dumps
+*.log
+*.dump
+*.out
+
+# Generated preview images & visualizations
+# (Generated on demand via scripts/plot_network.py and scripts/plot_bilevel_hub.py)
 *.png
+*.jpg
+*.jpeg
 
-# We DO NOT ignore *.xml here, because the explicit goal of this repository
-# is to version-control the final generated SUMO network for use in other projects.
-
+# ==============================================================================
+# NOTE ON XML FILES:
+# DO NOT ignore *.xml files!
+# The primary deliverable of this repository is the compiled SUMO railway track
+# infrastructure (network_data/*.xml), which is explicitly version-controlled.
+# ==============================================================================
