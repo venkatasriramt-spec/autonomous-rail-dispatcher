@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-10 17:09:42 by Eclipse SUMO netconvert Version 1.12.0
+<!-- generated on 2026-10-10 18:02:33 by Eclipse SUMO netconvert Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -34,9 +34,24 @@
         <error id="d" meaning="an outgoing edge has a sharp angle from all incoming edges"/>
     </legend>
     <railNodeType in="1" out="1">
+        <node id="City_4_buf_1"/>
+        <node id="City_4_buf_2"/>
+        <node id="City_6_buf_1"/>
+        <node id="City_6_buf_2"/>
+        <node id="Depot_1_buf_1"/>
+        <node id="Depot_1_buf_2"/>
+        <node id="Depot_1_buf_3"/>
+        <node id="Depot_1_buf_4"/>
+        <node id="Depot_3_buf_1"/>
+        <node id="Depot_3_buf_2"/>
+        <node id="Depot_3_buf_3"/>
+        <node id="Depot_3_buf_4"/>
+        <node id="Depot_4_buf_1"/>
+        <node id="Depot_4_buf_2"/>
+        <node id="Depot_4_buf_3"/>
+        <node id="Depot_4_buf_4"/>
         <node id="bypass_City_2_City_5_bw_signal_0"/>
         <node id="bypass_City_2_City_5_bw_signal_1"/>
-        <node id="bypass_City_2_City_5_bw_signal_10"/>
         <node id="bypass_City_2_City_5_bw_signal_2"/>
         <node id="bypass_City_2_City_5_bw_signal_3"/>
         <node id="bypass_City_2_City_5_bw_signal_4"/>
@@ -47,7 +62,6 @@
         <node id="bypass_City_2_City_5_bw_signal_9"/>
         <node id="bypass_City_2_City_5_fw_signal_0"/>
         <node id="bypass_City_2_City_5_fw_signal_1"/>
-        <node id="bypass_City_2_City_5_fw_signal_10"/>
         <node id="bypass_City_2_City_5_fw_signal_2"/>
         <node id="bypass_City_2_City_5_fw_signal_3"/>
         <node id="bypass_City_2_City_5_fw_signal_4"/>
@@ -58,88 +72,178 @@
         <node id="bypass_City_2_City_5_fw_signal_9"/>
         <node id="c1_City_1_Town_1_bw_signal_0"/>
         <node id="c1_City_1_Town_1_bw_signal_1"/>
+        <node id="c1_City_1_Town_1_bw_signal_2"/>
         <node id="c1_City_1_Town_1_fw_signal_0"/>
         <node id="c1_City_1_Town_1_fw_signal_1"/>
+        <node id="c1_City_1_Town_1_fw_signal_2"/>
         <node id="c1_Town_3_City_4_bw_signal_0"/>
         <node id="c1_Town_3_City_4_bw_signal_1"/>
+        <node id="c1_Town_3_City_4_bw_signal_2"/>
         <node id="c1_Town_3_City_4_fw_signal_0"/>
         <node id="c1_Town_3_City_4_fw_signal_1"/>
+        <node id="c1_Town_3_City_4_fw_signal_2"/>
         <node id="c2_City_3_NS_Town_6_bw_signal_0"/>
+        <node id="c2_City_3_NS_Town_6_bw_signal_1"/>
+        <node id="c2_City_3_NS_Town_6_bw_signal_2"/>
         <node id="c2_City_3_NS_Town_6_fw_signal_0"/>
+        <node id="c2_City_3_NS_Town_6_fw_signal_1"/>
+        <node id="c2_City_3_NS_Town_6_fw_signal_2"/>
         <node id="c2_City_5_Town_4_bw_signal_0"/>
+        <node id="c2_City_5_Town_4_bw_signal_1"/>
+        <node id="c2_City_5_Town_4_bw_signal_2"/>
         <node id="c2_City_5_Town_4_fw_signal_0"/>
+        <node id="c2_City_5_Town_4_fw_signal_1"/>
+        <node id="c2_City_5_Town_4_fw_signal_2"/>
         <node id="c2_Town_5_City_3_NS_bw_signal_0"/>
+        <node id="c2_Town_5_City_3_NS_bw_signal_1"/>
+        <node id="c2_Town_5_City_3_NS_bw_signal_2"/>
         <node id="c2_Town_5_City_3_NS_fw_signal_0"/>
+        <node id="c2_Town_5_City_3_NS_fw_signal_1"/>
+        <node id="c2_Town_5_City_3_NS_fw_signal_2"/>
         <node id="c2_Town_7_City_6_bw_signal_0"/>
         <node id="c2_Town_7_City_6_bw_signal_1"/>
+        <node id="c2_Town_7_City_6_bw_signal_2"/>
+        <node id="c2_Town_7_City_6_bw_signal_3"/>
         <node id="c2_Town_7_City_6_fw_signal_0"/>
         <node id="c2_Town_7_City_6_fw_signal_1"/>
+        <node id="c2_Town_7_City_6_fw_signal_2"/>
+        <node id="c2_Town_7_City_6_fw_signal_3"/>
         <node id="c3_City_2_Town_8_bw_signal_0"/>
         <node id="c3_City_2_Town_8_bw_signal_1"/>
+        <node id="c3_City_2_Town_8_bw_signal_2"/>
+        <node id="c3_City_2_Town_8_bw_signal_3"/>
         <node id="c3_City_2_Town_8_fw_signal_0"/>
         <node id="c3_City_2_Town_8_fw_signal_1"/>
-        <node id="c3_Town_8_Town_9_bw_signal_0"/>
-        <node id="c3_Town_8_Town_9_bw_signal_1"/>
-        <node id="c3_Town_8_Town_9_fw_signal_0"/>
-        <node id="c3_Town_8_Town_9_fw_signal_1"/>
+        <node id="c3_City_2_Town_8_fw_signal_2"/>
+        <node id="c3_City_2_Town_8_fw_signal_3"/>
         <node id="c3_Town_9_Depot_1_bw_signal_0"/>
         <node id="c3_Town_9_Depot_1_bw_signal_1"/>
+        <node id="c3_Town_9_Depot_1_bw_signal_2"/>
+        <node id="c3_Town_9_Depot_1_bw_signal_3"/>
+        <node id="c3_Town_9_Depot_1_bw_signal_4"/>
         <node id="c3_Town_9_Depot_1_fw_signal_0"/>
         <node id="c3_Town_9_Depot_1_fw_signal_1"/>
+        <node id="c3_Town_9_Depot_1_fw_signal_2"/>
+        <node id="c3_Town_9_Depot_1_fw_signal_3"/>
+        <node id="c3_Town_9_Depot_1_fw_signal_4"/>
         <node id="c4_City_1_Town_10_bw_signal_0"/>
         <node id="c4_City_1_Town_10_bw_signal_1"/>
+        <node id="c4_City_1_Town_10_bw_signal_2"/>
+        <node id="c4_City_1_Town_10_bw_signal_3"/>
         <node id="c4_City_1_Town_10_fw_signal_0"/>
         <node id="c4_City_1_Town_10_fw_signal_1"/>
+        <node id="c4_City_1_Town_10_fw_signal_2"/>
+        <node id="c4_City_1_Town_10_fw_signal_3"/>
         <node id="c4_Town_11_Depot_2_bw_signal_0"/>
         <node id="c4_Town_11_Depot_2_bw_signal_1"/>
         <node id="c4_Town_11_Depot_2_bw_signal_2"/>
         <node id="c4_Town_11_Depot_2_bw_signal_3"/>
+        <node id="c4_Town_11_Depot_2_bw_signal_4"/>
+        <node id="c4_Town_11_Depot_2_bw_signal_5"/>
         <node id="c4_Town_11_Depot_2_fw_signal_0"/>
         <node id="c4_Town_11_Depot_2_fw_signal_1"/>
         <node id="c4_Town_11_Depot_2_fw_signal_2"/>
         <node id="c4_Town_11_Depot_2_fw_signal_3"/>
+        <node id="c4_Town_11_Depot_2_fw_signal_4"/>
+        <node id="c4_Town_11_Depot_2_fw_signal_5"/>
         <node id="c4_Town_12_City_6_bw_signal_0"/>
         <node id="c4_Town_12_City_6_bw_signal_1"/>
         <node id="c4_Town_12_City_6_bw_signal_2"/>
         <node id="c4_Town_12_City_6_bw_signal_3"/>
+        <node id="c4_Town_12_City_6_bw_signal_4"/>
+        <node id="c4_Town_12_City_6_bw_signal_5"/>
         <node id="c4_Town_12_City_6_fw_signal_0"/>
         <node id="c4_Town_12_City_6_fw_signal_1"/>
         <node id="c4_Town_12_City_6_fw_signal_2"/>
         <node id="c4_Town_12_City_6_fw_signal_3"/>
+        <node id="c4_Town_12_City_6_fw_signal_4"/>
+        <node id="c4_Town_12_City_6_fw_signal_5"/>
         <node id="spur_City_3_EW_Depot_4_bw_signal_0"/>
         <node id="spur_City_3_EW_Depot_4_bw_signal_1"/>
+        <node id="spur_City_3_EW_Depot_4_bw_signal_2"/>
+        <node id="spur_City_3_EW_Depot_4_bw_signal_3"/>
         <node id="spur_City_3_EW_Depot_4_fw_signal_0"/>
         <node id="spur_City_3_EW_Depot_4_fw_signal_1"/>
+        <node id="spur_City_3_EW_Depot_4_fw_signal_2"/>
+        <node id="spur_City_3_EW_Depot_4_fw_signal_3"/>
         <node id="spur_City_5_Depot_3_bw_signal_0"/>
         <node id="spur_City_5_Depot_3_bw_signal_1"/>
+        <node id="spur_City_5_Depot_3_bw_signal_2"/>
+        <node id="spur_City_5_Depot_3_bw_signal_3"/>
+        <node id="spur_City_5_Depot_3_bw_signal_4"/>
         <node id="spur_City_5_Depot_3_fw_signal_0"/>
         <node id="spur_City_5_Depot_3_fw_signal_1"/>
+        <node id="spur_City_5_Depot_3_fw_signal_2"/>
+        <node id="spur_City_5_Depot_3_fw_signal_3"/>
+        <node id="spur_City_5_Depot_3_fw_signal_4"/>
     </railNodeType>
     <railNodeType in="2" out="2">
         <node id="c1_City_2_Town_2_xov_T1_post_sig_0"/>
         <node id="c1_City_2_Town_2_xov_T1_pre_sig_0"/>
         <node id="c1_City_2_Town_2_xov_T2_post_sig_0"/>
+        <node id="c1_City_2_Town_2_xov_T2_post_sig_1"/>
         <node id="c1_City_2_Town_2_xov_T2_pre_sig_0"/>
+        <node id="c1_City_2_Town_2_xov_T2_pre_sig_1"/>
         <node id="c1_City_3_EW_Town_3_xov_T1_post_sig_0"/>
         <node id="c1_City_3_EW_Town_3_xov_T1_pre_sig_0"/>
         <node id="c1_City_3_EW_Town_3_xov_T2_post_sig_0"/>
+        <node id="c1_City_3_EW_Town_3_xov_T2_post_sig_1"/>
         <node id="c1_City_3_EW_Town_3_xov_T2_pre_sig_0"/>
+        <node id="c1_City_3_EW_Town_3_xov_T2_pre_sig_1"/>
         <node id="c1_Town_1_City_2_xov_T1_post_sig_0"/>
         <node id="c1_Town_1_City_2_xov_T1_pre_sig_0"/>
         <node id="c1_Town_1_City_2_xov_T2_post_sig_0"/>
+        <node id="c1_Town_1_City_2_xov_T2_post_sig_1"/>
         <node id="c1_Town_1_City_2_xov_T2_pre_sig_0"/>
+        <node id="c1_Town_1_City_2_xov_T2_pre_sig_1"/>
         <node id="c1_Town_2_City_3_EW_xov_T1_post_sig_0"/>
+        <node id="c1_Town_2_City_3_EW_xov_T1_post_sig_1"/>
         <node id="c1_Town_2_City_3_EW_xov_T1_pre_sig_0"/>
+        <node id="c1_Town_2_City_3_EW_xov_T1_pre_sig_1"/>
         <node id="c1_Town_2_City_3_EW_xov_T2_post_sig_0"/>
+        <node id="c1_Town_2_City_3_EW_xov_T2_post_sig_1"/>
         <node id="c1_Town_2_City_3_EW_xov_T2_pre_sig_0"/>
+        <node id="c1_Town_2_City_3_EW_xov_T2_pre_sig_1"/>
+        <node id="c2_Town_4_Town_5_xov_T1_post_sig_0"/>
+        <node id="c2_Town_4_Town_5_xov_T1_pre_sig_0"/>
+        <node id="c2_Town_4_Town_5_xov_T2_post_sig_0"/>
+        <node id="c2_Town_4_Town_5_xov_T2_post_sig_1"/>
+        <node id="c2_Town_4_Town_5_xov_T2_pre_sig_0"/>
+        <node id="c2_Town_4_Town_5_xov_T2_pre_sig_1"/>
+        <node id="c2_Town_6_Town_7_xov_T1_post_sig_0"/>
+        <node id="c2_Town_6_Town_7_xov_T1_pre_sig_0"/>
+        <node id="c2_Town_6_Town_7_xov_T2_post_sig_0"/>
+        <node id="c2_Town_6_Town_7_xov_T2_post_sig_1"/>
+        <node id="c2_Town_6_Town_7_xov_T2_pre_sig_0"/>
+        <node id="c2_Town_6_Town_7_xov_T2_pre_sig_1"/>
+        <node id="c3_Town_8_Town_9_T2_sig_0"/>
+        <node id="c3_Town_8_Town_9_T2_sig_1"/>
+        <node id="c3_Town_8_Town_9_T2_sig_2"/>
+        <node id="c3_Town_8_Town_9_T2_sig_3"/>
+        <node id="c3_Town_8_Town_9_loop_T1_post_sig_0"/>
+        <node id="c3_Town_8_Town_9_loop_T1_pre_sig_0"/>
+        <node id="c3_Town_8_Town_9_loop_sid_A"/>
+        <node id="c3_Town_8_Town_9_loop_sid_B"/>
         <node id="c4_Depot_2_Town_12_xov_T1_post_sig_0"/>
+        <node id="c4_Depot_2_Town_12_xov_T1_post_sig_1"/>
+        <node id="c4_Depot_2_Town_12_xov_T1_post_sig_2"/>
         <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_0"/>
+        <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_1"/>
+        <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_2"/>
         <node id="c4_Depot_2_Town_12_xov_T2_post_sig_0"/>
+        <node id="c4_Depot_2_Town_12_xov_T2_post_sig_1"/>
+        <node id="c4_Depot_2_Town_12_xov_T2_post_sig_2"/>
         <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_0"/>
+        <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_1"/>
+        <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_2"/>
         <node id="c4_Town_10_Town_11_xov_T1_post_sig_0"/>
+        <node id="c4_Town_10_Town_11_xov_T1_post_sig_1"/>
         <node id="c4_Town_10_Town_11_xov_T1_pre_sig_0"/>
+        <node id="c4_Town_10_Town_11_xov_T1_pre_sig_1"/>
         <node id="c4_Town_10_Town_11_xov_T2_post_sig_0"/>
+        <node id="c4_Town_10_Town_11_xov_T2_post_sig_1"/>
         <node id="c4_Town_10_Town_11_xov_T2_pre_sig_0"/>
+        <node id="c4_Town_10_Town_11_xov_T2_pre_sig_1"/>
     </railNodeType>
     <railNodeType in="3" out="3">
         <node id="c1_City_2_Town_2_xov_1A"/>
@@ -166,6 +270,8 @@
         <node id="c2_Town_6_Town_7_xov_1D"/>
         <node id="c2_Town_6_Town_7_xov_2B"/>
         <node id="c2_Town_6_Town_7_xov_2C"/>
+        <node id="c3_Town_8_Town_9_loop_swA"/>
+        <node id="c3_Town_8_Town_9_loop_swB"/>
         <node id="c4_Depot_2_Town_12_xov_1A"/>
         <node id="c4_Depot_2_Town_12_xov_1D"/>
         <node id="c4_Depot_2_Town_12_xov_2B"/>
@@ -176,12 +282,7 @@
         <node id="c4_Town_10_Town_11_xov_2C"/>
     </railNodeType>
     <railNodeType in="4" out="4">
-        <node id="Depot_1_Throat2"/>
-        <node id="Depot_3_Throat2"/>
-        <node id="Depot_4_Throat2"/>
         <node id="Town_8_Throat1"/>
-        <node id="Town_8_Throat2"/>
-        <node id="Town_9_Throat1"/>
         <node id="Town_9_Throat2"/>
     </railNodeType>
     <railNodeType in="5" out="5">
@@ -189,6 +290,8 @@
         <node id="Depot_2_Throat1"/>
         <node id="Depot_3_Throat1"/>
         <node id="Depot_4_Throat1"/>
+        <node id="Town_8_Throat2"/>
+        <node id="Town_9_Throat1"/>
     </railNodeType>
     <railNodeType in="6" out="6">
         <node id="City_3_NS_Throat2"/>
@@ -205,8 +308,6 @@
     </railNodeType>
     <railNodeType in="7" out="7">
         <node id="City_3_NS_Throat1"/>
-        <node id="City_4_Throat2"/>
-        <node id="City_6_Throat2"/>
         <node id="Town_10_Throat2"/>
         <node id="Town_11_Throat1"/>
         <node id="Town_12_Throat1"/>
@@ -224,12 +325,17 @@
         <node id="City_1_Throat2"/>
         <node id="City_4_Throat1"/>
         <node id="City_5_Throat1"/>
+        <node id="Depot_1_Throat2"/>
+        <node id="Depot_3_Throat2"/>
+        <node id="Depot_4_Throat2"/>
     </railNodeType>
     <railNodeType in="9" out="9">
         <node id="City_3_EW_Throat1"/>
         <node id="City_3_EW_Throat2"/>
+        <node id="City_4_Throat2"/>
         <node id="City_5_Throat2"/>
         <node id="City_6_Throat1"/>
+        <node id="City_6_Throat2"/>
     </railNodeType>
     <railNodeType in="11" out="11">
         <node id="City_2_Throat1"/>

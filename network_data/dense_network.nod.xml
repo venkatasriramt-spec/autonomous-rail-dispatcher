@@ -1,141 +1,247 @@
 <?xml version="1.0" ?>
 <nodes>
-    <node id="c1_City_1_Town_1_fw_signal_0" x="-11393.43" y="1337.68" z="17.41" type="rail_signal"/>
-    <node id="c1_City_1_Town_1_fw_signal_1" x="-10207.57" y="1572.92" z="22.94" type="rail_signal"/>
-    <node id="c1_City_1_Town_1_bw_signal_0" x="-10291.68" y="1561.20" z="22.60" type="rail_signal"/>
-    <node id="c1_City_1_Town_1_bw_signal_1" x="-11477.35" y="1324.35" z="17.06" type="rail_signal"/>
+    <node id="c1_City_1_Town_1_fw_signal_0" x="-11879.94" y="1235.86" z="15.68" type="rail_signal"/>
+    <node id="c1_City_1_Town_1_fw_signal_1" x="-10843.11" y="1449.76" z="20.00" type="rail_signal"/>
+    <node id="c1_City_1_Town_1_fw_signal_2" x="-9808.88" y="1644.97" z="24.30" type="rail_signal"/>
+    <node id="c1_City_1_Town_1_bw_signal_0" x="-9802.96" y="1650.07" z="24.32" type="rail_signal"/>
+    <node id="c1_City_1_Town_1_bw_signal_1" x="-10843.81" y="1453.70" z="20.00" type="rail_signal"/>
+    <node id="c1_City_1_Town_1_bw_signal_2" x="-11874.71" y="1241.05" z="15.70" type="rail_signal"/>
     <node id="c1_Town_1_City_2_xov_1A" x="-6782.06" y="2007.68" z="30.42" type="rail_signal"/>
     <node id="c1_Town_1_City_2_xov_2B" x="-6632.69" y="2022.01" z="31.27" type="rail_signal"/>
     <node id="c1_Town_1_City_2_xov_2C" x="-6552.87" y="2027.42" z="31.73" type="rail_signal"/>
     <node id="c1_Town_1_City_2_xov_1D" x="-6402.94" y="2033.42" z="32.59" type="rail_signal"/>
-    <node id="c1_Town_1_City_2_xov_T1_pre_sig_0" x="-7626.74" y="1941.01" z="26.29" type="rail_signal"/>
-    <node id="c1_Town_1_City_2_xov_T1_post_sig_0" x="-5558.35" y="2088.71" z="36.71" type="rail_signal"/>
-    <node id="c1_Town_1_City_2_xov_T2_post_sig_0" x="-7544.51" y="1952.39" z="26.60" type="rail_signal"/>
-    <node id="c1_Town_1_City_2_xov_T2_pre_sig_0" x="-5641.44" y="2087.16" z="36.40" type="rail_signal"/>
+    <node id="c1_Town_1_City_2_xov_T1_pre_sig_0" x="-7584.19" y="1944.82" z="26.45" type="rail_signal"/>
+    <node id="c1_Town_1_City_2_xov_T1_post_sig_0" x="-5599.97" y="2085.93" z="36.55" type="rail_signal"/>
+    <node id="c1_Town_1_City_2_xov_T2_post_sig_0" x="-7868.54" y="1921.75" z="25.55" type="rail_signal"/>
+    <node id="c1_Town_1_City_2_xov_T2_post_sig_1" x="-7153.18" y="1984.50" z="28.40" type="rail_signal"/>
+    <node id="c1_Town_1_City_2_xov_T2_pre_sig_0" x="-6032.19" y="2061.63" z="34.60" type="rail_signal"/>
+    <node id="c1_Town_1_City_2_xov_T2_pre_sig_1" x="-5318.10" y="2109.26" z="37.45" type="rail_signal"/>
     <node id="c1_City_2_Town_2_xov_1A" x="-1998.14" y="2200.11" z="34.67" type="rail_signal"/>
     <node id="c1_City_2_Town_2_xov_2B" x="-1848.45" y="2189.77" z="34.14" type="rail_signal"/>
     <node id="c1_City_2_Town_2_xov_2C" x="-1768.83" y="2181.89" z="33.86" type="rail_signal"/>
     <node id="c1_City_2_Town_2_xov_1D" x="-1620.00" y="2162.75" z="33.34" type="rail_signal"/>
-    <node id="c1_City_2_Town_2_xov_T1_pre_sig_0" x="-2846.21" y="2260.25" z="37.22" type="rail_signal"/>
-    <node id="c1_City_2_Town_2_xov_T1_post_sig_0" x="-780.46" y="2075.37" z="30.80" type="rail_signal"/>
-    <node id="c1_City_2_Town_2_xov_T2_post_sig_0" x="-2763.57" y="2260.65" z="37.03" type="rail_signal"/>
-    <node id="c1_City_2_Town_2_xov_T2_pre_sig_0" x="-862.83" y="2087.62" z="30.99" type="rail_signal"/>
+    <node id="c1_City_2_Town_2_xov_T1_pre_sig_0" x="-2799.35" y="2258.20" z="37.11" type="rail_signal"/>
+    <node id="c1_City_2_Town_2_xov_T1_post_sig_0" x="-820.73" y="2079.39" z="30.89" type="rail_signal"/>
+    <node id="c1_City_2_Town_2_xov_T2_post_sig_0" x="-3087.17" y="2270.61" z="37.67" type="rail_signal"/>
+    <node id="c1_City_2_Town_2_xov_T2_post_sig_1" x="-2367.76" y="2235.68" z="35.91" type="rail_signal"/>
+    <node id="c1_City_2_Town_2_xov_T2_pre_sig_0" x="-1250.39" y="2127.96" z="32.09" type="rail_signal"/>
+    <node id="c1_City_2_Town_2_xov_T2_pre_sig_1" x="-539.41" y="2056.68" z="30.34" type="rail_signal"/>
     <node id="c1_Town_2_City_3_EW_xov_1A" x="2525.10" y="1817.76" z="22.42" type="rail_signal"/>
     <node id="c1_Town_2_City_3_EW_xov_2B" x="2674.46" y="1803.36" z="21.30" type="rail_signal"/>
     <node id="c1_Town_2_City_3_EW_xov_2C" x="2753.84" y="1793.44" z="20.70" type="rail_signal"/>
     <node id="c1_Town_2_City_3_EW_xov_1D" x="2902.17" y="1770.69" z="19.59" type="rail_signal"/>
-    <node id="c1_Town_2_City_3_EW_xov_T1_pre_sig_0" x="1648.90" y="1916.48" z="28.08" type="rail_signal"/>
-    <node id="c1_Town_2_City_3_EW_xov_T1_post_sig_0" x="3775.50" y="1658.89" z="13.93" type="rail_signal"/>
-    <node id="c1_Town_2_City_3_EW_xov_T2_post_sig_0" x="1731.25" y="1912.18" z="27.66" type="rail_signal"/>
-    <node id="c1_Town_2_City_3_EW_xov_T2_pre_sig_0" x="3776.00" y="1662.86" z="13.93" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T1_pre_sig_0" x="1328.78" y="1945.99" z="29.35" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T1_pre_sig_1" x="2018.15" y="1877.34" z="25.97" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T1_post_sig_0" x="3408.52" y="1705.82" z="16.02" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T1_post_sig_1" x="4093.43" y="1619.27" z="12.65" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T2_post_sig_0" x="1364.75" y="1946.91" z="29.24" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T2_post_sig_1" x="2127.17" y="1869.03" z="25.26" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T2_pre_sig_0" x="3296.94" y="1724.22" z="16.76" type="rail_signal"/>
+    <node id="c1_Town_2_City_3_EW_xov_T2_pre_sig_1" x="4059.64" y="1627.45" z="12.76" type="rail_signal"/>
     <node id="c1_City_3_EW_Town_3_xov_1A" x="7405.72" y="1197.29" z="12.00" type="rail_signal"/>
     <node id="c1_City_3_EW_Town_3_xov_2B" x="7554.24" y="1175.90" z="12.00" type="rail_signal"/>
     <node id="c1_City_3_EW_Town_3_xov_2C" x="7633.08" y="1162.29" z="12.00" type="rail_signal"/>
     <node id="c1_City_3_EW_Town_3_xov_1D" x="7780.18" y="1132.69" z="12.00" type="rail_signal"/>
-    <node id="c1_City_3_EW_Town_3_xov_T1_pre_sig_0" x="6621.82" y="1325.22" z="12.00" type="rail_signal"/>
-    <node id="c1_City_3_EW_Town_3_xov_T1_post_sig_0" x="8642.38" y="982.44" z="12.00" type="rail_signal"/>
-    <node id="c1_City_3_EW_Town_3_xov_T2_post_sig_0" x="6622.43" y="1329.18" z="12.00" type="rail_signal"/>
-    <node id="c1_City_3_EW_Town_3_xov_T2_pre_sig_0" x="8562.50" y="1000.27" z="12.00" type="rail_signal"/>
-    <node id="c1_Town_3_City_4_fw_signal_0" x="11295.70" y="546.85" z="9.82" type="rail_signal"/>
-    <node id="c1_Town_3_City_4_fw_signal_1" x="12495.24" y="314.03" z="4.52" type="rail_signal"/>
-    <node id="c1_Town_3_City_4_bw_signal_0" x="12580.32" y="301.45" z="4.19" type="rail_signal"/>
-    <node id="c1_Town_3_City_4_bw_signal_1" x="11380.84" y="534.81" z="9.48" type="rail_signal"/>
-    <node id="c2_City_5_Town_4_fw_signal_0" x="4350.99" y="10542.46" z="52.13" type="rail_signal"/>
-    <node id="c2_City_5_Town_4_bw_signal_0" x="4347.68" y="10627.10" z="52.87" type="rail_signal"/>
+    <node id="c1_City_3_EW_Town_3_xov_T1_pre_sig_0" x="6602.81" y="1328.11" z="12.00" type="rail_signal"/>
+    <node id="c1_City_3_EW_Town_3_xov_T1_post_sig_0" x="8581.66" y="992.91" z="12.00" type="rail_signal"/>
+    <node id="c1_City_3_EW_Town_3_xov_T2_post_sig_0" x="6318.00" y="1374.04" z="12.00" type="rail_signal"/>
+    <node id="c1_City_3_EW_Town_3_xov_T2_post_sig_1" x="7032.13" y="1263.98" z="12.00" type="rail_signal"/>
+    <node id="c1_City_3_EW_Town_3_xov_T2_pre_sig_0" x="8148.32" y="1072.43" z="12.00" type="rail_signal"/>
+    <node id="c1_City_3_EW_Town_3_xov_T2_pre_sig_1" x="8865.55" y="948.51" z="12.00" type="rail_signal"/>
+    <node id="c1_Town_3_City_4_fw_signal_0" x="10834.27" y="631.79" z="11.32" type="rail_signal"/>
+    <node id="c1_Town_3_City_4_fw_signal_1" x="11938.09" y="423.21" z="7.00" type="rail_signal"/>
+    <node id="c1_Town_3_City_4_fw_signal_2" x="13040.65" y="208.05" z="2.68" type="rail_signal"/>
+    <node id="c1_Town_3_City_4_bw_signal_0" x="13041.34" y="211.99" z="2.68" type="rail_signal"/>
+    <node id="c1_Town_3_City_4_bw_signal_1" x="11938.74" y="427.15" z="7.00" type="rail_signal"/>
+    <node id="c1_Town_3_City_4_bw_signal_2" x="10834.90" y="635.74" z="11.32" type="rail_signal"/>
+    <node id="c2_City_5_Town_4_fw_signal_0" x="4279.48" y="11387.71" z="58.67" type="rail_signal"/>
+    <node id="c2_City_5_Town_4_fw_signal_1" x="4347.34" y="10584.59" z="52.50" type="rail_signal"/>
+    <node id="c2_City_5_Town_4_fw_signal_2" x="4417.07" y="9781.65" z="46.33" type="rail_signal"/>
+    <node id="c2_City_5_Town_4_bw_signal_0" x="4421.06" y="9781.97" z="46.33" type="rail_signal"/>
+    <node id="c2_City_5_Town_4_bw_signal_1" x="4351.33" y="10584.91" z="52.50" type="rail_signal"/>
+    <node id="c2_City_5_Town_4_bw_signal_2" x="4283.47" y="11388.00" z="58.67" type="rail_signal"/>
     <node id="c2_Town_4_Town_5_xov_1A" x="4647.01" y="7138.21" z="39.87" type="rail_signal"/>
     <node id="c2_Town_4_Town_5_xov_2B" x="4665.88" y="6989.34" z="38.79" type="rail_signal"/>
     <node id="c2_Town_4_Town_5_xov_2C" x="4673.87" y="6909.75" z="38.21" type="rail_signal"/>
     <node id="c2_Town_4_Town_5_xov_1D" x="4684.90" y="6760.10" z="37.12" type="rail_signal"/>
-    <node id="c2_Town_5_City_3_NS_fw_signal_0" x="5035.31" y="3348.60" z="28.85" type="rail_signal"/>
-    <node id="c2_Town_5_City_3_NS_bw_signal_0" x="5029.84" y="3428.81" z="29.15" type="rail_signal"/>
-    <node id="c2_City_3_NS_Town_6_fw_signal_0" x="5463.17" y="-481.02" z="19.70" type="rail_signal"/>
-    <node id="c2_City_3_NS_Town_6_bw_signal_0" x="5458.30" y="-397.71" z="20.30" type="rail_signal"/>
+    <node id="c2_Town_4_Town_5_xov_T1_pre_sig_0" x="4586.67" y="7759.46" z="43.70" type="rail_signal"/>
+    <node id="c2_Town_4_Town_5_xov_T1_post_sig_0" x="4747.52" y="6139.10" z="33.30" type="rail_signal"/>
+    <node id="c2_Town_4_Town_5_xov_T2_post_sig_0" x="4573.59" y="7943.80" z="44.42" type="rail_signal"/>
+    <node id="c2_Town_4_Town_5_xov_T2_post_sig_1" x="4622.10" y="7431.86" z="41.88" type="rail_signal"/>
+    <node id="c2_Town_4_Town_5_xov_T2_pre_sig_0" x="4718.07" y="6471.32" z="35.15" type="rail_signal"/>
+    <node id="c2_Town_4_Town_5_xov_T2_pre_sig_1" x="4769.75" y="5956.89" z="32.58" type="rail_signal"/>
+    <node id="c2_Town_5_City_3_NS_fw_signal_0" x="4943.58" y="4142.49" z="31.47" type="rail_signal"/>
+    <node id="c2_Town_5_City_3_NS_fw_signal_1" x="5030.59" y="3388.44" z="29.00" type="rail_signal"/>
+    <node id="c2_Town_5_City_3_NS_fw_signal_2" x="5120.20" y="2634.69" z="26.53" type="rail_signal"/>
+    <node id="c2_Town_5_City_3_NS_bw_signal_0" x="5124.18" y="2635.12" z="26.53" type="rail_signal"/>
+    <node id="c2_Town_5_City_3_NS_bw_signal_1" x="5034.57" y="3388.85" z="29.00" type="rail_signal"/>
+    <node id="c2_Town_5_City_3_NS_bw_signal_2" x="4947.57" y="4142.89" z="31.47" type="rail_signal"/>
+    <node id="c2_City_3_NS_Town_6_fw_signal_0" x="5374.32" y="348.22" z="24.93" type="rail_signal"/>
+    <node id="c2_City_3_NS_Town_6_fw_signal_1" x="5458.75" y="-439.58" z="20.00" type="rail_signal"/>
+    <node id="c2_City_3_NS_Town_6_fw_signal_2" x="5542.86" y="-1227.42" z="15.07" type="rail_signal"/>
+    <node id="c2_City_3_NS_Town_6_bw_signal_0" x="5546.84" y="-1226.99" z="15.07" type="rail_signal"/>
+    <node id="c2_City_3_NS_Town_6_bw_signal_1" x="5462.72" y="-439.15" z="20.00" type="rail_signal"/>
+    <node id="c2_City_3_NS_Town_6_bw_signal_2" x="5378.30" y="348.66" z="24.93" type="rail_signal"/>
     <node id="c2_Town_6_Town_7_xov_1A" x="5827.67" y="-3861.31" z="11.64" type="rail_signal"/>
     <node id="c2_Town_6_Town_7_xov_2B" x="5847.70" y="-4010.02" z="11.13" type="rail_signal"/>
     <node id="c2_Town_6_Town_7_xov_2C" x="5856.27" y="-4089.56" z="10.87" type="rail_signal"/>
     <node id="c2_Town_6_Town_7_xov_1D" x="5868.36" y="-4239.12" z="10.36" type="rail_signal"/>
-    <node id="c2_Town_7_City_6_fw_signal_0" x="6203.49" y="-7325.92" z="6.63" type="rail_signal"/>
-    <node id="c2_Town_7_City_6_fw_signal_1" x="6326.52" y="-8445.50" z="3.37" type="rail_signal"/>
-    <node id="c2_Town_7_City_6_bw_signal_0" x="6330.49" y="-8445.06" z="3.37" type="rail_signal"/>
-    <node id="c2_Town_7_City_6_bw_signal_1" x="6207.47" y="-7325.48" z="6.63" type="rail_signal"/>
-    <node id="c3_City_2_Town_8_fw_signal_0" x="-5635.05" y="2925.97" z="46.85" type="rail_signal"/>
-    <node id="c3_City_2_Town_8_fw_signal_1" x="-6444.23" y="3969.92" z="69.23" type="rail_signal"/>
-    <node id="c3_City_2_Town_8_bw_signal_0" x="-6499.81" y="4037.40" z="70.58" type="rail_signal"/>
-    <node id="c3_City_2_Town_8_bw_signal_1" x="-5693.22" y="2988.85" z="48.15" type="rail_signal"/>
-    <node id="c3_Town_8_Town_9_fw_signal_0" x="-8571.40" y="6274.23" z="92.04" type="rail_signal"/>
-    <node id="c3_Town_8_Town_9_fw_signal_1" x="-9485.66" y="7188.49" z="119.58" type="rail_signal"/>
-    <node id="c3_Town_8_Town_9_bw_signal_0" x="-9428.60" y="7125.77" z="117.96" type="rail_signal"/>
-    <node id="c3_Town_8_Town_9_bw_signal_1" x="-8514.34" y="6211.51" z="90.42" type="rail_signal"/>
-    <node id="c3_Town_9_Depot_1_fw_signal_0" x="-11519.88" y="9222.71" z="137.65" type="rail_signal"/>
-    <node id="c3_Town_9_Depot_1_fw_signal_1" x="-12381.37" y="10084.19" z="156.17" type="rail_signal"/>
-    <node id="c3_Town_9_Depot_1_bw_signal_0" x="-12444.76" y="10141.93" z="157.35" type="rail_signal"/>
-    <node id="c3_Town_9_Depot_1_bw_signal_1" x="-11583.28" y="9280.45" z="138.83" type="rail_signal"/>
-    <node id="c4_City_1_Town_10_fw_signal_0" x="-13743.79" y="-260.51" z="13.89" type="rail_signal"/>
-    <node id="c4_City_1_Town_10_fw_signal_1" x="-13722.25" y="-1596.98" z="11.17" type="rail_signal"/>
-    <node id="c4_City_1_Town_10_bw_signal_0" x="-13718.27" y="-1596.67" z="11.17" type="rail_signal"/>
-    <node id="c4_City_1_Town_10_bw_signal_1" x="-13739.80" y="-260.74" z="13.89" type="rail_signal"/>
+    <node id="c2_Town_6_Town_7_xov_T1_pre_sig_0" x="5760.64" y="-3239.51" z="13.40" type="rail_signal"/>
+    <node id="c2_Town_6_Town_7_xov_T1_post_sig_0" x="5935.38" y="-4860.92" z="8.60" type="rail_signal"/>
+    <node id="c2_Town_6_Town_7_xov_T2_post_sig_0" x="5744.46" y="-3052.35" z="13.74" type="rail_signal"/>
+    <node id="c2_Town_6_Town_7_xov_T2_post_sig_1" x="5800.44" y="-3571.19" z="12.54" type="rail_signal"/>
+    <node id="c2_Town_6_Town_7_xov_T2_pre_sig_0" x="5903.54" y="-4528.38" z="9.46" type="rail_signal"/>
+    <node id="c2_Town_6_Town_7_xov_T2_pre_sig_1" x="5959.11" y="-5043.47" z="8.27" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_fw_signal_0" x="6146.51" y="-6805.34" z="7.71" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_fw_signal_1" x="6218.07" y="-7458.84" z="6.27" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_fw_signal_2" x="6311.89" y="-8312.58" z="3.73" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_fw_signal_3" x="6383.87" y="-8966.03" z="2.29" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_bw_signal_0" x="6387.85" y="-8965.58" z="2.29" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_bw_signal_1" x="6315.86" y="-8312.14" z="3.73" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_bw_signal_2" x="6222.04" y="-7458.41" z="6.27" type="rail_signal"/>
+    <node id="c2_Town_7_City_6_bw_signal_3" x="6150.49" y="-6804.91" z="7.71" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_fw_signal_0" x="-5235.44" y="2497.31" z="39.96" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_fw_signal_1" x="-5770.02" y="3088.62" z="50.16" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_fw_signal_2" x="-6391.62" y="3899.55" z="67.82" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_fw_signal_3" x="-6879.26" y="4534.07" z="78.04" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_bw_signal_0" x="-6882.07" y="4531.19" z="78.04" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_bw_signal_1" x="-6395.91" y="3898.60" z="67.85" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_bw_signal_2" x="-5772.56" y="3085.39" z="50.14" type="rail_signal"/>
+    <node id="c3_City_2_Town_8_bw_signal_3" x="-5237.75" y="2493.99" z="39.95" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_loop_swA" x="-8574.32" y="6277.15" z="92.12" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_loop_swB" x="-9422.85" y="7125.68" z="117.88" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_loop_T1_pre_sig_0" x="-8158.73" y="5861.56" z="82.84" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_loop_T1_post_sig_0" x="-9833.58" y="7536.41" z="127.09" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_loop_sid_A" x="-8676.14" y="6387.46" z="95.15" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_loop_sid_B" x="-9312.54" y="7023.86" z="114.85" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_T2_sig_0" x="-8128.55" y="5825.72" z="82.35" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_T2_sig_1" x="-8657.93" y="6355.10" z="94.41" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_T2_sig_2" x="-9344.89" y="7042.07" z="115.59" type="rail_signal"/>
+    <node id="c3_Town_8_Town_9_T2_sig_3" x="-9874.27" y="7571.44" z="127.65" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_fw_signal_0" x="-11084.32" y="8787.15" z="131.29" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_fw_signal_1" x="-11485.87" y="9188.70" z="137.02" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_fw_signal_2" x="-11980.91" y="9683.74" z="147.50" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_fw_signal_3" x="-12475.95" y="10178.78" z="157.98" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_fw_signal_4" x="-12877.50" y="10580.33" z="163.71" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_bw_signal_0" x="-12880.33" y="10577.50" z="163.71" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_bw_signal_1" x="-12478.78" y="10175.95" z="157.98" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_bw_signal_2" x="-11983.74" y="9680.91" z="147.50" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_bw_signal_3" x="-11488.70" y="9185.87" z="137.02" type="rail_signal"/>
+    <node id="c3_Town_9_Depot_1_bw_signal_4" x="-11087.15" y="8784.32" z="131.29" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_fw_signal_0" x="-13677.75" y="347.83" z="14.77" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_fw_signal_1" x="-13751.77" y="-435.09" z="13.56" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_fw_signal_2" x="-13732.50" y="-1451.31" z="11.45" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_fw_signal_3" x="-13657.38" y="-2236.27" z="10.23" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_bw_signal_0" x="-13653.40" y="-2235.84" z="10.23" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_bw_signal_1" x="-13728.49" y="-1451.38" z="11.45" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_bw_signal_2" x="-13747.83" y="-437.34" z="13.56" type="rail_signal"/>
+    <node id="c4_City_1_Town_10_bw_signal_3" x="-13673.87" y="346.77" z="14.77" type="rail_signal"/>
     <node id="c4_Town_10_Town_11_xov_1A" x="-12786.15" y="-5228.68" z="8.31" type="rail_signal"/>
     <node id="c4_Town_10_Town_11_xov_2B" x="-12708.34" y="-5356.97" z="8.06" type="rail_signal"/>
     <node id="c4_Town_10_Town_11_xov_2C" x="-12667.81" y="-5425.93" z="7.94" type="rail_signal"/>
     <node id="c4_Town_10_Town_11_xov_1D" x="-12593.41" y="-5556.23" z="7.69" type="rail_signal"/>
-    <node id="c4_Town_10_Town_11_xov_T1_pre_sig_0" x="-13186.78" y="-4405.60" z="9.59" type="rail_signal"/>
-    <node id="c4_Town_10_Town_11_xov_T1_post_sig_0" x="-12076.10" y="-6302.66" z="6.42" type="rail_signal"/>
-    <node id="c4_Town_10_Town_11_xov_T2_post_sig_0" x="-13150.94" y="-4481.33" z="9.50" type="rail_signal"/>
-    <node id="c4_Town_10_Town_11_xov_T2_pre_sig_0" x="-12072.95" y="-6300.20" z="6.42" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_fw_signal_0" x="-10118.72" y="-8018.15" z="5.79" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_fw_signal_1" x="-9143.99" y="-8485.33" z="5.06" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_fw_signal_2" x="-8070.81" y="-8884.55" z="4.07" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_fw_signal_3" x="-7005.01" y="-9216.24" z="3.27" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_bw_signal_0" x="-6925.26" y="-9235.13" z="3.23" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_bw_signal_1" x="-7985.96" y="-8908.66" z="4.00" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_bw_signal_2" x="-9062.07" y="-8514.74" z="4.98" type="rail_signal"/>
-    <node id="c4_Town_11_Depot_2_bw_signal_3" x="-10047.72" y="-8053.00" z="5.75" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T1_pre_sig_0" x="-13289.72" y="-4132.48" z="9.84" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T1_pre_sig_1" x="-13033.42" y="-4751.64" z="9.13" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T1_post_sig_0" x="-12297.32" y="-6004.58" z="6.87" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T1_post_sig_1" x="-11886.38" y="-6533.98" z="6.16" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T2_post_sig_0" x="-13272.63" y="-4169.51" z="9.81" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T2_post_sig_1" x="-12981.98" y="-4848.59" z="8.97" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T2_pre_sig_0" x="-12356.70" y="-5912.33" z="7.03" type="rail_signal"/>
+    <node id="c4_Town_10_Town_11_xov_T2_pre_sig_1" x="-11909.72" y="-6500.60" z="6.19" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_fw_signal_0" x="-10478.35" y="-7798.01" z="5.94" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_fw_signal_1" x="-9863.14" y="-8155.05" z="5.63" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_fw_signal_2" x="-8995.63" y="-8545.91" z="4.92" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_fw_signal_3" x="-8079.48" y="-8881.62" z="4.08" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_fw_signal_4" x="-7171.63" y="-9167.40" z="3.37" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_fw_signal_5" x="-6487.22" y="-9362.61" z="3.05" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_bw_signal_0" x="-6486.03" y="-9358.80" z="3.05" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_bw_signal_1" x="-7163.13" y="-9165.76" z="3.37" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_bw_signal_2" x="-8077.71" y="-8878.00" z="4.08" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_bw_signal_3" x="-8993.63" y="-8542.40" z="4.92" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_bw_signal_4" x="-9860.87" y="-8151.72" z="5.63" type="rail_signal"/>
+    <node id="c4_Town_11_Depot_2_bw_signal_5" x="-10475.85" y="-7794.88" z="5.94" type="rail_signal"/>
     <node id="c4_Depot_2_Town_12_xov_1A" x="-2684.37" y="-9146.96" z="2.55" type="rail_signal"/>
     <node id="c4_Depot_2_Town_12_xov_2B" x="-2547.50" y="-9085.43" z="2.51" type="rail_signal"/>
     <node id="c4_Depot_2_Town_12_xov_2C" x="-2473.73" y="-9054.49" z="2.49" type="rail_signal"/>
     <node id="c4_Depot_2_Town_12_xov_1D" x="-2333.87" y="-9000.14" z="2.45" type="rail_signal"/>
-    <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_0" x="-4003.63" y="-9628.12" z="2.89" type="rail_signal"/>
-    <node id="c4_Depot_2_Town_12_xov_T1_post_sig_0" x="-986.85" y="-8490.27" z="2.10" type="rail_signal"/>
-    <node id="c4_Depot_2_Town_12_xov_T2_post_sig_0" x="-3925.23" y="-9601.93" z="2.87" type="rail_signal"/>
-    <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_0" x="-1068.51" y="-8511.08" z="2.12" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_fw_signal_0" x="2036.88" y="-8541.22" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_fw_signal_1" x="3239.35" y="-8589.37" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_fw_signal_2" x="4461.58" y="-8683.21" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_fw_signal_3" x="5541.99" y="-8901.01" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_bw_signal_0" x="5755.60" y="-8973.42" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_bw_signal_1" x="4729.98" y="-8715.67" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_bw_signal_2" x="3525.76" y="-8600.13" z="2.00" type="rail_signal"/>
-    <node id="c4_Town_12_City_6_bw_signal_3" x="2304.32" y="-8548.38" z="2.00" type="rail_signal"/>
-    <node id="spur_City_5_Depot_3_fw_signal_0" x="4905.65" y="13731.62" z="59.05" type="rail_signal"/>
-    <node id="spur_City_5_Depot_3_fw_signal_1" x="6038.54" y="14280.86" z="56.35" type="rail_signal"/>
-    <node id="spur_City_5_Depot_3_bw_signal_0" x="6120.47" y="14320.43" z="56.17" type="rail_signal"/>
-    <node id="spur_City_5_Depot_3_bw_signal_1" x="4977.17" y="13777.98" z="58.89" type="rail_signal"/>
-    <node id="spur_City_3_EW_Depot_4_fw_signal_0" x="6637.54" y="1949.09" z="13.21" type="rail_signal"/>
-    <node id="spur_City_3_EW_Depot_4_fw_signal_1" x="7737.04" y="2325.70" z="16.42" type="rail_signal"/>
-    <node id="spur_City_3_EW_Depot_4_bw_signal_0" x="7821.58" y="2354.91" z="16.65" type="rail_signal"/>
-    <node id="spur_City_3_EW_Depot_4_bw_signal_1" x="6715.69" y="1985.70" z="13.42" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_0" x="-2890.36" y="2818.65" z="38.27" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_1" x="-2150.66" y="3475.22" z="39.26" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_2" x="-1393.66" y="4207.22" z="40.97" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_3" x="-631.08" y="5001.44" z="43.30" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_4" x="125.40" y="5844.69" z="46.10" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_5" x="864.05" y="6723.77" z="49.13" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_6" x="1573.19" y="7625.47" z="52.15" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_7" x="2241.11" y="8536.61" z="54.91" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_8" x="2856.10" y="9443.98" z="57.19" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_9" x="3406.47" y="10334.39" z="58.84" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_fw_signal_10" x="3880.50" y="11194.64" z="59.78" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_0" x="3843.47" y="11131.68" z="59.73" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_1" x="3363.25" y="10268.83" z="58.74" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_2" x="2807.59" y="9376.80" z="57.04" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_3" x="2188.20" y="8468.80" z="54.71" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_4" x="1516.78" y="7558.04" z="51.92" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_5" x="805.04" y="6657.71" z="48.89" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_6" x="64.68" y="5781.02" z="45.87" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_7" x="-692.59" y="4941.17" z="43.10" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_8" x="-1455.07" y="4151.37" z="40.81" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_9" x="-2211.03" y="3424.81" z="39.16" type="rail_signal"/>
-    <node id="bypass_City_2_City_5_bw_signal_10" x="-2948.78" y="2774.71" z="38.22" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_0" x="-4671.28" y="-9749.27" z="2.98" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_1" x="-3924.12" y="-9605.78" z="2.87" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T1_pre_sig_2" x="-3191.34" y="-9352.30" z="2.70" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T1_post_sig_0" x="-1828.52" y="-8791.80" z="2.30" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T1_post_sig_1" x="-1107.31" y="-8527.70" z="2.13" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T1_post_sig_2" x="-361.02" y="-8349.74" z="2.02" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T2_post_sig_0" x="-4646.25" y="-9743.32" z="2.98" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T2_post_sig_1" x="-3846.19" y="-9578.46" z="2.86" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T2_post_sig_2" x="-3075.87" y="-9302.54" z="2.66" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_0" x="-1945.96" y="-8834.98" z="2.34" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_1" x="-1179.23" y="-8546.89" z="2.14" type="rail_signal"/>
+    <node id="c4_Depot_2_Town_12_xov_T2_pre_sig_2" x="-385.37" y="-8349.09" z="2.02" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_fw_signal_0" x="1555.97" y="-8514.30" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_fw_signal_1" x="2316.07" y="-8552.84" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_fw_signal_2" x="3316.50" y="-8593.09" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_fw_signal_3" x="4330.59" y="-8668.27" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_fw_signal_4" x="5313.72" y="-8835.66" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_fw_signal_5" x="6025.76" y="-9107.06" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_bw_signal_0" x="6028.74" y="-9104.16" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_bw_signal_1" x="5319.40" y="-8833.02" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_bw_signal_2" x="4332.78" y="-8664.48" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_bw_signal_3" x="3318.28" y="-8589.17" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_bw_signal_4" x="2317.35" y="-8548.88" z="2.00" type="rail_signal"/>
+    <node id="c4_Town_12_City_6_bw_signal_5" x="1556.75" y="-8510.34" z="2.00" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_fw_signal_0" x="4465.08" y="13418.17" z="59.82" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_fw_signal_1" x="4931.46" y="13746.68" z="58.99" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_fw_signal_2" x="5557.95" y="14068.02" z="57.50" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_fw_signal_3" x="6202.79" y="14351.39" z="56.00" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_fw_signal_4" x="6725.86" y="14581.23" z="55.18" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_bw_signal_0" x="6723.70" y="14584.64" z="55.18" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_bw_signal_1" x="6203.42" y="14356.02" z="56.00" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_bw_signal_2" x="5555.04" y="14071.09" z="57.51" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_bw_signal_3" x="4928.22" y="13749.42" z="59.00" type="rail_signal"/>
+    <node id="spur_City_5_Depot_3_bw_signal_4" x="4461.67" y="13420.51" z="59.82" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_fw_signal_0" x="6244.34" y="1759.92" z="12.36" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_fw_signal_1" x="6867.88" y="2040.69" z="13.84" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_fw_signal_2" x="7641.89" y="2297.21" z="16.16" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_fw_signal_3" x="8298.28" y="2491.16" z="17.65" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_bw_signal_0" x="8296.74" y="2494.87" z="17.65" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_bw_signal_1" x="7639.99" y="2300.81" z="16.16" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_bw_signal_2" x="6865.59" y="2044.10" z="13.84" type="rail_signal"/>
+    <node id="spur_City_3_EW_Depot_4_bw_signal_3" x="6241.75" y="1763.06" z="12.35" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_0" x="-3138.27" y="2613.02" z="38.10" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_1" x="-2367.18" y="3276.75" z="38.90" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_2" x="-1400.76" y="4200.11" z="40.95" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_3" x="-477.41" y="5168.28" z="43.84" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_4" x="406.54" y="6172.56" z="47.23" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_5" x="1250.31" y="7207.33" z="50.77" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_6" x="2056.70" y="8278.27" z="54.17" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_7" x="2810.94" y="9374.61" z="57.04" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_8" x="3513.77" y="10519.85" z="59.10" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_fw_signal_9" x="3992.59" y="11417.49" z="59.90" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_0" x="3988.97" y="11419.19" z="59.90" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_1" x="3510.28" y="10521.78" z="59.10" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_2" x="2811.43" y="9382.69" z="57.05" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_3" x="2053.40" y="8280.53" z="54.17" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_4" x="1248.79" y="7211.87" z="50.78" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_5" x="403.46" y="6175.11" z="47.23" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_6" x="-480.37" y="5170.97" z="43.84" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_7" x="-1403.59" y="4202.94" z="40.95" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_8" x="-2369.88" y="3279.72" z="38.90" type="rail_signal"/>
+    <node id="bypass_City_2_City_5_bw_signal_9" x="-3140.76" y="2616.15" z="38.10" type="rail_signal"/>
+    <node id="City_4_buf_1" x="15184.29" y="-176.60" z="2.00" type="dead_end"/>
+    <node id="City_4_buf_2" x="15185.33" y="-170.69" z="2.00" type="dead_end"/>
+    <node id="City_6_buf_1" x="6606.75" y="-10994.29" z="2.00" type="dead_end"/>
+    <node id="City_6_buf_2" x="6612.72" y="-10993.63" z="2.00" type="dead_end"/>
+    <node id="Depot_1_buf_1" x="-13988.61" y="11701.34" z="165.00" type="dead_end"/>
+    <node id="Depot_1_buf_2" x="-13992.85" y="11697.10" z="165.00" type="dead_end"/>
+    <node id="Depot_1_buf_3" x="-13997.10" y="11692.85" z="165.00" type="dead_end"/>
+    <node id="Depot_1_buf_4" x="-14001.34" y="11688.61" z="165.00" type="dead_end"/>
+    <node id="Depot_3_buf_1" x="8110.72" y="15342.21" z="55.00" type="dead_end"/>
+    <node id="Depot_3_buf_2" x="8107.72" y="15347.40" z="55.00" type="dead_end"/>
+    <node id="Depot_3_buf_3" x="8104.72" y="15352.60" z="55.00" type="dead_end"/>
+    <node id="Depot_3_buf_4" x="8101.72" y="15357.79" z="55.00" type="dead_end"/>
+    <node id="Depot_4_buf_1" x="9860.86" y="3030.96" z="18.00" type="dead_end"/>
+    <node id="Depot_4_buf_2" x="9858.81" y="3036.60" z="18.00" type="dead_end"/>
+    <node id="Depot_4_buf_3" x="9856.76" y="3042.23" z="18.00" type="dead_end"/>
+    <node id="Depot_4_buf_4" x="9854.71" y="3047.87" z="18.00" type="dead_end"/>
     <node id="City_1_Throat1" x="-13537.981180403593" y="885.6485700502324" z="15" type="rail_signal"/>
     <node id="City_1_Throat2" x="-12462.018819596407" y="1114.3514299497676" z="15" type="rail_signal"/>
     <node id="Town_1_Throat1" x="-9215.912588871459" y="1741.5472975967725" z="25" type="rail_signal"/>

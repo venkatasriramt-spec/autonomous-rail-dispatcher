@@ -13,7 +13,9 @@ This network provides the foundational physical infrastructure for future downst
 │   ├── plot_network.py           # Network topology visualization & rendering tool
 │   ├── plot_bilevel_hub.py       # City_3 bi-level station hub plan & elevation renderer
 │   ├── plot_station_layout.py    # 4-track express station layout diagram renderer
-│   └── plot_crossover.py         # High-speed universal crossover schematic renderer
+│   ├── plot_crossover.py         # High-speed universal crossover schematic renderer
+│   ├── plot_passing_loop.py      # Alpine freight passing loop schematic & grade renderer
+│   └── plot_terminal_pockets.py  # Terminal turnaround pocket tracks & buffer stop renderer
 ├── network_data/
 │   ├── dense_network.nod.xml     # Generated nodes (stations, throats, signals & crossovers)
 │   ├── dense_network.edg.xml     # Generated tracks (edges, lanes & physical speeds)
@@ -77,9 +79,25 @@ python3 scripts/plot_crossover.py
 ```
 *(Saves diagram to `scripts/crossover_layout.png`)*
 
+### Alpine Freight Passing Loop (*Überholgleis*) Schematic & Grade Profile
+To render the detailed plan layout, switch geometry, and mountain elevation profile of the double-ended freight passing loop on Corridor 3:
+
+```bash
+python3 scripts/plot_passing_loop.py
+```
+*(Saves diagram to `scripts/alpine_passing_loop.png`)*
+
+### Terminal Turn-Around Pocket Tracks & Buffer Stops Layout
+To render the reversing scissors, pocket tail tracks, and dead-end buffer stops at end terminals:
+
+```bash
+python3 scripts/plot_terminal_pockets.py
+```
+*(Saves diagram to `scripts/terminal_pocket_tracks.png`)*
+
 ## Network Architecture & Key Corridors
 
-The physical network consists of four major operational railway corridors, a high-speed bypass, dedicated freight spurs, a signature grade-separated interchange hub, and mid-corridor universal crossovers:
+The physical network consists of four major operational railway corridors, a high-speed bypass, dedicated freight spurs, a signature grade-separated interchange hub, mid-corridor universal crossovers, an alpine freight passing loop, and terminal reversing pocket tracks:
 
 ### 1. Corridor 1: East–West High-Speed Trunk
 - **Route:** `City_1` $\leftrightarrow$ `Town_1` $\leftrightarrow$ `City_2` $\leftrightarrow$ `Town_2` $\leftrightarrow$ `City_3_EW` $\leftrightarrow$ `Town_3` $\leftrightarrow$ `City_4`
@@ -91,7 +109,7 @@ The physical network consists of four major operational railway corridors, a hig
 
 ### 3. Corridor 3: Northwest Alpine Mountain Line
 - **Route:** `City_2` $\leftrightarrow$ `Town_8` $\leftrightarrow$ `Town_9` $\leftrightarrow$ `Depot_1`
-- **Characteristics:** Branches naturally northwest from `City_2` with smooth turnout geometry ($R = 1,974\text{ m}$) into mountain terrain, accommodating regional commuter and heavy freight trains up to $80\text{--}120\text{ km/h}$.
+- **Characteristics:** Branches naturally northwest from `City_2` with smooth turnout geometry ($R = 1,974\text{ m}$) into mountain terrain, accommodating regional commuter and heavy freight trains up to $80\text{--}120\text{ km/h}$. Features a continuous mountain climb from elevation $Z = 38\text{ m}$ at `City_2` up to $Z = 165\text{ m}$ at `Depot_1` (+11.8‰ grade), equipped with an **Alpine Freight Passing Loop (*Überholgleis*)** between `Town_8` and `Town_9`.
 
 ### 4. Corridor 4: Southern Coastal Arc
 - **Route:** `City_1` $\leftrightarrow$ `Town_10` $\leftrightarrow$ `Town_11` $\leftrightarrow$ `Depot_2` $\leftrightarrow$ `Town_12` $\leftrightarrow$ `City_6`
@@ -136,6 +154,41 @@ Along long inter-station corridor segments, the network incorporates 8 **Paired 
   - **Dynamic In-Flight Overtakes:** Fast express trains ($300\text{ km/h}$) can cross over to run parallel to and overtake slower regional or freight trains on the adjacent track mid-corridor.
   - **Emergency Single-Line Working:** Fully signaled in both directions with bidirectional block pairs throughout all corridor approach and departure segments.
 
+### 9. Alpine Freight Passing Loop (*Überholgleis*) on Corridor 3
+Located midway along the steep mountain ascent between `Town_8` (El. $80\text{ m}$) and `Town_9` (El. $130\text{ m}$) on Corridor 3 (`c3_Town_8_Town_9`):
+- **Purpose:** On real-world mountain railways (e.g. Gotthard, Brenner, Semmering), heavy freight trains climb slowly at $40\text{--}60\text{ km/h}$. Without a mid-corridor passing loop, a single freight train would throttle all following regional passenger EMUs ($120\text{ km/h}$) across the entire 4.2 km climb.
+- **Geometry & Capacity:**
+  - **Length:** $1,200\text{ m}$ total siding envelope ($150\text{ m}$ entry turnout + $900\text{ m}$ tangent staging siding + $150\text{ m}$ exit turnout).
+  - **Capacity:** Rated for $12,000\text{ tons}$ heavy bulk freight trains.
+  - **Lateral Offset:** Built at a $+8.0\text{ m}$ parallel offset (giving $6.0\text{ m}$ clear center-to-center track spacing from Track 1).
+  - **Speed Limits:** Siding and turnouts permit $16.67\text{ m/s}$ ($60\text{ km/h}$), while the straight-through mainline Track 1 retains full $120\text{ km/h}$ ($33.33\text{ m/s}$).
+  - **Double-Ended Switches (`swA`, `swB`):** Full entry and exit switch interlockings with rail signals (`rail_signal`) allow freight trains to seamlessly diverge, stand while being overtaken, and merge back onto the mainline with zero stopping penalty for the overtaking passenger train.
+
+### 10. Terminal Turn-Around Pocket Tracks & Buffer Stops (*Kopfmachen*)
+At major terminus stations and industrial depot boundaries (`City_4`, `City_6`, `Depot_1`, `Depot_3`, `Depot_4`), the network incorporates dedicated parallel **Turn-Around Pocket Tracks** equipped with physical **Dead-End Buffer Stops**:
+- **Terminus Locations & Allocations:**
+  - **`City_4` (High-Speed Eastern Terminus):** 2 parallel tail tracks ($450\text{ m}$ length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $25\text{ kV}$, concrete slab) terminating at buffer stops `City_4_buf_1`, `City_4_buf_2`.
+  - **`City_6` (Southern Regional Terminus):** 2 parallel tail tracks ($450\text{ m}$ length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $15\text{ kV}$, ballast) terminating at buffer stops `City_6_buf_1`, `City_6_buf_2`.
+  - **`Depot_1`, `Depot_3`, `Depot_4` (Heavy Freight Logistics Termini):** 4 parallel storage pocket tracks each ($300\text{ m}$ length, speed $20\text{ km/h}$ / $5.55\text{ m/s}$, $12,000\text{ t}$ capacity, wood sleepers) with dead-end buffer stops `Depot_*_buf_1` through `_buf_4`.
+- **Engineering & Interlocking:**
+  - **Scissors Switch Fan:** Outbound station platform edges fan out into all pocket tracks through throat interlocking Throat 2, and incoming reversals feed directly into inbound platform departure edges.
+  - **Buffer Stop Metadata:** Modeled with SUMO node attribute `type="dead_end"` and edge parameter `<param key="buffer_stop" value="true"/>`.
+  - **Operational Utility:** In passenger operations, arriving trains pull forward into pocket tracks to clear station platform tracks for the next arriving service, reverse driving direction (*Kopfmachen*), and re-enter a platform track when ready for outbound departure. In freight depots, they serve as dedicated runaround pockets and dead-end shunting spurs.
+
+### 11. Graduated Signal Block Density (Tapered Headway Signaling)
+Real-world railway signaling does not use arbitrary constant block lengths. On open track, trains need long braking distances ($1,200\text{--}1,500\text{ m}$ at $300\text{ km/h}$), while near stations and crossover interlockings, shorter block sections ($500\text{--}600\text{ m}$) are required to compress train headway and maximize switch throughput.
+- **Mathematical Cosine Taper:**
+  $$\ell(s) = \ell_{\min} + \frac{1 - \cos(\pi \cdot w(s))}{2} \cdot (\ell_{\max} - \ell_{\min})$$
+  where $w(s) = \min\left(1.0, \frac{\min(s, L - s)}{D_{\text{taper}}}\right)$ with a $1,800\text{ m}$ transition zone.
+- **Speed-Specific Block Parameters:**
+  - **High-Speed ($300\text{ km/h}$):** Transitions smoothly from $550\text{ m}$ at station and crossover throats to $1,400\text{ m}$ on open high-speed stretches.
+  - **Regional ($120\text{ km/h}$):** Transitions smoothly from $500\text{ m}$ at throats to $1,000\text{ m}$ mid-corridor.
+  - **Freight / Mountain ($80\text{ km/h}$):** Transitions smoothly from $500\text{ m}$ to $800\text{ m}$.
+- **Benefits for Downstream Scheduling & RL:**
+  - Maximizes headway throughput where deceleration and merging occur.
+  - Prevents unrealistic phantom signal stops on open high-speed track.
+  - Matches modern ETCS Level 2 / TVM430 high-speed block layouts.
+
 ## Repository Conventions
 
 - This folder is strictly dedicated to **tracks, junctions, signals, and stations**. Trains and scheduling are maintained externally.
@@ -178,6 +231,8 @@ Tracks are fully bi-directional (double-track mainlines) with consistent naming:
 - **Backward Running:** Mainline edges are suffixed with `_bw` (split into `..._bw_b0`, `..._bw_b1`, etc.). Platform stops are named `<Station>_p<PlatformNumber>_bw` on lane `<Station>_plat_<PlatformNumber>_bw_0`.
 - **Express Through-Tracks:** Non-stopping bypass tracks are designated `<Station>_thru_<N>_fw` / `<Station>_thru_<N>_bw` with metadata `<param key="is_through" value="true"/>`. Non-stopping express trains must be routed over these edges to prevent speed drops.
 - **Universal Crossover Tracks:** Turnout edges are designated `<Corridor>_xov_xov1_fw` / `<Corridor>_xov_xov1_bw` (Turnout 1) and `<Corridor>_xov_xov2_fw` / `<Corridor>_xov_xov2_bw` (Turnout 2) with metadata `<param key="is_crossover" value="true"/>`. Mainline through tracks within the crossover zone are `<Corridor>_xov_T1_mid_fw` and `<Corridor>_xov_T2_mid_fw`.
+- **Alpine Freight Passing Loop (*Überholgleis*):** On Corridor 3, the siding edges are designated `c3_Town_8_Town_9_loop_siding_fw` and `..._siding_bw` (speed $16.67\text{ m/s}$ / $60\text{ km/h}$) with metadata `<param key="is_passing_loop" value="true"/>`, accessed via lead turnouts `_lead_in_fw` and `_lead_out_fw`. Mainline through tracks are `_T1_mid_fw` / `_T1_mid_bw` ($33.33\text{ m/s}$).
+- **Terminal Turn-Around Pocket Tracks & Buffer Stops:** Reversal tail tracks at `City_4`, `City_6`, and `Depot_1/3/4` are designated `<Station>_pocket_<N>_fw` (inbound) and `<Station>_pocket_<N>_bw` (outbound) with metadata `<param key="buffer_stop" value="true"/>` and `<param key="is_tail_track" value="true"/>`. Trains terminate at buffer stop nodes `<Station>_buf_<N>` (`type="dead_end"`) before reversing direction.
 - **Storage / Maintenance Yards:** Non-platform tracks are designated `<Station>_yard_<N>_fw` / `<Station>_yard_<N>_bw` with parameter `<param key="is_yard" value="true"/>`.
 
 ### 5. Embedded Infrastructure Telemetry (`<param>` Tags)

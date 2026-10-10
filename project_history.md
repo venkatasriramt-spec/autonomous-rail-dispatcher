@@ -141,4 +141,43 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Updated `scripts/plot_network.py` with amber (`#f59e0b`) rendering and diamond markers for crossover installations, regenerating `scripts/current_network_preview.png`.
   - Implemented `scripts/plot_crossover.py` producing `scripts/crossover_layout.png`, showing a detailed CAD-level engineering schematic of the 380 m paired crossover layout with dimensions, switch points, track centers, and speed limits.
 
+#### Phase 12: Graduated Block Signaling, Alpine Freight Passing Loop (*Überholgleis*), and Terminal Turn-Around Pocket Tracks (*Kopfmachen*)
+- **Motivation:** Three realism defects remained on the physical track infrastructure:
+  1. *Uniform Signal Block Density:* Mainline tracks previously used static ~1,000 m block sections regardless of proximity to station throats or open high-speed stretches, causing artificial capacity bottlenecks near station throats where braking/accelerating trains require tighter headway compression (~500 m), and sub-optimal high-speed braking buffers on open 300 km/h stretches.
+  2. *Mountain Line Freight Bottleneck:* On Corridor 3 (`Town_8` to `Town_9`), trains climb a steep mountain gradient (+11.8‰ / 50 m elevation gain over 4.2 km). Without a mid-corridor passing siding, heavy 12,000 t freight trains crawling uphill at 40–60 km/h blocked all following regional passenger services across the entire mountain district.
+  3. *Dead-End Terminal Reversal Deadlocks:* Major terminus stations (`City_4`, `City_6`) and logistics depots (`Depot_1`, `Depot_3`, `Depot_4`) lacked tail tracks and buffer stops. Arriving trains had no operational infrastructure to clear passenger platforms, reverse driving direction (*Kopfmachen*), or lay over without occupying revenue platforms or fouling mainline throats.
+
+- **Feature A: Graduated Signal Block Density (Tapered Headway Signaling):**
+  - Engineered a mathematical cosine taper function `compute_graduated_block_splits`:
+    $$\ell(s) = \ell_{\min} + \frac{1 - \cos(\pi \cdot w(s))}{2} \cdot (\ell_{\max} - \ell_{\min})$$
+    where $w(s) = \min\left(1.0, \frac{\min(s, L - s)}{D_{\text{taper}}}\right)$ with a $1,800\text{ m}$ transition zone.
+  - Slices blocks smoothly from $550\text{ m}$ near station throats / crossover switches up to $1,400\text{ m}$ on open high-speed track ($300\text{ km/h}$), from $500\text{ m}$ up to $1,000\text{ m}$ on regional corridors ($120\text{ km/h}$), and $500\text{ m}$ to $800\text{ m}$ on freight lines ($80\text{ km/h}$).
+  - Dynamically slices bidirectional track shapes at exact arc-length splits using `slice_points_by_distance`, preserving curvature and 3D elevations.
+
+- **Feature B: Alpine Freight Passing Loop (*Überholgleis*) on Corridor 3:**
+  - Designed and implemented a double-ended $1,200\text{ m}$ freight passing siding midway between `Town_8` and `Town_9` on Corridor 3 (`c3_Town_8_Town_9_loop`):
+    - **Siding Envelope:** $150\text{ m}$ lead turnout (`lead_in`) + $900\text{ m}$ parallel tangent siding (`siding`) + $150\text{ m}$ lead turnout (`lead_out`).
+    - **Lateral Offset:** Built at $+8.0\text{ m}$ parallel offset ($6.0\text{ m}$ clear spacing from Track 1).
+    - **Capacity & Track Limits:** Rated for $12,000\text{ t}$ heavy bulk freight trains at $16.67\text{ m/s}$ ($60\text{ km/h}$). Straight through-track retains full line speed ($33.33\text{ m/s}$ / $120\text{ km/h}$).
+    - **Interlocking:** Entry turnout `swA` and exit turnout `swB` equipped with `rail_signal` nodes and complete forward/backward switch connection matrices in `dense_network.con.xml`.
+
+- **Feature C: Terminal Turn-Around Pocket Tracks & Buffer Stops (*Kopfmachen* Infrastructure):**
+  - Constructed dedicated parallel tail tracks and dead-end buffer stops at end terminals:
+    - **`City_4` (High-Speed Eastern Terminus):** 2 parallel tail tracks ($450\text{ m}$ length, speed $13.89\text{ m/s}$ / $50\text{ km/h}$, $25\text{ kV}$ electric, concrete slab) terminating at buffer stops `City_4_buf_1`, `City_4_buf_2`.
+    - **`City_6` (Southern Regional Terminus):** 2 parallel tail tracks ($450\text{ m}$ length, speed $13.89\text{ m/s}$ / $50\text{ km/h}$, $15\text{ kV}$ electric, ballast) terminating at buffer stops `City_6_buf_1`, `City_6_buf_2`.
+    - **`Depot_1`, `Depot_3`, `Depot_4` (Heavy Freight Logistics Termini):** 4 parallel storage pocket tracks each ($300\text{ m}$ length, speed $5.55\text{ m/s}$ / $20\text{ km/h}$, $12,000\text{ t}$ capacity, wood sleepers) with dead-end buffer stops `Depot_*_buf_1` through `_buf_4`.
+  - **Buffer Stop Modeling:** Modeled using SUMO node attribute `type="dead_end"` and edge parameters `<param key="buffer_stop" value="true"/>` and `<param key="is_tail_track" value="true"/>`.
+  - **Interlocking:** Outbound platform edges feed into all pocket tracks through throat interlocking Throat 2 scissors fan, and reversing departures connect directly back into platform departure edges.
+
+- **Topological & Compilation Verification:**
+  - Compiled cleanly with `netconvert`: **Exit code 0**.
+  - Evaluated `network_data/railway_topology.xml`: **0 error nodes**, **0 broken nodes**, **0 angle conflicts**, **0 disconnected lanes** across 288 nodes, 696 edges, 116 train stops, and 903 explicit connections.
+  - All 16 buffer stop dead-end nodes validated cleanly as `railNodeType in="1" out="1"`.
+  - All 34 switches (32 crossover switches + 2 passing loop switches) validated with 0 geometric defects.
+
+- **Visualization Suite:**
+  - Updated `scripts/plot_network.py` with rose (`#f43f5e`) pocket tracks, lime (`#a3e635`) passing siding, square buffer stops, and comprehensive multi-class legend, regenerating `scripts/current_network_preview.png`.
+  - Implemented `scripts/plot_passing_loop.py` producing `scripts/alpine_passing_loop.png`, showcasing the 2D plan view of the siding and the +11.8‰ mountain grade profile.
+  - Implemented `scripts/plot_terminal_pockets.py` producing `scripts/terminal_pocket_tracks.png`, showcasing 4-panel multi-terminal layouts for `City_4`, `City_6`, `Depot_1`, and `Depot_3`.
+
 
