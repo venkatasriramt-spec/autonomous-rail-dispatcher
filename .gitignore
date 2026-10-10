@@ -84,7 +84,7 @@ desktop.ini
 *.out
 
 # Generated preview images & visualizations
-# (Generated on demand via scripts/plot_network.py, plot_bilevel_hub.py, and plot_station_layout.py)
+# (Generated on demand via scripts/plot_network.py, plot_bilevel_hub.py, plot_station_layout.py, and plot_crossover.py)
 *.png
 *.jpg
 *.jpeg
