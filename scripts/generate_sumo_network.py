@@ -196,16 +196,12 @@ def create_corridor_track(edges_root, nodes_root, track_id, n_from, n_to, profil
     
     return fw_edges, bw_edges
 
-def build_angled_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, y, z, angle_deg, platforms, yards, length=600):
+def build_angled_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, y, z, angle_deg, platforms, yards, length=600, thru_tracks=0, thru_speed=83.33):
     theta = math.radians(angle_deg)
     ux, uy = math.cos(theta), math.sin(theta)
     nx, ny = -uy, ux
     
-    total_tracks = platforms + yards
-    spread = 6.0
-    start_off = -(total_tracks - 1) * spread / 2.0
-    
-    t_dist = length / 2.0 + 150.0
+    t_dist = length / 2.0 + (220.0 if thru_tracks > 0 else 150.0)
     t1_pos = (x - ux * t_dist, y - uy * t_dist, z)
     t2_pos = (x + ux * t_dist, y + uy * t_dist, z)
     
@@ -217,37 +213,81 @@ def build_angled_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, 
     station_fw_edges = []
     station_bw_edges = []
     
-    for i in range(total_tracks):
-        is_yard = i >= platforms
-        track_id = f"{stn_id}_{'yard' if is_yard else 'plat'}_{i+1}"
-        off = start_off + i * spread
+    track_specs = []
+    if thru_tracks == 0:
+        total_tracks = platforms + yards
+        spread = 6.0
+        start_off = -(total_tracks - 1) * spread / 2.0
+        for i in range(total_tracks):
+            off = start_off + i * spread
+            if i < platforms:
+                track_specs.append(('plat', i+1, off, 13.89, False, True))
+            else:
+                track_specs.append(('yard', i-platforms+1, off, 5.55, True, False))
+    else:
+        # Center high-speed / inter-city express through-tracks
+        track_specs.append(('thru', 1, -2.5, thru_speed, False, False))
+        track_specs.append(('thru', 2, 2.5, thru_speed, False, False))
         
+        # Flanking platform loops for stopping passenger trains
+        if platforms >= 1:
+            track_specs.append(('plat', 1, -8.5, 13.89, False, True))
+        if platforms >= 2:
+            track_specs.append(('plat', 2, 8.5, 13.89, False, True))
+        if platforms >= 3:
+            track_specs.append(('plat', 3, 14.5, 13.89, False, True))
+        for p in range(4, platforms + 1):
+            track_specs.append(('plat', p, 14.5 + (p-3)*6.0, 13.89, False, True))
+            
+        # Outer maintenance and freight siding tracks
+        right_most = max(s[2] for s in track_specs)
+        for y_idx in range(yards):
+            track_specs.append(('yard', y_idx+1, right_most + 6.0 * (y_idx+1), 5.55, True, False))
+            
+    track_specs.sort(key=lambda s: s[2])
+    
+    t_lead = t_dist - half_len
+    stop_start = t_lead + 30.0
+    stop_end = t_lead + length - 30.0
+    
+    for ttype, tnum, off, speed, is_yard, has_plat in track_specs:
+        track_id = f"{stn_id}_{ttype}_{tnum}"
         p1 = (x - ux * half_len + nx * off, y - uy * half_len + ny * off, z)
         p2 = (x + ux * half_len + nx * off, y + uy * half_len + ny * off, z)
         
         shape_str = f"{t1_pos[0]:.2f},{t1_pos[1]:.2f},{t1_pos[2]:.2f} {p1[0]:.2f},{p1[1]:.2f},{p1[2]:.2f} {p2[0]:.2f},{p2[1]:.2f},{p2[2]:.2f} {t2_pos[0]:.2f},{t2_pos[1]:.2f},{t2_pos[2]:.2f}"
-        speed = "13.89" if not is_yard else "5.55"
         
         edge_fw_id = f"{track_id}_fw"
         edge_bw_id = f"{track_id}_bw"
         
-        edge_fw = ET.SubElement(edges_root, 'edge', id=edge_fw_id, **{"from": t1_id, "to": t2_id, "speed": speed, "numLanes": "1", "allow": "rail rail_electric", "shape": shape_str, "bidi": edge_bw_id})
-        edge_bw = ET.SubElement(edges_root, 'edge', id=edge_bw_id, **{"from": t2_id, "to": t1_id, "speed": speed, "numLanes": "1", "allow": "rail rail_electric", "shape": " ".join(reversed(shape_str.split())), "bidi": edge_fw_id})
+        edge_fw = ET.SubElement(edges_root, 'edge', id=edge_fw_id, **{"from": t1_id, "to": t2_id, "speed": f"{speed:.2f}", "numLanes": "1", "allow": "rail rail_electric", "shape": shape_str, "bidi": edge_bw_id})
+        edge_bw = ET.SubElement(edges_root, 'edge', id=edge_bw_id, **{"from": t2_id, "to": t1_id, "speed": f"{speed:.2f}", "numLanes": "1", "allow": "rail rail_electric", "shape": " ".join(reversed(shape_str.split())), "bidi": edge_fw_id})
         
         station_fw_edges.append(edge_fw_id)
         station_bw_edges.append(edge_bw_id)
         
-        if is_yard:
+        prof_key = 'high_speed' if speed >= 80.0 else ('freight' if is_yard else 'regional')
+        prof = TRACK_PROFILES[prof_key]
+        for key in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+            ET.SubElement(edge_fw, 'param', key=key, value=prof[key])
+            ET.SubElement(edge_bw, 'param', key=key, value=prof[key])
+            
+        if ttype == 'thru':
+            ET.SubElement(edge_fw, 'param', key="is_through", value="true")
+            ET.SubElement(edge_bw, 'param', key="is_through", value="true")
+        elif ttype == 'yard':
             ET.SubElement(edge_fw, 'param', key="is_yard", value="true")
             ET.SubElement(edge_bw, 'param', key="is_yard", value="true")
-        else:
-            ET.SubElement(stops_root, 'trainStop', id=f"{stn_id}_p{i+1}_fw", lane=f"{track_id}_fw_0", startPos="50", endPos=str(length-50))
-            ET.SubElement(stops_root, 'trainStop', id=f"{stn_id}_p{i+1}_bw", lane=f"{track_id}_bw_0", startPos="50", endPos=str(length-50))
+        elif ttype == 'plat':
+            ET.SubElement(edge_fw, 'param', key="is_platform", value="true")
+            ET.SubElement(edge_bw, 'param', key="is_platform", value="true")
+            ET.SubElement(stops_root, 'trainStop', id=f"{stn_id}_p{tnum}_fw", lane=f"{track_id}_fw_0", startPos=f"{stop_start:.1f}", endPos=f"{stop_end:.1f}")
+            ET.SubElement(stops_root, 'trainStop', id=f"{stn_id}_p{tnum}_bw", lane=f"{track_id}_bw_0", startPos=f"{stop_start:.1f}", endPos=f"{stop_end:.1f}")
             
     return t1_id, t2_id, station_fw_edges, station_bw_edges
 
 class StationSpec:
-    def __init__(self, stn_id, x, y, z, angle, platforms, yards, length=600):
+    def __init__(self, stn_id, x, y, z, angle, platforms, yards, length=600, thru_tracks=0, thru_speed=83.33):
         self.id = stn_id
         self.x = x
         self.y = y
@@ -256,6 +296,8 @@ class StationSpec:
         self.platforms = platforms
         self.yards = yards
         self.length = length
+        self.thru_tracks = thru_tracks
+        self.thru_speed = thru_speed
         self.t1 = None
         self.t2 = None
         self.fw_edges = []
@@ -269,45 +311,45 @@ def generate_sumo_network():
     nd = {}
 
     # 22 Stations organized along natural geographic railway corridors
-    # Angles strictly aligned with corridor tangents to eliminate kinks and S-bends
+    # Intermediate towns feature 4-track Shinkansen/TGV layouts with central 300 km/h or 120 km/h through-tracks
     stations = {
         # Corridor 1: East-West Trans-Regional High-Speed Trunk
-        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=2, length=800),
-        'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=3, yards=1, length=400),
-        'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900),
-        'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400),
-        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=2, length=900),
-        'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=3, yards=1, length=400),
-        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=2, length=800),
+        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=2, length=800, thru_tracks=0),
+        'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
+        'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900, thru_tracks=0),
+        'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
+        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=2, length=900, thru_tracks=0),
+        'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
+        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=2, length=800, thru_tracks=0),
 
         # Corridor 2: North-South Inter-City Trunk (elevated viaduct passing overhead through City_3_NS)
-        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=2, length=800),
-        'Town_4': StationSpec('Town_4', 4500, 8800, 45, -85.4, platforms=2, yards=1, length=400),
-        'Town_5': StationSpec('Town_5', 4850, 5100, 32, -84.6, platforms=3, yards=1, length=400),
-        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 26, -83.7, platforms=4, yards=1, length=900),
-        'Town_6': StationSpec('Town_6', 5650, -2200, 14, -83.8, platforms=3, yards=1, length=400),
-        'Town_7': StationSpec('Town_7', 6050, -5900, 8, -83.8, platforms=2, yards=1, length=400),
-        'City_6': StationSpec('City_6', 6500, -10000, 2, -83.7, platforms=5, yards=2, length=800),
+        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=2, length=800, thru_tracks=0),
+        'Town_4': StationSpec('Town_4', 4500, 8800, 45, -85.4, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
+        'Town_5': StationSpec('Town_5', 4850, 5100, 32, -84.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
+        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 26, -83.7, platforms=4, yards=1, length=900, thru_tracks=0),
+        'Town_6': StationSpec('Town_6', 5650, -2200, 14, -83.8, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
+        'Town_7': StationSpec('Town_7', 6050, -5900, 8, -83.8, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
+        'City_6': StationSpec('City_6', 6500, -10000, 2, -83.7, platforms=5, yards=2, length=800, thru_tracks=0),
 
         # Corridor 3: Northwest Alpine Mountain Line (branches Northwest from City_2)
-        'Town_8': StationSpec('Town_8', -7500, 5200, 80, 135.0, platforms=2, yards=1, length=400),
-        'Town_9': StationSpec('Town_9', -10500, 8200, 130, 135.0, platforms=2, yards=1, length=400),
-        'Depot_1': StationSpec('Depot_1', -13500, 11200, 165, 135.0, platforms=0, yards=4, length=500),
+        'Town_8': StationSpec('Town_8', -7500, 5200, 80, 135.0, platforms=2, yards=1, length=400, thru_tracks=0),
+        'Town_9': StationSpec('Town_9', -10500, 8200, 130, 135.0, platforms=2, yards=1, length=400, thru_tracks=0),
+        'Depot_1': StationSpec('Depot_1', -13500, 11200, 165, 135.0, platforms=0, yards=4, length=500, thru_tracks=0),
 
         # Corridor 4: Southern Coastal Arc (Natural parabolic sweep from City_1 to City_6)
-        'Town_10': StationSpec('Town_10', -13500, -3200, 10, -80.0, platforms=2, yards=1, length=400),
-        'Town_11': StationSpec('Town_11', -11200, -7200, 6, -42.0, platforms=3, yards=1, length=400),
-        'Depot_2': StationSpec('Depot_2', -5600, -9600, 3, -15.0, platforms=0, yards=4, length=500),
-        'Town_12': StationSpec('Town_12', 600, -8400, 2, -8.0, platforms=2, yards=1, length=400),
+        'Town_10': StationSpec('Town_10', -13500, -3200, 10, -80.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
+        'Town_11': StationSpec('Town_11', -11200, -7200, 6, -42.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
+        'Depot_2': StationSpec('Depot_2', -5600, -9600, 3, -15.0, platforms=0, yards=4, length=500, thru_tracks=0),
+        'Town_12': StationSpec('Town_12', 600, -8400, 2, -8.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
 
         # Heavy Industrial Logistics Depots
-        'Depot_3': StationSpec('Depot_3', 7500, 15000, 55, 30.0, platforms=0, yards=4, length=500),
-        'Depot_4': StationSpec('Depot_4', 9200, 2800, 18, 20.0, platforms=0, yards=4, length=500),
+        'Depot_3': StationSpec('Depot_3', 7500, 15000, 55, 30.0, platforms=0, yards=4, length=500, thru_tracks=0),
+        'Depot_4': StationSpec('Depot_4', 9200, 2800, 18, 20.0, platforms=0, yards=4, length=500, thru_tracks=0),
     }
 
     for s in stations.values():
         s.t1, s.t2, s.fw_edges, s.bw_edges = build_angled_yard(
-            nd, nodes_root, edges_root, stops_root, s.id, s.x, s.y, s.z, s.angle, s.platforms, s.yards, s.length
+            nd, nodes_root, edges_root, stops_root, s.id, s.x, s.y, s.z, s.angle, s.platforms, s.yards, s.length, s.thru_tracks, s.thru_speed
         )
 
     # Inter-station track definitions with optimized tangents

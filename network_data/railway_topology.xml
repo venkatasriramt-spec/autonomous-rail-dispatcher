@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-10 15:49:36 by Eclipse SUMO netconvert Version 1.12.0
+<!-- generated on 2026-10-10 16:52:26 by Eclipse SUMO netconvert Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -85,15 +85,11 @@
         <node id="c2_City_5_Town_4_bw_signal_0"/>
         <node id="c2_City_5_Town_4_fw_signal_0"/>
         <node id="c2_Town_4_Town_5_bw_signal_0"/>
-        <node id="c2_Town_4_Town_5_bw_signal_1"/>
         <node id="c2_Town_4_Town_5_fw_signal_0"/>
-        <node id="c2_Town_4_Town_5_fw_signal_1"/>
         <node id="c2_Town_5_City_3_NS_bw_signal_0"/>
         <node id="c2_Town_5_City_3_NS_fw_signal_0"/>
         <node id="c2_Town_6_Town_7_bw_signal_0"/>
-        <node id="c2_Town_6_Town_7_bw_signal_1"/>
         <node id="c2_Town_6_Town_7_fw_signal_0"/>
-        <node id="c2_Town_6_Town_7_fw_signal_1"/>
         <node id="c2_Town_7_City_6_bw_signal_0"/>
         <node id="c2_Town_7_City_6_bw_signal_1"/>
         <node id="c2_Town_7_City_6_fw_signal_0"/>
@@ -124,10 +120,8 @@
         <node id="c4_Depot_2_Town_12_fw_signal_3"/>
         <node id="c4_Town_10_Town_11_bw_signal_0"/>
         <node id="c4_Town_10_Town_11_bw_signal_1"/>
-        <node id="c4_Town_10_Town_11_bw_signal_2"/>
         <node id="c4_Town_10_Town_11_fw_signal_0"/>
         <node id="c4_Town_10_Town_11_fw_signal_1"/>
-        <node id="c4_Town_10_Town_11_fw_signal_2"/>
         <node id="c4_Town_11_Depot_2_bw_signal_0"/>
         <node id="c4_Town_11_Depot_2_bw_signal_1"/>
         <node id="c4_Town_11_Depot_2_bw_signal_2"/>
@@ -157,16 +151,6 @@
         <node id="Depot_1_Throat2"/>
         <node id="Depot_3_Throat2"/>
         <node id="Depot_4_Throat2"/>
-        <node id="Town_10_Throat1"/>
-        <node id="Town_10_Throat2"/>
-        <node id="Town_12_Throat1"/>
-        <node id="Town_12_Throat2"/>
-        <node id="Town_2_Throat1"/>
-        <node id="Town_2_Throat2"/>
-        <node id="Town_4_Throat1"/>
-        <node id="Town_4_Throat2"/>
-        <node id="Town_7_Throat1"/>
-        <node id="Town_7_Throat2"/>
         <node id="Town_8_Throat1"/>
         <node id="Town_8_Throat2"/>
         <node id="Town_9_Throat1"/>
@@ -178,19 +162,29 @@
         <node id="Depot_2_Throat2"/>
         <node id="Depot_3_Throat1"/>
         <node id="Depot_4_Throat1"/>
+    </railNodeType>
+    <railNodeType in="6" out="6">
+        <node id="City_3_NS_Throat2"/>
+        <node id="Town_10_Throat1"/>
+        <node id="Town_10_Throat2"/>
         <node id="Town_11_Throat1"/>
         <node id="Town_11_Throat2"/>
+        <node id="Town_12_Throat1"/>
+        <node id="Town_12_Throat2"/>
         <node id="Town_1_Throat1"/>
         <node id="Town_1_Throat2"/>
+        <node id="Town_2_Throat1"/>
+        <node id="Town_2_Throat2"/>
         <node id="Town_3_Throat1"/>
         <node id="Town_3_Throat2"/>
+        <node id="Town_4_Throat1"/>
+        <node id="Town_4_Throat2"/>
         <node id="Town_5_Throat1"/>
         <node id="Town_5_Throat2"/>
         <node id="Town_6_Throat1"/>
         <node id="Town_6_Throat2"/>
-    </railNodeType>
-    <railNodeType in="6" out="6">
-        <node id="City_3_NS_Throat2"/>
+        <node id="Town_7_Throat1"/>
+        <node id="Town_7_Throat2"/>
     </railNodeType>
     <railNodeType in="7" out="7">
         <node id="City_3_NS_Throat1"/>

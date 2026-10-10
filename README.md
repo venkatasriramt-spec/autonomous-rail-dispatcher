@@ -11,7 +11,8 @@ This network provides the foundational physical infrastructure for future downst
 ├── scripts/
 │   ├── generate_sumo_network.py  # Procedural corridor railway network generator
 │   ├── plot_network.py           # Network topology visualization & rendering tool
-│   └── plot_bilevel_hub.py       # City_3 bi-level station hub plan & elevation renderer
+│   ├── plot_bilevel_hub.py       # City_3 bi-level station hub plan & elevation renderer
+│   └── plot_station_layout.py    # 4-track express station layout diagram renderer
 ├── network_data/
 │   ├── dense_network.nod.xml     # Generated nodes (stations, throats & signals)
 │   ├── dense_network.edg.xml     # Generated tracks (edges, lanes & physical speeds)
@@ -59,6 +60,14 @@ python3 scripts/plot_bilevel_hub.py
 ```
 *(Saves diagram to `scripts/city3_bilevel_hub.png`)*
 
+### 4-Track Express Station Layout
+To render the detailed track schematic and geometric layout of a standard 4-track intermediate town station with express through-tracks and platform loops:
+
+```bash
+python3 scripts/plot_station_layout.py
+```
+*(Saves diagram to `scripts/station_4track_layout.png`)*
+
 ## Network Architecture & Key Corridors
 
 The physical network consists of four major operational railway corridors, a high-speed bypass, dedicated freight spurs, and a signature grade-separated interchange hub:
@@ -92,7 +101,11 @@ At the grand crossing of Corridor 1 (East–West High-Speed Trunk) and Corridor 
 
 ### 7. Station Hierarchy & Capacities
 - **Cities (`City_1` through `City_6`):** Major hub terminals with 4–6 passenger platforms ($800\text{--}900\text{ m}$ length) and 1–2 yard storage sidings.
-- **Towns (`Town_1` through `Town_12`):** Regional intermediate stops with 2–3 passenger platforms ($400\text{ m}$ length) and 1 yard siding.
+- **Trunk Intermediate Towns (4-Track Layout):** 10 intermediate towns (`Town_1`, `Town_2`, `Town_3` on Corridor 1; `Town_4`, `Town_5`, `Town_6`, `Town_7` on Corridor 2; `Town_10`, `Town_11`, `Town_12` on Corridor 4) follow the real-world high-speed rail standard (e.g. Japanese Shinkansen, French LGV):
+  - **2 Express Through-Tracks (`{stn}_thru_1`, `{stn}_thru_2`):** Running down the center alignment at full corridor line speed ($300\text{ km/h}$ / $83.33\text{ m/s}$ on Corridor 1; $120\text{ km/h}$ / $33.33\text{ m/s}$ on Corridors 2 and 4) with zero platform stops, allowing express services to bypass without deceleration.
+  - **2 Flanking Platform Loops (`{stn}_plat_1`, `{stn}_plat_2`):** Diverging smoothly at station switch throats via long lead turnouts ($R \approx 8,000\text{ m}$) into $400\text{ m}$ passenger stopping loops speed-restricted to $50\text{ km/h}$ ($13.89\text{ m/s}$).
+  - **1 Outer Yard Siding (`{stn}_yard_1`):** Siding track for maintenance and freight layovers ($20\text{ km/h}$).
+- **Secondary Towns (`Town_8`, `Town_9`):** Alpine branch line intermediate stops with 2 platform loops and 1 yard track.
 - **Depots (`Depot_1` through `Depot_4`):** Dedicated logistics, freight, and rolling stock maintenance yards with 3–4 siding tracks ($500\text{ m}$ length) and no passenger platforms.
 
 ## Repository Conventions
@@ -125,14 +138,16 @@ When defining train types in your downstream repository:
 The network enforces strict speed limits and vehicle class restrictions based on civil engineering profiles:
 - **High-Speed Trunk (`c1_*`, `bypass_*`):** Up to $83.33\text{ m/s}$ ($300\text{ km/h}$), strictly `rail_electric`.
 - **Regional Trunk (`c2_*`, `c3_*`, `c4_*`):** Up to $33.33\text{ m/s}$ ($120\text{ km/h}$), allows both `rail` and `rail_electric`.
+- **Express Through-Tracks (`*_thru_*`):** Operates at full corridor mainline speed ($83.33\text{ m/s}$ on Corridor 1; $33.33\text{ m/s}$ on Corridors 2/4), with no passenger stops.
 - **Freight & Alpine Mountain Lines (`c3_Town_9_Depot_1`, spurs):** Up to $22.22\text{ m/s}$ ($80\text{ km/h}$).
-- **Station Platform Tracks (`*_plat_*`):** Speed restricted to $13.89\text{ m/s}$ ($50\text{ km/h}$).
+- **Station Platform Loops (`*_plat_*`):** Speed restricted to $13.89\text{ m/s}$ ($50\text{ km/h}$).
 - **Depot Yards & Siding Tracks (`*_yard_*`):** Speed restricted to $5.55\text{ m/s}$ ($20\text{ km/h}$).
 
 ### 4. Directional Edge & Platform Naming Conventions
 Tracks are fully bi-directional (double-track mainlines) with consistent naming:
 - **Forward Running:** Mainline edges are suffixed with `_fw` (split into ~1 km block sections: `..._fw_b0`, `..._fw_b1`, etc.). Platform stops are named `<Station>_p<PlatformNumber>_fw` on lane `<Station>_plat_<PlatformNumber>_fw_0`.
 - **Backward Running:** Mainline edges are suffixed with `_bw` (split into `..._bw_b0`, `..._bw_b1`, etc.). Platform stops are named `<Station>_p<PlatformNumber>_bw` on lane `<Station>_plat_<PlatformNumber>_bw_0`.
+- **Express Through-Tracks:** Non-stopping bypass tracks are designated `<Station>_thru_<N>_fw` / `<Station>_thru_<N>_bw` with metadata `<param key="is_through" value="true"/>`. Non-stopping express trains must be routed over these edges to prevent speed drops.
 - **Storage / Maintenance Yards:** Non-platform tracks are designated `<Station>_yard_<N>_fw` / `<Station>_yard_<N>_bw` with parameter `<param key="is_yard" value="true"/>`.
 
 ### 5. Embedded Infrastructure Telemetry (`<param>` Tags)

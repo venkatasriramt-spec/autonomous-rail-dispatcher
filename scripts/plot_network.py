@@ -23,22 +23,26 @@ for edge in root.findall('edge'):
         xs = [p[0] for p in pts]
         ys = [p[1] for p in pts]
         
-        if 'c1_' in eid or 'bypass' in eid:
-            color = '#38bdf8' # cyan high speed
-            lw = 1.6
-            alpha = 0.9
-        elif 'c2_' in eid or 'c3_' in eid:
-            color = '#4ade80' # green regional
-            lw = 1.4
-            alpha = 0.85
+        if 'thru' in eid:
+            color = '#00f0ff' # bright cyan express through-track
+            lw = 2.2
+            alpha = 1.0
         elif 'plat' in eid:
-            color = '#facc15' # yellow station
+            color = '#facc15' # yellow station platform loop
             lw = 2.4
             alpha = 1.0
         elif 'yard' in eid:
-            color = '#fb923c' # orange yard
+            color = '#fb923c' # orange yard siding
             lw = 1.8
             alpha = 0.9
+        elif 'c1_' in eid or 'bypass' in eid:
+            color = '#38bdf8' # cyan high speed trunk
+            lw = 1.6
+            alpha = 0.85
+        elif 'c2_' in eid or 'c3_' in eid:
+            color = '#4ade80' # green regional trunk
+            lw = 1.4
+            alpha = 0.85
         else:
             color = '#c084fc' # purple loop / depot spurs
             lw = 1.2

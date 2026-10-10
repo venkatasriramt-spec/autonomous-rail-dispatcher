@@ -97,3 +97,25 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Recompiled the entire network via `netconvert` with zero fatal errors or broken nodes.
   - Validated `network_data/railway_topology.xml`: confirmed clean topology across all 164 nodes, 374 edges, 126 train stops, and 458 explicit connections.
 
+#### Phase 10: Express Through-Tracks at Intermediate Towns (4-Track Stations)
+- **Motivation:** In previous network iterations, all intermediate town stations (`Town_1` through `Town_12`) only had platform stopping tracks speed-restricted to $13.89\text{ m/s}$ ($50\text{ km/h}$). Non-stopping high-speed express trains on Corridor 1 ($300\text{ km/h}$) and fast regional trains on Corridors 2 and 4 ($120\text{ km/h}$) were artificially forced to brake down to $50\text{ km/h}$ through every intermediate town, causing massive travel time penalties and unrealistic energy consumption.
+- **4-Track Station Architecture (Shinkansen / LGV Standard):**
+  - Upgraded 10 intermediate towns (`Town_1`, `Town_2`, `Town_3` on Corridor 1; `Town_4`, `Town_5`, `Town_6`, `Town_7` on Corridor 2; `Town_10`, `Town_11`, `Town_12` on Corridor 4) to the standard 4-track (+1 yard) layout:
+    - **2 Center Express Through-Tracks (`{stn}_thru_1`, `{stn}_thru_2`):** Positioned along the mainline centerline at offsets $\pm 2.5\text{ m}$. They operate at full corridor line speed ($300\text{ km/h}$ / $83.33\text{ m/s}$ on Corridor 1; $120\text{ km/h}$ / $33.33\text{ m/s}$ on Corridors 2 and 4). They feature zero `<trainStop>` platforms, allowing express services to run through intermediate towns without decelerating.
+    - **2 Flanking Platform Loops (`{stn}_plat_1`, `{stn}_plat_2`):** Positioned at lateral offsets $\pm 8.5\text{ m}$, speed-restricted to $13.89\text{ m/s}$ ($50\text{ km/h}$), each equipped with a $340\text{ m}$ `<trainStop>` platform for stopping passenger trains.
+    - **1 Outer Service Siding (`{stn}_yard_1`):** At lateral offset $+14.5\text{ m}$, speed $5.55\text{ m/s}$ ($20\text{ km/h}$) for maintenance and freight layovers.
+- **Turnout Lead Distance & Switch Geometry:**
+  - Extended station throat switch lead distance `t_dist` to $220.0\text{ m}$ for stations with express through-tracks.
+  - Yields an effective switch lead radius of $R \approx 8,000\text{ m}$, ensuring through-trains maintain mainline speed with zero angular discrepancy or speed reduction warnings.
+- **Platform Inset Geometry:**
+  - Positioned platform `<trainStop>` elements strictly between `t_lead + 30.0` and `t_lead + length - 30.0` on the platform loops, ensuring that stopped trains rest entirely on parallel tangent tracks and never foul turnout switch blades.
+- **Variable Shadowing Bug Resolution:**
+  - Resolved a coordinate shadowing bug in `build_angled_yard` where `for y in range(yards):` accidentally clobbered the station's Y-coordinate parameter (`y = -3200` was overwritten to `0`), restoring geographic alignment across southern arc stations (`Town_10`).
+- **Topological & Compilation Verification:**
+  - Compiled `network_data/dense_network.net.xml` with `netconvert`.
+  - Evaluated `network_data/railway_topology.xml`: confirmed **0 broken nodes**, 0 driving angle conflicts, and 0 disconnected lanes across 158 nodes, 398 edges, 116 train stops, and 518 explicit connections.
+- **Visualization Suite:**
+  - Updated `scripts/plot_network.py` with distinct neon cyan (`#00f0ff`) rendering for express through-tracks, regenerating `scripts/current_network_preview.png`.
+  - Implemented `scripts/plot_station_layout.py` which renders `scripts/station_4track_layout.png`, providing a clean engineering schematic of through-tracks, platform loops, island platforms, and switch throat tapers.
+
+
