@@ -118,4 +118,27 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Updated `scripts/plot_network.py` with distinct neon cyan (`#00f0ff`) rendering for express through-tracks, regenerating `scripts/current_network_preview.png`.
   - Implemented `scripts/plot_station_layout.py` which renders `scripts/station_4track_layout.png`, providing a clean engineering schematic of through-tracks, platform loops, island platforms, and switch throat tapers.
 
+#### Phase 11: Mid-Corridor High-Speed Universal Crossovers (*Überleitstellen*)
+- **Motivation:** On long inter-city rail lines (such as the 27 km East–West high-speed corridor and the 24 km North–South regional spine), operating without mid-corridor crossovers created extreme operational vulnerability. Any track maintenance, stalled freight train, or signal anomaly forced trains into single-line working or complete service suspension across the entire 10–15 km section between stations. Furthermore, fast express trains ($300\text{ km/h}$) running behind slower local or freight services could not overtake mid-corridor.
+- **Paired Universal Crossover Engineering (4-Switch Interlocking Layout):**
+  - Designed and implemented sequential paired universal crossovers avoiding high-speed diamond frogs (modeled after French LGV *Points de Transition* / German ICE *Überleitstellen*):
+    - **Total Footprint:** $380\text{ m}$ total interlocking zone ($150\text{ m}$ turnout lead + $80\text{ m}$ tangent buffer + $150\text{ m}$ turnout lead).
+    - **Turnout Geometry & Curvature:** Natural rail cubic spline transitions with effective curve radius $R \approx 1,000\text{ m}$ and $0.0^\circ$ departure/arrival tangent discrepancy relative to the mainline tracks.
+    - **Speed Limits:** High-speed mainline through tracks retain full $300\text{ km/h}$ ($83.33\text{ m/s}$) line speed; diagonal turnout tracks permit $160\text{ km/h}$ ($44.44\text{ m/s}$) on high-speed corridors and $80\text{ km/h}$ ($22.22\text{ m/s}$) on regional corridors.
+  - Installed 8 universal crossovers (32 switch nodes) across the trunk railway corridors:
+    - 4 on Corridor 1 (East–West Mainline): `c1_Town_1_City_2_xov` (~km 6.5), `c1_City_2_Town_2_xov` (~km 11.5), `c1_Town_2_City_3_EW_xov` (~km 16.5), `c1_City_3_EW_Town_3_xov` (~km 21.5).
+    - 2 on Corridor 2 (North–South Spine): `c2_Town_4_Town_5_xov` (~km 5.5), `c2_Town_6_Town_7_xov` (~km 17.0).
+    - 2 on Corridor 4 (Southern Coastal Arc): `c4_Town_10_Town_11_xov`, `c4_Depot_2_Town_12_xov`.
+- **Bidirectional Block Signaling & Reverse Running:**
+  - Implemented `generate_bidi_blocks` across all approach, mid-zone, and departure blocks with paired `<edge ... bidi="..." />` attributes.
+  - Enabled dynamic wrong-way running (*Gleiswechselbetrieb* / *banalisation des voies*), permitting trains to divert around track maintenance or blockage and return to their designated track at the next crossover.
+  - Integrated alternate departure routing in station throat interlockings to support bidirectional dispatching.
+- **Topological & Compilation Verification:**
+  - Compiled `network_data/dense_network.net.xml` with `netconvert`.
+  - Evaluated `network_data/railway_topology.xml`: confirmed **0 broken nodes**, 0 driving angle conflicts, and 0 disconnected lanes across 186 nodes, 458 edges, 116 train stops, and 566 explicit connections.
+  - All 32 crossover switch nodes validated cleanly with `in="3" out="3"`.
+- **Visualization Suite:**
+  - Updated `scripts/plot_network.py` with amber (`#f59e0b`) rendering and diamond markers for crossover installations, regenerating `scripts/current_network_preview.png`.
+  - Implemented `scripts/plot_crossover.py` producing `scripts/crossover_layout.png`, showing a detailed CAD-level engineering schematic of the 380 m paired crossover layout with dimensions, switch points, track centers, and speed limits.
+
 

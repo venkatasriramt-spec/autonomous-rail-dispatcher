@@ -12,11 +12,12 @@ This network provides the foundational physical infrastructure for future downst
 │   ├── generate_sumo_network.py  # Procedural corridor railway network generator
 │   ├── plot_network.py           # Network topology visualization & rendering tool
 │   ├── plot_bilevel_hub.py       # City_3 bi-level station hub plan & elevation renderer
-│   └── plot_station_layout.py    # 4-track express station layout diagram renderer
+│   ├── plot_station_layout.py    # 4-track express station layout diagram renderer
+│   └── plot_crossover.py         # High-speed universal crossover schematic renderer
 ├── network_data/
-│   ├── dense_network.nod.xml     # Generated nodes (stations, throats & signals)
+│   ├── dense_network.nod.xml     # Generated nodes (stations, throats, signals & crossovers)
 │   ├── dense_network.edg.xml     # Generated tracks (edges, lanes & physical speeds)
-│   ├── dense_network.con.xml     # Station throat interlocking switch connections
+│   ├── dense_network.con.xml     # Station throat and crossover interlocking connections
 │   ├── dense_network.add.xml     # Generated platform placements (trainStops)
 │   ├── dense_network.net.xml     # The compiled, routable SUMO railway network
 │   └── railway_topology.xml      # SUMO topology analyzer report (0 error nodes)
@@ -68,9 +69,17 @@ python3 scripts/plot_station_layout.py
 ```
 *(Saves diagram to `scripts/station_4track_layout.png`)*
 
+### High-Speed Paired Universal Crossover Schematic
+To render the detailed track schematic, dimensions, and switch geometry of a mid-corridor high-speed universal crossover:
+
+```bash
+python3 scripts/plot_crossover.py
+```
+*(Saves diagram to `scripts/crossover_layout.png`)*
+
 ## Network Architecture & Key Corridors
 
-The physical network consists of four major operational railway corridors, a high-speed bypass, dedicated freight spurs, and a signature grade-separated interchange hub:
+The physical network consists of four major operational railway corridors, a high-speed bypass, dedicated freight spurs, a signature grade-separated interchange hub, and mid-corridor universal crossovers:
 
 ### 1. Corridor 1: East–West High-Speed Trunk
 - **Route:** `City_1` $\leftrightarrow$ `Town_1` $\leftrightarrow$ `City_2` $\leftrightarrow$ `Town_2` $\leftrightarrow$ `City_3_EW` $\leftrightarrow$ `Town_3` $\leftrightarrow$ `City_4`
@@ -108,6 +117,25 @@ At the grand crossing of Corridor 1 (East–West High-Speed Trunk) and Corridor 
 - **Secondary Towns (`Town_8`, `Town_9`):** Alpine branch line intermediate stops with 2 platform loops and 1 yard track.
 - **Depots (`Depot_1` through `Depot_4`):** Dedicated logistics, freight, and rolling stock maintenance yards with 3–4 siding tracks ($500\text{ m}$ length) and no passenger platforms.
 
+### 8. Mid-Corridor High-Speed Universal Crossovers (*Überleitstellen*)
+Along long inter-station corridor segments, the network incorporates 8 **Paired Universal Crossovers** spaced every 5–8 km (reflecting French TGV *Points de Transition* / German ICE *Überleitstellen* practice):
+- **Locations (8 Interlockings, 32 Switch Nodes):**
+  - **Corridor 1 (East–West Mainline):** 4 installations (`Town_1`–`City_2`, `City_2`–`Town_2`, `Town_2`–`City_3_EW`, `City_3_EW`–`Town_3`).
+  - **Corridor 2 (North–South Spine):** 2 installations (`Town_4`–`Town_5`, `Town_6`–`Town_7`).
+  - **Corridor 4 (Southern Coastal Arc):** 2 installations (`Town_10`–`Town_11`, `Depot_2`–`Town_12`).
+- **Paired Sequential Switch Topology (4-Switch Layout):**
+  - Avoids flat diamond crossing diamonds which are restricted on high-speed rail.
+  - Consists of two sequential diagonal crossovers separated by an intermediate tangent buffer:
+    - **Turnout 1 (150 m lead):** Diverges from Track 1 at Switch `1A` and merges onto Track 2 at Switch `2B` ($R \approx 1,000\text{ m}$, speed $160\text{ km/h}$ / $44.44\text{ m/s}$).
+    - **Tangent Buffer (80 m):** Parallel tangent gap stabilizing train suspension before the next switch.
+    - **Turnout 2 (150 m lead):** Diverges from Track 2 at Switch `2C` and merges onto Track 1 at Switch `1D` ($R \approx 1,000\text{ m}$, speed $160\text{ km/h}$ / $44.44\text{ m/s}$).
+    - **Total Footprint:** $380\text{ m}$ total interlocking length ($150\text{ m} + 80\text{ m} + 150\text{ m}$).
+  - Mainline through tracks (`T1_mid`, `T2_mid`) maintain full line speed ($300\text{ km/h}$ / $83.33\text{ m/s}$) with $0.0^\circ$ angular discrepancy.
+- **Operational Capabilities for Downstream RL / Dispatching:**
+  - **Wrong-Way Running (*Gleiswechselbetrieb*):** Trains can divert to the opposite track during maintenance or track blockages and return to their normal track at the next crossover without traveling all the way to a station.
+  - **Dynamic In-Flight Overtakes:** Fast express trains ($300\text{ km/h}$) can cross over to run parallel to and overtake slower regional or freight trains on the adjacent track mid-corridor.
+  - **Emergency Single-Line Working:** Fully signaled in both directions with bidirectional block pairs throughout all corridor approach and departure segments.
+
 ## Repository Conventions
 
 - This folder is strictly dedicated to **tracks, junctions, signals, and stations**. Trains and scheduling are maintained externally.
@@ -139,6 +167,7 @@ The network enforces strict speed limits and vehicle class restrictions based on
 - **High-Speed Trunk (`c1_*`, `bypass_*`):** Up to $83.33\text{ m/s}$ ($300\text{ km/h}$), strictly `rail_electric`.
 - **Regional Trunk (`c2_*`, `c3_*`, `c4_*`):** Up to $33.33\text{ m/s}$ ($120\text{ km/h}$), allows both `rail` and `rail_electric`.
 - **Express Through-Tracks (`*_thru_*`):** Operates at full corridor mainline speed ($83.33\text{ m/s}$ on Corridor 1; $33.33\text{ m/s}$ on Corridors 2/4), with no passenger stops.
+- **High-Speed Crossover Turnouts (`*_xov1_*`, `*_xov2_*`):** Diverging speed $44.44\text{ m/s}$ ($160\text{ km/h}$) on Corridor 1; $22.22\text{ m/s}$ ($80\text{ km/h}$) on regional corridors. Mainline through tracks maintain full line speed.
 - **Freight & Alpine Mountain Lines (`c3_Town_9_Depot_1`, spurs):** Up to $22.22\text{ m/s}$ ($80\text{ km/h}$).
 - **Station Platform Loops (`*_plat_*`):** Speed restricted to $13.89\text{ m/s}$ ($50\text{ km/h}$).
 - **Depot Yards & Siding Tracks (`*_yard_*`):** Speed restricted to $5.55\text{ m/s}$ ($20\text{ km/h}$).
@@ -148,6 +177,7 @@ Tracks are fully bi-directional (double-track mainlines) with consistent naming:
 - **Forward Running:** Mainline edges are suffixed with `_fw` (split into ~1 km block sections: `..._fw_b0`, `..._fw_b1`, etc.). Platform stops are named `<Station>_p<PlatformNumber>_fw` on lane `<Station>_plat_<PlatformNumber>_fw_0`.
 - **Backward Running:** Mainline edges are suffixed with `_bw` (split into `..._bw_b0`, `..._bw_b1`, etc.). Platform stops are named `<Station>_p<PlatformNumber>_bw` on lane `<Station>_plat_<PlatformNumber>_bw_0`.
 - **Express Through-Tracks:** Non-stopping bypass tracks are designated `<Station>_thru_<N>_fw` / `<Station>_thru_<N>_bw` with metadata `<param key="is_through" value="true"/>`. Non-stopping express trains must be routed over these edges to prevent speed drops.
+- **Universal Crossover Tracks:** Turnout edges are designated `<Corridor>_xov_xov1_fw` / `<Corridor>_xov_xov1_bw` (Turnout 1) and `<Corridor>_xov_xov2_fw` / `<Corridor>_xov_xov2_bw` (Turnout 2) with metadata `<param key="is_crossover" value="true"/>`. Mainline through tracks within the crossover zone are `<Corridor>_xov_T1_mid_fw` and `<Corridor>_xov_T2_mid_fw`.
 - **Storage / Maintenance Yards:** Non-platform tracks are designated `<Station>_yard_<N>_fw` / `<Station>_yard_<N>_bw` with parameter `<param key="is_yard" value="true"/>`.
 
 ### 5. Embedded Infrastructure Telemetry (`<param>` Tags)

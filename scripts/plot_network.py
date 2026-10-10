@@ -23,37 +23,51 @@ for edge in root.findall('edge'):
         xs = [p[0] for p in pts]
         ys = [p[1] for p in pts]
         
-        if 'thru' in eid:
+        if 'xov1' in eid or 'xov2' in eid:
+            color = '#f59e0b' # vibrant amber crossover turnout
+            lw = 3.0
+            alpha = 1.0
+            zorder = 4
+        elif 'thru' in eid:
             color = '#00f0ff' # bright cyan express through-track
             lw = 2.2
             alpha = 1.0
+            zorder = 3
         elif 'plat' in eid:
             color = '#facc15' # yellow station platform loop
             lw = 2.4
             alpha = 1.0
+            zorder = 3
         elif 'yard' in eid:
             color = '#fb923c' # orange yard siding
             lw = 1.8
             alpha = 0.9
+            zorder = 2
         elif 'c1_' in eid or 'bypass' in eid:
             color = '#38bdf8' # cyan high speed trunk
             lw = 1.6
             alpha = 0.85
+            zorder = 2
         elif 'c2_' in eid or 'c3_' in eid:
             color = '#4ade80' # green regional trunk
             lw = 1.4
             alpha = 0.85
+            zorder = 2
         else:
             color = '#c084fc' # purple loop / depot spurs
             lw = 1.2
             alpha = 0.8
+            zorder = 2
             
-        ax.plot(xs, ys, color=color, linewidth=lw, alpha=alpha)
+        ax.plot(xs, ys, color=color, linewidth=lw, alpha=alpha, zorder=zorder)
 
 # Plot junction nodes & labels
 for n in root.findall('junction'):
     jid = n.get('id', '')
-    if 'Throat' in jid or ('City' in jid and 'signal' not in jid and ':' not in jid) or ('Town' in jid and 'signal' not in jid and ':' not in jid) or ('Depot' in jid and 'signal' not in jid and ':' not in jid):
+    if 'xov' in jid and ('1A' in jid or '2B' in jid or '2C' in jid or '1D' in jid):
+        x, y = float(n.get('x')), float(n.get('y'))
+        ax.scatter([x], [y], color='#f59e0b', s=20, marker='D', zorder=5)
+    elif 'Throat' in jid or ('City' in jid and 'signal' not in jid and ':' not in jid) or ('Town' in jid and 'signal' not in jid and ':' not in jid) or ('Depot' in jid and 'signal' not in jid and ':' not in jid):
         x, y = float(n.get('x')), float(n.get('y'))
         if 'Throat1' in jid:
             stn_name = jid.replace('_Throat1', '')

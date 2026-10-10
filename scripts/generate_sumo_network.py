@@ -175,7 +175,114 @@ def generate_block_sections(edges_root, nodes_root, base_id, frm, to, pts, prof)
         
     return created_edges
 
-def create_corridor_track(edges_root, nodes_root, track_id, n_from, n_to, profile="regional", v0_override=None, v1_override=None, cd0=None, cd1=None):
+def sample_point_at_distance(pts, dists, target_d):
+    """Interpolates a 3D coordinate and 2D tangent vector at distance target_d along a polyline."""
+    n = len(pts)
+    if target_d <= 0.0:
+        p0, p1 = pts[0], pts[1]
+        dx, dy = p1[0]-p0[0], p1[1]-p0[1]
+        mag = math.hypot(dx, dy)
+        return p0, (dx/mag, dy/mag) if mag > 0 else (1, 0)
+    if target_d >= dists[-1]:
+        p0, p1 = pts[-2], pts[-1]
+        dx, dy = p1[0]-p0[0], p1[1]-p0[1]
+        mag = math.hypot(dx, dy)
+        return p1, (dx/mag, dy/mag) if mag > 0 else (1, 0)
+    for i in range(n - 1):
+        if dists[i] <= target_d <= dists[i+1]:
+            seg_len = dists[i+1] - dists[i]
+            frac = (target_d - dists[i]) / seg_len if seg_len > 0 else 0
+            p0, p1 = pts[i], pts[i+1]
+            x = p0[0] + frac * (p1[0] - p0[0])
+            y = p0[1] + frac * (p1[1] - p0[1])
+            z = p0[2] + frac * (p1[2] - p0[2])
+            dx, dy = p1[0]-p0[0], p1[1]-p0[1]
+            mag = math.hypot(dx, dy)
+            return (round(x, 2), round(y, 2), round(z, 2)), (dx/mag, dy/mag) if mag > 0 else (1, 0)
+    return pts[-1], (1, 0)
+
+def slice_points_by_distance(pts, dists, d_start, d_end):
+    """Slices a polyline by arc length distance interval [d_start, d_end]."""
+    p_start, _ = sample_point_at_distance(pts, dists, d_start)
+    p_end, _ = sample_point_at_distance(pts, dists, d_end)
+    sliced = [p_start]
+    for i in range(len(pts)):
+        if d_start < dists[i] < d_end:
+            sliced.append(pts[i])
+    sliced.append(p_end)
+    res = [sliced[0]]
+    for p in sliced[1:]:
+        if math.hypot(p[0]-res[-1][0], p[1]-res[-1][1]) >= 8.0:
+            res.append(p)
+    if len(res) == 1:
+        res.append(p_end)
+    return res
+
+def generate_bidi_blocks(edges_root, nodes_root, base_id, frm, to, pts, prof):
+    """Splits running track into ~1km signal blocks with paired bidirectional edges (fw & bw)."""
+    total_len = sum(math.hypot(pts[i+1][0]-pts[i][0], pts[i+1][1]-pts[i][1]) for i in range(len(pts)-1))
+    block_len = 1000.0
+    max_profile_speed = float(prof['speed'])
+    
+    if total_len <= block_len * 1.5:
+        min_r = compute_min_radius(pts)
+        safe_v = math.sqrt(min_r * 1.2) if min_r < float('inf') else max_profile_speed
+        edge_speed = max(13.89, min(max_profile_speed, safe_v))
+        shape_fw = " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in pts])
+        shape_bw = " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in reversed(pts)])
+        
+        efw_id = f"{base_id}_fw"
+        ebw_id = f"{base_id}_bw"
+        efw = ET.SubElement(edges_root, 'edge', id=efw_id, **{"from": frm, "to": to, "speed": f"{edge_speed:.2f}", "numLanes": "1", "allow": prof['allow'], "shape": shape_fw, "bidi": ebw_id})
+        ebw = ET.SubElement(edges_root, 'edge', id=ebw_id, **{"from": to, "to": frm, "speed": f"{edge_speed:.2f}", "numLanes": "1", "allow": prof['allow'], "shape": shape_bw, "bidi": efw_id})
+        for key in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+            ET.SubElement(efw, 'param', key=key, value=prof[key])
+            ET.SubElement(ebw, 'param', key=key, value=prof[key])
+        return [efw_id], [ebw_id]
+
+    num_blocks = max(2, int(total_len / block_len))
+    num_blocks = min(num_blocks, len(pts) - 1)
+    chunk_size = max(1, len(pts) // num_blocks)
+    
+    nodes = [frm]
+    chunk_list = []
+    for b in range(num_blocks):
+        is_last = (b == num_blocks - 1)
+        start_idx = b * chunk_size
+        end_idx = len(pts) - 1 if is_last else (b + 1) * chunk_size
+        chunk_pts = pts[start_idx:end_idx+1]
+        chunk_list.append(chunk_pts)
+        curr_node = to if is_last else f"{base_id}_sig_{b}"
+        nodes.append(curr_node)
+        if not is_last:
+            last_p = chunk_pts[-1]
+            ET.SubElement(nodes_root, 'node', id=curr_node, x=f"{last_p[0]:.2f}", y=f"{last_p[1]:.2f}", z=f"{last_p[2]:.2f}", type="rail_signal")
+            
+    created_fw = []
+    created_bw = []
+    for b in range(num_blocks):
+        chunk_pts = chunk_list[b]
+        min_r = compute_min_radius(chunk_pts)
+        safe_v = math.sqrt(min_r * 1.2) if min_r < float('inf') else max_profile_speed
+        edge_speed = max(13.89, min(max_profile_speed, safe_v))
+        shape_fw = " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in chunk_pts])
+        shape_bw = " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in reversed(chunk_pts)])
+        
+        u = nodes[b]
+        v = nodes[b+1]
+        efw_id = f"{base_id}_fw_b{b}"
+        ebw_id = f"{base_id}_bw_b{b}"
+        efw = ET.SubElement(edges_root, 'edge', id=efw_id, **{"from": u, "to": v, "speed": f"{edge_speed:.2f}", "numLanes": "1", "allow": prof['allow'], "shape": shape_fw, "bidi": ebw_id})
+        ebw = ET.SubElement(edges_root, 'edge', id=ebw_id, **{"from": v, "to": u, "speed": f"{edge_speed:.2f}", "numLanes": "1", "allow": prof['allow'], "shape": shape_bw, "bidi": efw_id})
+        for key in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+            ET.SubElement(efw, 'param', key=key, value=prof[key])
+            ET.SubElement(ebw, 'param', key=key, value=prof[key])
+        created_fw.append(efw_id)
+        created_bw.append(ebw_id)
+        
+    return created_fw, created_bw
+
+def create_corridor_track(edges_root, nodes_root, conns_root, track_id, n_from, n_to, profile="regional", v0_override=None, v1_override=None, cd0=None, cd1=None, has_xover=False):
     prof = TRACK_PROFILES[profile]
     p0 = (float(n_from['x']), float(n_from['y']))
     p1 = (float(n_to['x']), float(n_to['y']))
@@ -190,11 +297,130 @@ def create_corridor_track(edges_root, nodes_root, track_id, n_from, n_to, profil
     fw_pts = smooth_offset_shape(base_pts, 2.0)
     bw_pts = smooth_offset_shape(base_pts, -2.0)
     
-    fw_edges = generate_block_sections(edges_root, nodes_root, f"{track_id}_fw", n_from['id'], n_to['id'], fw_pts, prof)
-    bw_pts_rev = list(reversed(bw_pts))
-    bw_edges = generate_block_sections(edges_root, nodes_root, f"{track_id}_bw", n_to['id'], n_from['id'], bw_pts_rev, prof)
-    
-    return fw_edges, bw_edges
+    if not has_xover:
+        fw_edges = generate_block_sections(edges_root, nodes_root, f"{track_id}_fw", n_from['id'], n_to['id'], fw_pts, prof)
+        bw_pts_rev = list(reversed(bw_pts))
+        bw_edges = generate_block_sections(edges_root, nodes_root, f"{track_id}_bw", n_to['id'], n_from['id'], bw_pts_rev, prof)
+        return fw_edges, bw_edges, None, None
+
+    # Calculate cumulative distances along corridor
+    dists = [0.0] * len(base_pts)
+    for i in range(1, len(base_pts)):
+        dists[i] = dists[i-1] + math.hypot(base_pts[i][0]-base_pts[i-1][0], base_pts[i][1]-base_pts[i-1][1])
+    total_len = dists[-1]
+
+    # Paired high-speed universal crossover footprint
+    s_mid = total_len / 2.0
+    L_xov = 150.0  # Turnout lead distance (giving R ~ 1000m)
+    L_gap = 80.0   # Buffer tangent between crossovers
+    W_xov = 2 * L_xov + L_gap # 380m total footprint
+    s_A = s_mid - W_xov / 2.0
+    s_B = s_A + L_xov
+    s_C = s_B + L_gap
+    s_D = s_C + L_xov
+
+    pos_1A, vec_1A = sample_point_at_distance(fw_pts, dists, s_A)
+    pos_2B, vec_2B = sample_point_at_distance(bw_pts, dists, s_B)
+    pos_2C, vec_2C = sample_point_at_distance(bw_pts, dists, s_C)
+    pos_1D, vec_1D = sample_point_at_distance(fw_pts, dists, s_D)
+
+    xov_id = f"{track_id}_xov"
+    n1A = f"{xov_id}_1A"
+    n2B = f"{xov_id}_2B"
+    n2C = f"{xov_id}_2C"
+    n1D = f"{xov_id}_1D"
+
+    ET.SubElement(nodes_root, 'node', id=n1A, x=f"{pos_1A[0]:.2f}", y=f"{pos_1A[1]:.2f}", z=f"{pos_1A[2]:.2f}", type='rail_signal')
+    ET.SubElement(nodes_root, 'node', id=n2B, x=f"{pos_2B[0]:.2f}", y=f"{pos_2B[1]:.2f}", z=f"{pos_2B[2]:.2f}", type='rail_signal')
+    ET.SubElement(nodes_root, 'node', id=n2C, x=f"{pos_2C[0]:.2f}", y=f"{pos_2C[1]:.2f}", z=f"{pos_2C[2]:.2f}", type='rail_signal')
+    ET.SubElement(nodes_root, 'node', id=n1D, x=f"{pos_1D[0]:.2f}", y=f"{pos_1D[1]:.2f}", z=f"{pos_1D[2]:.2f}", type='rail_signal')
+
+    # Polyline shapes for track sections
+    fw_pre_pts = slice_points_by_distance(fw_pts, dists, 0.0, s_A)
+    fw_mid_pts = slice_points_by_distance(fw_pts, dists, s_A, s_D)
+    fw_post_pts = slice_points_by_distance(fw_pts, dists, s_D, total_len)
+
+    bw_post_pts = slice_points_by_distance(bw_pts, dists, 0.0, s_B)
+    bw_mid_pts = slice_points_by_distance(bw_pts, dists, s_B, s_C)
+    bw_pre_pts = slice_points_by_distance(bw_pts, dists, s_C, total_len)
+
+    # Approach and departure blocks with bidirectional edges
+    t1_pre_fw, t1_pre_bw = generate_bidi_blocks(edges_root, nodes_root, f"{xov_id}_T1_pre", n_from['id'], n1A, fw_pre_pts, prof)
+    t1_post_fw, t1_post_bw = generate_bidi_blocks(edges_root, nodes_root, f"{xov_id}_T1_post", n1D, n_to['id'], fw_post_pts, prof)
+
+    t2_post_fw, t2_post_bw = generate_bidi_blocks(edges_root, nodes_root, f"{xov_id}_T2_post", n_from['id'], n2B, bw_post_pts, prof)
+    t2_pre_fw, t2_pre_bw = generate_bidi_blocks(edges_root, nodes_root, f"{xov_id}_T2_pre", n2C, n_to['id'], bw_pre_pts, prof)
+
+    def to_shape_str(pts): return " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in pts])
+    def to_rev_shape_str(pts): return " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in reversed(pts)])
+
+    # Straight mainline edges inside the crossover zone (maintaining full line speed)
+    e_T1_mid_fw = f"{xov_id}_T1_mid_fw"
+    e_T1_mid_bw = f"{xov_id}_T1_mid_bw"
+    efw = ET.SubElement(edges_root, 'edge', id=e_T1_mid_fw, **{"from": n1A, "to": n1D, "speed": prof['speed'], "numLanes": "1", "allow": prof['allow'], "shape": to_shape_str(fw_mid_pts), "bidi": e_T1_mid_bw})
+    ebw = ET.SubElement(edges_root, 'edge', id=e_T1_mid_bw, **{"from": n1D, "to": n1A, "speed": prof['speed'], "numLanes": "1", "allow": prof['allow'], "shape": to_rev_shape_str(fw_mid_pts), "bidi": e_T1_mid_fw})
+    for k in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+        ET.SubElement(efw, 'param', key=k, value=prof[k]); ET.SubElement(ebw, 'param', key=k, value=prof[k])
+
+    e_T2_mid_fw = f"{xov_id}_T2_mid_fw"
+    e_T2_mid_bw = f"{xov_id}_T2_mid_bw"
+    efw = ET.SubElement(edges_root, 'edge', id=e_T2_mid_fw, **{"from": n2B, "to": n2C, "speed": prof['speed'], "numLanes": "1", "allow": prof['allow'], "shape": to_shape_str(bw_mid_pts), "bidi": e_T2_mid_bw})
+    ebw = ET.SubElement(edges_root, 'edge', id=e_T2_mid_bw, **{"from": n2C, "to": n2B, "speed": prof['speed'], "numLanes": "1", "allow": prof['allow'], "shape": to_rev_shape_str(bw_mid_pts), "bidi": e_T2_mid_fw})
+    for k in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+        ET.SubElement(efw, 'param', key=k, value=prof[k]); ET.SubElement(ebw, 'param', key=k, value=prof[k])
+
+    # Diagonal crossover turnouts (speed: 160 km/h on high_speed, 80 km/h on regional)
+    xov_speed = "44.44" if profile == "high_speed" else "22.22"
+    xov1_pts = generate_natural_rail_spline((pos_1A[0], pos_1A[1]), vec_1A, (pos_2B[0], pos_2B[1]), (-vec_2B[0], -vec_2B[1]), pos_1A[2], pos_2B[2], scale_factor=0.35)
+    xov2_pts = generate_natural_rail_spline((pos_2C[0], pos_2C[1]), vec_2C, (pos_1D[0], pos_1D[1]), (-vec_1D[0], -vec_1D[1]), pos_2C[2], pos_1D[2], scale_factor=0.35)
+
+    e_xov1_fw = f"{xov_id}_xov1_fw"
+    e_xov1_bw = f"{xov_id}_xov1_bw"
+    efw = ET.SubElement(edges_root, 'edge', id=e_xov1_fw, **{"from": n1A, "to": n2B, "speed": xov_speed, "numLanes": "1", "allow": prof['allow'], "shape": to_shape_str(xov1_pts), "bidi": e_xov1_bw})
+    ebw = ET.SubElement(edges_root, 'edge', id=e_xov1_bw, **{"from": n2B, "to": n1A, "speed": xov_speed, "numLanes": "1", "allow": prof['allow'], "shape": to_rev_shape_str(xov1_pts), "bidi": e_xov1_fw})
+    for k in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+        ET.SubElement(efw, 'param', key=k, value=prof[k]); ET.SubElement(ebw, 'param', key=k, value=prof[k])
+    ET.SubElement(efw, 'param', key="is_crossover", value="true")
+    ET.SubElement(ebw, 'param', key="is_crossover", value="true")
+
+    e_xov2_fw = f"{xov_id}_xov2_fw"
+    e_xov2_bw = f"{xov_id}_xov2_bw"
+    efw = ET.SubElement(edges_root, 'edge', id=e_xov2_fw, **{"from": n2C, "to": n1D, "speed": xov_speed, "numLanes": "1", "allow": prof['allow'], "shape": to_shape_str(xov2_pts), "bidi": e_xov2_bw})
+    ebw = ET.SubElement(edges_root, 'edge', id=e_xov2_bw, **{"from": n1D, "to": n2C, "speed": xov_speed, "numLanes": "1", "allow": prof['allow'], "shape": to_rev_shape_str(xov2_pts), "bidi": e_xov2_fw})
+    for k in ["capacity_tons", "voltage", "gauge", "material", "wear_rate"]:
+        ET.SubElement(efw, 'param', key=k, value=prof[k]); ET.SubElement(ebw, 'param', key=k, value=prof[k])
+    ET.SubElement(efw, 'param', key="is_crossover", value="true")
+    ET.SubElement(ebw, 'param', key="is_crossover", value="true")
+
+    # Explicit interlocking switch connections
+    # At X1A (Track 1 Switch 1):
+    ET.SubElement(conns_root, 'connection', **{"from": t1_pre_fw[-1], "to": e_T1_mid_fw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": t1_pre_fw[-1], "to": e_xov1_fw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_T1_mid_bw, "to": t1_pre_bw[-1], "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_xov1_bw, "to": t1_pre_bw[-1], "fromLane": "0", "toLane": "0"})
+
+    # At X2B (Track 2 Switch 1):
+    ET.SubElement(conns_root, 'connection', **{"from": e_xov1_fw, "to": e_T2_mid_fw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": t2_post_fw[-1], "to": e_T2_mid_fw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_T2_mid_bw, "to": t2_post_bw[-1], "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_T2_mid_bw, "to": e_xov1_bw, "fromLane": "0", "toLane": "0"})
+
+    # At X2C (Track 2 Switch 2):
+    ET.SubElement(conns_root, 'connection', **{"from": e_T2_mid_fw, "to": t2_pre_fw[0], "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_T2_mid_fw, "to": e_xov2_fw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": t2_pre_bw[0], "to": e_T2_mid_bw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_xov2_bw, "to": e_T2_mid_bw, "fromLane": "0", "toLane": "0"})
+
+    # At X1D (Track 1 Switch 2):
+    ET.SubElement(conns_root, 'connection', **{"from": e_T1_mid_fw, "to": t1_post_fw[0], "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": e_xov2_fw, "to": t1_post_fw[0], "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": t1_post_bw[0], "to": e_T1_mid_bw, "fromLane": "0", "toLane": "0"})
+    ET.SubElement(conns_root, 'connection', **{"from": t1_post_bw[0], "to": e_xov2_bw, "fromLane": "0", "toLane": "0"})
+
+    # Route edge sequences for through-trains across corridor
+    fw_edges = t1_pre_fw + [e_T1_mid_fw] + t1_post_fw
+    bw_edges = list(reversed(t2_pre_bw)) + [e_T2_mid_bw] + list(reversed(t2_post_bw))
+    return fw_edges, bw_edges, t2_post_fw[0], t1_post_bw[-1]
 
 def build_angled_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, y, z, angle_deg, platforms, yards, length=600, thru_tracks=0, thru_speed=83.33):
     theta = math.radians(angle_deg)
@@ -354,62 +580,65 @@ def generate_sumo_network():
 
     # Inter-station track definitions with optimized tangents
     corridor_segments = [
-        # Corridor 1 (East-West High Speed Trunk)
-        ('City_1', 2, 'Town_1', 1, 'high_speed', 'c1_City_1_Town_1', None, None, None, None),
-        ('Town_1', 2, 'City_2', 1, 'high_speed', 'c1_Town_1_City_2', None, None, None, None),
-        ('City_2', 2, 'Town_2', 1, 'high_speed', 'c1_City_2_Town_2', None, None, None, None),
-        ('Town_2', 2, 'City_3_EW', 1, 'high_speed', 'c1_Town_2_City_3_EW', None, None, None, None),
-        ('City_3_EW', 2, 'Town_3', 1, 'high_speed', 'c1_City_3_EW_Town_3', None, None, None, None),
-        ('Town_3', 2, 'City_4', 1, 'high_speed', 'c1_Town_3_City_4', None, None, None, None),
+        # Corridor 1 (East-West High Speed Trunk - 27 km with Universal Crossovers every ~5-6 km)
+        ('City_1', 2, 'Town_1', 1, 'high_speed', 'c1_City_1_Town_1', None, None, None, None, False),
+        ('Town_1', 2, 'City_2', 1, 'high_speed', 'c1_Town_1_City_2', None, None, None, None, True),
+        ('City_2', 2, 'Town_2', 1, 'high_speed', 'c1_City_2_Town_2', None, None, None, None, True),
+        ('Town_2', 2, 'City_3_EW', 1, 'high_speed', 'c1_Town_2_City_3_EW', None, None, None, None, True),
+        ('City_3_EW', 2, 'Town_3', 1, 'high_speed', 'c1_City_3_EW_Town_3', None, None, None, None, True),
+        ('Town_3', 2, 'City_4', 1, 'high_speed', 'c1_Town_3_City_4', None, None, None, None, False),
 
         # Corridor 2 (North-South Regional Trunk straight through City_3_NS)
-        ('City_5', 2, 'Town_4', 1, 'regional', 'c2_City_5_Town_4', None, None, None, None),
-        ('Town_4', 2, 'Town_5', 1, 'regional', 'c2_Town_4_Town_5', None, None, None, None),
-        ('Town_5', 2, 'City_3_NS', 1, 'regional', 'c2_Town_5_City_3_NS', None, None, None, None),
-        ('City_3_NS', 2, 'Town_6', 1, 'regional', 'c2_City_3_NS_Town_6', None, None, None, None),
-        ('Town_6', 2, 'Town_7', 1, 'regional', 'c2_Town_6_Town_7', None, None, None, None),
-        ('Town_7', 2, 'City_6', 1, 'regional', 'c2_Town_7_City_6', None, None, None, None),
+        ('City_5', 2, 'Town_4', 1, 'regional', 'c2_City_5_Town_4', None, None, None, None, False),
+        ('Town_4', 2, 'Town_5', 1, 'regional', 'c2_Town_4_Town_5', None, None, None, None, True),
+        ('Town_5', 2, 'City_3_NS', 1, 'regional', 'c2_Town_5_City_3_NS', None, None, None, None, False),
+        ('City_3_NS', 2, 'Town_6', 1, 'regional', 'c2_City_3_NS_Town_6', None, None, None, None, False),
+        ('Town_6', 2, 'Town_7', 1, 'regional', 'c2_Town_6_Town_7', None, None, None, None, True),
+        ('Town_7', 2, 'City_6', 1, 'regional', 'c2_Town_7_City_6', None, None, None, None, False),
 
         # Corridor 3 (Northwest Alpine Line: branches Northwest from City_2)
-        ('City_2', 1, 'Town_8', 1, 'regional', 'c3_City_2_Town_8', (-0.85, 0.52), None, None, None),
-        ('Town_8', 2, 'Town_9', 1, 'regional', 'c3_Town_8_Town_9', None, None, None, None),
-        ('Town_9', 2, 'Depot_1', 1, 'freight', 'c3_Town_9_Depot_1', None, None, None, None),
+        ('City_2', 1, 'Town_8', 1, 'regional', 'c3_City_2_Town_8', (-0.85, 0.52), None, None, None, False),
+        ('Town_8', 2, 'Town_9', 1, 'regional', 'c3_Town_8_Town_9', None, None, None, None, False),
+        ('Town_9', 2, 'Depot_1', 1, 'freight', 'c3_Town_9_Depot_1', None, None, None, None, False),
 
         # Corridor 4 (Southern Coastal Arc: sweeps naturally from City_1 to City_6)
-        ('City_1', 1, 'Town_10', 1, 'regional', 'c4_City_1_Town_10', (-0.35, -0.94), None, None, None),
-        ('Town_10', 2, 'Town_11', 1, 'regional', 'c4_Town_10_Town_11', None, None, None, None),
-        ('Town_11', 2, 'Depot_2', 1, 'regional', 'c4_Town_11_Depot_2', None, None, None, None),
-        ('Depot_2', 2, 'Town_12', 1, 'regional', 'c4_Depot_2_Town_12', None, None, None, None),
-        ('Town_12', 2, 'City_6', 1, 'regional', 'c4_Town_12_City_6', None, (-0.60, 0.80), None, None),
+        ('City_1', 1, 'Town_10', 1, 'regional', 'c4_City_1_Town_10', (-0.35, -0.94), None, None, None, False),
+        ('Town_10', 2, 'Town_11', 1, 'regional', 'c4_Town_10_Town_11', None, None, None, None, True),
+        ('Town_11', 2, 'Depot_2', 1, 'regional', 'c4_Town_11_Depot_2', None, None, None, None, False),
+        ('Depot_2', 2, 'Town_12', 1, 'regional', 'c4_Depot_2_Town_12', None, None, None, None, True),
+        ('Town_12', 2, 'City_6', 1, 'regional', 'c4_Town_12_City_6', None, (-0.60, 0.80), None, None, False),
 
         # Industrial Depot spurs
-        ('City_5', 1, 'Depot_3', 1, 'freight', 'spur_City_5_Depot_3', (0.45, 0.89), None, None, None),
-        ('City_3_EW', 2, 'Depot_4', 1, 'freight', 'spur_City_3_EW_Depot_4', (0.70, 0.71), None, None, None),
+        ('City_5', 1, 'Depot_3', 1, 'freight', 'spur_City_5_Depot_3', (0.45, 0.89), None, None, None, False),
+        ('City_3_EW', 2, 'Depot_4', 1, 'freight', 'spur_City_3_EW_Depot_4', (0.70, 0.71), None, None, None, False),
 
         # Central Hub transfer track between East-West and North-South stations
-        ('City_3_EW', 1, 'City_3_NS', 1, 'regional', 'transfer_City_3_EW_NS', (0.707, 0.707), (-0.707, -0.707), None, None),
+        ('City_3_EW', 1, 'City_3_NS', 1, 'regional', 'transfer_City_3_EW_NS', (0.707, 0.707), (-0.707, -0.707), None, None, False),
 
         # High-Speed Diagonal Bypass (City_2 to City_5)
-        ('City_2', 2, 'City_5', 2, 'high_speed', 'bypass_City_2_City_5', (0.80, 0.60), (-0.40, -0.92), None, None),
+        ('City_2', 2, 'City_5', 2, 'high_speed', 'bypass_City_2_City_5', (0.80, 0.60), (-0.40, -0.92), None, None, False),
     ]
 
     mainline_edges_info = []
-    for s_from_id, t_from_idx, s_to_id, t_to_idx, prof, track_id, v0_ovr, v1_ovr, cd0, cd1 in corridor_segments:
+    for s_from_id, t_from_idx, s_to_id, t_to_idx, prof, track_id, v0_ovr, v1_ovr, cd0, cd1, has_xov in corridor_segments:
         s_from = stations[s_from_id]
         s_to = stations[s_to_id]
         node_from = nd[s_from.t1 if t_from_idx == 1 else s_from.t2]
         node_to = nd[s_to.t1 if t_to_idx == 1 else s_to.t2]
         
-        fw_edges, bw_edges = create_corridor_track(edges_root, nodes_root, track_id, node_from, node_to, prof, v0_ovr, v1_ovr, cd0, cd1)
+        fw_edges, bw_edges, a_from, a_to = create_corridor_track(edges_root, nodes_root, conns_root, track_id, node_from, node_to, prof, v0_ovr, v1_ovr, cd0, cd1, has_xover=has_xov)
         if fw_edges and bw_edges:
-            mainline_edges_info.append((node_from['id'], node_to['id'], fw_edges, bw_edges))
+            mainline_edges_info.append((node_from['id'], node_to['id'], fw_edges, bw_edges, a_from, a_to))
 
     # Explicit throat interlocking connections
     for s in stations.values():
-        in_m1 = [bw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t1] + \
-                [fw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t1]
-        out_m1 = [fw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t1] + \
-                 [bw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t1]
+        in_m1 = [bw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_start == s.t1] + \
+                [fw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_end == s.t1]
+        out_m1 = [fw_e[0] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_start == s.t1] + \
+                 [bw_e[0] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_end == s.t1]
+        for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info:
+            if t_start == s.t1 and a_from: out_m1.append(a_from)
+            if t_end == s.t1 and a_to: out_m1.append(a_to)
                  
         for in_e in in_m1:
             for plat_fw in s.fw_edges:
@@ -418,10 +647,13 @@ def generate_sumo_network():
             for out_e in out_m1:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_bw, "to": out_e, "fromLane": "0", "toLane": "0"})
 
-        in_m2 = [bw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t2] + \
-                [fw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t2]
-        out_m2 = [fw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t2] + \
-                 [bw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t2]
+        in_m2 = [bw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_start == s.t2] + \
+                [fw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_end == s.t2]
+        out_m2 = [fw_e[0] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_start == s.t2] + \
+                 [bw_e[0] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_end == s.t2]
+        for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info:
+            if t_start == s.t2 and a_from: out_m2.append(a_from)
+            if t_end == s.t2 and a_to: out_m2.append(a_to)
                  
         for in_e in in_m2:
             for plat_bw in s.bw_edges:
