@@ -1,23 +1,23 @@
 # SUMO Dense Railway Network Generator
 
-This repository is dedicated solely to generating a dense, highly structured railway network using SUMO (Simulation of Urban MObility). It produces a fully routable track map with physical speed limits, bi-directional rails, bypassing junctions, and multi-platform stations.
+This repository is dedicated solely to generating a dense, highly structured railway **track infrastructure** network using SUMO (Simulation of Urban MObility). It produces a fully routable track map with physical speed limits, bi-directional rails, bypassing junctions, and multi-platform stations.
 
-This network is intended to be used as the foundational map for future Reinforcement Learning (RL) scheduling and train kinematic simulations.
+This network provides the foundational physical infrastructure for future downstream experiments. **Trains, rolling stock, traffic schedules, and routing live in a separate external repository** — this directory strictly maintains physical tracks, junctions, platforms, and signaling.
 
 ## Project Structure
 
 ```
 .
 ├── scripts/
-│   └── generate_sumo_network.py  # Procedural python generator script
+│   ├── generate_sumo_network.py  # Procedural corridor railway network generator
+│   └── plot_network.py           # Network topology visualization & rendering tool
 ├── network_data/
-│   ├── dense_network.nod.xml     # Generated nodes (stations/junctions)
-│   ├── dense_network.edg.xml     # Generated tracks (edges & speeds)
-│   ├── dense_network.con.xml     # Station throat interlocking connections
-│   ├── dense_network.add.xml     # Generated platform placements
-│   ├── dense_network.rou.xml     # Validated train schedules/routes
-│   ├── dense_network.sumocfg     # Ready-to-run SUMO simulation configuration
-│   └── dense_network.net.xml     # The compiled, routable SUMO network
+│   ├── dense_network.nod.xml     # Generated nodes (stations, throats & signals)
+│   ├── dense_network.edg.xml     # Generated tracks (edges, lanes & physical speeds)
+│   ├── dense_network.con.xml     # Station throat interlocking switch connections
+│   ├── dense_network.add.xml     # Generated platform placements (trainStops)
+│   ├── dense_network.net.xml     # The compiled, routable SUMO railway network
+│   └── railway_topology.xml      # SUMO topology analyzer report (0 error nodes)
 ├── project_history.md            # Chronological log of how the network evolved
 ├── README.md
 └── .gitignore
@@ -31,32 +31,24 @@ If you make any changes to the network layout in the generator script, you can r
 python3 scripts/generate_sumo_network.py
 ```
 
-This will instantly output fresh XML files into the `network_data/` directory, compile the network with `netconvert`, route traffic with `duarouter`, and update `dense_network.sumocfg`.
+This will instantly output fresh XML files into the `network_data/` directory and compile the network with `netconvert`.
 
-## Viewing and Simulating the Network
+## Viewing the Network Visually
 
-### Option 1: Track Editor (Netedit)
-To inspect track geometry and signals in Netedit:
+To inspect and interact with the physical tracks, junctions, and block signals in Netedit:
 
 ```bash
 netedit -s network_data/dense_network.net.xml -a network_data/dense_network.add.xml
 ```
 
-### Option 2: Live Train Simulation (SUMO GUI)
-To run the live train simulation with animated rolling stock:
+To render a 2D high-resolution map of the entire network:
 
 ```bash
-sumo-gui -c network_data/dense_network.sumocfg
-```
-
-Or run headlessly for benchmarking:
-
-```bash
-sumo -c network_data/dense_network.sumocfg --end 3600
+python3 scripts/plot_network.py
 ```
 
 ## Repository Conventions
 
+- This folder is strictly dedicated to **tracks, junctions, signals, and stations**. Trains and scheduling are maintained externally.
 - The generated `.xml` network files are intentionally tracked by Git — they are the primary deliverable of this repository.
 - Python caches and virtual environments are ignored via `.gitignore`.
-- The generator script is seeded (`random.seed(42)`), so rebuilding always produces the same network.

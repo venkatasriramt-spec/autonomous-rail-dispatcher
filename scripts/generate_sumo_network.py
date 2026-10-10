@@ -3,7 +3,6 @@ from xml.dom import minidom
 import subprocess
 import os
 import math
-import random
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = os.path.join(SCRIPT_DIR, '..', 'network_data')
@@ -12,10 +11,11 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 def get_path(filename): return os.path.join(OUTPUT_DIR, filename)
 def prettify(elem): return minidom.parseString(ET.tostring(elem, 'utf-8')).toprettyxml(indent="    ")
 
+# Realistic physical track infrastructure profiles
 TRACK_PROFILES = {
-    "high_speed": {"speed": 83.33, "allow": "rail_electric", "capacity_tons": "2500", "voltage": "25000", "gauge": "1435", "material": "concrete", "wear_rate": "0.01"},
-    "regional": {"speed": 33.33, "allow": "rail rail_electric", "capacity_tons": "5000", "voltage": "15000", "gauge": "1435", "material": "ballast", "wear_rate": "0.05"},
-    "freight": {"speed": 22.22, "allow": "rail", "capacity_tons": "12000", "voltage": "none", "gauge": "1435", "material": "wood", "wear_rate": "0.10"}
+    "high_speed": {"speed": "83.33", "allow": "rail_electric", "capacity_tons": "2500", "voltage": "25000", "gauge": "1435", "material": "concrete", "wear_rate": "0.01"},
+    "regional": {"speed": "33.33", "allow": "rail rail_electric", "capacity_tons": "5000", "voltage": "15000", "gauge": "1435", "material": "ballast", "wear_rate": "0.05"},
+    "freight": {"speed": "22.22", "allow": "rail", "capacity_tons": "12000", "voltage": "none", "gauge": "1435", "material": "wood", "wear_rate": "0.10"}
 }
 
 def compute_min_radius(pts):
@@ -36,110 +36,66 @@ def compute_min_radius(pts):
             if r < min_r: min_r = r
     return min_r
 
-def resample_2d(pts, min_step=25.0):
-    """Ensures points along polyline have healthy spacing, eliminating artificial grade spikes."""
-    if len(pts) < 2: return pts
-    out = [pts[0]]
-    for p in pts[1:-1]:
-        if math.hypot(p[0]-out[-1][0], p[1]-out[-1][1]) >= min_step:
-            out.append(p)
-    if math.hypot(pts[-1][0]-out[-1][0], pts[-1][1]-out[-1][1]) >= min_step * 0.4:
-        out.append(pts[-1])
-    else:
-        out[-1] = pts[-1]
-    return out
-
-def generate_smooth_track(n_from, n_to, lateral_offset=0.0):
+def generate_natural_rail_spline(p0, v0, p1, v1, z0, z1, scale_factor=0.28, custom_d0=None, custom_d1=None):
     """
-    Generates a continuous track geometry with:
-    1. Tangent lead tracks at throats (0 degree angular error at switch junctions)
-    2. Wide turning loops (scale >= 250m) when targets require reverse heading
-    3. Arc-length parameterized elevation with flat throat approaches (grade <= 1.5%)
+    Generates a natural, realistic railway curve between (p0, v0) and (p1, v1).
+    Ensures zero S-bends or overshoot kinks by tuning control point lengths to chord projection.
     """
-    p0 = (float(n_from['x']), float(n_from['y']))
-    p3 = (float(n_to['x']), float(n_to['y']))
-    v0 = n_from.get('out_vec', (0,0))
-    v3 = n_to.get('out_vec', (0,0))
-    z0 = float(n_from.get('z', 0))
-    z3 = float(n_to.get('z', 0))
-    
-    L = math.hypot(p3[0]-p0[0], p3[1]-p0[1])
+    chord_x = p1[0] - p0[0]
+    chord_y = p1[1] - p0[1]
+    L = math.hypot(chord_x, chord_y)
     if L < 10.0: return None
     
-    lead_len = min(150.0, max(50.0, L * 0.12))
+    ux_c, uy_c = chord_x / L, chord_y / L
+    dot0 = v0[0] * ux_c + v0[1] * uy_c
+    dot1 = -(v1[0] * ux_c + v1[1] * uy_c)
     
-    p_lead0 = (p0[0] + v0[0]*lead_len, p0[1] + v0[1]*lead_len)
-    p_lead3 = (p3[0] + v3[0]*lead_len, p3[1] + v3[1]*lead_len)
+    d0 = custom_d0 if custom_d0 is not None else max(L * 0.15, min(L * 0.38, L * scale_factor * max(0.4, (1.0 + dot0) / 2.0)))
+    d1 = custom_d1 if custom_d1 is not None else max(L * 0.15, min(L * 0.38, L * scale_factor * max(0.4, (1.0 + dot1) / 2.0)))
     
-    d_lead = math.hypot(p_lead3[0]-p_lead0[0], p_lead3[1]-p_lead0[1])
-    if d_lead == 0: return None
+    c0 = (p0[0] + v0[0] * d0, p0[1] + v0[1] * d0)
+    c1 = (p1[0] + v1[0] * d1, p1[1] + v1[1] * d1)
     
-    dx, dy = (p_lead3[0]-p_lead0[0])/d_lead, (p_lead3[1]-p_lead0[1])/d_lead
-    nx, ny = -dy, dx
-    
-    # Check if target is behind departure vector
-    cos0 = v0[0]*dx + v0[1]*dy
-    cos3 = -(v3[0]*dx + v3[1]*dy)
-    
-    # If target is behind throat vector, give a generous scale (>= 250m) for a gentle railway turn
-    scale0 = max(250.0, d_lead * 0.4) if cos0 <= 0 else max(50.0, min(d_lead * 0.35, 2000.0))
-    scale3 = max(250.0, d_lead * 0.4) if cos3 <= 0 else max(50.0, min(d_lead * 0.35, 2000.0))
-    
-    c1 = (p_lead0[0] + v0[0]*scale0, p_lead0[1] + v0[1]*scale0)
-    c2 = (p_lead3[0] + v3[0]*scale3, p_lead3[1] + v3[1]*scale3)
-    
-    # Clamp lateral offset to max 15% of distance to maintain safe turning radii
-    max_offset = d_lead * 0.15
-    clamped_offset = max(-max_offset, min(max_offset, lateral_offset))
-    
-    num_points = max(35, int(L / 120))
-    raw_2d = [p0]
+    num_points = max(35, int(L / 80))
+    pts_2d = []
     for i in range(num_points + 1):
-        t = i / num_points
-        bx = (1-t)**3 * p_lead0[0] + 3*(1-t)**2*t * c1[0] + 3*(1-t)*t**2 * c2[0] + t**3 * p_lead3[0]
-        by = (1-t)**3 * p_lead0[1] + 3*(1-t)**2*t * c1[1] + 3*(1-t)*t**2 * c2[1] + t**3 * p_lead3[1]
+        t = i / float(num_points)
+        bx = (1-t)**3 * p0[0] + 3*(1-t)**2*t * c0[0] + 3*(1-t)*t**2 * c1[0] + t**3 * p1[0]
+        by = (1-t)**3 * p0[1] + 3*(1-t)**2*t * c0[1] + 3*(1-t)*t**2 * c1[1] + t**3 * p1[1]
+        pts_2d.append((bx, by))
         
-        # Bell-curve lateral displacement: strictly 0 at t=0 and t=1
-        w = (math.sin(math.pi * t))**2
-        bx += nx * clamped_offset * w
-        by += ny * clamped_offset * w
-        raw_2d.append((bx, by))
+    res_2d = [pts_2d[0]]
+    for p in pts_2d[1:-1]:
+        if math.hypot(p[0]-res_2d[-1][0], p[1]-res_2d[-1][1]) >= 30.0:
+            res_2d.append(p)
+    if math.hypot(pts_2d[-1][0]-res_2d[-1][0], pts_2d[-1][1]-res_2d[-1][1]) >= 15.0:
+        res_2d.append(pts_2d[-1])
+    else:
+        res_2d[-1] = pts_2d[-1]
         
-    raw_2d.append(p3)
-    
-    # Resample 2D points to maintain uniform segment spacing (>= 25m)
-    pts_2d = resample_2d(raw_2d, min_step=25.0)
-    
-    # Calculate cumulative horizontal distance
-    n = len(pts_2d)
+    n = len(res_2d)
     dists = [0.0] * n
     for i in range(1, n):
-        dists[i] = dists[i-1] + math.hypot(pts_2d[i][0]-pts_2d[i-1][0], pts_2d[i][1]-pts_2d[i-1][1])
+        dists[i] = dists[i-1] + math.hypot(res_2d[i][0]-res_2d[i-1][0], res_2d[i][1]-res_2d[i-1][1])
     total_len = dists[-1]
-    if total_len == 0: return None
     
-    # Assign elevation parameterized strictly by arc-length (with flat junctions at throat ends)
-    flat_dist = min(lead_len, 100.0)
+    flat_dist = min(100.0, total_len * 0.05)
     pts_3d = []
     for i in range(n):
         d = dists[i]
-        if d <= flat_dist:
-            z = z0
-        elif d >= total_len - flat_dist:
-            z = z3
+        if d <= flat_dist: z = z0
+        elif d >= total_len - flat_dist: z = z1
         else:
-            effective_len = total_len - 2 * flat_dist
-            if effective_len > 0:
-                s = (d - flat_dist) / effective_len
-                z = z0 + (z3 - z0) * s
-            else:
-                z = z0
-        pts_3d.append((pts_2d[i][0], pts_2d[i][1], z))
+            eff_len = total_len - 2 * flat_dist
+            s = (d - flat_dist) / eff_len if eff_len > 0 else 0
+            s_smooth = s * s * (3.0 - 2.0 * s)
+            z = z0 + (z1 - z0) * s_smooth
+        pts_3d.append((res_2d[i][0], res_2d[i][1], z))
         
     return pts_3d
 
 def smooth_offset_shape(pts_3d, track_offset, taper_dist=120.0):
-    """Offsets track for parallel double-tracking, tapering smoothly to 0 at throat nodes."""
+    """Generates parallel running tracks with standard center-to-center spacing, tapering at switches."""
     n = len(pts_3d)
     dists = [0.0] * n
     for i in range(1, n):
@@ -153,7 +109,7 @@ def smooth_offset_shape(pts_3d, track_offset, taper_dist=120.0):
         taper_start = min(1.0, d / taper_dist) if taper_dist > 0 else 1.0
         taper_end = min(1.0, (total_len - d) / taper_dist) if taper_dist > 0 else 1.0
         w = min(taper_start, taper_end)
-        w = w * w * (3.0 - 2.0 * w) # smoothstep
+        w = w * w * (3.0 - 2.0 * w)
         curr_offset = track_offset * w
         
         if i == 0:
@@ -168,16 +124,15 @@ def smooth_offset_shape(pts_3d, track_offset, taper_dist=120.0):
         mag = math.hypot(nx, ny)
         if mag == 0: mag = 1.0
         px, py = -ny/mag, nx/mag
-        
         new_pts.append((round(p[0] + px*curr_offset, 2), round(p[1] + py*curr_offset, 2), round(p[2], 2)))
         
     return new_pts
 
 def generate_block_sections(edges_root, nodes_root, base_id, frm, to, pts, prof):
-    """Splits track into 1km signal blocks and sets curvature-aware speed limits."""
+    """Splits running track into 1km signal blocks and calculates physics speed limits."""
     total_len = sum(math.hypot(pts[i+1][0]-pts[i][0], pts[i+1][1]-pts[i][1]) for i in range(len(pts)-1))
     block_len = 1000.0
-    max_profile_speed = prof['speed']
+    max_profile_speed = float(prof['speed'])
     
     if total_len <= block_len * 1.5:
         min_r = compute_min_radius(pts)
@@ -205,7 +160,6 @@ def generate_block_sections(edges_root, nodes_root, base_id, frm, to, pts, prof)
         min_r = compute_min_radius(chunk_pts)
         safe_v = math.sqrt(min_r * 1.2) if min_r < float('inf') else max_profile_speed
         edge_speed = max(13.89, min(max_profile_speed, safe_v))
-        
         chunk_shape = " ".join([f"{p[0]:.2f},{p[1]:.2f},{p[2]:.2f}" for p in chunk_pts])
         
         curr_node = to if is_last else f"{base_id}_signal_{b}"
@@ -221,9 +175,16 @@ def generate_block_sections(edges_root, nodes_root, base_id, frm, to, pts, prof)
         
     return created_edges
 
-def create_track(edges_root, nodes_root, track_id, n_from, n_to, profile="regional", curve_offset=0):
+def create_corridor_track(edges_root, nodes_root, track_id, n_from, n_to, profile="regional", v0_override=None, v1_override=None, cd0=None, cd1=None):
     prof = TRACK_PROFILES[profile]
-    base_pts = generate_smooth_track(n_from, n_to, curve_offset)
+    p0 = (float(n_from['x']), float(n_from['y']))
+    p1 = (float(n_to['x']), float(n_to['y']))
+    v0 = v0_override if v0_override else n_from.get('out_vec', (1, 0))
+    v1 = v1_override if v1_override else n_to.get('out_vec', (-1, 0))
+    z0 = float(n_from.get('z', 0))
+    z1 = float(n_to.get('z', 0))
+    
+    base_pts = generate_natural_rail_spline(p0, v0, p1, v1, z0, z1, custom_d0=cd0, custom_d1=cd1)
     if not base_pts: return None, None
     
     fw_pts = smooth_offset_shape(base_pts, 2.0)
@@ -235,25 +196,24 @@ def create_track(edges_root, nodes_root, track_id, n_from, n_to, profile="region
     
     return fw_edges, bw_edges
 
-def build_complex_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, y, z, platforms, yards, length, orientation):
+def build_angled_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, y, z, angle_deg, platforms, yards, length=600):
+    theta = math.radians(angle_deg)
+    ux, uy = math.cos(theta), math.sin(theta)
+    nx, ny = -uy, ux
+    
     total_tracks = platforms + yards
-    spread = 6.0 
-    start_off = -(total_tracks - 1) * spread / 2
+    spread = 6.0
+    start_off = -(total_tracks - 1) * spread / 2.0
     
-    t_dist = length/2 + 250
-    if orientation == "EW":
-        dx, dy = (t_dist, 0)
-        vec_t1, vec_t2 = (-1, 0), (1, 0) 
-    else:
-        dx, dy = (0, t_dist)
-        vec_t1, vec_t2 = (0, -1), (0, 1)
-
+    t_dist = length / 2.0 + 150.0
+    t1_pos = (x - ux * t_dist, y - uy * t_dist, z)
+    t2_pos = (x + ux * t_dist, y + uy * t_dist, z)
+    
     t1_id, t2_id = f"{stn_id}_Throat1", f"{stn_id}_Throat2"
-    node_dict[t1_id] = {"id": t1_id, "x": x-dx, "y": y-dy, "z": z, "type": "rail_signal", "out_vec": vec_t1}
-    node_dict[t2_id] = {"id": t2_id, "x": x+dx, "y": y+dy, "z": z, "type": "rail_signal", "out_vec": vec_t2}
+    node_dict[t1_id] = {"id": t1_id, "x": t1_pos[0], "y": t1_pos[1], "z": z, "type": "rail_signal", "out_vec": (-ux, -uy)}
+    node_dict[t2_id] = {"id": t2_id, "x": t2_pos[0], "y": t2_pos[1], "z": z, "type": "rail_signal", "out_vec": (ux, uy)}
     
-    p_dx, p_dy = (length/2, 0) if orientation == "EW" else (0, length/2)
-    
+    half_len = length / 2.0
     station_fw_edges = []
     station_bw_edges = []
     
@@ -262,13 +222,10 @@ def build_complex_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x,
         track_id = f"{stn_id}_{'yard' if is_yard else 'plat'}_{i+1}"
         off = start_off + i * spread
         
-        if orientation == "EW":
-            p1, p2, t1, t2 = (x - p_dx, y + off, z), (x + p_dx, y + off, z), (x - dx, y, z), (x + dx, y, z)
-        else:
-            p1, p2, t1, t2 = (x + off, y - p_dy, z), (x + off, y + p_dy, z), (x, y - dy, z), (x, y + dy, z)
-            
-        shape_str = f"{t1[0]:.2f},{t1[1]:.2f},{t1[2]:.2f} {p1[0]:.2f},{p1[1]:.2f},{p1[2]:.2f} {p2[0]:.2f},{p2[1]:.2f},{p2[2]:.2f} {t2[0]:.2f},{t2[1]:.2f},{t2[2]:.2f}"
+        p1 = (x - ux * half_len + nx * off, y - uy * half_len + ny * off, z)
+        p2 = (x + ux * half_len + nx * off, y + uy * half_len + ny * off, z)
         
+        shape_str = f"{t1_pos[0]:.2f},{t1_pos[1]:.2f},{t1_pos[2]:.2f} {p1[0]:.2f},{p1[1]:.2f},{p1[2]:.2f} {p2[0]:.2f},{p2[1]:.2f},{p2[2]:.2f} {t2_pos[0]:.2f},{t2_pos[1]:.2f},{t2_pos[2]:.2f}"
         speed = "13.89" if not is_yard else "5.55"
         
         edge_fw_id = f"{track_id}_fw"
@@ -289,141 +246,149 @@ def build_complex_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x,
             
     return t1_id, t2_id, station_fw_edges, station_bw_edges
 
-class Location:
-    def __init__(self, id_str, is_city, is_depot=False):
-        self.id = id_str
-        self.is_city = is_city
-        self.is_depot = is_depot
-        self.x = random.uniform(-15000, 15000)
-        self.y = random.uniform(-15000, 15000)
-        dist_from_center = math.hypot(self.x, self.y)
-        self.z = 200.0 * (1.0 - min(1.0, dist_from_center / 15000.0))
-        self.ori = random.choice(["EW", "NS"])
+class StationSpec:
+    def __init__(self, stn_id, x, y, z, angle, platforms, yards, length=600):
+        self.id = stn_id
+        self.x = x
+        self.y = y
+        self.z = z
+        self.angle = angle
+        self.platforms = platforms
+        self.yards = yards
+        self.length = length
         self.t1 = None
         self.t2 = None
-        self.station_fw = []
-        self.station_bw = []
-
-def get_best_throat(loc, target_x, target_y):
-    if loc.ori == "EW": return loc.t2 if target_x > loc.x else loc.t1
-    else: return loc.t2 if target_y > loc.y else loc.t1
+        self.fw_edges = []
+        self.bw_edges = []
 
 def generate_sumo_network():
-    random.seed(42)
     nodes_root = ET.Element('nodes')
     edges_root = ET.Element('edges')
     stops_root = ET.Element('additionals')
     conns_root = ET.Element('connections')
     nd = {}
-    
-    num_cities = 6
-    num_towns = 12
-    num_depots = 4 
-    
-    locations = [Location(f"City_{i+1}", True) for i in range(num_cities)] \
-              + [Location(f"Town_{i+1}", False) for i in range(num_towns)] \
-              + [Location(f"Depot_{i+1}", False, is_depot=True) for i in range(num_depots)]
-    
-    for loc in locations:
-        if loc.is_depot:
-            loc.t1, loc.t2, loc.station_fw, loc.station_bw = build_complex_yard(
-                nd, nodes_root, edges_root, stops_root, loc.id, loc.x, loc.y, loc.z, 
-                platforms=0, yards=random.randint(2, 4), length=400, orientation=loc.ori)
-        elif loc.is_city:
-            loc.t1, loc.t2, loc.station_fw, loc.station_bw = build_complex_yard(
-                nd, nodes_root, edges_root, stops_root, loc.id, loc.x, loc.y, loc.z, 
-                platforms=random.randint(4, 6), yards=random.randint(1, 2), length=random.randint(500, 1000), orientation=loc.ori)
-        else:
-            loc.t1, loc.t2, loc.station_fw, loc.station_bw = build_complex_yard(
-                nd, nodes_root, edges_root, stops_root, loc.id, loc.x, loc.y, loc.z, 
-                platforms=random.randint(2, 3), yards=random.randint(0, 1), length=random.randint(200, 400), orientation=loc.ori)
 
-    created_tracks = set()
-    edges = []
-    for i, l1 in enumerate(locations):
-        for j, l2 in enumerate(locations):
-            if i < j: edges.append((math.hypot(l1.x - l2.x, l1.y - l2.y), l1, l2))
-    edges.sort(key=lambda x: x[0])
-    
-    parent = {loc.id: loc.id for loc in locations}
-    def find(i):
-        if parent[i] == i: return i
-        parent[i] = find(parent[i])
-        return parent[i]
-    def union(i, j):
-        ri, rj = find(i), find(j)
-        if ri != rj:
-            parent[ri] = rj
-            return True
-        return False
+    # 22 Stations organized along natural geographic railway corridors
+    # Angles strictly aligned with corridor tangents to eliminate kinks and S-bends
+    stations = {
+        # Corridor 1: East-West Trans-Regional High-Speed Trunk
+        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=2, length=800),
+        'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=3, yards=1, length=400),
+        'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900),
+        'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400),
+        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 20, -6.0, platforms=4, yards=2, length=900),
+        'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=3, yards=1, length=400),
+        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=2, length=800),
+
+        # Corridor 2: North-South Inter-City Trunk (passes straight through City_3_NS)
+        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=2, length=800),
+        'Town_4': StationSpec('Town_4', 4500, 8800, 45, -85.4, platforms=2, yards=1, length=400),
+        'Town_5': StationSpec('Town_5', 4850, 5100, 32, -84.6, platforms=3, yards=1, length=400),
+        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 20, -83.7, platforms=4, yards=1, length=900),
+        'Town_6': StationSpec('Town_6', 5650, -2200, 14, -83.8, platforms=3, yards=1, length=400),
+        'Town_7': StationSpec('Town_7', 6050, -5900, 8, -83.8, platforms=2, yards=1, length=400),
+        'City_6': StationSpec('City_6', 6500, -10000, 2, -83.7, platforms=5, yards=2, length=800),
+
+        # Corridor 3: Northwest Alpine Mountain Line (branches Northwest from City_2)
+        'Town_8': StationSpec('Town_8', -7500, 5200, 80, 135.0, platforms=2, yards=1, length=400),
+        'Town_9': StationSpec('Town_9', -10500, 8200, 130, 135.0, platforms=2, yards=1, length=400),
+        'Depot_1': StationSpec('Depot_1', -13500, 11200, 165, 135.0, platforms=0, yards=4, length=500),
+
+        # Corridor 4: Southern Coastal Arc (Natural parabolic sweep from City_1 to City_6)
+        'Town_10': StationSpec('Town_10', -13500, -3200, 10, -80.0, platforms=2, yards=1, length=400),
+        'Town_11': StationSpec('Town_11', -11200, -7200, 6, -42.0, platforms=3, yards=1, length=400),
+        'Depot_2': StationSpec('Depot_2', -5600, -9600, 3, -15.0, platforms=0, yards=4, length=500),
+        'Town_12': StationSpec('Town_12', 600, -8400, 2, -8.0, platforms=2, yards=1, length=400),
+
+        # Heavy Industrial Logistics Depots
+        'Depot_3': StationSpec('Depot_3', 7500, 15000, 55, 30.0, platforms=0, yards=4, length=500),
+        'Depot_4': StationSpec('Depot_4', 9200, 2800, 18, 20.0, platforms=0, yards=4, length=500),
+    }
+
+    for s in stations.values():
+        s.t1, s.t2, s.fw_edges, s.bw_edges = build_angled_yard(
+            nd, nodes_root, edges_root, stops_root, s.id, s.x, s.y, s.z, s.angle, s.platforms, s.yards, s.length
+        )
+
+    # Inter-station track definitions with optimized tangents
+    corridor_segments = [
+        # Corridor 1 (East-West High Speed Trunk)
+        ('City_1', 2, 'Town_1', 1, 'high_speed', 'c1_City_1_Town_1', None, None, None, None),
+        ('Town_1', 2, 'City_2', 1, 'high_speed', 'c1_Town_1_City_2', None, None, None, None),
+        ('City_2', 2, 'Town_2', 1, 'high_speed', 'c1_City_2_Town_2', None, None, None, None),
+        ('Town_2', 2, 'City_3_EW', 1, 'high_speed', 'c1_Town_2_City_3_EW', None, None, None, None),
+        ('City_3_EW', 2, 'Town_3', 1, 'high_speed', 'c1_City_3_EW_Town_3', None, None, None, None),
+        ('Town_3', 2, 'City_4', 1, 'high_speed', 'c1_Town_3_City_4', None, None, None, None),
+
+        # Corridor 2 (North-South Regional Trunk straight through City_3_NS)
+        ('City_5', 2, 'Town_4', 1, 'regional', 'c2_City_5_Town_4', None, None, None, None),
+        ('Town_4', 2, 'Town_5', 1, 'regional', 'c2_Town_4_Town_5', None, None, None, None),
+        ('Town_5', 2, 'City_3_NS', 1, 'regional', 'c2_Town_5_City_3_NS', None, None, None, None),
+        ('City_3_NS', 2, 'Town_6', 1, 'regional', 'c2_City_3_NS_Town_6', None, None, None, None),
+        ('Town_6', 2, 'Town_7', 1, 'regional', 'c2_Town_6_Town_7', None, None, None, None),
+        ('Town_7', 2, 'City_6', 1, 'regional', 'c2_Town_7_City_6', None, None, None, None),
+
+        # Corridor 3 (Northwest Alpine Line: branches Northwest from City_2)
+        ('City_2', 1, 'Town_8', 1, 'regional', 'c3_City_2_Town_8', (-0.85, 0.52), None, None, None),
+        ('Town_8', 2, 'Town_9', 1, 'regional', 'c3_Town_8_Town_9', None, None, None, None),
+        ('Town_9', 2, 'Depot_1', 1, 'freight', 'c3_Town_9_Depot_1', None, None, None, None),
+
+        # Corridor 4 (Southern Coastal Arc: sweeps naturally from City_1 to City_6)
+        ('City_1', 1, 'Town_10', 1, 'regional', 'c4_City_1_Town_10', (-0.35, -0.94), None, None, None),
+        ('Town_10', 2, 'Town_11', 1, 'regional', 'c4_Town_10_Town_11', None, None, None, None),
+        ('Town_11', 2, 'Depot_2', 1, 'regional', 'c4_Town_11_Depot_2', None, None, None, None),
+        ('Depot_2', 2, 'Town_12', 1, 'regional', 'c4_Depot_2_Town_12', None, None, None, None),
+        ('Town_12', 2, 'City_6', 1, 'regional', 'c4_Town_12_City_6', None, (-0.60, 0.80), None, None),
+
+        # Industrial Depot spurs
+        ('City_5', 1, 'Depot_3', 1, 'freight', 'spur_City_5_Depot_3', (0.45, 0.89), None, None, None),
+        ('City_3_EW', 2, 'Depot_4', 1, 'freight', 'spur_City_3_EW_Depot_4', (0.70, 0.71), None, None, None),
+
+        # Central Hub transfer track between East-West and North-South stations
+        ('City_3_EW', 1, 'City_3_NS', 1, 'regional', 'transfer_City_3_EW_NS', (0.707, 0.707), (-0.707, -0.707), None, None),
+
+        # High-Speed Diagonal Bypass (City_2 to City_5)
+        ('City_2', 2, 'City_5', 2, 'high_speed', 'bypass_City_2_City_5', (0.80, 0.60), (-0.40, -0.92), None, None),
+    ]
 
     mainline_edges_info = []
+    for s_from_id, t_from_idx, s_to_id, t_to_idx, prof, track_id, v0_ovr, v1_ovr, cd0, cd1 in corridor_segments:
+        s_from = stations[s_from_id]
+        s_to = stations[s_to_id]
+        node_from = nd[s_from.t1 if t_from_idx == 1 else s_from.t2]
+        node_to = nd[s_to.t1 if t_to_idx == 1 else s_to.t2]
+        
+        fw_edges, bw_edges = create_corridor_track(edges_root, nodes_root, track_id, node_from, node_to, prof, v0_ovr, v1_ovr, cd0, cd1)
+        if fw_edges and bw_edges:
+            mainline_edges_info.append((node_from['id'], node_to['id'], fw_edges, bw_edges))
 
-    # MST Connections
-    for dist, l1, l2 in edges:
-        if union(l1.id, l2.id):
-            t1, t2 = get_best_throat(l1, l2.x, l2.y), get_best_throat(l2, l1.x, l1.y)
-            track_sig = tuple(sorted([t1, t2]))
-            created_tracks.add(track_sig)
-            fw_edges, bw_edges = create_track(edges_root, nodes_root, f"mst_{l1.id}_{l2.id}", nd[t1], nd[t2], "regional", curve_offset=random.uniform(-300, 300))
-            if fw_edges and bw_edges:
-                mainline_edges_info.append((t1, t2, fw_edges, bw_edges))
-
-    # Loop Connections
-    for loc in locations:
-        others = sorted([o for o in locations if o != loc], key=lambda o: math.hypot(o.x - loc.x, o.y - loc.y))
-        connections = random.randint(1, 2) if loc.is_city else 1
-        for c in others[:connections]:
-            t_loc, t_c = get_best_throat(loc, c.x, c.y), get_best_throat(c, loc.x, loc.y)
-            track_sig = tuple(sorted([t_loc, t_c]))
-            if track_sig not in created_tracks:
-                created_tracks.add(track_sig)
-                offset = random.uniform(-600, 600)
-                profile = random.choices(["high_speed", "regional", "freight"], weights=[0.2, 0.6, 0.2])[0]
-                fw_edges, bw_edges = create_track(edges_root, nodes_root, f"loop_{loc.id}_{c.id}", nd[t_loc], nd[t_c], profile, curve_offset=offset)
-                if fw_edges and bw_edges:
-                    mainline_edges_info.append((t_loc, t_c, fw_edges, bw_edges))
-
-    # BUILD EXPLICIT THROAT INTERLOCKING CONNECTIONS
-    # Connects mainline tracks directly to station platforms while preventing sharp turnaround conflicts
-    for loc in locations:
-        # Throat 1
-        in_m1 = []
-        out_m1 = []
-        for t_start, t_end, fw_e, bw_e in mainline_edges_info:
-            if t_start == loc.t1:
-                out_m1.append(fw_e[0])
-                in_m1.append(bw_e[-1])
-            elif t_end == loc.t1:
-                in_m1.append(fw_e[-1])
-                out_m1.append(bw_e[0])
-                
+    # Explicit throat interlocking connections
+    for s in stations.values():
+        in_m1 = [bw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t1] + \
+                [fw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t1]
+        out_m1 = [fw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t1] + \
+                 [bw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t1]
+                 
         for in_e in in_m1:
-            for plat_fw in loc.station_fw:
+            for plat_fw in s.fw_edges:
                 ET.SubElement(conns_root, 'connection', **{"from": in_e, "to": plat_fw, "fromLane": "0", "toLane": "0"})
-        for plat_bw in loc.station_bw:
+        for plat_bw in s.bw_edges:
             for out_e in out_m1:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_bw, "to": out_e, "fromLane": "0", "toLane": "0"})
-                
-        # Throat 2
-        in_m2 = []
-        out_m2 = []
-        for t_start, t_end, fw_e, bw_e in mainline_edges_info:
-            if t_start == loc.t2:
-                out_m2.append(fw_e[0])
-                in_m2.append(bw_e[-1])
-            elif t_end == loc.t2:
-                in_m2.append(fw_e[-1])
-                out_m2.append(bw_e[0])
-                
+
+        in_m2 = [bw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t2] + \
+                [fw_e[-1] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t2]
+        out_m2 = [fw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_start == s.t2] + \
+                 [bw_e[0] for t_start, t_end, fw_e, bw_e in mainline_edges_info if t_end == s.t2]
+                 
         for in_e in in_m2:
-            for plat_bw in loc.station_bw:
+            for plat_bw in s.bw_edges:
                 ET.SubElement(conns_root, 'connection', **{"from": in_e, "to": plat_bw, "fromLane": "0", "toLane": "0"})
-        for plat_fw in loc.station_fw:
+        for plat_fw in s.fw_edges:
             for out_e in out_m2:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_fw, "to": out_e, "fromLane": "0", "toLane": "0"})
 
-    # Write node, edge, additional, and connection XML
+    # Write network source XMLs
     for n in nd.values(): ET.SubElement(nodes_root, 'node', **{k:str(v) for k,v in n.items() if k != 'out_vec'})
     with open(get_path("dense_network.nod.xml"), "w") as f: f.write(prettify(nodes_root))
     with open(get_path("dense_network.edg.xml"), "w") as f: f.write(prettify(edges_root))
@@ -442,100 +407,7 @@ def generate_sumo_network():
         "--railway.topology.output", get_path("railway_topology.xml")
     ]
     subprocess.run(cmd, check=True)
-    print("Network compiled cleanly into dense_network.net.xml")
-
-    # GENERATE TRAFFIC DEMAND AND SIMULATION CONFIG
-    generate_simulation_files(locations)
-
-def generate_simulation_files(locations):
-    """Generates train trips, routes via duarouter, and creates the final .sumocfg file."""
-    tree = ET.parse(get_path("dense_network.net.xml"))
-    all_edges = [e.get('id') for e in tree.getroot().findall('edge') if not e.get('id', '').startswith(':')]
-
-    cities = [loc.id for loc in locations if loc.is_city]
-    towns = [loc.id for loc in locations if not loc.is_city and not loc.is_depot]
-    depots = [loc.id for loc in locations if loc.is_depot]
-
-    trips_root = ET.Element('routes')
-    ET.SubElement(trips_root, 'vType', id='high_speed', vClass='rail_electric', length='200.0', maxSpeed='83.33', accel='1.2', decel='1.5')
-    ET.SubElement(trips_root, 'vType', id='regional', vClass='rail_electric', length='120.0', maxSpeed='33.33', accel='1.0', decel='1.3')
-    ET.SubElement(trips_root, 'vType', id='freight', vClass='rail', length='400.0', maxSpeed='22.22', accel='0.5', decel='0.8')
-
-    def get_plat(loc_id):
-        plats = [e for e in all_edges if e.startswith(f"{loc_id}_plat_") and e.endswith("_fw")]
-        if not plats: plats = [e for e in all_edges if e.startswith(f"{loc_id}_yard_") and e.endswith("_fw")]
-        return plats
-
-    trip_entries = []
-
-    # Inter-city express trips
-    for i in range(len(cities)):
-        for j in range(len(cities)):
-            if i != j:
-                p_from = get_plat(cities[i])
-                p_to = get_plat(cities[j])
-                if p_from and p_to:
-                    trip_entries.append(('high_speed', p_from[0], p_to[0], len(trip_entries) * 60.0))
-
-    # Regional commuter trips
-    for t in towns[:8]:
-        for c in cities[:4]:
-            p_from = get_plat(t)
-            p_to = get_plat(c)
-            if p_from and p_to:
-                trip_entries.append(('regional', p_from[0], p_to[0], len(trip_entries) * 45.0))
-
-    # Freight trips from Depots to Cities
-    for d in depots:
-        for c in cities[:2]:
-            p_from = get_plat(d)
-            p_to = get_plat(c)
-            if p_from and p_to:
-                trip_entries.append(('freight', p_from[0], p_to[0], len(trip_entries) * 90.0))
-
-    # Sort trips strictly by departure time for duarouter compatibility
-    trip_entries.sort(key=lambda x: x[3])
-
-    for idx, (v_type, frm_e, to_e, dept) in enumerate(trip_entries):
-        ET.SubElement(trips_root, 'trip', id=f"train_{idx+1}_{v_type}", type=v_type, **{"from": frm_e, "to": to_e, "depart": f"{dept:.1f}"})
-
-    with open(get_path("dense_network.trips.xml"), "w") as f:
-        f.write(prettify(trips_root))
-
-    # Route with duarouter
-    subprocess.run([
-        "duarouter",
-        "--net-file", get_path("dense_network.net.xml"),
-        "--route-files", get_path("dense_network.trips.xml"),
-        "--output-file", get_path("dense_network.rou.xml"),
-        "--ignore-errors", "true"
-    ], check=True)
-    print(f"Generated {len(trip_entries)} validated train routes into dense_network.rou.xml")
-
-    # Generate .sumocfg
-    cfg_root = ET.Element('configuration')
-    inp = ET.SubElement(cfg_root, 'input')
-    ET.SubElement(inp, 'net-file', value='dense_network.net.xml')
-    ET.SubElement(inp, 'route-files', value='dense_network.rou.xml')
-    ET.SubElement(inp, 'additional-files', value='dense_network.add.xml')
-
-    tm = ET.SubElement(cfg_root, 'time')
-    ET.SubElement(tm, 'begin', value='0')
-    ET.SubElement(tm, 'end', value='7200')
-    ET.SubElement(tm, 'step-length', value='1.0')
-
-    proc = ET.SubElement(cfg_root, 'processing')
-    ET.SubElement(proc, 'collision.action', value='warn')
-    ET.SubElement(proc, 'time-to-teleport', value='-1')
-
-    rep = ET.SubElement(cfg_root, 'report')
-    ET.SubElement(rep, 'verbose', value='true')
-    ET.SubElement(rep, 'duration-log.statistics', value='true')
-    ET.SubElement(rep, 'no-step-log', value='true')
-
-    with open(get_path("dense_network.sumocfg"), "w") as f:
-        f.write(prettify(cfg_root))
-    print("Created simulation configuration: dense_network.sumocfg")
+    print("Done! Railway network compiled cleanly into dense_network.net.xml")
 
 if __name__ == "__main__":
     generate_sumo_network()

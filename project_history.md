@@ -66,3 +66,14 @@ A chronological log of how this abstract SUMO railway network evolved, from init
 - **Explicit Throat Interlocking (`dense_network.con.xml`):** Generated formal interlocking connection tables mapping inbound mainline tracks cleanly to station platforms, and platform exits to outbound mainlines, eliminating hairpin turns across throats and reducing topology error nodes to zero (`broken="0"`).
 - **Curvature-Aware Speed Profiling:** Embedded dynamic civil engineering speed limit calculations ($v = \sqrt{R_{\min} \cdot a_{\text{lat}}}$) into block generation.
 - **Simulation Pipeline (`duarouter` & `.sumocfg`):** Added automated generation of 70 multi-class train routes (high-speed express, regional commuter, and freight) compiled via `duarouter`, along with `dense_network.sumocfg` for immediate testing in `sumo` or `sumo-gui`.
+
+#### Phase 8: Isolation of Track Infrastructure & Natural Railway Corridor Overhaul
+- **Separation of Concerns (Tracks Only):** Completely removed all train-related simulation files (`.rou.xml`, `.trips.xml`, `.sumocfg`) and routing toolchains (`duarouter`). Trains and schedules are now isolated in a dedicated downstream repository, keeping this directory 100% focused on physical track infrastructure (rails, switches, block signals, platforms).
+- **Elimination of Extreme Twists and Jagged Turns:** Replaced arbitrary lateral offsets and perpendicular station orientations with continuous, physics-grounded railway corridors:
+  - *Corridor 1 (East-West Trunk):* Sweeps across 27 km with minimum curvature radii $R \ge 4,000\text{ m}$ to $17,000\text{ m}$, matching real-world 300 km/h high-speed rail standards.
+  - *Corridor 2 (North-South Spine):* Straight, monotonic inter-city alignment passing cleanly through City_3 grand crossing hub ($R \ge 25,000\text{ m}$).
+  - *Corridor 3 (Northwest Alpine Line):* Branches naturally northwest from City_2 with smooth turnout geometry ($R = 1,974\text{ m}$) into mountain terrain.
+  - *Corridor 4 (Southern Coastal Arc):* Parabolic curve eliminating all $180^\circ$ hairpin loops and unnatural troughs ($R \ge 1,076\text{ m}$ to $3,400\text{ m}$).
+  - *Diagonal Bypass & Spurs:* Direct high-speed bypass ($R = 11,304\text{ m}$) and smooth logistics depot spurs ($R \ge 960\text{ m}$).
+- **Topology Verification:** `railway_topology.xml` confirmed with **0 broken nodes**, 0 driving angle conflicts, and 0 disconnected lanes.
+
