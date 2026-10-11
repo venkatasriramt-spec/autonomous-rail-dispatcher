@@ -173,3 +173,57 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 3. **Pipeline Regeneration & Simulation Validation**:
    - Re-executed full toolchain: `generate_master_timetable.py` $\to$ `export_to_db.py` $\to$ `export_to_sumo.py` $\to$ `verify_simulation.py 86400`.
    - Result: 0 turnaround violations, 152/152 vehicles compiled in Duarouter, 24-hour SUMO simulation verified with 0 fatal errors, 0 collisions, 0 teleports.
+
+---
+
+### 11 October 2026 (Night) — Flaw 2 Remediation: Morning & Evening Peak Headway Surges (*Spitzenverkehr*)
+
+**Objective:** Fully eliminate uniform off-peak vs. peak-hour scheduling density (Flaw 2) by engineering heavy, compressed commuter peak headways (15–30 min intervals) during rush hours, contrasted with 60–120 min off-peak cadences, and integrating dedicated peak relief trainsets.
+
+#### Phase 11: Network-Wide Peak Headway Surge Implementation
+1. **Corridor-by-Corridor Rush-Hour Headway Compression**:
+   - **Corridor 1 Regional Stopper (Expanded to 34 runs)**:
+     - Injected morning peak relief run `#21029`/`#21030` at 08:45 Eastbound / 09:25 Westbound.
+     - Injected evening peak relief runs `#21031`/`#21032` (16:45 dep) and `#21033`/`#21034` (18:15 dep).
+     - Result: Continuous **30-minute commuter cadence** across the entire morning peak (07:15, 07:45, 08:15, 08:45) and evening peak (16:15, 16:45, 17:15, 17:45, 18:15).
+   - **Corridor 2 North–South Spine (Expanded to 38 runs)**:
+     - Injected morning rush relief run `#32033`/`#32034` (08:40 Southbound / 09:15 Northbound).
+     - Injected evening rush relief runs `#32035`/`#32036` (16:40 Southbound / 17:15 Northbound) and `#32037`/`#32038` (17:40 Southbound / 18:15 Northbound).
+     - Result: Continuous **30-minute commuter cadence** throughout both peak windows (07:10, 07:40, 08:10, 08:40 AM; 16:10, 16:40, 17:10, 17:40, 18:10 PM) contrasting with 60-min midday baseline.
+   - **Corridor 4 Southern Coastal Arc (Expanded to 26 runs)**:
+     - Injected morning peak relief runs `#41019`/`#41020` (07:50 dep) and `#41021`/`#41022` (08:50 dep).
+     - Injected evening peak relief runs `#41023`/`#41024` (16:50 dep) and `#41025`/`#41026` (17:50 dep).
+     - Result: Compressed 30-min headway throughout both commuter windows.
+   - **Corridor 3 Alpine Mountain Line (Expanded to 12 runs)**:
+     - Added weekday commuter shuttles `#12771`/`#12772` (08:10 AM) and `#12773`/`#12774` (17:10 PM) providing daily connectivity for mountain residents.
+   - **Diagonal High-Speed Bypass (Expanded to 10 runs)**:
+     - Added rush-hour direct chord runs at 07:25 AM and 18:25 PM.
+   - **Trans-Hub Bi-Level Flyover Transfer (Expanded to 16 runs)**:
+     - Added rush-hour interchange links at 07:05 AM, 09:05 AM, 16:05 PM, and 18:05 PM, achieving hourly transfer connectivity during peaks vs 3-hour off-peak intervals.
+
+2. **Fleet Expansion & Dedicated Peak Relief Trainsets**:
+   - Expanded active rolling stock roster from 28 to **31 physical rakes**:
+     - Added `REG-C1-06` (Depot 4): dedicated peak-only commuter EMU.
+     - Added `REG-C2-06` (Depot 3): dedicated peak-only commuter EMU.
+     - Added `REG-C4-05` (Depot 2): dedicated peak-only commuter EMU.
+   - Modeled realistic suburban duty cycles: peak rakes activate during morning rush, stable in station yard sidings during midday off-peak, and redeploy for evening rush.
+
+3. **Hourly Temporal Density Contrast**:
+   - **AM Peak (07:00–08:59)**: 41 scheduled departures (18–23 departures/hr).
+   - **PM Peak (16:00–18:59)**: 52 scheduled departures (16–22 departures/hr).
+   - **Midday Off-Peak (10:00–15:59)**: 48 departures across 6 hours (avg 8 departures/hr).
+   - **Late Night (19:00–23:59)**: 19 departures across 5 hours (avg 3.8 departures/hr).
+
+4. **Microscopic Simulation Validation**:
+   - `data/trains.db`: 188 services, 920 stops, 188 post-journey dispositions with 0 turnaround violations.
+   - `duarouter`: Compiled **188 out of 188 vehicles (100% routing success)** into `trains.rou.xml`.
+   - Full 24-hour SUMO simulation (`86,400s`):
+     - Inserted: 188 vehicles.
+     - Running / Waiting: 0.
+     - Average Fleet Speed: 19.96 m/s (~71.9 km/h).
+     - Average Depart Delay: **0.00s**.
+     - Average Waiting Time: **0.60s**.
+     - Fatal Errors: **0**.
+     - Collisions: **0**.
+     - Teleports: **0**.
+

@@ -94,6 +94,9 @@
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
     </trip>
+    <trip id="train_51009_Regional" type="regional_emu_120" from="City_4_plat_4_bw" to="City_6_plat_4_fw" depart="25500.0">
+        <stop trainStop="City_3_EW_p4_bw" duration="180"/>
+    </trip>
     <trip id="train_32017_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="25800.0">
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -116,6 +119,7 @@
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
     </trip>
+    <trip id="train_15007_HighSpeed" type="high_speed_emu_single" from="City_2_plat_2_fw" to="City_5_plat_2_bw" depart="26700.0"/>
     <trip id="train_12017_HighSpeed" type="high_speed_emu_300" from="City_1_plat_1_fw" to="City_4_plat_1_fw" depart="27000.0">
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
@@ -123,6 +127,9 @@
     <trip id="train_12004_HighSpeed" type="high_speed_emu_300" from="City_4_plat_1_bw" to="City_1_plat_1_bw" depart="27300.0">
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
+    </trip>
+    <trip id="train_51010_Regional" type="regional_emu_120" from="City_6_plat_4_bw" to="City_4_plat_4_fw" depart="27300.0">
+        <stop trainStop="City_3_NS_p4_bw" duration="180"/>
     </trip>
     <trip id="train_32019_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="27600.0">
         <stop trainStop="Town_4_p1_fw" duration="45"/>
@@ -148,6 +155,11 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
     </trip>
+    <trip id="train_41019_Regional" type="regional_emu_120" from="City_1_plat_3_bw" to="City_6_plat_3_fw" depart="28200.0">
+        <stop trainStop="Town_10_p1_fw" duration="45"/>
+        <stop trainStop="Town_11_p1_fw" duration="45"/>
+        <stop trainStop="Town_12_p1_fw" duration="45"/>
+    </trip>
     <trip id="train_21014_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="28500.0">
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -160,6 +172,7 @@
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
     </trip>
+    <trip id="train_15008_HighSpeed" type="high_speed_emu_single" from="City_5_plat_2_fw" to="City_2_plat_2_bw" depart="28500.0"/>
     <trip id="train_12005_HighSpeed" type="high_speed_emu_300" from="City_1_plat_1_fw" to="City_4_plat_1_fw" depart="28800.0">
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
@@ -177,6 +190,9 @@
         <stop trainStop="City_3_NS_p1_fw" duration="150"/>
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
+    </trip>
+    <trip id="train_12771_Regional" type="regional_dmu_120" from="City_2_plat_3_bw" to="Town_9_plat_1_fw" depart="29400.0">
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
     </trip>
     <trip id="train_21003_Regional" type="regional_emu_120" from="City_1_plat_2_fw" to="City_4_plat_2_fw" depart="29700.0">
         <stop trainStop="Town_1_p2_fw" duration="45"/>
@@ -204,6 +220,11 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
     </trip>
+    <trip id="train_41020_Regional" type="regional_emu_120" from="City_6_plat_3_bw" to="City_1_plat_3_fw" depart="30300.0">
+        <stop trainStop="Town_12_p1_bw" duration="45"/>
+        <stop trainStop="Town_11_p1_bw" duration="45"/>
+        <stop trainStop="Town_10_p1_bw" duration="45"/>
+    </trip>
     <trip id="train_15001_HighSpeed" type="high_speed_emu_single" from="City_2_plat_2_fw" to="City_5_plat_2_bw" depart="30300.0"/>
     <trip id="train_12019_HighSpeed" type="high_speed_emu_300" from="City_1_plat_1_fw" to="City_4_plat_1_fw" depart="30600.0">
         <stop trainStop="City_2_p1_fw" duration="120"/>
@@ -217,12 +238,34 @@
     <trip id="train_51002_Regional" type="regional_emu_120" from="City_6_plat_4_bw" to="City_4_plat_4_fw" depart="30900.0">
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
     </trip>
+    <trip id="train_32033_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="31200.0">
+        <stop trainStop="Town_4_p1_fw" duration="45"/>
+        <stop trainStop="Town_5_p1_fw" duration="45"/>
+        <stop trainStop="City_3_NS_p1_fw" duration="150"/>
+        <stop trainStop="Town_6_p1_fw" duration="45"/>
+        <stop trainStop="Town_7_p1_fw" duration="45"/>
+    </trip>
+    <trip id="train_12772_Regional" type="regional_dmu_120" from="Town_9_plat_1_bw" to="City_2_plat_3_fw" depart="31200.0">
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+    </trip>
+    <trip id="train_21029_Regional" type="regional_emu_120" from="City_1_plat_2_fw" to="City_4_plat_2_fw" depart="31500.0">
+        <stop trainStop="Town_1_p2_fw" duration="45"/>
+        <stop trainStop="City_2_p2_fw" duration="90"/>
+        <stop trainStop="Town_2_p2_fw" duration="45"/>
+        <stop trainStop="City_3_EW_p2_fw" duration="150"/>
+        <stop trainStop="Town_3_p2_fw" duration="45"/>
+    </trip>
     <trip id="train_32004_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="31500.0">
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
         <stop trainStop="City_3_NS_p1_bw" duration="150"/>
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
+    </trip>
+    <trip id="train_41021_Regional" type="regional_emu_120" from="City_1_plat_3_bw" to="City_6_plat_3_fw" depart="31800.0">
+        <stop trainStop="Town_10_p1_fw" duration="45"/>
+        <stop trainStop="Town_11_p1_fw" duration="45"/>
+        <stop trainStop="Town_12_p1_fw" duration="45"/>
     </trip>
     <trip id="train_21004_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="32100.0">
         <stop trainStop="Town_3_p2_bw" duration="45"/>
@@ -245,6 +288,9 @@
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
     </trip>
+    <trip id="train_51011_Regional" type="regional_emu_120" from="City_4_plat_4_bw" to="City_6_plat_4_fw" depart="32700.0">
+        <stop trainStop="City_3_EW_p4_bw" duration="180"/>
+    </trip>
     <trip id="train_32005_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="33000.0">
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -252,14 +298,36 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
     </trip>
+    <trip id="train_32034_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="33300.0">
+        <stop trainStop="Town_7_p1_bw" duration="45"/>
+        <stop trainStop="Town_6_p1_bw" duration="45"/>
+        <stop trainStop="City_3_NS_p1_bw" duration="150"/>
+        <stop trainStop="Town_5_p1_bw" duration="45"/>
+        <stop trainStop="Town_4_p1_bw" duration="45"/>
+    </trip>
     <trip id="train_41003_Regional" type="regional_emu_120" from="City_1_plat_3_bw" to="City_6_plat_3_fw" depart="33600.0">
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
     </trip>
+    <trip id="train_21030_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="33900.0">
+        <stop trainStop="Town_3_p2_bw" duration="45"/>
+        <stop trainStop="City_3_EW_p2_bw" duration="150"/>
+        <stop trainStop="Town_2_p2_bw" duration="45"/>
+        <stop trainStop="City_2_p2_bw" duration="90"/>
+        <stop trainStop="Town_1_p2_bw" duration="45"/>
+    </trip>
+    <trip id="train_41022_Regional" type="regional_emu_120" from="City_6_plat_3_bw" to="City_1_plat_3_fw" depart="33900.0">
+        <stop trainStop="Town_12_p1_bw" duration="45"/>
+        <stop trainStop="Town_11_p1_bw" duration="45"/>
+        <stop trainStop="Town_10_p1_bw" duration="45"/>
+    </trip>
     <trip id="train_12032_HighSpeed" type="high_speed_emu_300" from="City_4_plat_1_bw" to="City_1_plat_1_bw" depart="34500.0">
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
+    </trip>
+    <trip id="train_51012_Regional" type="regional_emu_120" from="City_6_plat_4_bw" to="City_4_plat_4_fw" depart="34500.0">
+        <stop trainStop="City_3_NS_p4_bw" duration="180"/>
     </trip>
     <trip id="train_32006_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="35100.0">
         <stop trainStop="Town_7_p1_bw" duration="45"/>
@@ -513,6 +581,9 @@
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
     </trip>
+    <trip id="train_51013_Regional" type="regional_emu_120" from="City_4_plat_4_bw" to="City_6_plat_4_fw" depart="57900.0">
+        <stop trainStop="City_3_EW_p4_bw" duration="180"/>
+    </trip>
     <trip id="train_32021_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="58200.0">
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -543,8 +614,25 @@
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
     </trip>
+    <trip id="train_51014_Regional" type="regional_emu_120" from="City_6_plat_4_bw" to="City_4_plat_4_fw" depart="59700.0">
+        <stop trainStop="City_3_NS_p4_bw" duration="180"/>
+    </trip>
+    <trip id="train_32035_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="60000.0">
+        <stop trainStop="Town_4_p1_fw" duration="45"/>
+        <stop trainStop="Town_5_p1_fw" duration="45"/>
+        <stop trainStop="City_3_NS_p1_fw" duration="150"/>
+        <stop trainStop="Town_6_p1_fw" duration="45"/>
+        <stop trainStop="Town_7_p1_fw" duration="45"/>
+    </trip>
     <trip id="train_12768_Regional" type="regional_dmu_120" from="Town_9_plat_1_bw" to="City_2_plat_3_fw" depart="60000.0">
         <stop trainStop="Town_8_p1_bw" duration="75"/>
+    </trip>
+    <trip id="train_21031_Regional" type="regional_emu_120" from="City_1_plat_2_fw" to="City_4_plat_2_fw" depart="60300.0">
+        <stop trainStop="Town_1_p2_fw" duration="45"/>
+        <stop trainStop="City_2_p2_fw" duration="90"/>
+        <stop trainStop="Town_2_p2_fw" duration="45"/>
+        <stop trainStop="City_3_EW_p2_fw" duration="150"/>
+        <stop trainStop="Town_3_p2_fw" duration="45"/>
     </trip>
     <trip id="train_32022_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="60300.0">
         <stop trainStop="Town_7_p1_bw" duration="45"/>
@@ -552,6 +640,11 @@
         <stop trainStop="City_3_NS_p1_bw" duration="150"/>
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
+    </trip>
+    <trip id="train_41023_Regional" type="regional_emu_120" from="City_1_plat_3_bw" to="City_6_plat_3_fw" depart="60600.0">
+        <stop trainStop="Town_10_p1_fw" duration="45"/>
+        <stop trainStop="Town_11_p1_fw" duration="45"/>
+        <stop trainStop="Town_12_p1_fw" duration="45"/>
     </trip>
     <trip id="train_21018_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="60900.0">
         <stop trainStop="Town_3_p2_bw" duration="45"/>
@@ -583,6 +676,9 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
     </trip>
+    <trip id="train_12773_Regional" type="regional_dmu_120" from="City_2_plat_3_bw" to="Town_9_plat_1_fw" depart="61800.0">
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+    </trip>
     <trip id="train_21011_Regional" type="regional_emu_120" from="City_1_plat_2_fw" to="City_4_plat_2_fw" depart="62100.0">
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -590,10 +686,29 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
     </trip>
+    <trip id="train_32036_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="62100.0">
+        <stop trainStop="Town_7_p1_bw" duration="45"/>
+        <stop trainStop="Town_6_p1_bw" duration="45"/>
+        <stop trainStop="City_3_NS_p1_bw" duration="150"/>
+        <stop trainStop="Town_5_p1_bw" duration="45"/>
+        <stop trainStop="Town_4_p1_bw" duration="45"/>
+    </trip>
     <trip id="train_41011_Regional" type="regional_emu_120" from="City_1_plat_3_bw" to="City_6_plat_3_fw" depart="62400.0">
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
+    </trip>
+    <trip id="train_21032_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="62700.0">
+        <stop trainStop="Town_3_p2_bw" duration="45"/>
+        <stop trainStop="City_3_EW_p2_bw" duration="150"/>
+        <stop trainStop="Town_2_p2_bw" duration="45"/>
+        <stop trainStop="City_2_p2_bw" duration="90"/>
+        <stop trainStop="Town_1_p2_bw" duration="45"/>
+    </trip>
+    <trip id="train_41024_Regional" type="regional_emu_120" from="City_6_plat_3_bw" to="City_1_plat_3_fw" depart="62700.0">
+        <stop trainStop="Town_12_p1_bw" duration="45"/>
+        <stop trainStop="Town_11_p1_bw" duration="45"/>
+        <stop trainStop="Town_10_p1_bw" duration="45"/>
     </trip>
     <trip id="train_15005_HighSpeed" type="high_speed_emu_single" from="City_2_plat_2_fw" to="City_5_plat_2_bw" depart="62700.0"/>
     <trip id="train_12023_HighSpeed" type="high_speed_emu_300" from="City_1_plat_1_fw" to="City_4_plat_1_fw" depart="63000.0">
@@ -606,6 +721,16 @@
     </trip>
     <trip id="train_51008_Regional" type="regional_emu_120" from="City_6_plat_4_bw" to="City_4_plat_4_fw" depart="63300.0">
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
+    </trip>
+    <trip id="train_32037_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="63600.0">
+        <stop trainStop="Town_4_p1_fw" duration="45"/>
+        <stop trainStop="Town_5_p1_fw" duration="45"/>
+        <stop trainStop="City_3_NS_p1_fw" duration="150"/>
+        <stop trainStop="Town_6_p1_fw" duration="45"/>
+        <stop trainStop="Town_7_p1_fw" duration="45"/>
+    </trip>
+    <trip id="train_12774_Regional" type="regional_dmu_120" from="Town_9_plat_1_bw" to="City_2_plat_3_fw" depart="63600.0">
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
     </trip>
     <trip id="train_21019_Regional" type="regional_emu_120" from="City_1_plat_2_fw" to="City_4_plat_2_fw" depart="63900.0">
         <stop trainStop="Town_1_p2_fw" duration="45"/>
@@ -620,6 +745,11 @@
         <stop trainStop="City_3_NS_p1_bw" duration="150"/>
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
+    </trip>
+    <trip id="train_41025_Regional" type="regional_emu_120" from="City_1_plat_3_bw" to="City_6_plat_3_fw" depart="64200.0">
+        <stop trainStop="Town_10_p1_fw" duration="45"/>
+        <stop trainStop="Town_11_p1_fw" duration="45"/>
+        <stop trainStop="Town_12_p1_fw" duration="45"/>
     </trip>
     <trip id="train_21012_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="64500.0">
         <stop trainStop="Town_3_p2_bw" duration="45"/>
@@ -642,12 +772,29 @@
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
     </trip>
+    <trip id="train_51015_Regional" type="regional_emu_120" from="City_4_plat_4_bw" to="City_6_plat_4_fw" depart="65100.0">
+        <stop trainStop="City_3_EW_p4_bw" duration="180"/>
+    </trip>
     <trip id="train_32023_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="65400.0">
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
         <stop trainStop="City_3_NS_p1_fw" duration="150"/>
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
+    </trip>
+    <trip id="train_21033_Regional" type="regional_emu_120" from="City_1_plat_2_fw" to="City_4_plat_2_fw" depart="65700.0">
+        <stop trainStop="Town_1_p2_fw" duration="45"/>
+        <stop trainStop="City_2_p2_fw" duration="90"/>
+        <stop trainStop="Town_2_p2_fw" duration="45"/>
+        <stop trainStop="City_3_EW_p2_fw" duration="150"/>
+        <stop trainStop="Town_3_p2_fw" duration="45"/>
+    </trip>
+    <trip id="train_32038_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="65700.0">
+        <stop trainStop="Town_7_p1_bw" duration="45"/>
+        <stop trainStop="Town_6_p1_bw" duration="45"/>
+        <stop trainStop="City_3_NS_p1_bw" duration="150"/>
+        <stop trainStop="Town_5_p1_bw" duration="45"/>
+        <stop trainStop="Town_4_p1_bw" duration="45"/>
     </trip>
     <trip id="train_21020_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="66300.0">
         <stop trainStop="Town_3_p2_bw" duration="45"/>
@@ -656,9 +803,18 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
     </trip>
+    <trip id="train_41026_Regional" type="regional_emu_120" from="City_6_plat_3_bw" to="City_1_plat_3_fw" depart="66300.0">
+        <stop trainStop="Town_12_p1_bw" duration="45"/>
+        <stop trainStop="Town_11_p1_bw" duration="45"/>
+        <stop trainStop="Town_10_p1_bw" duration="45"/>
+    </trip>
+    <trip id="train_15009_HighSpeed" type="high_speed_emu_single" from="City_2_plat_2_fw" to="City_5_plat_2_bw" depart="66300.0"/>
     <trip id="train_12016_HighSpeed" type="high_speed_emu_300" from="City_4_plat_1_bw" to="City_1_plat_1_bw" depart="66900.0">
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
+    </trip>
+    <trip id="train_51016_Regional" type="regional_emu_120" from="City_6_plat_4_bw" to="City_4_plat_4_fw" depart="66900.0">
+        <stop trainStop="City_3_NS_p4_bw" duration="180"/>
     </trip>
     <trip id="train_32024_Regional" type="regional_emu_120" from="City_6_plat_1_bw" to="City_5_plat_1_bw" depart="67500.0">
         <stop trainStop="Town_7_p1_bw" duration="45"/>
@@ -667,6 +823,14 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
     </trip>
+    <trip id="train_21034_Regional" type="regional_emu_120" from="City_4_plat_2_bw" to="City_1_plat_2_bw" depart="68100.0">
+        <stop trainStop="Town_3_p2_bw" duration="45"/>
+        <stop trainStop="City_3_EW_p2_bw" duration="150"/>
+        <stop trainStop="Town_2_p2_bw" duration="45"/>
+        <stop trainStop="City_2_p2_bw" duration="90"/>
+        <stop trainStop="Town_1_p2_bw" duration="45"/>
+    </trip>
+    <trip id="train_15010_HighSpeed" type="high_speed_emu_single" from="City_5_plat_2_fw" to="City_2_plat_2_bw" depart="68100.0"/>
     <trip id="train_32015_Regional" type="regional_emu_120" from="City_5_plat_1_fw" to="City_6_plat_1_fw" depart="69000.0">
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>

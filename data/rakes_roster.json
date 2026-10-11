@@ -80,7 +80,9 @@
       "21021",
       "21022",
       "21009",
-      "21010"
+      "21010",
+      "21031",
+      "21032"
     ]
   },
   {
@@ -136,6 +138,17 @@
     ]
   },
   {
+    "rake_id": "REG-C1-06",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "21029",
+      "21030",
+      "21033",
+      "21034"
+    ]
+  },
+  {
     "rake_id": "REG-C2-01",
     "rolling_stock_type": "regional_emu_120",
     "home_depot": "Depot_3",
@@ -147,7 +160,9 @@
       "32005",
       "32006",
       "32011",
-      "32012"
+      "32012",
+      "32037",
+      "32038"
     ]
   },
   {
@@ -190,6 +205,17 @@
     ]
   },
   {
+    "rake_id": "REG-C2-06",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_3",
+    "assigned_services": [
+      "32033",
+      "32034",
+      "32035",
+      "32036"
+    ]
+  },
+  {
     "rake_id": "REG-C2-03",
     "rolling_stock_type": "regional_emu_120",
     "home_depot": "Depot_3",
@@ -210,7 +236,9 @@
       "12763",
       "12764",
       "12767",
-      "12768"
+      "12768",
+      "12773",
+      "12774"
     ]
   },
   {
@@ -218,6 +246,8 @@
     "rolling_stock_type": "regional_dmu_120",
     "home_depot": "Depot_1",
     "assigned_services": [
+      "12771",
+      "12772",
       "12765",
       "12766",
       "12769",
@@ -249,6 +279,21 @@
     ]
   },
   {
+    "rake_id": "REG-C4-05",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_2",
+    "assigned_services": [
+      "41019",
+      "41020",
+      "41021",
+      "41022",
+      "41023",
+      "41024",
+      "41025",
+      "41026"
+    ]
+  },
+  {
     "rake_id": "REG-C4-03",
     "rolling_stock_type": "regional_emu_120",
     "home_depot": "Depot_2",
@@ -275,12 +320,31 @@
     "rolling_stock_type": "high_speed_emu_single",
     "home_depot": "Depot_4",
     "assigned_services": [
+      "15007",
+      "15008",
       "15001",
       "15002",
       "15003",
       "15004",
       "15005",
-      "15006"
+      "15006",
+      "15009",
+      "15010"
+    ]
+  },
+  {
+    "rake_id": "REG-XFER-02",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "51009",
+      "51010",
+      "51005",
+      "51006",
+      "51007",
+      "51008",
+      "51015",
+      "51016"
     ]
   },
   {
@@ -290,19 +354,12 @@
     "assigned_services": [
       "51001",
       "51002",
+      "51011",
+      "51012",
       "51003",
-      "51004"
-    ]
-  },
-  {
-    "rake_id": "REG-XFER-02",
-    "rolling_stock_type": "regional_emu_120",
-    "home_depot": "Depot_4",
-    "assigned_services": [
-      "51005",
-      "51006",
-      "51007",
-      "51008"
+      "51004",
+      "51013",
+      "51014"
     ]
   },
   {

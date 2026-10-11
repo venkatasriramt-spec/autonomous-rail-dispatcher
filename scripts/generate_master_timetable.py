@@ -420,26 +420,29 @@ def build_timetable():
     # Stops at ALL stations (City_1, Town_1, City_2, Town_2, City_3_EW, Town_3, City_4)
     # Staggered between express runs, uses platform loops
     # TAKTFAHRPLAN: Eastbound departs at :15, Westbound departs at :55 past the hour (and :25 in peak).
-    # PEAK SURGE: Half-hourly frequency during morning (07:15, 07:45, 08:15) and evening (16:15, 17:15, 17:45).
+    # PEAK SURGE: 30-min commuter frequency during morning (07:15, 07:45, 08:15, 08:45) and evening (16:15, 16:45, 17:15, 17:45, 18:15).
     reg_c1_offsets = [
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
         # Early Morning
         (5, 15, 5, 55, "Daily",   "21021", "21022", "REG-C1-05"),
         (6, 15, 6, 55, "Daily",   "21001", "21002", "REG-C1-01"),
-        # Morning Peak Surge
+        # Morning Peak Surge (30-min headway)
         (7, 15, 7, 55, "Mon-Fri", "21013", "21014", "REG-C1-03"),
         (7, 45, 8, 25, "Mon-Fri", "21015", "21016", "REG-C1-04"),
         (8, 15, 8, 55, "Mon-Fri", "21003", "21004", "REG-C1-02"),
-        # Midday Regular Cadence
+        (8, 45, 9, 25, "Mon-Fri", "21029", "21030", "REG-C1-06"),
+        # Midday Regular Cadence (60-120 min headway)
         (10, 15, 10, 55, "Daily",  "21005", "21006", "REG-C1-01"),
         (11, 15, 11, 55, "Daily",  "21023", "21024", "REG-C1-03"),
         (13, 15, 13, 55, "Daily",  "21007", "21008", "REG-C1-02"),
         (14, 15, 14, 55, "Daily",  "21025", "21026", "REG-C1-04"),
         (15, 15, 15, 55, "Mon-Fri","21009", "21010", "REG-C1-05"),
-        # Evening Peak Surge
+        # Evening Peak Surge (30-min headway)
         (16, 15, 16, 55, "Mon-Fri","21017", "21018", "REG-C1-03"),
+        (16, 45, 17, 25, "Mon-Fri","21031", "21032", "REG-C1-05"),
         (17, 15, 17, 55, "Daily",  "21011", "21012", "REG-C1-02"),
         (17, 45, 18, 25, "Mon-Fri","21019", "21020", "REG-C1-04"),
+        (18, 15, 18, 55, "Mon-Fri","21033", "21034", "REG-C1-06"),
         # Late Evening
         (19, 15, 19, 55, "Daily",  "21027", "21028", "REG-C1-01"),
     ]
@@ -568,26 +571,29 @@ def build_timetable():
     # --- CATEGORY C: CORRIDOR 2 NORTH-SOUTH REGIONAL SPINE (120 km/h) ---
     # City_5 <-> Town_4 <-> Town_5 <-> City_3_NS <-> Town_6 <-> Town_7 <-> City_6
     # TAKTFAHRPLAN: Southbound departs at :10, Northbound departs at :45 past the hour.
-    # PEAK SURGE: 30-min headway compression during morning (07:10, 07:40, 08:10) and evening (16:10, 17:10, 18:10).
+    # PEAK SURGE: 30-min commuter frequency during morning (07:10, 07:40, 08:10, 08:40) and evening (16:10, 16:40, 17:10, 17:40, 18:10).
     c2_services = [
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
         # Early Morning Commuter
         (5, 10, 5, 45, "Daily",   "32025", "32026", "REG-C2-01"),
         (6, 10, 6, 45, "Daily",   "32001", "32002", "REG-C2-01"),
-        # Morning Peak Surge
+        # Morning Peak Surge (30-min headway)
         (7, 10, 7, 45, "Mon-Fri", "32017", "32018", "REG-C2-04"),
         (7, 40, 8, 15, "Mon-Fri", "32019", "32020", "REG-C2-05"),
         (8, 10, 8, 45, "Mon-Fri", "32003", "32004", "REG-C2-02"),
+        (8, 40, 9, 15, "Mon-Fri", "32033", "32034", "REG-C2-06"),
         (9, 10, 9, 45, "Daily",   "32005", "32006", "REG-C2-01"),
-        # Midday Regular Cadence
+        # Midday Regular Cadence (60-min headway)
         (11, 10, 11, 45, "Daily", "32007", "32008", "REG-C2-03"),
         (12, 10, 12, 45, "Daily", "32027", "32028", "REG-C2-04"),
         (13, 10, 13, 45, "Daily", "32009", "32010", "REG-C2-02"),
         (14, 10, 14, 45, "Daily", "32029", "32030", "REG-C2-05"),
         (15, 10, 15, 45, "Mon-Fri","32011", "32012", "REG-C2-01"),
-        # Evening Peak Surge
+        # Evening Peak Surge (30-min headway)
         (16, 10, 16, 45, "Mon-Fri","32021", "32022", "REG-C2-04"),
+        (16, 40, 17, 15, "Mon-Fri","32035", "32036", "REG-C2-06"),
         (17, 10, 17, 45, "Daily", "32013", "32014", "REG-C2-03"),
+        (17, 40, 18, 15, "Mon-Fri","32037", "32038", "REG-C2-01"),
         (18, 10, 18, 45, "Mon-Fri","32023", "32024", "REG-C2-05"),
         # Late Evening Base
         (19, 10, 19, 45, "Daily", "32015", "32016", "REG-C2-02"),
@@ -718,12 +724,15 @@ def build_timetable():
 
     # --- CATEGORY D: CORRIDOR 3 NORTHWEST ALPINE MOUNTAIN LINE (Hybrid DMU & Specific Days) ---
     # TAKTFAHRPLAN: Uphill departs City_2 at :10 (connecting from EB C1 Express), Downhill departs Town_9 at :40
+    # PEAK SURGE: Commuter relief runs at 08:10 (AM peak) and 17:10 (PM peak).
     c3_mountain_passenger = [
         # (fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no)
         ("12763", "Alpine Scenic Shuttle 12763", ["Mon", "Thu", "Sun"], 7, 10, 7, 40, "ALP-Rake-01", "12764"),
+        ("12771", "Alpine Morning Commuter 12771", ["Mon-Fri"], 8, 10, 8, 40, "ALP-Rake-02", "12772"),
         ("12765", "Alpine Glacier Express 12765", ["Tue", "Fri", "Sat"], 10, 10, 10, 40, "ALP-Rake-02", "12766"),
         ("12769", "Alpine Panorama Express 12769", ["Daily"], 13, 10, 13, 40, "ALP-Rake-02", "12770"),
         ("12767", "Alpine Evening Shuttle 12767", ["Mon", "Thu", "Sun"], 16, 10, 16, 40, "ALP-Rake-01", "12768"),
+        ("12773", "Alpine Evening Commuter 12773", ["Mon-Fri"], 17, 10, 17, 40, "ALP-Rake-01", "12774"),
     ]
 
     for fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no in c3_mountain_passenger:
@@ -820,7 +829,7 @@ def build_timetable():
 
         timetable.append({
             "train_number": rev_no,
-            "train_name": name.replace("Shuttle", "Return").replace("Express", "Return"),
+            "train_name": name.replace("Shuttle", "Return").replace("Express", "Return").replace(fwd_no, rev_no),
             "service_class": "Regional",
             "rolling_stock_type": r_type,
             "assigned_rake": rake_id,
@@ -852,21 +861,25 @@ def build_timetable():
 
     # --- CATEGORY E: CORRIDOR 4 SOUTHERN COASTAL ARC REGIONAL (120 km/h) ---
     # TAKTFAHRPLAN: Eastbound departs City_1 at :20, Westbound departs City_6 at :55
-    # PEAK SURGE: Commuter relief runs at 08:20 (AM peak) and 17:20 (PM peak).
+    # PEAK SURGE: 30-min commuter frequency during morning (07:20, 07:50, 08:20, 08:50, 09:20) and evening (16:20, 16:50, 17:20, 17:50).
     c4_services = [
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
         # Early Morning
         (6, 20, 6, 55, "Daily",   "41013", "41014", "REG-C4-04"),
         (7, 20, 7, 55, "Daily",   "41001", "41002", "REG-C4-01"),
-        # Morning Peak Surge
+        # Morning Peak Surge (30-min headway)
+        (7, 50, 8, 25, "Mon-Fri", "41019", "41020", "REG-C4-05"),
         (8, 20, 8, 55, "Mon-Fri", "41009", "41010", "REG-C4-03"),
+        (8, 50, 9, 25, "Mon-Fri", "41021", "41022", "REG-C4-05"),
         (9, 20, 9, 55, "Mon-Fri", "41003", "41004", "REG-C4-02"),
-        # Midday Base
+        # Midday Base (60-120 min headway)
         (11, 20, 11, 55, "Daily", "41015", "41016", "REG-C4-04"),
         (13, 20, 13, 55, "Daily", "41005", "41006", "REG-C4-01"),
         (16, 20, 16, 55, "Daily", "41007", "41008", "REG-C4-02"),
-        # Evening Peak Surge
+        # Evening Peak Surge (30-min headway)
+        (16, 50, 17, 25, "Mon-Fri", "41023", "41024", "REG-C4-05"),
         (17, 20, 17, 55, "Mon-Fri", "41011", "41012", "REG-C4-03"),
+        (17, 50, 18, 25, "Mon-Fri", "41025", "41026", "REG-C4-05"),
         # Evening Base
         (19, 20, 19, 55, "Daily", "41017", "41018", "REG-C4-01"),
     ]
@@ -1002,11 +1015,17 @@ def build_timetable():
     # --- CATEGORY F: HIGH-SPEED DIAGONAL BYPASS EXPRESS (300 km/h) ---
     # Direct chord connecting City_2 <-> City_5 without going through City_3
     # TAKTFAHRPLAN: Northeast departs City_2 at :25, Southwest departs City_5 at :55
+    # PEAK SURGE: Direct chord commuter relief runs during morning (07:25, 08:25) and evening (17:25, 18:25).
     bypass_services = [
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        # Morning Peak Surge
+        (7, 25, 7, 55, "Mon-Fri", "15007", "15008", "HS-Rake-04"),
         (8, 25, 8, 55, "Mon-Fri", "15001", "15002", "HS-Rake-04"),
+        # Midday Base
         (13, 25, 13, 55, "Daily",  "15003", "15004", "HS-Rake-04"),
+        # Evening Peak Surge
         (17, 25, 17, 55, "Mon-Fri", "15005", "15006", "HS-Rake-04"),
+        (18, 25, 18, 55, "Mon-Fri", "15009", "15010", "HS-Rake-04"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in bypass_services:
@@ -1104,12 +1123,20 @@ def build_timetable():
     # --- CATEGORY G: CROSS-HUB FLYOVER TRANSFER INTERCHANGE (120 km/h) ---
     # Eastern Terminus (City_4) <-> City_3_EW <-> Flyover Ramp <-> City_3_NS <-> Southern Terminus (City_6)
     # TAKTFAHRPLAN: East-to-South departs at :05, South-to-East departs at :35
+    # PEAK SURGE: Hourly commuter frequency during morning (07:05, 08:05, 09:05) and evening (16:05, 17:05, 18:05) peaks.
     transfer_services = [
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        # Morning Peak Surge
+        (7, 5, 7, 35,   "Mon-Fri", "51009", "51010", "REG-XFER-02"),
         (8, 5, 8, 35,   "Daily",   "51001", "51002", "REG-XFER-01"),
+        (9, 5, 9, 35,   "Mon-Fri", "51011", "51012", "REG-XFER-01"),
+        # Midday Base
         (11, 5, 11, 35, "Daily",   "51005", "51006", "REG-XFER-02"),
         (14, 5, 14, 35, "Daily",   "51003", "51004", "REG-XFER-01"),
+        # Evening Peak Surge
+        (16, 5, 16, 35, "Mon-Fri", "51013", "51014", "REG-XFER-01"),
         (17, 5, 17, 35, "Mon-Fri", "51007", "51008", "REG-XFER-02"),
+        (18, 5, 18, 35, "Mon-Fri", "51015", "51016", "REG-XFER-02"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in transfer_services:

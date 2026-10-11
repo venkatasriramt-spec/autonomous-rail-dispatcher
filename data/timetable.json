@@ -1541,6 +1541,70 @@
     }
   },
   {
+    "train_number": "51009",
+    "train_name": "Trans-Hub Inter-Corridor Link 51009",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-02",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "East_to_South_Xfer",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_4_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_4_fw",
+    "departure_time": "07:05:00",
+    "departure_sec": 25500,
+    "arrival_time": "07:20:47",
+    "arrival_sec": 26447.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_bw",
+        "arrival_time": "07:05:00",
+        "arrival_sec": 25500,
+        "departure_time": "07:05:00",
+        "departure_sec": 25500,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p4_bw",
+        "arrival_time": "07:10:15",
+        "arrival_sec": 25815.4,
+        "departure_time": "07:13:15",
+        "departure_sec": 25995.4,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_fw",
+        "arrival_time": "07:20:47",
+        "arrival_sec": 26447.4,
+        "departure_time": "07:20:47",
+        "departure_sec": 26447.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_3",
+      "Town_6",
+      "Town_7"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.2,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "51010"
+    }
+  },
+  {
     "train_number": "32017",
     "train_name": "Nord-Sud InterCity Spine 32017",
     "service_class": "Regional",
@@ -1875,6 +1939,57 @@
     }
   },
   {
+    "train_number": "15007",
+    "train_name": "Diagonal Bypass Direct 15007",
+    "service_class": "HighSpeed",
+    "rolling_stock_type": "high_speed_emu_single",
+    "assigned_rake": "HS-Rake-04",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Bypass_C2_C5",
+    "direction": "Northeast_FW",
+    "origin_station": "City_2",
+    "origin_track": "City_2_plat_2_fw",
+    "dest_station": "City_5",
+    "dest_track": "City_5_plat_2_bw",
+    "departure_time": "07:25:00",
+    "departure_sec": 26700,
+    "arrival_time": "07:29:23",
+    "arrival_sec": 26963.8,
+    "total_distance_km": 13.3,
+    "stops": [
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_fw",
+        "arrival_time": "07:25:00",
+        "arrival_sec": 26700,
+        "departure_time": "07:25:00",
+        "departure_sec": 26700,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p2_bw",
+        "arrival_time": "07:29:23",
+        "arrival_sec": 26963.8,
+        "departure_time": "07:29:23",
+        "departure_sec": 26963.8,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_5_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 25.6,
+      "min_turnaround_required_min": 12.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "15008"
+    }
+  },
+  {
     "train_number": "12017",
     "train_name": "Trans-Regional Express 12017",
     "service_class": "HighSpeed",
@@ -2021,6 +2136,70 @@
     }
   },
   {
+    "train_number": "51010",
+    "train_name": "Trans-Hub Inter-Corridor Link 51010",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-02",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "South_to_East_Xfer",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_4_bw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_4_fw",
+    "departure_time": "07:35:00",
+    "departure_sec": 27300,
+    "arrival_time": "07:50:47",
+    "arrival_sec": 28247.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_bw",
+        "arrival_time": "07:35:00",
+        "arrival_sec": 27300,
+        "departure_time": "07:35:00",
+        "departure_sec": 27300,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p4_bw",
+        "arrival_time": "07:41:28",
+        "arrival_sec": 27688.7,
+        "departure_time": "07:44:28",
+        "departure_sec": 27868.7,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_fw",
+        "arrival_time": "07:50:47",
+        "arrival_sec": 28247.4,
+        "departure_time": "07:50:47",
+        "departure_sec": 28247.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_7",
+      "Town_6",
+      "Town_3"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_4_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
     "train_number": "32019",
     "train_name": "Nord-Sud InterCity Spine 32019",
     "service_class": "Regional",
@@ -2118,7 +2297,7 @@
   },
   {
     "train_number": "12764",
-    "train_name": "Alpine Scenic Return 12763",
+    "train_name": "Alpine Scenic Return 12764",
     "service_class": "Regional",
     "rolling_stock_type": "regional_dmu_120",
     "assigned_rake": "ALP-Rake-01",
@@ -2371,6 +2550,86 @@
     }
   },
   {
+    "train_number": "41019",
+    "train_name": "Southern Coastal Arc 41019",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_3_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_3_fw",
+    "departure_time": "07:50:00",
+    "departure_sec": 28200,
+    "arrival_time": "08:10:54",
+    "arrival_sec": 29454.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_bw",
+        "arrival_time": "07:50:00",
+        "arrival_sec": 28200,
+        "departure_time": "07:51:30",
+        "departure_sec": 28290,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_fw",
+        "arrival_time": "07:54:18",
+        "arrival_sec": 28458.5,
+        "departure_time": "07:55:03",
+        "departure_sec": 28503.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_fw",
+        "arrival_time": "07:58:03",
+        "arrival_sec": 28683.6,
+        "departure_time": "07:58:48",
+        "departure_sec": 28728.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_fw",
+        "arrival_time": "08:06:24",
+        "arrival_sec": 29184.2,
+        "departure_time": "08:07:09",
+        "departure_sec": 29229.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "08:10:54",
+        "arrival_sec": 29454.3,
+        "departure_time": "08:10:54",
+        "departure_sec": 29454.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.1,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "41020"
+    }
+  },
+  {
     "train_number": "21014",
     "train_name": "East-West Regional Local 21014",
     "service_class": "Regional",
@@ -2542,6 +2801,57 @@
       "buffer_stop_node": null,
       "turnaround_dwell_min": 60,
       "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "15008",
+    "train_name": "Diagonal Bypass Direct 15008",
+    "service_class": "HighSpeed",
+    "rolling_stock_type": "high_speed_emu_single",
+    "assigned_rake": "HS-Rake-04",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Bypass_C2_C5",
+    "direction": "Southwest_BW",
+    "origin_station": "City_5",
+    "origin_track": "City_5_plat_2_fw",
+    "dest_station": "City_2",
+    "dest_track": "City_2_plat_2_bw",
+    "departure_time": "07:55:00",
+    "departure_sec": 28500,
+    "arrival_time": "07:59:23",
+    "arrival_sec": 28763.8,
+    "total_distance_km": 13.3,
+    "stops": [
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p2_fw",
+        "arrival_time": "07:55:00",
+        "arrival_sec": 28500,
+        "departure_time": "07:55:00",
+        "departure_sec": 28500,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_bw",
+        "arrival_time": "07:59:23",
+        "arrival_sec": 28763.8,
+        "departure_time": "07:59:23",
+        "departure_sec": 28763.8,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_2_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 12.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
     }
@@ -2850,6 +3160,66 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "rapid_dual_crew",
       "subsequent_service": "32004"
+    }
+  },
+  {
+    "train_number": "12771",
+    "train_name": "Alpine Morning Commuter 12771",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_dmu_120",
+    "assigned_rake": "ALP-Rake-02",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_3",
+    "direction": "Uphill_FW",
+    "origin_station": "City_2",
+    "origin_track": "City_2_plat_3_bw",
+    "dest_station": "Town_9",
+    "dest_track": "Town_9_plat_1_fw",
+    "departure_time": "08:10:00",
+    "departure_sec": 29400,
+    "arrival_time": "08:19:35",
+    "arrival_sec": 29975.5,
+    "total_distance_km": 8.7,
+    "stops": [
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p1_fw",
+        "arrival_time": "08:10:00",
+        "arrival_sec": 29400,
+        "departure_time": "08:11:30",
+        "departure_sec": 29490,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_8",
+        "train_stop_id": "Town_8_p1_fw",
+        "arrival_time": "08:14:59",
+        "arrival_sec": 29699.6,
+        "departure_time": "08:16:14",
+        "departure_sec": 29774.6,
+        "dwell_sec": 75
+      },
+      {
+        "station": "Town_9",
+        "train_stop_id": "Town_9_p1_fw",
+        "arrival_time": "08:19:35",
+        "arrival_sec": 29975.5,
+        "departure_time": "08:19:35",
+        "departure_sec": 29975.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "Town_9_yard_1_fw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 20.4,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "12772"
     }
   },
   {
@@ -3221,6 +3591,86 @@
     }
   },
   {
+    "train_number": "41020",
+    "train_name": "Southern Coastal Arc 41020",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Westbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_3_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_3_fw",
+    "departure_time": "08:25:00",
+    "departure_sec": 30300,
+    "arrival_time": "08:45:54",
+    "arrival_sec": 31554.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "08:25:00",
+        "arrival_sec": 30300,
+        "departure_time": "08:26:30",
+        "departure_sec": 30390,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_bw",
+        "arrival_time": "08:30:15",
+        "arrival_sec": 30615.0,
+        "departure_time": "08:31:00",
+        "departure_sec": 30660.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_bw",
+        "arrival_time": "08:38:35",
+        "arrival_sec": 31115.6,
+        "departure_time": "08:39:20",
+        "departure_sec": 31160.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_bw",
+        "arrival_time": "08:42:20",
+        "arrival_sec": 31340.7,
+        "departure_time": "08:43:05",
+        "departure_sec": 31385.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_fw",
+        "arrival_time": "08:45:54",
+        "arrival_sec": 31554.3,
+        "departure_time": "08:45:54",
+        "departure_sec": 31554.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
     "train_number": "15001",
     "train_name": "Diagonal Bypass Direct 15001",
     "service_class": "HighSpeed",
@@ -3537,6 +3987,258 @@
     }
   },
   {
+    "train_number": "32033",
+    "train_name": "Nord-Sud InterCity Spine 32033",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C2-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_2",
+    "direction": "Southbound_FW",
+    "origin_station": "City_5",
+    "origin_track": "City_5_plat_1_fw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_1_fw",
+    "departure_time": "08:40:00",
+    "departure_sec": 31200,
+    "arrival_time": "09:02:28",
+    "arrival_sec": 32548.5,
+    "total_distance_km": 22.62,
+    "stops": [
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p1_fw",
+        "arrival_time": "08:40:00",
+        "arrival_sec": 31200,
+        "departure_time": "08:41:30",
+        "departure_sec": 31290,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_4",
+        "train_stop_id": "Town_4_p1_fw",
+        "arrival_time": "08:44:03",
+        "arrival_sec": 31443.0,
+        "departure_time": "08:44:48",
+        "departure_sec": 31488.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_5",
+        "train_stop_id": "Town_5_p1_fw",
+        "arrival_time": "08:47:21",
+        "arrival_sec": 31641.2,
+        "departure_time": "08:48:06",
+        "departure_sec": 31686.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p1_fw",
+        "arrival_time": "08:50:36",
+        "arrival_sec": 31836.5,
+        "departure_time": "08:53:06",
+        "departure_sec": 31986.5,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_6",
+        "train_stop_id": "Town_6_p1_fw",
+        "arrival_time": "08:55:39",
+        "arrival_sec": 32139.8,
+        "departure_time": "08:56:24",
+        "departure_sec": 32184.8,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_7",
+        "train_stop_id": "Town_7_p1_fw",
+        "arrival_time": "08:58:58",
+        "arrival_sec": 32338.1,
+        "departure_time": "08:59:43",
+        "departure_sec": 32383.1,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "09:02:28",
+        "arrival_sec": 32548.5,
+        "departure_time": "09:02:28",
+        "departure_sec": 32548.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_1_fw",
+      "buffer_stop_node": "City_6_buf_1",
+      "turnaround_dwell_min": 12.5,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "rapid_dual_crew",
+      "subsequent_service": "32034"
+    }
+  },
+  {
+    "train_number": "12772",
+    "train_name": "Alpine Morning Commuter 12772",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_dmu_120",
+    "assigned_rake": "ALP-Rake-02",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_3",
+    "direction": "Downhill_BW",
+    "origin_station": "Town_9",
+    "origin_track": "Town_9_plat_1_bw",
+    "dest_station": "City_2",
+    "dest_track": "City_2_plat_3_fw",
+    "departure_time": "08:40:00",
+    "departure_sec": 31200,
+    "arrival_time": "08:48:59",
+    "arrival_sec": 31739.8,
+    "total_distance_km": 8.7,
+    "stops": [
+      {
+        "station": "Town_9",
+        "train_stop_id": "Town_9_p1_bw",
+        "arrival_time": "08:40:00",
+        "arrival_sec": 31200,
+        "departure_time": "08:41:15",
+        "departure_sec": 31275,
+        "dwell_sec": 75
+      },
+      {
+        "station": "Town_8",
+        "train_stop_id": "Town_8_p1_bw",
+        "arrival_time": "08:44:25",
+        "arrival_sec": 31465.9,
+        "departure_time": "08:45:40",
+        "departure_sec": 31540.9,
+        "dwell_sec": 75
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p3_fw",
+        "arrival_time": "08:48:59",
+        "arrival_sec": 31739.8,
+        "departure_time": "08:48:59",
+        "departure_sec": 31739.8,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_2_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "21029",
+    "train_name": "East-West Regional Local 21029",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C1-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_1",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_2_fw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_2_fw",
+    "departure_time": "08:45:00",
+    "departure_sec": 31500,
+    "arrival_time": "09:10:38",
+    "arrival_sec": 33038.4,
+    "total_distance_km": 27.45,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p2_fw",
+        "arrival_time": "08:45:00",
+        "arrival_sec": 31500,
+        "departure_time": "08:46:30",
+        "departure_sec": 31590,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_1",
+        "train_stop_id": "Town_1_p2_fw",
+        "arrival_time": "08:49:19",
+        "arrival_sec": 31759.9,
+        "departure_time": "08:50:04",
+        "departure_sec": 31804.9,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_fw",
+        "arrival_time": "08:53:05",
+        "arrival_sec": 31985.1,
+        "departure_time": "08:54:35",
+        "departure_sec": 32075.1,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_2",
+        "train_stop_id": "Town_2_p2_fw",
+        "arrival_time": "08:57:34",
+        "arrival_sec": 32254.9,
+        "departure_time": "08:58:19",
+        "departure_sec": 32299.9,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p2_fw",
+        "arrival_time": "09:01:26",
+        "arrival_sec": 32486.3,
+        "departure_time": "09:03:56",
+        "departure_sec": 32636.3,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_3",
+        "train_stop_id": "Town_3_p2_fw",
+        "arrival_time": "09:06:57",
+        "arrival_sec": 32817.6,
+        "departure_time": "09:07:42",
+        "departure_sec": 32862.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p2_fw",
+        "arrival_time": "09:10:38",
+        "arrival_sec": 33038.4,
+        "departure_time": "09:10:38",
+        "departure_sec": 33038.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_4_pocket_2_fw",
+      "buffer_stop_node": "City_4_buf_2",
+      "turnaround_dwell_min": 14.4,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "21030"
+    }
+  },
+  {
     "train_number": "32004",
     "train_name": "Nord-Sud InterCity Spine 32004",
     "service_class": "Regional",
@@ -3630,6 +4332,86 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "41021",
+    "train_name": "Southern Coastal Arc 41021",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_3_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_3_fw",
+    "departure_time": "08:50:00",
+    "departure_sec": 31800,
+    "arrival_time": "09:10:54",
+    "arrival_sec": 33054.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_bw",
+        "arrival_time": "08:50:00",
+        "arrival_sec": 31800,
+        "departure_time": "08:51:30",
+        "departure_sec": 31890,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_fw",
+        "arrival_time": "08:54:18",
+        "arrival_sec": 32058.5,
+        "departure_time": "08:55:03",
+        "departure_sec": 32103.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_fw",
+        "arrival_time": "08:58:03",
+        "arrival_sec": 32283.6,
+        "departure_time": "08:58:48",
+        "departure_sec": 32328.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_fw",
+        "arrival_time": "09:06:24",
+        "arrival_sec": 32784.2,
+        "departure_time": "09:07:09",
+        "departure_sec": 32829.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "09:10:54",
+        "arrival_sec": 33054.3,
+        "departure_time": "09:10:54",
+        "departure_sec": 33054.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.1,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "41022"
     }
   },
   {
@@ -4006,6 +4788,70 @@
     }
   },
   {
+    "train_number": "51011",
+    "train_name": "Trans-Hub Inter-Corridor Link 51011",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "East_to_South_Xfer",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_4_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_4_fw",
+    "departure_time": "09:05:00",
+    "departure_sec": 32700,
+    "arrival_time": "09:20:47",
+    "arrival_sec": 33647.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_bw",
+        "arrival_time": "09:05:00",
+        "arrival_sec": 32700,
+        "departure_time": "09:05:00",
+        "departure_sec": 32700,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p4_bw",
+        "arrival_time": "09:10:15",
+        "arrival_sec": 33015.4,
+        "departure_time": "09:13:15",
+        "departure_sec": 33195.4,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_fw",
+        "arrival_time": "09:20:47",
+        "arrival_sec": 33647.4,
+        "departure_time": "09:20:47",
+        "departure_sec": 33647.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_3",
+      "Town_6",
+      "Town_7"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.2,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "51012"
+    }
+  },
+  {
     "train_number": "32005",
     "train_name": "Nord-Sud InterCity Spine 32005",
     "service_class": "Regional",
@@ -4102,6 +4948,102 @@
     }
   },
   {
+    "train_number": "32034",
+    "train_name": "Nord-Sud InterCity Spine 32034",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C2-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_2",
+    "direction": "Northbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_1_bw",
+    "dest_station": "City_5",
+    "dest_track": "City_5_plat_1_bw",
+    "departure_time": "09:15:00",
+    "departure_sec": 33300,
+    "arrival_time": "09:37:28",
+    "arrival_sec": 34648.5,
+    "total_distance_km": 22.62,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "09:15:00",
+        "arrival_sec": 33300,
+        "departure_time": "09:16:30",
+        "departure_sec": 33390,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_7",
+        "train_stop_id": "Town_7_p1_bw",
+        "arrival_time": "09:19:15",
+        "arrival_sec": 33555.4,
+        "departure_time": "09:20:00",
+        "departure_sec": 33600.4,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_6",
+        "train_stop_id": "Town_6_p1_bw",
+        "arrival_time": "09:22:33",
+        "arrival_sec": 33753.7,
+        "departure_time": "09:23:18",
+        "departure_sec": 33798.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p1_bw",
+        "arrival_time": "09:25:52",
+        "arrival_sec": 33952.0,
+        "departure_time": "09:28:22",
+        "departure_sec": 34102.0,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_5",
+        "train_stop_id": "Town_5_p1_bw",
+        "arrival_time": "09:30:52",
+        "arrival_sec": 34252.3,
+        "departure_time": "09:31:37",
+        "departure_sec": 34297.3,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_4",
+        "train_stop_id": "Town_4_p1_bw",
+        "arrival_time": "09:34:10",
+        "arrival_sec": 34450.5,
+        "departure_time": "09:34:55",
+        "departure_sec": 34495.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p1_bw",
+        "arrival_time": "09:37:28",
+        "arrival_sec": 34648.5,
+        "departure_time": "09:37:28",
+        "departure_sec": 34648.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_5_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 45,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
     "train_number": "41003",
     "train_name": "Southern Coastal Arc 41003",
     "service_class": "Regional",
@@ -4182,6 +5124,182 @@
     }
   },
   {
+    "train_number": "21030",
+    "train_name": "East-West Regional Local 21030",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C1-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_1",
+    "direction": "Westbound_BW",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_2_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_2_bw",
+    "departure_time": "09:25:00",
+    "departure_sec": 33900,
+    "arrival_time": "09:50:38",
+    "arrival_sec": 35438.4,
+    "total_distance_km": 27.45,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p2_bw",
+        "arrival_time": "09:25:00",
+        "arrival_sec": 33900,
+        "departure_time": "09:26:30",
+        "departure_sec": 33990,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_3",
+        "train_stop_id": "Town_3_p2_bw",
+        "arrival_time": "09:29:25",
+        "arrival_sec": 34165.8,
+        "departure_time": "09:30:10",
+        "departure_sec": 34210.8,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p2_bw",
+        "arrival_time": "09:33:12",
+        "arrival_sec": 34392.1,
+        "departure_time": "09:35:42",
+        "departure_sec": 34542.1,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_2",
+        "train_stop_id": "Town_2_p2_bw",
+        "arrival_time": "09:38:48",
+        "arrival_sec": 34728.5,
+        "departure_time": "09:39:33",
+        "departure_sec": 34773.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_bw",
+        "arrival_time": "09:42:33",
+        "arrival_sec": 34953.3,
+        "departure_time": "09:44:03",
+        "departure_sec": 35043.3,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_1",
+        "train_stop_id": "Town_1_p2_bw",
+        "arrival_time": "09:47:03",
+        "arrival_sec": 35223.5,
+        "departure_time": "09:47:48",
+        "departure_sec": 35268.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p2_bw",
+        "arrival_time": "09:50:38",
+        "arrival_sec": 35438.4,
+        "departure_time": "09:50:38",
+        "departure_sec": 35438.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 45,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "41022",
+    "train_name": "Southern Coastal Arc 41022",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Westbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_3_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_3_fw",
+    "departure_time": "09:25:00",
+    "departure_sec": 33900,
+    "arrival_time": "09:45:54",
+    "arrival_sec": 35154.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "09:25:00",
+        "arrival_sec": 33900,
+        "departure_time": "09:26:30",
+        "departure_sec": 33990,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_bw",
+        "arrival_time": "09:30:15",
+        "arrival_sec": 34215.0,
+        "departure_time": "09:31:00",
+        "departure_sec": 34260.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_bw",
+        "arrival_time": "09:38:35",
+        "arrival_sec": 34715.6,
+        "departure_time": "09:39:20",
+        "departure_sec": 34760.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_bw",
+        "arrival_time": "09:42:20",
+        "arrival_sec": 34940.7,
+        "departure_time": "09:43:05",
+        "departure_sec": 34985.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_fw",
+        "arrival_time": "09:45:54",
+        "arrival_sec": 35154.3,
+        "departure_time": "09:45:54",
+        "departure_sec": 35154.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
     "train_number": "12032",
     "train_name": "Trans-Regional Express 12032",
     "service_class": "HighSpeed",
@@ -4250,6 +5368,70 @@
       "buffer_stop_node": null,
       "turnaround_dwell_min": 60,
       "min_turnaround_required_min": 15.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "51012",
+    "train_name": "Trans-Hub Inter-Corridor Link 51012",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "South_to_East_Xfer",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_4_bw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_4_fw",
+    "departure_time": "09:35:00",
+    "departure_sec": 34500,
+    "arrival_time": "09:50:47",
+    "arrival_sec": 35447.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_bw",
+        "arrival_time": "09:35:00",
+        "arrival_sec": 34500,
+        "departure_time": "09:35:00",
+        "departure_sec": 34500,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p4_bw",
+        "arrival_time": "09:41:28",
+        "arrival_sec": 34888.7,
+        "departure_time": "09:44:28",
+        "departure_sec": 35068.7,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_fw",
+        "arrival_time": "09:50:47",
+        "arrival_sec": 35447.4,
+        "departure_time": "09:50:47",
+        "departure_sec": 35447.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_7",
+      "Town_6",
+      "Town_3"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_4_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
     }
@@ -4736,7 +5918,7 @@
   },
   {
     "train_number": "12766",
-    "train_name": "Alpine Glacier Return 12765",
+    "train_name": "Alpine Glacier Return 12766",
     "service_class": "Regional",
     "rolling_stock_type": "regional_dmu_120",
     "assigned_rake": "ALP-Rake-02",
@@ -6635,7 +7817,7 @@
   },
   {
     "train_number": "12770",
-    "train_name": "Alpine Panorama Return 12769",
+    "train_name": "Alpine Panorama Return 12770",
     "service_class": "Regional",
     "rolling_stock_type": "regional_dmu_120",
     "assigned_rake": "ALP-Rake-02",
@@ -8331,6 +9513,70 @@
     }
   },
   {
+    "train_number": "51013",
+    "train_name": "Trans-Hub Inter-Corridor Link 51013",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "East_to_South_Xfer",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_4_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_4_fw",
+    "departure_time": "16:05:00",
+    "departure_sec": 57900,
+    "arrival_time": "16:20:47",
+    "arrival_sec": 58847.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_bw",
+        "arrival_time": "16:05:00",
+        "arrival_sec": 57900,
+        "departure_time": "16:05:00",
+        "departure_sec": 57900,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p4_bw",
+        "arrival_time": "16:10:15",
+        "arrival_sec": 58215.4,
+        "departure_time": "16:13:15",
+        "departure_sec": 58395.4,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_fw",
+        "arrival_time": "16:20:47",
+        "arrival_sec": 58847.4,
+        "departure_time": "16:20:47",
+        "departure_sec": 58847.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_3",
+      "Town_6",
+      "Town_7"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.2,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "51014"
+    }
+  },
+  {
     "train_number": "32021",
     "train_name": "Nord-Sud InterCity Spine 32021",
     "service_class": "Regional",
@@ -8811,8 +10057,168 @@
     }
   },
   {
+    "train_number": "51014",
+    "train_name": "Trans-Hub Inter-Corridor Link 51014",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "South_to_East_Xfer",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_4_bw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_4_fw",
+    "departure_time": "16:35:00",
+    "departure_sec": 59700,
+    "arrival_time": "16:50:47",
+    "arrival_sec": 60647.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_bw",
+        "arrival_time": "16:35:00",
+        "arrival_sec": 59700,
+        "departure_time": "16:35:00",
+        "departure_sec": 59700,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p4_bw",
+        "arrival_time": "16:41:28",
+        "arrival_sec": 60088.7,
+        "departure_time": "16:44:28",
+        "departure_sec": 60268.7,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_fw",
+        "arrival_time": "16:50:47",
+        "arrival_sec": 60647.4,
+        "departure_time": "16:50:47",
+        "departure_sec": 60647.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_7",
+      "Town_6",
+      "Town_3"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_4_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "32035",
+    "train_name": "Nord-Sud InterCity Spine 32035",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C2-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_2",
+    "direction": "Southbound_FW",
+    "origin_station": "City_5",
+    "origin_track": "City_5_plat_1_fw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_1_fw",
+    "departure_time": "16:40:00",
+    "departure_sec": 60000,
+    "arrival_time": "17:02:28",
+    "arrival_sec": 61348.5,
+    "total_distance_km": 22.62,
+    "stops": [
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p1_fw",
+        "arrival_time": "16:40:00",
+        "arrival_sec": 60000,
+        "departure_time": "16:41:30",
+        "departure_sec": 60090,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_4",
+        "train_stop_id": "Town_4_p1_fw",
+        "arrival_time": "16:44:03",
+        "arrival_sec": 60243.0,
+        "departure_time": "16:44:48",
+        "departure_sec": 60288.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_5",
+        "train_stop_id": "Town_5_p1_fw",
+        "arrival_time": "16:47:21",
+        "arrival_sec": 60441.2,
+        "departure_time": "16:48:06",
+        "departure_sec": 60486.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p1_fw",
+        "arrival_time": "16:50:36",
+        "arrival_sec": 60636.5,
+        "departure_time": "16:53:06",
+        "departure_sec": 60786.5,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_6",
+        "train_stop_id": "Town_6_p1_fw",
+        "arrival_time": "16:55:39",
+        "arrival_sec": 60939.8,
+        "departure_time": "16:56:24",
+        "departure_sec": 60984.8,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_7",
+        "train_stop_id": "Town_7_p1_fw",
+        "arrival_time": "16:58:58",
+        "arrival_sec": 61138.1,
+        "departure_time": "16:59:43",
+        "departure_sec": 61183.1,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "17:02:28",
+        "arrival_sec": 61348.5,
+        "departure_time": "17:02:28",
+        "departure_sec": 61348.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_1_fw",
+      "buffer_stop_node": "City_6_buf_1",
+      "turnaround_dwell_min": 12.5,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "rapid_dual_crew",
+      "subsequent_service": "32036"
+    }
+  },
+  {
     "train_number": "12768",
-    "train_name": "Alpine Evening Return 12767",
+    "train_name": "Alpine Evening Return 12768",
     "service_class": "Regional",
     "rolling_stock_type": "regional_dmu_120",
     "assigned_rake": "ALP-Rake-01",
@@ -8870,6 +10276,102 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "21031",
+    "train_name": "East-West Regional Local 21031",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C1-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_1",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_2_fw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_2_fw",
+    "departure_time": "16:45:00",
+    "departure_sec": 60300,
+    "arrival_time": "17:10:38",
+    "arrival_sec": 61838.4,
+    "total_distance_km": 27.45,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p2_fw",
+        "arrival_time": "16:45:00",
+        "arrival_sec": 60300,
+        "departure_time": "16:46:30",
+        "departure_sec": 60390,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_1",
+        "train_stop_id": "Town_1_p2_fw",
+        "arrival_time": "16:49:19",
+        "arrival_sec": 60559.9,
+        "departure_time": "16:50:04",
+        "departure_sec": 60604.9,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_fw",
+        "arrival_time": "16:53:05",
+        "arrival_sec": 60785.1,
+        "departure_time": "16:54:35",
+        "departure_sec": 60875.1,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_2",
+        "train_stop_id": "Town_2_p2_fw",
+        "arrival_time": "16:57:34",
+        "arrival_sec": 61054.9,
+        "departure_time": "16:58:19",
+        "departure_sec": 61099.9,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p2_fw",
+        "arrival_time": "17:01:26",
+        "arrival_sec": 61286.3,
+        "departure_time": "17:03:56",
+        "departure_sec": 61436.3,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_3",
+        "train_stop_id": "Town_3_p2_fw",
+        "arrival_time": "17:06:57",
+        "arrival_sec": 61617.6,
+        "departure_time": "17:07:42",
+        "departure_sec": 61662.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p2_fw",
+        "arrival_time": "17:10:38",
+        "arrival_sec": 61838.4,
+        "departure_time": "17:10:38",
+        "departure_sec": 61838.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_4_pocket_2_fw",
+      "buffer_stop_node": "City_4_buf_2",
+      "turnaround_dwell_min": 14.4,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "21032"
     }
   },
   {
@@ -8966,6 +10468,86 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "41023",
+    "train_name": "Southern Coastal Arc 41023",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_3_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_3_fw",
+    "departure_time": "16:50:00",
+    "departure_sec": 60600,
+    "arrival_time": "17:10:54",
+    "arrival_sec": 61854.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_bw",
+        "arrival_time": "16:50:00",
+        "arrival_sec": 60600,
+        "departure_time": "16:51:30",
+        "departure_sec": 60690,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_fw",
+        "arrival_time": "16:54:18",
+        "arrival_sec": 60858.5,
+        "departure_time": "16:55:03",
+        "departure_sec": 60903.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_fw",
+        "arrival_time": "16:58:03",
+        "arrival_sec": 61083.6,
+        "departure_time": "16:58:48",
+        "departure_sec": 61128.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_fw",
+        "arrival_time": "17:06:24",
+        "arrival_sec": 61584.2,
+        "departure_time": "17:07:09",
+        "departure_sec": 61629.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "17:10:54",
+        "arrival_sec": 61854.3,
+        "departure_time": "17:10:54",
+        "departure_sec": 61854.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.1,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "41024"
     }
   },
   {
@@ -9451,6 +11033,66 @@
     }
   },
   {
+    "train_number": "12773",
+    "train_name": "Alpine Evening Commuter 12773",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_dmu_120",
+    "assigned_rake": "ALP-Rake-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_3",
+    "direction": "Uphill_FW",
+    "origin_station": "City_2",
+    "origin_track": "City_2_plat_3_bw",
+    "dest_station": "Town_9",
+    "dest_track": "Town_9_plat_1_fw",
+    "departure_time": "17:10:00",
+    "departure_sec": 61800,
+    "arrival_time": "17:19:35",
+    "arrival_sec": 62375.5,
+    "total_distance_km": 8.7,
+    "stops": [
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p1_fw",
+        "arrival_time": "17:10:00",
+        "arrival_sec": 61800,
+        "departure_time": "17:11:30",
+        "departure_sec": 61890,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_8",
+        "train_stop_id": "Town_8_p1_fw",
+        "arrival_time": "17:14:59",
+        "arrival_sec": 62099.6,
+        "departure_time": "17:16:14",
+        "departure_sec": 62174.6,
+        "dwell_sec": 75
+      },
+      {
+        "station": "Town_9",
+        "train_stop_id": "Town_9_p1_fw",
+        "arrival_time": "17:19:35",
+        "arrival_sec": 62375.5,
+        "departure_time": "17:19:35",
+        "departure_sec": 62375.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "Town_9_yard_1_fw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 20.4,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "12774"
+    }
+  },
+  {
     "train_number": "21011",
     "train_name": "East-West Regional Local 21011",
     "service_class": "Regional",
@@ -9547,6 +11189,102 @@
     }
   },
   {
+    "train_number": "32036",
+    "train_name": "Nord-Sud InterCity Spine 32036",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C2-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_2",
+    "direction": "Northbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_1_bw",
+    "dest_station": "City_5",
+    "dest_track": "City_5_plat_1_bw",
+    "departure_time": "17:15:00",
+    "departure_sec": 62100,
+    "arrival_time": "17:37:28",
+    "arrival_sec": 63448.5,
+    "total_distance_km": 22.62,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "17:15:00",
+        "arrival_sec": 62100,
+        "departure_time": "17:16:30",
+        "departure_sec": 62190,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_7",
+        "train_stop_id": "Town_7_p1_bw",
+        "arrival_time": "17:19:15",
+        "arrival_sec": 62355.4,
+        "departure_time": "17:20:00",
+        "departure_sec": 62400.4,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_6",
+        "train_stop_id": "Town_6_p1_bw",
+        "arrival_time": "17:22:33",
+        "arrival_sec": 62553.7,
+        "departure_time": "17:23:18",
+        "departure_sec": 62598.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p1_bw",
+        "arrival_time": "17:25:52",
+        "arrival_sec": 62752.0,
+        "departure_time": "17:28:22",
+        "departure_sec": 62902.0,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_5",
+        "train_stop_id": "Town_5_p1_bw",
+        "arrival_time": "17:30:52",
+        "arrival_sec": 63052.3,
+        "departure_time": "17:31:37",
+        "departure_sec": 63097.3,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_4",
+        "train_stop_id": "Town_4_p1_bw",
+        "arrival_time": "17:34:10",
+        "arrival_sec": 63250.5,
+        "departure_time": "17:34:55",
+        "departure_sec": 63295.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p1_bw",
+        "arrival_time": "17:37:28",
+        "arrival_sec": 63448.5,
+        "departure_time": "17:37:28",
+        "departure_sec": 63448.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "depot_stabling",
+      "staging_track": "City_5_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 45,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
     "train_number": "41011",
     "train_name": "Southern Coastal Arc 41011",
     "service_class": "Regional",
@@ -9624,6 +11362,182 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "standard_cab_swap",
       "subsequent_service": "41012"
+    }
+  },
+  {
+    "train_number": "21032",
+    "train_name": "East-West Regional Local 21032",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C1-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_1",
+    "direction": "Westbound_BW",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_2_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_2_bw",
+    "departure_time": "17:25:00",
+    "departure_sec": 62700,
+    "arrival_time": "17:50:38",
+    "arrival_sec": 64238.4,
+    "total_distance_km": 27.45,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p2_bw",
+        "arrival_time": "17:25:00",
+        "arrival_sec": 62700,
+        "departure_time": "17:26:30",
+        "departure_sec": 62790,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_3",
+        "train_stop_id": "Town_3_p2_bw",
+        "arrival_time": "17:29:25",
+        "arrival_sec": 62965.8,
+        "departure_time": "17:30:10",
+        "departure_sec": 63010.8,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p2_bw",
+        "arrival_time": "17:33:12",
+        "arrival_sec": 63192.1,
+        "departure_time": "17:35:42",
+        "departure_sec": 63342.1,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_2",
+        "train_stop_id": "Town_2_p2_bw",
+        "arrival_time": "17:38:48",
+        "arrival_sec": 63528.5,
+        "departure_time": "17:39:33",
+        "departure_sec": 63573.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_bw",
+        "arrival_time": "17:42:33",
+        "arrival_sec": 63753.3,
+        "departure_time": "17:44:03",
+        "departure_sec": 63843.3,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_1",
+        "train_stop_id": "Town_1_p2_bw",
+        "arrival_time": "17:47:03",
+        "arrival_sec": 64023.5,
+        "departure_time": "17:47:48",
+        "departure_sec": 64068.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p2_bw",
+        "arrival_time": "17:50:38",
+        "arrival_sec": 64238.4,
+        "departure_time": "17:50:38",
+        "departure_sec": 64238.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 45,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "41024",
+    "train_name": "Southern Coastal Arc 41024",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Westbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_3_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_3_fw",
+    "departure_time": "17:25:00",
+    "departure_sec": 62700,
+    "arrival_time": "17:45:54",
+    "arrival_sec": 63954.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "17:25:00",
+        "arrival_sec": 62700,
+        "departure_time": "17:26:30",
+        "departure_sec": 62790,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_bw",
+        "arrival_time": "17:30:15",
+        "arrival_sec": 63015.0,
+        "departure_time": "17:31:00",
+        "departure_sec": 63060.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_bw",
+        "arrival_time": "17:38:35",
+        "arrival_sec": 63515.6,
+        "departure_time": "17:39:20",
+        "departure_sec": 63560.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_bw",
+        "arrival_time": "17:42:20",
+        "arrival_sec": 63740.7,
+        "departure_time": "17:43:05",
+        "departure_sec": 63785.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_fw",
+        "arrival_time": "17:45:54",
+        "arrival_sec": 63954.3,
+        "departure_time": "17:45:54",
+        "departure_sec": 63954.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
     }
   },
   {
@@ -9888,6 +11802,162 @@
     }
   },
   {
+    "train_number": "32037",
+    "train_name": "Nord-Sud InterCity Spine 32037",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C2-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_2",
+    "direction": "Southbound_FW",
+    "origin_station": "City_5",
+    "origin_track": "City_5_plat_1_fw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_1_fw",
+    "departure_time": "17:40:00",
+    "departure_sec": 63600,
+    "arrival_time": "18:02:28",
+    "arrival_sec": 64948.5,
+    "total_distance_km": 22.62,
+    "stops": [
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p1_fw",
+        "arrival_time": "17:40:00",
+        "arrival_sec": 63600,
+        "departure_time": "17:41:30",
+        "departure_sec": 63690,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_4",
+        "train_stop_id": "Town_4_p1_fw",
+        "arrival_time": "17:44:03",
+        "arrival_sec": 63843.0,
+        "departure_time": "17:44:48",
+        "departure_sec": 63888.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_5",
+        "train_stop_id": "Town_5_p1_fw",
+        "arrival_time": "17:47:21",
+        "arrival_sec": 64041.2,
+        "departure_time": "17:48:06",
+        "departure_sec": 64086.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p1_fw",
+        "arrival_time": "17:50:36",
+        "arrival_sec": 64236.5,
+        "departure_time": "17:53:06",
+        "departure_sec": 64386.5,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_6",
+        "train_stop_id": "Town_6_p1_fw",
+        "arrival_time": "17:55:39",
+        "arrival_sec": 64539.8,
+        "departure_time": "17:56:24",
+        "departure_sec": 64584.8,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_7",
+        "train_stop_id": "Town_7_p1_fw",
+        "arrival_time": "17:58:58",
+        "arrival_sec": 64738.1,
+        "departure_time": "17:59:43",
+        "departure_sec": 64783.1,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "18:02:28",
+        "arrival_sec": 64948.5,
+        "departure_time": "18:02:28",
+        "departure_sec": 64948.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_1_fw",
+      "buffer_stop_node": "City_6_buf_1",
+      "turnaround_dwell_min": 12.5,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "rapid_dual_crew",
+      "subsequent_service": "32038"
+    }
+  },
+  {
+    "train_number": "12774",
+    "train_name": "Alpine Evening Commuter 12774",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_dmu_120",
+    "assigned_rake": "ALP-Rake-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_3",
+    "direction": "Downhill_BW",
+    "origin_station": "Town_9",
+    "origin_track": "Town_9_plat_1_bw",
+    "dest_station": "City_2",
+    "dest_track": "City_2_plat_3_fw",
+    "departure_time": "17:40:00",
+    "departure_sec": 63600,
+    "arrival_time": "17:48:59",
+    "arrival_sec": 64139.8,
+    "total_distance_km": 8.7,
+    "stops": [
+      {
+        "station": "Town_9",
+        "train_stop_id": "Town_9_p1_bw",
+        "arrival_time": "17:40:00",
+        "arrival_sec": 63600,
+        "departure_time": "17:41:15",
+        "departure_sec": 63675,
+        "dwell_sec": 75
+      },
+      {
+        "station": "Town_8",
+        "train_stop_id": "Town_8_p1_bw",
+        "arrival_time": "17:44:25",
+        "arrival_sec": 63865.9,
+        "departure_time": "17:45:40",
+        "departure_sec": 63940.9,
+        "dwell_sec": 75
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p3_fw",
+        "arrival_time": "17:48:59",
+        "arrival_sec": 64139.8,
+        "departure_time": "17:48:59",
+        "departure_sec": 64139.8,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_2_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
     "train_number": "21019",
     "train_name": "East-West Regional Local 21019",
     "service_class": "Regional",
@@ -10077,6 +12147,86 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "41025",
+    "train_name": "Southern Coastal Arc 41025",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_3_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_3_fw",
+    "departure_time": "17:50:00",
+    "departure_sec": 64200,
+    "arrival_time": "18:10:54",
+    "arrival_sec": 65454.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_bw",
+        "arrival_time": "17:50:00",
+        "arrival_sec": 64200,
+        "departure_time": "17:51:30",
+        "departure_sec": 64290,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_fw",
+        "arrival_time": "17:54:18",
+        "arrival_sec": 64458.5,
+        "departure_time": "17:55:03",
+        "departure_sec": 64503.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_fw",
+        "arrival_time": "17:58:03",
+        "arrival_sec": 64683.6,
+        "departure_time": "17:58:48",
+        "departure_sec": 64728.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_fw",
+        "arrival_time": "18:06:24",
+        "arrival_sec": 65184.2,
+        "departure_time": "18:07:09",
+        "departure_sec": 65229.2,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_fw",
+        "arrival_time": "18:10:54",
+        "arrival_sec": 65454.3,
+        "departure_time": "18:10:54",
+        "departure_sec": 65454.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.1,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "41026"
     }
   },
   {
@@ -10453,6 +12603,70 @@
     }
   },
   {
+    "train_number": "51015",
+    "train_name": "Trans-Hub Inter-Corridor Link 51015",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-02",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "East_to_South_Xfer",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_4_bw",
+    "dest_station": "City_6",
+    "dest_track": "City_6_plat_4_fw",
+    "departure_time": "18:05:00",
+    "departure_sec": 65100,
+    "arrival_time": "18:20:47",
+    "arrival_sec": 66047.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_bw",
+        "arrival_time": "18:05:00",
+        "arrival_sec": 65100,
+        "departure_time": "18:05:00",
+        "departure_sec": 65100,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p4_bw",
+        "arrival_time": "18:10:15",
+        "arrival_sec": 65415.4,
+        "departure_time": "18:13:15",
+        "departure_sec": 65595.4,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_fw",
+        "arrival_time": "18:20:47",
+        "arrival_sec": 66047.4,
+        "departure_time": "18:20:47",
+        "departure_sec": 66047.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_3",
+      "Town_6",
+      "Town_7"
+    ],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_6_pocket_2_fw",
+      "buffer_stop_node": "City_6_buf_2",
+      "turnaround_dwell_min": 14.2,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "51016"
+    }
+  },
+  {
     "train_number": "32023",
     "train_name": "Nord-Sud InterCity Spine 32023",
     "service_class": "Regional",
@@ -10546,6 +12760,198 @@
       "min_turnaround_required_min": 10.0,
       "turnaround_mode": "rapid_dual_crew",
       "subsequent_service": "32024"
+    }
+  },
+  {
+    "train_number": "21033",
+    "train_name": "East-West Regional Local 21033",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C1-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_1",
+    "direction": "Eastbound_FW",
+    "origin_station": "City_1",
+    "origin_track": "City_1_plat_2_fw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_2_fw",
+    "departure_time": "18:15:00",
+    "departure_sec": 65700,
+    "arrival_time": "18:40:38",
+    "arrival_sec": 67238.4,
+    "total_distance_km": 27.45,
+    "stops": [
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p2_fw",
+        "arrival_time": "18:15:00",
+        "arrival_sec": 65700,
+        "departure_time": "18:16:30",
+        "departure_sec": 65790,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_1",
+        "train_stop_id": "Town_1_p2_fw",
+        "arrival_time": "18:19:19",
+        "arrival_sec": 65959.9,
+        "departure_time": "18:20:04",
+        "departure_sec": 66004.9,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_fw",
+        "arrival_time": "18:23:05",
+        "arrival_sec": 66185.1,
+        "departure_time": "18:24:35",
+        "departure_sec": 66275.1,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_2",
+        "train_stop_id": "Town_2_p2_fw",
+        "arrival_time": "18:27:34",
+        "arrival_sec": 66454.9,
+        "departure_time": "18:28:19",
+        "departure_sec": 66499.9,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p2_fw",
+        "arrival_time": "18:31:26",
+        "arrival_sec": 66686.3,
+        "departure_time": "18:33:56",
+        "departure_sec": 66836.3,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_3",
+        "train_stop_id": "Town_3_p2_fw",
+        "arrival_time": "18:36:57",
+        "arrival_sec": 67017.6,
+        "departure_time": "18:37:42",
+        "departure_sec": 67062.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p2_fw",
+        "arrival_time": "18:40:38",
+        "arrival_sec": 67238.4,
+        "departure_time": "18:40:38",
+        "departure_sec": 67238.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_4_pocket_2_fw",
+      "buffer_stop_node": "City_4_buf_2",
+      "turnaround_dwell_min": 14.4,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "21034"
+    }
+  },
+  {
+    "train_number": "32038",
+    "train_name": "Nord-Sud InterCity Spine 32038",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C2-01",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_2",
+    "direction": "Northbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_1_bw",
+    "dest_station": "City_5",
+    "dest_track": "City_5_plat_1_bw",
+    "departure_time": "18:15:00",
+    "departure_sec": 65700,
+    "arrival_time": "18:37:28",
+    "arrival_sec": 67048.5,
+    "total_distance_km": 22.62,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "18:15:00",
+        "arrival_sec": 65700,
+        "departure_time": "18:16:30",
+        "departure_sec": 65790,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_7",
+        "train_stop_id": "Town_7_p1_bw",
+        "arrival_time": "18:19:15",
+        "arrival_sec": 65955.4,
+        "departure_time": "18:20:00",
+        "departure_sec": 66000.4,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_6",
+        "train_stop_id": "Town_6_p1_bw",
+        "arrival_time": "18:22:33",
+        "arrival_sec": 66153.7,
+        "departure_time": "18:23:18",
+        "departure_sec": 66198.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p1_bw",
+        "arrival_time": "18:25:52",
+        "arrival_sec": 66352.0,
+        "departure_time": "18:28:22",
+        "departure_sec": 66502.0,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_5",
+        "train_stop_id": "Town_5_p1_bw",
+        "arrival_time": "18:30:52",
+        "arrival_sec": 66652.3,
+        "departure_time": "18:31:37",
+        "departure_sec": 66697.3,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_4",
+        "train_stop_id": "Town_4_p1_bw",
+        "arrival_time": "18:34:10",
+        "arrival_sec": 66850.5,
+        "departure_time": "18:34:55",
+        "departure_sec": 66895.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p1_bw",
+        "arrival_time": "18:37:28",
+        "arrival_sec": 67048.5,
+        "departure_time": "18:37:28",
+        "departure_sec": 67048.5,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "depot_stabling",
+      "staging_track": "City_5_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 45,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
     }
   },
   {
@@ -10645,6 +13051,137 @@
     }
   },
   {
+    "train_number": "41026",
+    "train_name": "Southern Coastal Arc 41026",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C4-05",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_4",
+    "direction": "Westbound_BW",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_3_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_3_fw",
+    "departure_time": "18:25:00",
+    "departure_sec": 66300,
+    "arrival_time": "18:45:54",
+    "arrival_sec": 67554.3,
+    "total_distance_km": 27.36,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p1_bw",
+        "arrival_time": "18:25:00",
+        "arrival_sec": 66300,
+        "departure_time": "18:26:30",
+        "departure_sec": 66390,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_12",
+        "train_stop_id": "Town_12_p1_bw",
+        "arrival_time": "18:30:15",
+        "arrival_sec": 66615.0,
+        "departure_time": "18:31:00",
+        "departure_sec": 66660.0,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_11",
+        "train_stop_id": "Town_11_p1_bw",
+        "arrival_time": "18:38:35",
+        "arrival_sec": 67115.6,
+        "departure_time": "18:39:20",
+        "departure_sec": 67160.6,
+        "dwell_sec": 45
+      },
+      {
+        "station": "Town_10",
+        "train_stop_id": "Town_10_p1_bw",
+        "arrival_time": "18:42:20",
+        "arrival_sec": 67340.7,
+        "departure_time": "18:43:05",
+        "departure_sec": 67385.7,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p3_fw",
+        "arrival_time": "18:45:54",
+        "arrival_sec": 67554.3,
+        "departure_time": "18:45:54",
+        "departure_sec": 67554.3,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Depot_2"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "15009",
+    "train_name": "Diagonal Bypass Direct 15009",
+    "service_class": "HighSpeed",
+    "rolling_stock_type": "high_speed_emu_single",
+    "assigned_rake": "HS-Rake-04",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Bypass_C2_C5",
+    "direction": "Northeast_FW",
+    "origin_station": "City_2",
+    "origin_track": "City_2_plat_2_fw",
+    "dest_station": "City_5",
+    "dest_track": "City_5_plat_2_bw",
+    "departure_time": "18:25:00",
+    "departure_sec": 66300,
+    "arrival_time": "18:29:23",
+    "arrival_sec": 66563.8,
+    "total_distance_km": 13.3,
+    "stops": [
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_fw",
+        "arrival_time": "18:25:00",
+        "arrival_sec": 66300,
+        "departure_time": "18:25:00",
+        "departure_sec": 66300,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p2_bw",
+        "arrival_time": "18:29:23",
+        "arrival_sec": 66563.8,
+        "departure_time": "18:29:23",
+        "departure_sec": 66563.8,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "turnaround",
+      "staging_track": "City_5_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 25.6,
+      "min_turnaround_required_min": 12.0,
+      "turnaround_mode": "standard_cab_swap",
+      "subsequent_service": "15010"
+    }
+  },
+  {
     "train_number": "12016",
     "train_name": "Trans-Regional Express 12016",
     "service_class": "HighSpeed",
@@ -10713,6 +13250,70 @@
       "buffer_stop_node": null,
       "turnaround_dwell_min": 60,
       "min_turnaround_required_min": 15.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "51016",
+    "train_name": "Trans-Hub Inter-Corridor Link 51016",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-XFER-02",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Interchange_C1_C2",
+    "direction": "South_to_East_Xfer",
+    "origin_station": "City_6",
+    "origin_track": "City_6_plat_4_bw",
+    "dest_station": "City_4",
+    "dest_track": "City_4_plat_4_fw",
+    "departure_time": "18:35:00",
+    "departure_sec": 66900,
+    "arrival_time": "18:50:47",
+    "arrival_sec": 67847.4,
+    "total_distance_km": 21.48,
+    "stops": [
+      {
+        "station": "City_6",
+        "train_stop_id": "City_6_p4_bw",
+        "arrival_time": "18:35:00",
+        "arrival_sec": 66900,
+        "departure_time": "18:35:00",
+        "departure_sec": 66900,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_3_NS",
+        "train_stop_id": "City_3_NS_p4_bw",
+        "arrival_time": "18:41:28",
+        "arrival_sec": 67288.7,
+        "departure_time": "18:44:28",
+        "departure_sec": 67468.7,
+        "dwell_sec": 180
+      },
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p4_fw",
+        "arrival_time": "18:50:47",
+        "arrival_sec": 67847.4,
+        "departure_time": "18:50:47",
+        "departure_sec": 67847.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [
+      "Town_7",
+      "Town_6",
+      "Town_3"
+    ],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_4_yard_1_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 10.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
     }
@@ -10809,6 +13410,153 @@
       "buffer_stop_node": null,
       "turnaround_dwell_min": 45,
       "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "21034",
+    "train_name": "East-West Regional Local 21034",
+    "service_class": "Regional",
+    "rolling_stock_type": "regional_emu_120",
+    "assigned_rake": "REG-C1-06",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Corridor_1",
+    "direction": "Westbound_BW",
+    "origin_station": "City_4",
+    "origin_track": "City_4_plat_2_bw",
+    "dest_station": "City_1",
+    "dest_track": "City_1_plat_2_bw",
+    "departure_time": "18:55:00",
+    "departure_sec": 68100,
+    "arrival_time": "19:20:38",
+    "arrival_sec": 69638.4,
+    "total_distance_km": 27.45,
+    "stops": [
+      {
+        "station": "City_4",
+        "train_stop_id": "City_4_p2_bw",
+        "arrival_time": "18:55:00",
+        "arrival_sec": 68100,
+        "departure_time": "18:56:30",
+        "departure_sec": 68190,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_3",
+        "train_stop_id": "Town_3_p2_bw",
+        "arrival_time": "18:59:25",
+        "arrival_sec": 68365.8,
+        "departure_time": "19:00:10",
+        "departure_sec": 68410.8,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_3_EW",
+        "train_stop_id": "City_3_EW_p2_bw",
+        "arrival_time": "19:03:12",
+        "arrival_sec": 68592.1,
+        "departure_time": "19:05:42",
+        "departure_sec": 68742.1,
+        "dwell_sec": 150
+      },
+      {
+        "station": "Town_2",
+        "train_stop_id": "Town_2_p2_bw",
+        "arrival_time": "19:08:48",
+        "arrival_sec": 68928.5,
+        "departure_time": "19:09:33",
+        "departure_sec": 68973.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_bw",
+        "arrival_time": "19:12:33",
+        "arrival_sec": 69153.3,
+        "departure_time": "19:14:03",
+        "departure_sec": 69243.3,
+        "dwell_sec": 90
+      },
+      {
+        "station": "Town_1",
+        "train_stop_id": "Town_1_p2_bw",
+        "arrival_time": "19:17:03",
+        "arrival_sec": 69423.5,
+        "departure_time": "19:17:48",
+        "departure_sec": 69468.5,
+        "dwell_sec": 45
+      },
+      {
+        "station": "City_1",
+        "train_stop_id": "City_1_p2_bw",
+        "arrival_time": "19:20:38",
+        "arrival_sec": 69638.4,
+        "departure_time": "19:20:38",
+        "departure_sec": 69638.4,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_1_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 45,
+      "min_turnaround_required_min": 10.0,
+      "turnaround_mode": "extended_layover",
+      "subsequent_service": null
+    }
+  },
+  {
+    "train_number": "15010",
+    "train_name": "Diagonal Bypass Direct 15010",
+    "service_class": "HighSpeed",
+    "rolling_stock_type": "high_speed_emu_single",
+    "assigned_rake": "HS-Rake-04",
+    "service_days": [
+      "Mon-Fri"
+    ],
+    "corridor": "Bypass_C2_C5",
+    "direction": "Southwest_BW",
+    "origin_station": "City_5",
+    "origin_track": "City_5_plat_2_fw",
+    "dest_station": "City_2",
+    "dest_track": "City_2_plat_2_bw",
+    "departure_time": "18:55:00",
+    "departure_sec": 68100,
+    "arrival_time": "18:59:23",
+    "arrival_sec": 68363.8,
+    "total_distance_km": 13.3,
+    "stops": [
+      {
+        "station": "City_5",
+        "train_stop_id": "City_5_p2_fw",
+        "arrival_time": "18:55:00",
+        "arrival_sec": 68100,
+        "departure_time": "18:55:00",
+        "departure_sec": 68100,
+        "dwell_sec": 0
+      },
+      {
+        "station": "City_2",
+        "train_stop_id": "City_2_p2_bw",
+        "arrival_time": "18:59:23",
+        "arrival_sec": 68363.8,
+        "departure_time": "18:59:23",
+        "departure_sec": 68363.8,
+        "dwell_sec": 0
+      }
+    ],
+    "bypassed_through_stations": [],
+    "post_journey_disposition": {
+      "action": "yard_layover",
+      "staging_track": "City_2_yard_2_bw",
+      "buffer_stop_node": null,
+      "turnaround_dwell_min": 60,
+      "min_turnaround_required_min": 12.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
     }
