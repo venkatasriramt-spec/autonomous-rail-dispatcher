@@ -4,3 +4,26 @@ __pycache__/
 *.log
 .venv/
 venv/
+
+# OS/System files
+.DS_Store
+Thumbs.db
+
+# Editor/VCS files
+*.swp
+*.swo
+*.bak
+*.tmp
+*.backup
+*.old
+
+# Temporary files
+tmp/
+temp/
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
