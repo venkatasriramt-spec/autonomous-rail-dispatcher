@@ -217,25 +217,53 @@ def build_timetable():
         "electric_trunk_freight": 25.0
     }
 
-    def get_calibrated_dwell(stn, service_class="Regional", is_terminal=False):
+    def is_peak_hour(dep_sec):
+        hour = int((dep_sec // 3600) % 24)
+        minute = int((dep_sec % 3600) // 60)
+        # Morning peak: 07:00 - 09:30
+        if (7 <= hour < 9) or (hour == 9 and minute <= 30):
+            return True
+        # Evening peak: 16:00 - 18:45
+        if (16 <= hour < 18) or (hour == 18 and minute <= 45):
+            return True
+        return False
+
+    def get_calibrated_dwell(stn, service_class="Regional", is_terminal=False, dep_sec=0, r_type=None):
         """
-        Calibrates stop dwell times based on station hierarchy and passenger exchange demand:
-        - Terminal stations: 0s (handled by post-journey turnaround)
-        - City_3 Bi-Level Interchange: 150s (Regional) / 180s (Flyover Transfer)
-        - Major City Hubs: 120s (HighSpeed) / 90s (Regional)
-        - Alpine Mountain stations: 75s (scenic tourists, luggage)
-        - Intermediate Town platform loops: 45s (rapid EMU passenger exchange)
+        Calibrates stop dwell times dynamically based on station hierarchy, time of day, and consist capacity:
+        - Terminal stations: 0s (handled by post-journey turnaround / layover)
+        - City_3 Bi-Level Interchange:
+            * Flyover Transfer (multi-level connection): 210s peak / 180s off-peak
+            * Regional / High-Speed Spine: 180s peak / 150s off-peak
+        - Major City Hubs (City_1, City_2, City_4, City_5, City_6):
+            * HighSpeed 300 (16 cars, 1,050 pax): 150s peak / 120s off-peak
+            * HighSpeed Single (8 cars, 520 pax): 120s peak / 90s off-peak
+            * Regional EMU / DMU: 110s peak / 90s off-peak
+        - Alpine Mountain stations (Town_8, Town_9):
+            * 75s (scenic tourists, heavy luggage)
+        - Intermediate Town platform loops (Town_1..Town_7, Town_10..Town_12):
+            * 55s peak on Corridor 2 / 60s peak on other corridors / 45s off-peak (rapid exchange)
         """
         if is_terminal:
             return 0
+        is_peak = is_peak_hour(dep_sec)
         if stn in ["City_3_EW", "City_3_NS"]:
-            return 180 if service_class == "Interchange" else 150
+            if service_class == "Interchange":
+                return 210 if is_peak else 180
+            return 180 if is_peak else 150
         elif "City" in stn:
-            return 120 if service_class == "HighSpeed" else 90
+            if r_type == "high_speed_emu_300" or service_class == "HighSpeed":
+                return 150 if is_peak else 120
+            elif r_type == "high_speed_emu_single":
+                return 120 if is_peak else 90
+            else:
+                return 110 if is_peak else 90
         elif stn in ["Town_8", "Town_9"]:
             return 75
+        elif stn in ["Town_4", "Town_5", "Town_6", "Town_7"]:
+            return 55 if is_peak else 45
         elif "Town" in stn:
-            return 45
+            return 60 if is_peak else 45
         return 60
 
     # Helper to calculate realistic section run times
@@ -301,7 +329,7 @@ def build_timetable():
                 curr_t += sec_time
 
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1)
+            dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -370,7 +398,7 @@ def build_timetable():
                 curr_t += sec_time
 
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1)
+            dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_rev.append({
@@ -459,7 +487,7 @@ def build_timetable():
                 dist = C1_DISTANCES[idx] - C1_DISTANCES[idx-1]
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1)
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -523,7 +551,7 @@ def build_timetable():
                 dist = abs(C1_DISTANCES[len(C1_STATIONS)-1-idx] - C1_DISTANCES[len(C1_STATIONS)-idx])
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1)
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_rev.append({
@@ -576,7 +604,7 @@ def build_timetable():
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
         # Early Morning Commuter
         (5, 10, 5, 45, "Daily",   "32025", "32026", "REG-C2-01"),
-        (6, 10, 6, 45, "Daily",   "32001", "32002", "REG-C2-01"),
+        (6, 10, 6, 45, "Daily",   "32001", "32002", "REG-C2-02"),
         # Morning Peak Surge (30-min headway)
         (7, 10, 7, 45, "Mon-Fri", "32017", "32018", "REG-C2-04"),
         (7, 40, 8, 15, "Mon-Fri", "32019", "32020", "REG-C2-05"),
@@ -613,7 +641,7 @@ def build_timetable():
                 dist = C2_DISTANCES[idx] - C2_DISTANCES[idx-1]
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1)
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -677,7 +705,7 @@ def build_timetable():
                 dist = abs(C2_DISTANCES[len(C2_STATIONS)-1-idx] - C2_DISTANCES[len(C2_STATIONS)-idx])
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1)
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_rev.append({
@@ -728,11 +756,11 @@ def build_timetable():
     c3_mountain_passenger = [
         # (fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no)
         ("12763", "Alpine Scenic Shuttle 12763", ["Mon", "Thu", "Sun"], 7, 10, 7, 40, "ALP-Rake-01", "12764"),
-        ("12771", "Alpine Morning Commuter 12771", ["Mon-Fri"], 8, 10, 8, 40, "ALP-Rake-02", "12772"),
+        ("12771", "Alpine Morning Commuter 12771", ["Mon-Fri"], 8, 10, 8, 38, "ALP-Rake-02", "12772"),
         ("12765", "Alpine Glacier Express 12765", ["Tue", "Fri", "Sat"], 10, 10, 10, 40, "ALP-Rake-02", "12766"),
         ("12769", "Alpine Panorama Express 12769", ["Daily"], 13, 10, 13, 40, "ALP-Rake-02", "12770"),
         ("12767", "Alpine Evening Shuttle 12767", ["Mon", "Thu", "Sun"], 16, 10, 16, 40, "ALP-Rake-01", "12768"),
-        ("12773", "Alpine Evening Commuter 12773", ["Mon-Fri"], 17, 10, 17, 40, "ALP-Rake-01", "12774"),
+        ("12773", "Alpine Evening Commuter 12773", ["Mon-Fri"], 17, 10, 17, 38, "ALP-Rake-01", "12774"),
     ]
 
     for fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no in c3_mountain_passenger:
@@ -749,7 +777,7 @@ def build_timetable():
                 dist = C3_DISTANCES[idx] - C3_DISTANCES[idx-1]
                 curr_t += calc_run_time(dist, 25.0)  # slower mountain speed limit
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1)
+            dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -813,7 +841,7 @@ def build_timetable():
                 dist = abs(C3_DISTANCES[len(c3_sub)-1-idx] - C3_DISTANCES[len(c3_sub)-idx])
                 curr_t += calc_run_time(dist, 27.0)
             arr_t = curr_t
-            dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1)
+            dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stop_id = f"{stn}_p3_fw" if stn == "City_2" else f"{stn}_p1_bw"
@@ -870,7 +898,7 @@ def build_timetable():
         # Morning Peak Surge (30-min headway)
         (7, 50, 8, 25, "Mon-Fri", "41019", "41020", "REG-C4-05"),
         (8, 20, 8, 55, "Mon-Fri", "41009", "41010", "REG-C4-03"),
-        (8, 50, 9, 25, "Mon-Fri", "41021", "41022", "REG-C4-05"),
+        (8, 50, 9, 25, "Mon-Fri", "41021", "41022", "REG-C4-01"),
         (9, 20, 9, 55, "Mon-Fri", "41003", "41004", "REG-C4-02"),
         # Midday Base (60-120 min headway)
         (11, 20, 11, 55, "Daily", "41015", "41016", "REG-C4-04"),
@@ -879,7 +907,7 @@ def build_timetable():
         # Evening Peak Surge (30-min headway)
         (16, 50, 17, 25, "Mon-Fri", "41023", "41024", "REG-C4-05"),
         (17, 20, 17, 55, "Mon-Fri", "41011", "41012", "REG-C4-03"),
-        (17, 50, 18, 25, "Mon-Fri", "41025", "41026", "REG-C4-05"),
+        (17, 50, 18, 25, "Mon-Fri", "41025", "41026", "REG-C4-02"),
         # Evening Base
         (19, 20, 19, 55, "Daily", "41017", "41018", "REG-C4-01"),
     ]
@@ -898,7 +926,7 @@ def build_timetable():
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
             is_depot = "Depot" in stn
-            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional")
+            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional", dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             if not is_depot:
@@ -965,7 +993,7 @@ def build_timetable():
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
             is_depot = "Depot" in stn
-            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional")
+            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional", dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
             if not is_depot:
@@ -1155,7 +1183,8 @@ def build_timetable():
         t2 = calc_run_time(dist_c2_part, 33.33)
 
         c3_arr = dep_sec + t1
-        c3_dep = c3_arr + 180 # 3 min transfer dwell
+        dwell_fwd = get_calibrated_dwell("City_3_EW", "Interchange", dep_sec=dep_sec, r_type=r_type)
+        c3_dep = c3_arr + dwell_fwd
         c6_arr = c3_dep + t_ramp + t2
 
         rev_dep = rh * 3600 + rm * 60
@@ -1189,7 +1218,7 @@ def build_timetable():
             "total_distance_km": round(total_dist / 1000.0, 2),
             "stops": [
                 {"station": "City_4", "train_stop_id": "City_4_p4_bw", "arrival_time": format_time(dep_sec), "arrival_sec": dep_sec, "departure_time": format_time(dep_sec), "departure_sec": dep_sec, "dwell_sec": 0},
-                {"station": "City_3_EW", "train_stop_id": "City_3_EW_p4_bw", "arrival_time": format_time(c3_arr), "arrival_sec": round(c3_arr, 1), "departure_time": format_time(c3_dep), "departure_sec": round(c3_dep, 1), "dwell_sec": 180},
+                {"station": "City_3_EW", "train_stop_id": "City_3_EW_p4_bw", "arrival_time": format_time(c3_arr), "arrival_sec": round(c3_arr, 1), "departure_time": format_time(c3_dep), "departure_sec": round(c3_dep, 1), "dwell_sec": dwell_fwd},
                 {"station": "City_6", "train_stop_id": "City_6_p4_fw", "arrival_time": format_time(c6_arr), "arrival_sec": round(c6_arr, 1), "departure_time": format_time(c6_arr), "departure_sec": round(c6_arr, 1), "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_3", "Town_6", "Town_7"],
@@ -1207,7 +1236,8 @@ def build_timetable():
 
         # Northbound-to-Eastbound Return: City_6 -> City_3_NS -> Flyover Ramp -> City_3_EW -> City_4
         rev_c3_arr = rev_dep + t2
-        rev_c3_dep = rev_c3_arr + 180
+        dwell_rev = get_calibrated_dwell("City_3_NS", "Interchange", dep_sec=rev_dep, r_type=r_type)
+        rev_c3_dep = rev_c3_arr + dwell_rev
         rev_c4_arr = rev_c3_dep + t_ramp + t1
 
         timetable.append({
@@ -1230,7 +1260,7 @@ def build_timetable():
             "total_distance_km": round(total_dist / 1000.0, 2),
             "stops": [
                 {"station": "City_6", "train_stop_id": "City_6_p4_bw", "arrival_time": format_time(rev_dep), "arrival_sec": round(rev_dep, 1), "departure_time": format_time(rev_dep), "departure_sec": round(rev_dep, 1), "dwell_sec": 0},
-                {"station": "City_3_NS", "train_stop_id": "City_3_NS_p4_bw", "arrival_time": format_time(rev_c3_arr), "arrival_sec": round(rev_c3_arr, 1), "departure_time": format_time(rev_c3_dep), "departure_sec": round(rev_c3_dep, 1), "dwell_sec": 180},
+                {"station": "City_3_NS", "train_stop_id": "City_3_NS_p4_bw", "arrival_time": format_time(rev_c3_arr), "arrival_sec": round(rev_c3_arr, 1), "departure_time": format_time(rev_c3_dep), "departure_sec": round(rev_c3_dep, 1), "dwell_sec": dwell_rev},
                 {"station": "City_4", "train_stop_id": "City_4_p4_fw", "arrival_time": format_time(rev_c4_arr), "arrival_sec": round(rev_c4_arr, 1), "departure_time": format_time(rev_c4_arr), "departure_sec": round(rev_c4_arr, 1), "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_7", "Town_6", "Town_3"],
@@ -1733,6 +1763,187 @@ def build_timetable():
         timetable.append(f_srv)
         rk = get_rake(f_srv["assigned_rake"], f_srv["rolling_stock_type"])
         rk["assigned_services"].append(f_srv["train_number"])
+
+    # --- FULL TURNAROUND & DISPOSITION CHAIN ENGINE (FLAW 3 REMEDIATION) ---
+    # Connect every intermediate service to its subsequent service for that physical rake,
+    # calculate the true turnaround dwell time, classify turnaround mode, and strictly validate consist minimums.
+    svc_by_no = {s["train_number"]: s for s in timetable}
+    DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+
+    def expand_days(svc):
+        days = svc.get("service_days", [])
+        res = set()
+        for d in days:
+            if d == "Daily":
+                res.update(DAYS)
+            elif d == "Mon-Fri":
+                res.update(["Mon", "Tue", "Wed", "Thu", "Fri"])
+            elif d in DAYS:
+                res.add(d)
+        return res
+
+    for rake_id, rk in rakes.items():
+        svcs = rk["assigned_services"]
+        if not svcs:
+            continue
+
+        svc_objs = [svc_by_no[no] for no in svcs]
+
+        # Process operating days (evaluate dense weekday schedules first so weekday links take precedence)
+        days_sorted = sorted(range(7), key=lambda d: len([s for s in svc_objs if DAYS[d] in expand_days(s)]), reverse=True)
+
+        for d_idx in days_sorted:
+            day_name = DAYS[d_idx]
+            day_svcs = sorted([s for s in svc_objs if day_name in expand_days(s)], key=lambda s: s["departure_sec"])
+            if not day_svcs:
+                continue
+
+            for i in range(len(day_svcs) - 1):
+                curr_s = day_svcs[i]
+                next_s = day_svcs[i + 1]
+
+                disp = curr_s["post_journey_disposition"]
+                if disp["subsequent_service"] is not None:
+                    continue
+
+                gap_sec = next_s["departure_sec"] - curr_s["arrival_sec"]
+                if gap_sec < 0:
+                    raise ValueError(
+                        f"Infeasible overlapping booking for rake {rake_id} ({curr_s['rolling_stock_type']}) between "
+                        f"service {curr_s['train_number']} (arr {curr_s['arrival_time']} at {curr_s['dest_station']}) and "
+                        f"service {next_s['train_number']} (dep {next_s['departure_time']} from {next_s['origin_station']}): "
+                        f"allocated gap {gap_sec}s is negative."
+                    )
+
+                if gap_sec > 18 * 3600:
+                    continue
+
+                dwell_min = round(gap_sec / 60.0, 1)
+                r_type = curr_s["rolling_stock_type"]
+                min_req = MIN_TURNAROUND_BY_CONSIST[r_type]
+                if dwell_min < min_req:
+                    raise ValueError(
+                        f"Infeasible turnaround for rake {rake_id} ({r_type}) between "
+                        f"service {curr_s['train_number']} (arr {curr_s['arrival_time']} at {curr_s['dest_station']}) and "
+                        f"service {next_s['train_number']} (dep {next_s['departure_time']} from {next_s['origin_station']}): "
+                        f"allocated dwell {dwell_min} min is less than required minimum {min_req} min."
+                    )
+
+                # Classify turnaround mode
+                if "freight" in r_type or curr_s["service_class"] == "Freight":
+                    if r_type == "intermodal_container_freight":
+                        mode = "container_loading_and_inspection"
+                    elif curr_s["dest_station"].startswith("Depot"):
+                        mode = "depot_inspection"
+                    else:
+                        mode = "shunting_and_inspection"
+                    action = "depot_stabling" if curr_s["dest_station"].startswith("Depot") else "yard_layover"
+                else:
+                    if dwell_min <= (min_req + 3.0):
+                        mode = "rapid_dual_crew"
+                        action = "turnaround"
+                    elif dwell_min <= 30.0:
+                        mode = "standard_cab_swap"
+                        action = "turnaround"
+                    else:
+                        mode = "extended_layover"
+                        action = "yard_layover"
+
+                staging_track = disp.get("staging_track")
+                if not staging_track:
+                    staging_track = f"{curr_s['dest_station']}_pocket_1_fw" if action == "turnaround" else f"{curr_s['dest_station']}_yard_1_bw"
+
+                disp["action"] = action
+                disp["staging_track"] = staging_track
+                disp["turnaround_dwell_min"] = dwell_min
+                disp["min_turnaround_required_min"] = min_req
+                disp["turnaround_mode"] = mode
+                disp["subsequent_service"] = next_s["train_number"]
+
+            # Permit link across midnight to next day's first service when station matches
+            last_s = day_svcs[-1]
+            disp = last_s["post_journey_disposition"]
+            if disp["subsequent_service"] is None:
+                next_day_name = DAYS[(d_idx + 1) % 7]
+                next_day_svcs = sorted([s for s in svc_objs if next_day_name in expand_days(s)], key=lambda s: s["departure_sec"])
+                if next_day_svcs:
+                    next_first = next_day_svcs[0]
+                    if last_s["dest_station"] == next_first["origin_station"] and next_first["departure_sec"] < last_s["arrival_sec"]:
+                        overnight_gap_sec = (86400.0 - last_s["arrival_sec"]) + next_first["departure_sec"]
+                        if overnight_gap_sec <= 4 * 3600:
+                            overnight_dwell_min = round(overnight_gap_sec / 60.0, 1)
+                            r_type = last_s["rolling_stock_type"]
+                            min_req = MIN_TURNAROUND_BY_CONSIST[r_type]
+                            if "freight" in r_type or last_s["service_class"] == "Freight":
+                                if r_type == "intermodal_container_freight":
+                                    mode = "container_loading_and_inspection"
+                                elif last_s["dest_station"].startswith("Depot"):
+                                    mode = "depot_inspection"
+                                else:
+                                    mode = "shunting_and_inspection"
+                                action = "depot_stabling" if last_s["dest_station"].startswith("Depot") else "yard_layover"
+                            else:
+                                if overnight_dwell_min <= (min_req + 3.0):
+                                    mode = "rapid_dual_crew"
+                                    action = "turnaround"
+                                elif overnight_dwell_min <= 30.0:
+                                    mode = "standard_cab_swap"
+                                    action = "turnaround"
+                                else:
+                                    mode = "extended_layover"
+                                    action = "yard_layover"
+
+                            staging_track = disp.get("staging_track")
+                            if not staging_track:
+                                staging_track = f"{last_s['dest_station']}_pocket_1_fw" if action == "turnaround" else f"{last_s['dest_station']}_yard_1_bw"
+
+                            disp["action"] = action
+                            disp["staging_track"] = staging_track
+                            disp["turnaround_dwell_min"] = overnight_dwell_min
+                            disp["min_turnaround_required_min"] = min_req
+                            disp["turnaround_mode"] = mode
+                            disp["subsequent_service"] = next_first["train_number"]
+
+        # Order rk["assigned_services"] topologically following rotation cycle
+        all_succs = {s["train_number"]: s["post_journey_disposition"]["subsequent_service"] for s in svc_objs}
+        all_preds = {succ: pred for pred, succ in all_succs.items() if succ is not None}
+        starts = [s["train_number"] for s in svc_objs if s["train_number"] not in all_preds]
+        if starts:
+            ordered = []
+            curr = starts[0]
+            while curr and curr not in ordered:
+                ordered.append(curr)
+                curr = all_succs.get(curr)
+            for no in svcs:
+                if no not in ordered:
+                    ordered.append(no)
+            rk["assigned_services"] = ordered
+        else:
+            rk["assigned_services"] = [s["train_number"] for s in sorted(svc_objs, key=lambda s: s["departure_sec"])]
+
+        # Final service of duty cycle for rake: end-of-day stabling
+        end_svc_no = rk["assigned_services"][-1]
+        end_s = svc_by_no[end_svc_no]
+        disp = end_s["post_journey_disposition"]
+        first_s = svc_by_no[rk["assigned_services"][0]]
+        overnight_gap_sec = (first_s["departure_sec"] - end_s["arrival_sec"]) % 86400.0
+        overnight_dwell_min = round(overnight_gap_sec / 60.0, 1)
+
+        if end_s["dest_station"].startswith("Depot") or end_s["dest_station"] == rk["home_depot"]:
+            action = "depot_stabling"
+            mode = "depot_inspection"
+        else:
+            action = "yard_layover"
+            mode = "extended_layover"
+
+        staging_track = disp.get("staging_track") or f"{end_s['dest_station']}_yard_1_bw"
+        disp["action"] = action
+        disp["staging_track"] = staging_track
+        disp["buffer_stop_node"] = None
+        disp["turnaround_dwell_min"] = overnight_dwell_min
+        disp["min_turnaround_required_min"] = MIN_TURNAROUND_BY_CONSIST[end_s["rolling_stock_type"]]
+        disp["turnaround_mode"] = mode
+        disp["subsequent_service"] = None
 
     # Sort master timetable by departure time
     timetable.sort(key=lambda s: s["departure_sec"])

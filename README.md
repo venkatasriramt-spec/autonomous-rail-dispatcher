@@ -48,7 +48,7 @@ The rolling stock specifications in `data/rolling_stock_types.json` strictly adh
 
 ## 3. Master Timetable & Service Breakdown (188 Trains across 31 Rakes)
 
-The schedule in `data/timetable.json` models **188 distinct train services** operating on an integrated clockface cadence (*Taktfahrplan*), featuring heavy morning & evening commuter peak surges (*Spitzenverkehr*), calibrated station dwells, turnaround disposition tracking, and a dedicated nocturnal freight wave:
+The schedule in `data/timetable.json` models **188 distinct train services** operating on an integrated clockface cadence (*Taktfahrplan*), featuring heavy morning & evening commuter peak surges (*Spitzenverkehr*), dynamic calibrated station dwells, multi-tier consist turnaround tracking, and a dedicated nocturnal freight wave:
 
 | Time Window | Operational Role | Departures / Hr | Frequency Characteristic |
 | :--- | :--- | :---: | :--- |
@@ -64,44 +64,52 @@ The schedule in `data/timetable.json` models **188 distinct train services** ope
   * Clockface cadence: departs `:00` Eastbound (`City_1` $\to$ `City_4`), `:35` Westbound (`City_4` $\to$ `City_1`, and `:05` during peak surge).
   * Peak headway surge: compressed to 30-min frequency during 07:00–09:00 (AM peak) and 16:00–18:30 (PM peak).
   * Speeds up to 300 km/h on slab track, bypassing towns (`Town_1`, `Town_2`, `Town_3`) via central through-tracks (`_thru_1`, `_thru_2`).
-  * Calibrated dwells: 120s at `City_1`, `City_2`, and `City_4`; 150s at `City_3_EW` bi-level interchange.
+  * Dynamic calibrated dwells: 150s peak / 120s off-peak at `City_1`, `City_2`, and `City_4`; 180s peak / 150s off-peak at `City_3_EW` bi-level interchange.
+  * Turnaround: 16.3–17.8 min buffer at `City_4` pocket tracks (`City_4_pocket_1_fw`), classified as `rapid_dual_crew` (*Kurzwende*) during peak.
 * **Regional Local Stoppers (34 runs)**:
   * Clockface cadence: departs `:15` Eastbound, `:55` Westbound (`:25` during peak surge).
   * Peak commuter surge: compressed to 30-min headways (07:15, 07:45, 08:15, 08:45 AM; 16:15, 16:45, 17:15, 17:45, 18:15 PM) utilizing dedicated peak relief rake `REG-C1-06`.
-  * Stops at all intermediate town platform loops (`_plat_1`, `_plat_2`) with 45s dwell times.
+  * Dynamic calibrated dwells: 60s peak / 45s off-peak at town platform loops; 110s peak / 90s off-peak at cities; 180s peak / 150s off-peak at `City_3_EW`.
+  * Turnaround: 12.4 min turnaround at `City_4_pocket_2_fw`, well exceeding the 10.0 min consist minimum.
 
 ### B. Corridor 2: North–South Regional Spine (`City_5` $\leftrightarrow$ `City_6`, 22.6 km)
 * **Spine InterCity & Commuter (38 runs)**:
-  * Clockface cadence: departs `:10` Southbound (`City_5` $\to$ `City_6`), `:45` Northbound (`City_6` $\to$ `City_5`).
+  * Clockface cadence: departs `:10` Southbound (`City_5` $\to$ `City_6`), `:45` Northbound (`City_6` $\to$ `City_5`, and `:15` during peak).
   * Peak headway surge: compressed to 30-min headway throughout both rush hours (07:10, 07:40, 08:10, 08:40 AM; 16:10, 16:40, 17:10, 17:40, 18:10 PM) utilizing peak relief rake `REG-C2-06`.
-  * Connects across the elevated viaduct level at `City_3_NS` (150s dwell).
+  * Dynamic calibrated dwells: 55s peak / 45s off-peak at towns; 110s peak / 90s off-peak at termini; 180s peak / 150s off-peak at `City_3_NS` viaduct interchange.
+  * Turnaround: 10.4–12.5 min turnaround at `City_6_pocket_1_fw` (`rapid_dual_crew`).
 
 ### C. Corridor 3: Northwest Alpine Mountain Line (`City_2` $\leftrightarrow$ `Town_9`, 12.9 km)
 * **Alpine Scenic, Glacier, Panorama & Commuter Services (12 runs)**:
   * Multi-day scenic runs: #12763 (Mon/Thu/Sun), #12765 (Tue/Fri/Sat), #12769 (Daily Panorama), #12767 (Mon/Thu/Sun).
-  * Weekday commuter surge: #12771 (08:10 AM) and #12773 (17:10 PM) providing daily mountain resident connectivity.
-  * Clockface cadence: departs `:10` Uphill from `City_2` (synchronized connection from Corridor 1 express), `:40` Downhill from `Town_9`.
-  * Climbs through steep gradients ($Z=38\text{ m}$ to $Z=130\text{ m}$) with 75s mountain halts.
+  * Weekday commuter surge: #12771 (08:10 AM dep City_2 / 08:38 AM dep Town_9) and #12773 (17:10 PM dep City_2 / 17:38 PM dep Town_9).
+  * Clockface cadence: departs `:10` Uphill from `City_2` (synchronized connection from Corridor 1 express), `:40` Downhill from `Town_9` (and `:38` for peak commuter shuttles).
+  * Steep gradient mountain operation ($Z=38\text{ m}$ to $Z=130\text{ m}$) with 75s mountain halts.
+  * Turnaround: 18.1/20.1 min turnaround at `Town_9_yard_1_fw` (`standard_cab_swap`).
 
 ### D. Corridor 4: Southern Coastal Arc (`City_1` $\leftrightarrow$ `City_6`, 27.4 km)
 * **Coastal Arc Regional Commuter (26 runs)**:
-  * Clockface cadence: departs `:20` Eastbound (`City_1`), `:55` Westbound (`City_6`).
+  * Clockface cadence: departs `:20` Eastbound (`City_1`), `:55` Westbound (`City_6`, and `:25` during peak).
   * Peak headway surge: compressed to 30-min headway (07:20, 07:50, 08:20, 08:50, 09:20 AM; 16:20, 16:50, 17:20, 17:50 PM) deploying dedicated commuter rake `REG-C4-05`.
-  * Servicing `Town_10`, `Town_11`, and `Town_12` with 45s dwells.
+  * Dynamic calibrated dwells: 60s peak / 45s off-peak at `Town_10`, `Town_11`, and `Town_12`.
+  * Turnaround: 13.0 min turnaround at `City_6_pocket_2_fw`.
 
 ### E. Diagonal High-Speed Bypass (`City_2` $\leftrightarrow$ `City_5`, 13.3 km)
 * **Bypass Direct Services (10 runs)**:
   * Direct 300 km/h chord transit along `bypass_City_2_City_5` avoiding the central hub.
-  * Peak headway surge: half-hourly commuter relief during rush hours (07:25, 08:25 AM; 17:25, 18:25 PM) using `HS-Rake-04`.
+  * Peak headway surge: half-hourly commuter relief during rush hours (07:25, 08:25 AM; 17:25, 18:25 PM) using `HS-Rake-04` (`high_speed_emu_single`).
+  * Turnaround: 25.6 min turnaround at `City_5_yard_2_bw` (`standard_cab_swap`).
 
 ### F. Trans-Hub Bi-Level Flyover Transfer (`City_4` $\leftrightarrow$ `City_6`, 21.5 km)
 * **Interchange Link (16 runs)**:
   * Traverses the 789m, 1.77% gradient flyover ramp (`transfer_City_3_EW_NS`) linking Corridor 1 and Corridor 2.
   * Peak headway surge: hourly rush-hour connection (07:05, 08:05, 09:05 AM; 16:05, 17:05, 18:05 PM) vs 3-hour off-peak cadence.
+  * Multi-level interchange dwell: 210s peak / 180s off-peak at `City_3_EW` / `City_3_NS`.
+  * Turnaround: 13.7–14.2 min turnaround at `City_6_pocket_2_fw`.
 
 ### G. Heavy Freight & Logistics Services (14 runs: 6 Daytime + 8 Nocturnal Wave)
 * **Daytime Freight (6 runs)**:
-  * #68101, #68102: Alpine mineral ore trains utilizing the Alpine Passing Loop with a 12-minute scheduled hold for passenger overtakes.
+  * #68101, #68102: Alpine mineral ore trains utilizing the Alpine Passing Loop with a 12-minute scheduled hold (720s dwell) for passenger overtakes.
   * #68201, #68202: Container logistics feeder runs between `City_5` and dead-end pocket tracks at `Depot_3`.
   * #68301, #68302: Coastal bulk cargo between `Depot_2` and `City_6`.
 * **Dedicated Nocturnal Freight Wave (8 runs, 21:30–05:25)**:

@@ -227,3 +227,60 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - Collisions: **0**.
      - Teleports: **0**.
 
+---
+
+### 11 October 2026 (Night) — Flaw 3 Remediation: Dynamic Calibrated Dwells & Consist-Scaled Turnarounds
+
+**Objective:** Systematically eliminate flat station dwells and unverified turnaround buffers (Flaw 3) by introducing dynamic time-of-day and consist-scaled passenger exchange models, resolving all physical turnaround infeasibilities across rake duty cycles, and deploying a comprehensive rake turnaround and disposition chaining engine.
+
+#### Phase 12: Dynamic Station Dwells & Full Turnaround Chaining Engine
+
+1. **Dynamic Calibrated Dwell Model (`get_calibrated_dwell`)**:
+   - Replaced flat static dwells with an operational hierarchy sensitive to peak commuter volumes (AM: 07:00–09:30, PM: 16:00–18:45) and train consist carrying capacity:
+     - **Major City Hubs (`City_1`, `City_2`, `City_4`, `City_5`, `City_6`)**:
+       - 16-car HighSpeed 300 (1,050 pax): **150s peak** / **120s off-peak**.
+       - 8-car HighSpeed Single (520 pax): **120s peak** / **90s off-peak**.
+       - Regional EMU / DMU (240–380 pax): **110s peak** / **90s off-peak**.
+     - **Bi-Level Interchange Hub (`City_3_EW`, `City_3_NS`)**:
+       - Flyover Transfer (multi-level commuter connection): **210s peak (3.5 min)** / **180s off-peak**.
+       - Mainline Regional / Spine: **180s peak (3.0 min)** / **150s off-peak**.
+     - **Intermediate Town Platform Loops (`Town_1`..`Town_7`, `Town_10`..`Town_12`)**:
+       - Corridor 2 Spine Towns: **55s peak** / **45s off-peak**.
+       - Other Corridors: **60s peak** / **45s off-peak**.
+     - **Alpine Mountain Halts (`Town_8`, `Town_9`)**: **75s** (scenic tourists, heavy luggage).
+     - **Freight Passing Loop Siding (`Town_8_Passing_Loop`)**: **720s (12 min)** scheduled hold for express overtakes.
+
+2. **Resolution of Rake Duty Cycle Infeasibilities**:
+   - Discovered and eliminated 3 physical turnaround violations in previous rake assignments:
+     - **`REG-C2-01`**: Service #32026 arrived `City_5` at 06:07:28 followed by #32001 departing at 06:10:00 (infeasible 2.5 min turnaround vs 10.0 min required). Reassigned #32001/#32002 to `REG-C2-02` (which started later), expanding #32026's buffer to a healthy 182.5 min layover.
+     - **`REG-C4-05`**: Service #41020 arrived `City_1` at 08:46:59 followed by #41021 departing at 08:50:00 (infeasible 3.0 min turnaround). Reassigned #41021/#41022 to `REG-C4-01` (resting at `City_1` following #41002 arrival at 08:16:59), expanding the #41002 → #41021 layover to 33.0 min.
+     - **`REG-C4-05`**: Service #41024 arrived `City_1` at 17:45:54 followed by #41025 departing at 17:50:00 (infeasible 4.1 min turnaround). Reassigned #41025/#41026 to `REG-C4-02` (resting at `City_1`), expanding the turnaround to 34.1 min.
+   - Calibrated downhill Alpine commuter departures #12772 (from 08:40 to 08:38) and #12774 (from 17:40 to 17:38) at `Town_9`, providing an 18.1 min turnaround and arriving at `City_2` platform 3 ahead of Westbound express arrivals, eliminating junction interlock signal holds.
+
+3. **Turnaround & Disposition Chaining Engine (`scripts/generate_master_timetable.py`)**:
+   - Engineered an automated post-processing engine that traverses each rake's chronological service sequence:
+     - **157 Intermediate Services**: Exact subsequent service linked via `subsequent_service`, true elapsed turnaround minutes calculated, and validated against `min_turnaround_required_min`.
+     - **31 Final Daily Services**: Stabled overnight with calculated multi-hour maintenance inspection buffers (`subsequent_service: None`).
+     - **Operational Turnaround Mode Attribution**:
+       - `extended_layover` (Midday / Off-Peak Yard Staging): 84 services.
+       - `rapid_dual_crew` (*Kurzwende* / Dual-Crew Cab Swap): 56 services.
+       - `standard_cab_swap` (Single-Driver Walk & Re-Cab): 38 services.
+       - `shunting_and_inspection` (Freight Siding Shunt & Brake Test): 5 services.
+       - `container_loading_and_inspection` (Intermodal Gantry Logistics): 3 services.
+       - `depot_inspection` (Maintenance Facility Audit): 2 services.
+
+4. **Microscopic Simulation & Relational Database Results**:
+   - `data/trains.db`: 188 services, 920 stops, 188 post-journey dispositions with **0 turnaround violations**.
+   - `duarouter`: Compiled **188 out of 188 vehicles (100% routing success)** into `sumo_config/trains.rou.xml`.
+   - Full 24-hour SUMO microscopic simulation (`86,400s`):
+     - Inserted / Completed: 188 vehicles.
+     - Running / Waiting at step 86400: **0**.
+     - Average Fleet Speed: 19.58 m/s (~70.5 km/h inclusive of all intermediate dwells and layovers).
+     - Average Depart Delay: **0.00s**.
+     - Average Waiting Time: **0.60s**.
+     - Fatal Errors: **0**.
+     - Collisions: **0**.
+     - Teleports: **0**.
+     - Emergency Stops: **0**.
+
+
