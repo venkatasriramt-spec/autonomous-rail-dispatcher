@@ -130,6 +130,25 @@ ROLLING_STOCK_TYPES = {
         "passenger_capacity": 0,
         "gui_shape": "rail/cargo",
         "gui_color": "0.6,0.4,0.8"  # Purple Logistics
+    },
+    "electric_trunk_freight": {
+        "type_id": "electric_trunk_freight",
+        "name": "Vectron E-Cargo Trunk Fast Freight (Class 193 + Flatcars)",
+        "service_class": "Freight",
+        "sumo_vclass": "rail_electric",
+        "power_supply": "Electric 15kV / 25kV Multi-System",
+        "track_gauge_mm": 1435,
+        "max_speed_kmh": 100,
+        "max_speed_ms": 27.78,
+        "acceleration_ms2": 0.45,
+        "deceleration_ms2": 0.60,
+        "emergency_decel_ms2": 1.4,
+        "total_length_m": 400.0,
+        "carriages_count": 24,
+        "gross_weight_tons": 2400.0,
+        "passenger_capacity": 0,
+        "gui_shape": "rail/cargo",
+        "gui_color": "0.2,0.65,0.85"  # Steel Cyan Cargo
     }
 }
 
@@ -171,13 +190,53 @@ def build_timetable():
 
     def get_rake(rake_id, r_type):
         if rake_id not in rakes:
+            home = "Depot_4"
+            if "ALP" in rake_id or "FRT-Rake-01" in rake_id:
+                home = "Depot_1"
+            elif "C4" in rake_id or "FRT-Rake-03" in rake_id:
+                home = "Depot_2"
+            elif "C2" in rake_id or "FRT-Rake-02" in rake_id:
+                home = "Depot_3"
+            elif "FRT-Rake-04" in rake_id or "C1" in rake_id or "HS" in rake_id or "XFER" in rake_id:
+                home = "Depot_4"
             rakes[rake_id] = {
                 "rake_id": rake_id,
                 "rolling_stock_type": r_type,
-                "home_depot": "Depot_1" if "ALP" in rake_id or "FRT" in rake_id else ("Depot_3" if "C2" in rake_id else "Depot_4"),
+                "home_depot": home,
                 "assigned_services": []
             }
         return rakes[rake_id]
+
+    MIN_TURNAROUND_BY_CONSIST = {
+        "high_speed_emu_300": 15.0,        # 400m 16-car EMU: minimum 15 min rapid / 20 min standard cab change
+        "high_speed_emu_single": 12.0,     # 200m 8-car EMU: minimum 12 min
+        "regional_emu_120": 10.0,          # 160m 6-car commuter EMU: minimum 10 min
+        "regional_dmu_120": 10.0,          # 120m 4-car hybrid DMU: minimum 10 min
+        "heavy_freight_cargo": 30.0,       # Heavy freight: 30-45 min shunting and brake check
+        "intermodal_container_freight": 30.0,
+        "electric_trunk_freight": 25.0
+    }
+
+    def get_calibrated_dwell(stn, service_class="Regional", is_terminal=False):
+        """
+        Calibrates stop dwell times based on station hierarchy and passenger exchange demand:
+        - Terminal stations: 0s (handled by post-journey turnaround)
+        - City_3 Bi-Level Interchange: 150s (Regional) / 180s (Flyover Transfer)
+        - Major City Hubs: 120s (HighSpeed) / 90s (Regional)
+        - Alpine Mountain stations: 75s (scenic tourists, luggage)
+        - Intermediate Town platform loops: 45s (rapid EMU passenger exchange)
+        """
+        if is_terminal:
+            return 0
+        if stn in ["City_3_EW", "City_3_NS"]:
+            return 180 if service_class == "Interchange" else 150
+        elif "City" in stn:
+            return 120 if service_class == "HighSpeed" else 90
+        elif stn in ["Town_8", "Town_9"]:
+            return 75
+        elif "Town" in stn:
+            return 45
+        return 60
 
     # Helper to calculate realistic section run times
     def calc_run_time(d_meters, max_v, is_stop_start=False):
@@ -195,23 +254,41 @@ def build_timetable():
     # --- CATEGORY A: CORRIDOR 1 HIGH-SPEED EXPRESS (300 km/h) ---
     # Fast InterCity services stopping only at major cities (City_1, City_2, City_3_EW, City_4)
     # Bypasses intermediate towns (Town_1, Town_2, Town_3) at full 300 km/h via center through-tracks.
+    # TAKTFAHRPLAN: Eastbound departs at :00, Westbound departs at :30 past the hour.
+    # PEAK SURGE: 30-min headway compression during 07:00-09:00 and 16:00-18:30 rush hours.
     hs_departure_offsets = [
-        (6, 0, "Mon-Fri", "12001", "12002", "HS-Rake-01"),
-        (7, 30, "Daily",   "12003", "12004", "HS-Rake-02"),
-        (9, 0, "Mon-Fri", "12005", "12006", "HS-Rake-01"),
-        (10, 30, "Daily",  "12007", "12008", "HS-Rake-03"),
-        (12, 0, "Daily",   "12009", "12010", "HS-Rake-02"),
-        (14, 0, "Daily",   "12011", "12012", "HS-Rake-01"),
-        (16, 30, "Mon-Fri","12013", "12014", "HS-Rake-03"),
-        (18, 0, "Daily",   "12015", "12016", "HS-Rake-02"),
+        # (fwd_h, fwd_m, rev_h, rev_m, days, fwd_no, rev_no, rake_id)
+        # Morning Early + Peak Surge
+        (6, 0, 6, 35, "Mon-Fri", "12001", "12002", "HS-Rake-01"),
+        (7, 0, 7, 35, "Daily",   "12003", "12004", "HS-Rake-02"),
+        (7, 30, 8, 5, "Mon-Fri", "12017", "12018", "HS-Rake-03"),
+        (8, 0, 8, 35, "Mon-Fri", "12005", "12006", "HS-Rake-01"),
+        (8, 30, 9, 5, "Mon-Fri", "12019", "12020", "HS-Rake-05"),
+        (9, 0, 9, 35, "Daily",   "12031", "12032", "HS-Rake-03"),
+        # Midday Regular Clockface Cadence
+        (10, 0, 10, 35, "Daily",  "12007", "12008", "HS-Rake-02"),
+        (11, 0, 11, 35, "Daily",  "12033", "12034", "HS-Rake-06"),
+        (12, 0, 12, 35, "Daily",  "12009", "12010", "HS-Rake-01"),
+        (13, 0, 13, 35, "Daily",  "12035", "12036", "HS-Rake-05"),
+        (14, 0, 14, 35, "Daily",  "12011", "12012", "HS-Rake-02"),
+        (15, 0, 15, 35, "Daily",  "12037", "12038", "HS-Rake-06"),
+        # Evening Peak Surge
+        (16, 0, 16, 35, "Mon-Fri","12013", "12014", "HS-Rake-03"),
+        (16, 30, 17, 5, "Mon-Fri","12021", "12022", "HS-Rake-01"),
+        (17, 0, 17, 35, "Mon-Fri","12025", "12026", "HS-Rake-05"),
+        (17, 30, 18, 5, "Mon-Fri","12023", "12024", "HS-Rake-06"),
+        (18, 0, 18, 35, "Daily",  "12015", "12016", "HS-Rake-02"),
+        # Late Evening & Night
+        (20, 0, 20, 35, "Daily",  "12027", "12028", "HS-Rake-01"),
+        (22, 0, 22, 35, "Daily",  "12029", "12030", "HS-Rake-02"),
     ]
 
-    for h, m, days, fwd_no, rev_no, rake_id in hs_departure_offsets:
-        dep_sec = h * 3600 + m * 60
+    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in hs_departure_offsets:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "high_speed_emu_300"
         rake = get_rake(rake_id, r_type)
 
-        # Forward Run: City_1 -> City_4 (Eastbound)
+        # Forward Run: City_1 -> City_4 (Eastbound) on :00 pulse
         curr_t = dep_sec
         stops_fwd = []
         c1_city_indices = [0, 2, 4, 6]  # City_1, City_2, City_3_EW, City_4
@@ -224,7 +301,7 @@ def build_timetable():
                 curr_t += sec_time
 
             arr_t = curr_t
-            dwell = 0 if idx_pos == len(c1_city_indices) - 1 else 120
+            dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -236,6 +313,17 @@ def build_timetable():
                 "departure_sec": round(dep_t, 1),
                 "dwell_sec": dwell
             })
+
+        rev_dep_sec = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep_sec - stops_fwd[-1]["arrival_sec"]) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
 
         fwd_service = {
             "train_number": fwd_no,
@@ -261,15 +349,16 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_4_pocket_1_fw",
                 "buffer_stop_node": "City_4_buf_1",
-                "turnaround_dwell_min": 35,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         }
         timetable.append(fwd_service)
         rake["assigned_services"].append(fwd_no)
 
-        # Return Run: City_4 -> City_1 (Westbound) after 40 min turnaround
-        rev_dep_sec = stops_fwd[-1]["arrival_sec"] + 40 * 60
+        # Return Run: City_4 -> City_1 (Westbound) on :35 / :05 pulse
         curr_t = rev_dep_sec
         stops_rev = []
         for idx_pos, c_idx in enumerate(reversed(c1_city_indices)):
@@ -281,7 +370,7 @@ def build_timetable():
                 curr_t += sec_time
 
             arr_t = curr_t
-            dwell = 0 if idx_pos == len(c1_city_indices) - 1 else 120
+            dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_rev.append({
@@ -315,10 +404,12 @@ def build_timetable():
             "stops": stops_rev,
             "bypassed_through_stations": ["Town_3", "Town_2", "Town_1"],
             "post_journey_disposition": {
-                "action": "depot_stabling" if h >= 16 else "yard_layover",
+                "action": "depot_stabling" if rh >= 16 else "yard_layover",
                 "staging_track": "City_1_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
+                "min_turnaround_required_min": 15.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         }
@@ -328,17 +419,33 @@ def build_timetable():
     # --- CATEGORY B: CORRIDOR 1 LOCAL REGIONAL STOPPERS (120 km/h) ---
     # Stops at ALL stations (City_1, Town_1, City_2, Town_2, City_3_EW, Town_3, City_4)
     # Staggered between express runs, uses platform loops
+    # TAKTFAHRPLAN: Eastbound departs at :15, Westbound departs at :55 past the hour (and :25 in peak).
+    # PEAK SURGE: Half-hourly frequency during morning (07:15, 07:45, 08:15) and evening (16:15, 17:15, 17:45).
     reg_c1_offsets = [
-        (6, 15, "Daily",   "21001", "21002", "REG-C1-01"),
-        (8, 15, "Mon-Fri", "21003", "21004", "REG-C1-02"),
-        (10, 15, "Daily",  "21005", "21006", "REG-C1-01"),
-        (13, 15, "Daily",  "21007", "21008", "REG-C1-02"),
-        (15, 15, "Mon-Fri","21009", "21010", "REG-C1-01"),
-        (17, 15, "Daily",  "21011", "21012", "REG-C1-02"),
+        # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        # Early Morning
+        (5, 15, 5, 55, "Daily",   "21021", "21022", "REG-C1-05"),
+        (6, 15, 6, 55, "Daily",   "21001", "21002", "REG-C1-01"),
+        # Morning Peak Surge
+        (7, 15, 7, 55, "Mon-Fri", "21013", "21014", "REG-C1-03"),
+        (7, 45, 8, 25, "Mon-Fri", "21015", "21016", "REG-C1-04"),
+        (8, 15, 8, 55, "Mon-Fri", "21003", "21004", "REG-C1-02"),
+        # Midday Regular Cadence
+        (10, 15, 10, 55, "Daily",  "21005", "21006", "REG-C1-01"),
+        (11, 15, 11, 55, "Daily",  "21023", "21024", "REG-C1-03"),
+        (13, 15, 13, 55, "Daily",  "21007", "21008", "REG-C1-02"),
+        (14, 15, 14, 55, "Daily",  "21025", "21026", "REG-C1-04"),
+        (15, 15, 15, 55, "Mon-Fri","21009", "21010", "REG-C1-05"),
+        # Evening Peak Surge
+        (16, 15, 16, 55, "Mon-Fri","21017", "21018", "REG-C1-03"),
+        (17, 15, 17, 55, "Daily",  "21011", "21012", "REG-C1-02"),
+        (17, 45, 18, 25, "Mon-Fri","21019", "21020", "REG-C1-04"),
+        # Late Evening
+        (19, 15, 19, 55, "Daily",  "21027", "21028", "REG-C1-01"),
     ]
 
-    for h, m, days, fwd_no, rev_no, rake_id in reg_c1_offsets:
-        dep_sec = h * 3600 + m * 60
+    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in reg_c1_offsets:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
@@ -349,7 +456,7 @@ def build_timetable():
                 dist = C1_DISTANCES[idx] - C1_DISTANCES[idx-1]
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = 0 if idx == len(C1_STATIONS) - 1 else 60
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -361,6 +468,17 @@ def build_timetable():
                 "departure_sec": round(dep_t, 1),
                 "dwell_sec": dwell
             })
+
+        rev_dep_sec = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep_sec - stops_fwd[-1]["arrival_sec"]) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
 
         timetable.append({
             "train_number": fwd_no,
@@ -386,14 +504,15 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_4_pocket_2_fw",
                 "buffer_stop_node": "City_4_buf_2",
-                "turnaround_dwell_min": 25,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         })
         rake["assigned_services"].append(fwd_no)
 
         # Return Local
-        rev_dep_sec = stops_fwd[-1]["arrival_sec"] + 30 * 60
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(C1_STATIONS)):
@@ -401,7 +520,7 @@ def build_timetable():
                 dist = abs(C1_DISTANCES[len(C1_STATIONS)-1-idx] - C1_DISTANCES[len(C1_STATIONS)-idx])
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = 0 if idx == len(C1_STATIONS) - 1 else 60
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_rev.append({
@@ -439,6 +558,8 @@ def build_timetable():
                 "staging_track": "City_1_yard_2_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 45,
+                "min_turnaround_required_min": 10.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         })
@@ -446,19 +567,35 @@ def build_timetable():
 
     # --- CATEGORY C: CORRIDOR 2 NORTH-SOUTH REGIONAL SPINE (120 km/h) ---
     # City_5 <-> Town_4 <-> Town_5 <-> City_3_NS <-> Town_6 <-> Town_7 <-> City_6
+    # TAKTFAHRPLAN: Southbound departs at :10, Northbound departs at :45 past the hour.
+    # PEAK SURGE: 30-min headway compression during morning (07:10, 07:40, 08:10) and evening (16:10, 17:10, 18:10).
     c2_services = [
-        (6, 30, "Daily",   "32001", "32002", "REG-C2-01"),
-        (8, 0,  "Mon-Fri", "32003", "32004", "REG-C2-02"),
-        (9, 30, "Daily",   "32005", "32006", "REG-C2-01"),
-        (11, 0, "Daily",   "32007", "32008", "REG-C2-03"),
-        (13, 0, "Daily",   "32009", "32010", "REG-C2-02"),
-        (15, 0, "Mon-Fri", "32011", "32012", "REG-C2-01"),
-        (17, 0, "Daily",   "32013", "32014", "REG-C2-03"),
-        (19, 0, "Daily",   "32015", "32016", "REG-C2-02"),
+        # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        # Early Morning Commuter
+        (5, 10, 5, 45, "Daily",   "32025", "32026", "REG-C2-01"),
+        (6, 10, 6, 45, "Daily",   "32001", "32002", "REG-C2-01"),
+        # Morning Peak Surge
+        (7, 10, 7, 45, "Mon-Fri", "32017", "32018", "REG-C2-04"),
+        (7, 40, 8, 15, "Mon-Fri", "32019", "32020", "REG-C2-05"),
+        (8, 10, 8, 45, "Mon-Fri", "32003", "32004", "REG-C2-02"),
+        (9, 10, 9, 45, "Daily",   "32005", "32006", "REG-C2-01"),
+        # Midday Regular Cadence
+        (11, 10, 11, 45, "Daily", "32007", "32008", "REG-C2-03"),
+        (12, 10, 12, 45, "Daily", "32027", "32028", "REG-C2-04"),
+        (13, 10, 13, 45, "Daily", "32009", "32010", "REG-C2-02"),
+        (14, 10, 14, 45, "Daily", "32029", "32030", "REG-C2-05"),
+        (15, 10, 15, 45, "Mon-Fri","32011", "32012", "REG-C2-01"),
+        # Evening Peak Surge
+        (16, 10, 16, 45, "Mon-Fri","32021", "32022", "REG-C2-04"),
+        (17, 10, 17, 45, "Daily", "32013", "32014", "REG-C2-03"),
+        (18, 10, 18, 45, "Mon-Fri","32023", "32024", "REG-C2-05"),
+        # Late Evening Base
+        (19, 10, 19, 45, "Daily", "32015", "32016", "REG-C2-02"),
+        (21, 10, 21, 45, "Daily", "32031", "32032", "REG-C2-03"),
     ]
 
-    for h, m, days, fwd_no, rev_no, rake_id in c2_services:
-        dep_sec = h * 3600 + m * 60
+    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in c2_services:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
@@ -470,7 +607,7 @@ def build_timetable():
                 dist = C2_DISTANCES[idx] - C2_DISTANCES[idx-1]
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = 0 if idx == len(C2_STATIONS) - 1 else (90 if "City" in stn else 50)
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -482,6 +619,17 @@ def build_timetable():
                 "departure_sec": round(dep_t, 1),
                 "dwell_sec": dwell
             })
+
+        rev_dep_sec = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep_sec - stops_fwd[-1]["arrival_sec"]) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
 
         timetable.append({
             "train_number": fwd_no,
@@ -507,14 +655,15 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_6_pocket_1_fw",
                 "buffer_stop_node": "City_6_buf_1",
-                "turnaround_dwell_min": 30,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         })
         rake["assigned_services"].append(fwd_no)
 
         # Northbound Return: City_6 -> City_5
-        rev_dep_sec = stops_fwd[-1]["arrival_sec"] + 35 * 60
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(C2_STATIONS)):
@@ -522,7 +671,7 @@ def build_timetable():
                 dist = abs(C2_DISTANCES[len(C2_STATIONS)-1-idx] - C2_DISTANCES[len(C2_STATIONS)-idx])
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
-            dwell = 0 if idx == len(C2_STATIONS) - 1 else (90 if "City" in stn else 50)
+            dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_rev.append({
@@ -556,26 +705,29 @@ def build_timetable():
             "stops": stops_rev,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
-                "action": "depot_stabling" if h >= 17 else "yard_layover",
+                "action": "depot_stabling" if rh >= 17 else "yard_layover",
                 "staging_track": "City_5_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 45,
+                "min_turnaround_required_min": 10.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         })
         rake["assigned_services"].append(rev_no)
 
     # --- CATEGORY D: CORRIDOR 3 NORTHWEST ALPINE MOUNTAIN LINE (Hybrid DMU & Specific Days) ---
-    # Exactly like the user's prompt: runs on specific days (e.g. Mon, Thu, Sun)
-    # City_2 <-> Town_8 <-> Town_9 (Mountain climb)
+    # TAKTFAHRPLAN: Uphill departs City_2 at :10 (connecting from EB C1 Express), Downhill departs Town_9 at :40
     c3_mountain_passenger = [
-        ("12763", "Alpine Scenic Shuttle 12763", ["Mon", "Thu", "Sun"], 7, 10, "ALP-Rake-01", "12764"),
-        ("12765", "Alpine Glacier Express 12765", ["Tue", "Fri", "Sat"], 10, 40, "ALP-Rake-02", "12766"),
-        ("12767", "Alpine Evening Shuttle 12767", ["Mon", "Thu", "Sun"], 16, 20, "ALP-Rake-01", "12768"),
+        # (fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no)
+        ("12763", "Alpine Scenic Shuttle 12763", ["Mon", "Thu", "Sun"], 7, 10, 7, 40, "ALP-Rake-01", "12764"),
+        ("12765", "Alpine Glacier Express 12765", ["Tue", "Fri", "Sat"], 10, 10, 10, 40, "ALP-Rake-02", "12766"),
+        ("12769", "Alpine Panorama Express 12769", ["Daily"], 13, 10, 13, 40, "ALP-Rake-02", "12770"),
+        ("12767", "Alpine Evening Shuttle 12767", ["Mon", "Thu", "Sun"], 16, 10, 16, 40, "ALP-Rake-01", "12768"),
     ]
 
-    for fwd_no, name, days, h, m, rake_id, rev_no in c3_mountain_passenger:
-        dep_sec = h * 3600 + m * 60
+    for fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no in c3_mountain_passenger:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "regional_dmu_120"
         rake = get_rake(rake_id, r_type)
 
@@ -588,7 +740,7 @@ def build_timetable():
                 dist = C3_DISTANCES[idx] - C3_DISTANCES[idx-1]
                 curr_t += calc_run_time(dist, 25.0)  # slower mountain speed limit
             arr_t = curr_t
-            dwell = 0 if idx == len(c3_sub) - 1 else 90
+            dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stops_fwd.append({
@@ -600,6 +752,17 @@ def build_timetable():
                 "departure_sec": round(dep_t, 1),
                 "dwell_sec": dwell
             })
+
+        rev_dep_sec = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep_sec - stops_fwd[-1]["arrival_sec"]) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
 
         timetable.append({
             "train_number": fwd_no,
@@ -625,14 +788,15 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "Town_9_yard_1_fw",
                 "buffer_stop_node": None,
-                "turnaround_dwell_min": 40,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         })
         rake["assigned_services"].append(fwd_no)
 
         # Downhill Return: Town_9 -> City_2
-        rev_dep_sec = stops_fwd[-1]["arrival_sec"] + 45 * 60
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(c3_sub)):
@@ -640,7 +804,7 @@ def build_timetable():
                 dist = abs(C3_DISTANCES[len(c3_sub)-1-idx] - C3_DISTANCES[len(c3_sub)-idx])
                 curr_t += calc_run_time(dist, 27.0)
             arr_t = curr_t
-            dwell = 0 if idx == len(c3_sub) - 1 else 90
+            dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1)
             dep_t = arr_t + dwell
             curr_t = dep_t
             stop_id = f"{stn}_p3_fw" if stn == "City_2" else f"{stn}_p1_bw"
@@ -679,22 +843,36 @@ def build_timetable():
                 "staging_track": "City_2_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
+                "min_turnaround_required_min": 10.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         })
         rake["assigned_services"].append(rev_no)
 
     # --- CATEGORY E: CORRIDOR 4 SOUTHERN COASTAL ARC REGIONAL (120 km/h) ---
-    # City_1 <-> Town_10 <-> Town_11 <-> Depot_2 <-> Town_12 <-> City_6
+    # TAKTFAHRPLAN: Eastbound departs City_1 at :20, Westbound departs City_6 at :55
+    # PEAK SURGE: Commuter relief runs at 08:20 (AM peak) and 17:20 (PM peak).
     c4_services = [
-        (7, 0,  "Daily",   "41001", "41002", "REG-C4-01"),
-        (9, 30, "Mon-Fri", "41003", "41004", "REG-C4-02"),
-        (13, 0, "Daily",   "41005", "41006", "REG-C4-01"),
-        (16, 30,"Daily",   "41007", "41008", "REG-C4-02"),
+        # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        # Early Morning
+        (6, 20, 6, 55, "Daily",   "41013", "41014", "REG-C4-04"),
+        (7, 20, 7, 55, "Daily",   "41001", "41002", "REG-C4-01"),
+        # Morning Peak Surge
+        (8, 20, 8, 55, "Mon-Fri", "41009", "41010", "REG-C4-03"),
+        (9, 20, 9, 55, "Mon-Fri", "41003", "41004", "REG-C4-02"),
+        # Midday Base
+        (11, 20, 11, 55, "Daily", "41015", "41016", "REG-C4-04"),
+        (13, 20, 13, 55, "Daily", "41005", "41006", "REG-C4-01"),
+        (16, 20, 16, 55, "Daily", "41007", "41008", "REG-C4-02"),
+        # Evening Peak Surge
+        (17, 20, 17, 55, "Mon-Fri", "41011", "41012", "REG-C4-03"),
+        # Evening Base
+        (19, 20, 19, 55, "Daily", "41017", "41018", "REG-C4-01"),
     ]
 
-    for h, m, days, fwd_no, rev_no, rake_id in c4_services:
-        dep_sec = h * 3600 + m * 60
+    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in c4_services:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
@@ -707,7 +885,7 @@ def build_timetable():
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
             is_depot = "Depot" in stn
-            dwell = 0 if idx == len(C4_STATIONS) - 1 else (0 if is_depot else 60)
+            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional")
             dep_t = arr_t + dwell
             curr_t = dep_t
             if not is_depot:
@@ -721,6 +899,17 @@ def build_timetable():
                     "departure_sec": round(dep_t, 1),
                     "dwell_sec": dwell
                 })
+
+        rev_dep_sec = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep_sec - stops_fwd[-1]["arrival_sec"]) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
 
         timetable.append({
             "train_number": fwd_no,
@@ -746,14 +935,15 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_6_pocket_2_fw",
                 "buffer_stop_node": "City_6_buf_2",
-                "turnaround_dwell_min": 35,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         })
         rake["assigned_services"].append(fwd_no)
 
         # Westbound Return: City_6 -> City_1
-        rev_dep_sec = stops_fwd[-1]["arrival_sec"] + 40 * 60
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(C4_STATIONS)):
@@ -762,7 +952,7 @@ def build_timetable():
                 curr_t += calc_run_time(dist, 33.33)
             arr_t = curr_t
             is_depot = "Depot" in stn
-            dwell = 0 if idx == len(C4_STATIONS) - 1 else (0 if is_depot else 60)
+            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional")
             dep_t = arr_t + dwell
             curr_t = dep_t
             if not is_depot:
@@ -802,6 +992,8 @@ def build_timetable():
                 "staging_track": "City_1_yard_2_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
+                "min_turnaround_required_min": 10.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         })
@@ -809,13 +1001,16 @@ def build_timetable():
 
     # --- CATEGORY F: HIGH-SPEED DIAGONAL BYPASS EXPRESS (300 km/h) ---
     # Direct chord connecting City_2 <-> City_5 without going through City_3
+    # TAKTFAHRPLAN: Northeast departs City_2 at :25, Southwest departs City_5 at :55
     bypass_services = [
-        (8, 30, "Mon-Fri", "15001", "15002", "HS-Rake-04"),
-        (13, 30, "Daily",  "15003", "15004", "HS-Rake-04"),
+        # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        (8, 25, 8, 55, "Mon-Fri", "15001", "15002", "HS-Rake-04"),
+        (13, 25, 13, 55, "Daily",  "15003", "15004", "HS-Rake-04"),
+        (17, 25, 17, 55, "Mon-Fri", "15005", "15006", "HS-Rake-04"),
     ]
 
-    for h, m, days, fwd_no, rev_no, rake_id in bypass_services:
-        dep_sec = h * 3600 + m * 60
+    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in bypass_services:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "high_speed_emu_single"
         rake = get_rake(rake_id, r_type)
         bypass_dist = 13300.0
@@ -823,6 +1018,17 @@ def build_timetable():
 
         # FWD: City_2 -> City_5
         arr_sec = dep_sec + sec_time
+        rev_dep = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep - arr_sec) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
+
         timetable.append({
             "train_number": fwd_no,
             "train_name": f"Diagonal Bypass Direct {fwd_no}",
@@ -850,14 +1056,15 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_5_yard_2_bw",
                 "buffer_stop_node": None,
-                "turnaround_dwell_min": 45,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         })
         rake["assigned_services"].append(fwd_no)
 
         # REV: City_5 -> City_2
-        rev_dep = arr_sec + 45 * 60
         rev_arr = rev_dep + sec_time
         timetable.append({
             "train_number": rev_no,
@@ -887,6 +1094,8 @@ def build_timetable():
                 "staging_track": "City_2_yard_2_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         })
@@ -894,13 +1103,17 @@ def build_timetable():
 
     # --- CATEGORY G: CROSS-HUB FLYOVER TRANSFER INTERCHANGE (120 km/h) ---
     # Eastern Terminus (City_4) <-> City_3_EW <-> Flyover Ramp <-> City_3_NS <-> Southern Terminus (City_6)
+    # TAKTFAHRPLAN: East-to-South departs at :05, South-to-East departs at :35
     transfer_services = [
-        (8, 45,  "Daily", "51001", "51002", "REG-XFER-01"),
-        (14, 45, "Daily", "51003", "51004", "REG-XFER-01"),
+        # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
+        (8, 5, 8, 35,   "Daily",   "51001", "51002", "REG-XFER-01"),
+        (11, 5, 11, 35, "Daily",   "51005", "51006", "REG-XFER-02"),
+        (14, 5, 14, 35, "Daily",   "51003", "51004", "REG-XFER-01"),
+        (17, 5, 17, 35, "Mon-Fri", "51007", "51008", "REG-XFER-02"),
     ]
 
-    for h, m, days, fwd_no, rev_no, rake_id in transfer_services:
-        dep_sec = h * 3600 + m * 60
+    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in transfer_services:
+        dep_sec = fh * 3600 + fm * 60
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
@@ -917,6 +1130,17 @@ def build_timetable():
         c3_arr = dep_sec + t1
         c3_dep = c3_arr + 180 # 3 min transfer dwell
         c6_arr = c3_dep + t_ramp + t2
+
+        rev_dep = rh * 3600 + rm * 60
+        turnaround_dwell_min = round((rev_dep - c6_arr) / 60.0, 1)
+        min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
+        if turnaround_dwell_min < min_required:
+            raise ValueError(
+                f"Infeasible turnaround for service {fwd_no} -> {rev_no}: "
+                f"allocated dwell {turnaround_dwell_min} min is less than required minimum {min_required} min "
+                f"for consist model {r_type}."
+            )
+        turnaround_mode = "rapid_dual_crew" if turnaround_dwell_min <= (min_required + 3.0) else "standard_cab_swap"
 
         timetable.append({
             "train_number": fwd_no,
@@ -946,14 +1170,15 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_6_pocket_2_fw",
                 "buffer_stop_node": "City_6_buf_2",
-                "turnaround_dwell_min": 40,
+                "turnaround_dwell_min": turnaround_dwell_min,
+                "min_turnaround_required_min": min_required,
+                "turnaround_mode": turnaround_mode,
                 "subsequent_service": rev_no
             }
         })
         rake["assigned_services"].append(fwd_no)
 
         # Northbound-to-Eastbound Return: City_6 -> City_3_NS -> Flyover Ramp -> City_3_EW -> City_4
-        rev_dep = c6_arr + 40 * 60
         rev_c3_arr = rev_dep + t2
         rev_c3_dep = rev_c3_arr + 180
         rev_c4_arr = rev_c3_dep + t_ramp + t1
@@ -987,6 +1212,8 @@ def build_timetable():
                 "staging_track": "City_4_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         })
@@ -1025,6 +1252,8 @@ def build_timetable():
                 "staging_track": "Depot_1_pocket_1_fw",
                 "buffer_stop_node": "Depot_1_buf_1",
                 "turnaround_dwell_min": 240,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68102"
             }
         },
@@ -1057,6 +1286,8 @@ def build_timetable():
                 "staging_track": "City_2_yard_1_fw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 180,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         },
@@ -1089,6 +1320,8 @@ def build_timetable():
                 "staging_track": "Depot_3_pocket_1_fw",
                 "buffer_stop_node": "Depot_3_buf_1",
                 "turnaround_dwell_min": 300,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "container_loading_and_inspection",
                 "subsequent_service": "68202"
             }
         },
@@ -1121,6 +1354,8 @@ def build_timetable():
                 "staging_track": "City_5_yard_1_fw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 360,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         },
@@ -1153,6 +1388,8 @@ def build_timetable():
                 "staging_track": "City_6_pocket_1_fw",
                 "buffer_stop_node": "City_6_buf_1",
                 "turnaround_dwell_min": 180,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68302"
             }
         },
@@ -1185,6 +1422,281 @@ def build_timetable():
                 "staging_track": "Depot_2_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 240,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "depot_inspection",
+                "subsequent_service": None
+            }
+        },
+        # 7. Nocturnal Mountain Bulk Ore: City_2 -> Alpine Loop -> Depot_1
+        {
+            "train_number": "68103",
+            "train_name": "Alpine Nocturnal Mineral 68103",
+            "service_class": "Freight",
+            "rolling_stock_type": "heavy_freight_cargo",
+            "assigned_rake": "FRT-Rake-01",
+            "service_days": ["Mon", "Wed", "Fri"],
+            "corridor": "Corridor_3",
+            "direction": "Inbound_Cargo_Climb",
+            "origin_station": "City_2",
+            "origin_track": "City_2_yard_1_bw",
+            "dest_station": "Depot_1",
+            "dest_track": "Depot_1_pocket_1_fw",
+            "departure_time": "22:30:00",
+            "departure_sec": 22 * 3600 + 30 * 60,
+            "arrival_time": "23:25:00",
+            "arrival_sec": 23 * 3600 + 25 * 60,
+            "total_distance_km": 12.94,
+            "stops": [
+                {"station": "City_2", "train_stop_id": None, "arrival_time": "22:30:00", "arrival_sec": 81000, "departure_time": "22:30:00", "departure_sec": 81000, "dwell_sec": 0},
+                {"station": "Town_8_Passing_Loop", "train_stop_id": None, "arrival_time": "22:55:00", "arrival_sec": 82500, "departure_time": "23:07:00", "departure_sec": 83220, "dwell_sec": 720},
+                {"station": "Depot_1", "train_stop_id": None, "arrival_time": "23:25:00", "arrival_sec": 84300, "departure_time": "23:25:00", "departure_sec": 84300, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": ["Town_8", "Town_9"],
+            "post_journey_disposition": {
+                "action": "depot_stabling",
+                "staging_track": "Depot_1_pocket_1_fw",
+                "buffer_stop_node": "Depot_1_buf_1",
+                "turnaround_dwell_min": 155.0,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "shunting_and_inspection",
+                "subsequent_service": "68104"
+            }
+        },
+        # 8. Nocturnal Mountain Return: Depot_1 -> Alpine Loop -> City_2
+        {
+            "train_number": "68104",
+            "train_name": "Alpine Nocturnal Mineral Return 68104",
+            "service_class": "Freight",
+            "rolling_stock_type": "heavy_freight_cargo",
+            "assigned_rake": "FRT-Rake-01",
+            "service_days": ["Tue", "Thu", "Sat"],
+            "corridor": "Corridor_3",
+            "direction": "Outbound_Empty_Descent",
+            "origin_station": "Depot_1",
+            "origin_track": "Depot_1_pocket_1_bw",
+            "dest_station": "City_2",
+            "dest_track": "City_2_yard_1_fw",
+            "departure_time": "02:00:00",
+            "departure_sec": 2 * 3600,
+            "arrival_time": "02:45:00",
+            "arrival_sec": 2 * 3600 + 45 * 60,
+            "total_distance_km": 12.94,
+            "stops": [
+                {"station": "Depot_1", "train_stop_id": None, "arrival_time": "02:00:00", "arrival_sec": 7200, "departure_time": "02:00:00", "departure_sec": 7200, "dwell_sec": 0},
+                {"station": "City_2", "train_stop_id": None, "arrival_time": "02:45:00", "arrival_sec": 9900, "departure_time": "02:45:00", "departure_sec": 9900, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": ["Town_9", "Town_8"],
+            "post_journey_disposition": {
+                "action": "yard_layover",
+                "staging_track": "City_2_yard_1_fw",
+                "buffer_stop_node": None,
+                "turnaround_dwell_min": 105.0,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "extended_layover",
+                "subsequent_service": None
+            }
+        },
+        # 9. Nocturnal Northern Container Feeder: City_5 -> Depot_3
+        {
+            "train_number": "68203",
+            "train_name": "Northern Container Nocturnal 68203",
+            "service_class": "Freight",
+            "rolling_stock_type": "intermodal_container_freight",
+            "assigned_rake": "FRT-Rake-02",
+            "service_days": ["Tue", "Thu", "Sat"],
+            "corridor": "Spur_City_5_Depot_3",
+            "direction": "Spur_Inbound",
+            "origin_station": "City_5",
+            "origin_track": "City_5_yard_1_bw",
+            "dest_station": "Depot_3",
+            "dest_track": "Depot_3_pocket_1_fw",
+            "departure_time": "23:00:00",
+            "departure_sec": 23 * 3600,
+            "arrival_time": "23:35:00",
+            "arrival_sec": 23 * 3600 + 35 * 60,
+            "total_distance_km": 6.8,
+            "stops": [
+                {"station": "City_5", "train_stop_id": None, "arrival_time": "23:00:00", "arrival_sec": 82800, "departure_time": "23:00:00", "departure_sec": 82800, "dwell_sec": 0},
+                {"station": "Depot_3", "train_stop_id": None, "arrival_time": "23:35:00", "arrival_sec": 84900, "departure_time": "23:35:00", "departure_sec": 84900, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": [],
+            "post_journey_disposition": {
+                "action": "depot_stabling",
+                "staging_track": "Depot_3_pocket_1_fw",
+                "buffer_stop_node": "Depot_3_buf_1",
+                "turnaround_dwell_min": 175.0,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "container_loading_and_inspection",
+                "subsequent_service": "68204"
+            }
+        },
+        # 10. Nocturnal Northern Container Return: Depot_3 -> City_5
+        {
+            "train_number": "68204",
+            "train_name": "Northern Container Nocturnal Return 68204",
+            "service_class": "Freight",
+            "rolling_stock_type": "intermodal_container_freight",
+            "assigned_rake": "FRT-Rake-02",
+            "service_days": ["Wed", "Fri", "Sun"],
+            "corridor": "Spur_City_5_Depot_3",
+            "direction": "Spur_Outbound",
+            "origin_station": "Depot_3",
+            "origin_track": "Depot_3_pocket_1_bw",
+            "dest_station": "City_5",
+            "dest_track": "City_5_yard_1_fw",
+            "departure_time": "02:30:00",
+            "departure_sec": 2 * 3600 + 30 * 60,
+            "arrival_time": "03:05:00",
+            "arrival_sec": 3 * 3600 + 5 * 60,
+            "total_distance_km": 6.8,
+            "stops": [
+                {"station": "Depot_3", "train_stop_id": None, "arrival_time": "02:30:00", "arrival_sec": 9000, "departure_time": "02:30:00", "departure_sec": 9000, "dwell_sec": 0},
+                {"station": "City_5", "train_stop_id": None, "arrival_time": "03:05:00", "arrival_sec": 11100, "departure_time": "03:05:00", "departure_sec": 11100, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": [],
+            "post_journey_disposition": {
+                "action": "yard_layover",
+                "staging_track": "City_5_yard_1_fw",
+                "buffer_stop_node": None,
+                "turnaround_dwell_min": 115.0,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "extended_layover",
+                "subsequent_service": None
+            }
+        },
+        # 11. Nocturnal Coastal Industrial Cargo: Depot_2 -> City_6
+        {
+            "train_number": "68303",
+            "train_name": "Coastal Bulk Nocturnal Cargo 68303",
+            "service_class": "Freight",
+            "rolling_stock_type": "heavy_freight_cargo",
+            "assigned_rake": "FRT-Rake-03",
+            "service_days": ["Mon", "Wed", "Fri"],
+            "corridor": "Corridor_4",
+            "direction": "Eastbound_Cargo",
+            "origin_station": "Depot_2",
+            "origin_track": "Depot_2_yard_1_fw",
+            "dest_station": "City_6",
+            "dest_track": "City_6_pocket_1_fw",
+            "departure_time": "21:30:00",
+            "departure_sec": 21 * 3600 + 30 * 60,
+            "arrival_time": "22:40:00",
+            "arrival_sec": 22 * 3600 + 40 * 60,
+            "total_distance_km": 12.4,
+            "stops": [
+                {"station": "Depot_2", "train_stop_id": None, "arrival_time": "21:30:00", "arrival_sec": 77400, "departure_time": "21:30:00", "departure_sec": 77400, "dwell_sec": 0},
+                {"station": "City_6", "train_stop_id": None, "arrival_time": "22:40:00", "arrival_sec": 81600, "departure_time": "22:40:00", "departure_sec": 81600, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": ["Town_12"],
+            "post_journey_disposition": {
+                "action": "turnaround",
+                "staging_track": "City_6_pocket_1_fw",
+                "buffer_stop_node": "City_6_buf_1",
+                "turnaround_dwell_min": 140.0,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "shunting_and_inspection",
+                "subsequent_service": "68304"
+            }
+        },
+        # 12. Nocturnal Coastal Cargo Return: City_6 -> Depot_2
+        {
+            "train_number": "68304",
+            "train_name": "Coastal Bulk Nocturnal Return 68304",
+            "service_class": "Freight",
+            "rolling_stock_type": "heavy_freight_cargo",
+            "assigned_rake": "FRT-Rake-03",
+            "service_days": ["Tue", "Thu", "Sat"],
+            "corridor": "Corridor_4",
+            "direction": "Westbound_Cargo",
+            "origin_station": "City_6",
+            "origin_track": "City_6_pocket_1_bw",
+            "dest_station": "Depot_2",
+            "dest_track": "Depot_2_yard_1_bw",
+            "departure_time": "01:00:00",
+            "departure_sec": 1 * 3600,
+            "arrival_time": "02:10:00",
+            "arrival_sec": 2 * 3600 + 10 * 60,
+            "total_distance_km": 12.4,
+            "stops": [
+                {"station": "City_6", "train_stop_id": None, "arrival_time": "01:00:00", "arrival_sec": 3600, "departure_time": "01:00:00", "departure_sec": 3600, "dwell_sec": 0},
+                {"station": "Depot_2", "train_stop_id": None, "arrival_time": "02:10:00", "arrival_sec": 7800, "departure_time": "02:10:00", "departure_sec": 7800, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": ["Town_12"],
+            "post_journey_disposition": {
+                "action": "depot_stabling",
+                "staging_track": "Depot_2_yard_1_bw",
+                "buffer_stop_node": None,
+                "turnaround_dwell_min": 80.0,
+                "min_turnaround_required_min": 30.0,
+                "turnaround_mode": "depot_inspection",
+                "subsequent_service": None
+            }
+        },
+        # 13. Nocturnal East-West Trunk Fast Freight: City_1 -> City_4
+        {
+            "train_number": "68401",
+            "train_name": "Trans-Corridor E-Freight Express 68401",
+            "service_class": "Freight",
+            "rolling_stock_type": "electric_trunk_freight",
+            "assigned_rake": "FRT-Rake-04",
+            "service_days": ["Daily"],
+            "corridor": "Corridor_1",
+            "direction": "Eastbound_FW",
+            "origin_station": "City_1",
+            "origin_track": "City_1_plat_2_fw",
+            "dest_station": "City_4",
+            "dest_track": "City_4_plat_2_fw",
+            "departure_time": "23:15:00",
+            "departure_sec": 23 * 3600 + 15 * 60,
+            "arrival_time": "23:42:00",
+            "arrival_sec": 23 * 3600 + 42 * 60,
+            "total_distance_km": 27.45,
+            "stops": [
+                {"station": "City_1", "train_stop_id": "City_1_p2_fw", "arrival_time": "23:15:00", "arrival_sec": 83700, "departure_time": "23:15:00", "departure_sec": 83700, "dwell_sec": 0},
+                {"station": "City_4", "train_stop_id": "City_4_p2_fw", "arrival_time": "23:42:00", "arrival_sec": 85320, "departure_time": "23:42:00", "departure_sec": 85320, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": ["Town_1", "City_2", "Town_2", "City_3_EW", "Town_3"],
+            "post_journey_disposition": {
+                "action": "turnaround",
+                "staging_track": "City_4_pocket_2_fw",
+                "buffer_stop_node": "City_4_buf_2",
+                "turnaround_dwell_min": 108.0,
+                "min_turnaround_required_min": 25.0,
+                "turnaround_mode": "standard_cab_swap",
+                "subsequent_service": "68402"
+            }
+        },
+        # 14. Nocturnal East-West Trunk Fast Freight Return: City_4 -> City_1
+        {
+            "train_number": "68402",
+            "train_name": "Trans-Corridor E-Freight Express 68402",
+            "service_class": "Freight",
+            "rolling_stock_type": "electric_trunk_freight",
+            "assigned_rake": "FRT-Rake-04",
+            "service_days": ["Daily"],
+            "corridor": "Corridor_1",
+            "direction": "Westbound_BW",
+            "origin_station": "City_4",
+            "origin_track": "City_4_plat_2_bw",
+            "dest_station": "City_1",
+            "dest_track": "City_1_plat_2_bw",
+            "departure_time": "01:30:00",
+            "departure_sec": 1 * 3600 + 30 * 60,
+            "arrival_time": "01:57:00",
+            "arrival_sec": 1 * 3600 + 57 * 60,
+            "total_distance_km": 27.45,
+            "stops": [
+                {"station": "City_4", "train_stop_id": "City_4_p2_bw", "arrival_time": "01:30:00", "arrival_sec": 5400, "departure_time": "01:30:00", "departure_sec": 5400, "dwell_sec": 0},
+                {"station": "City_1", "train_stop_id": "City_1_p2_bw", "arrival_time": "01:57:00", "arrival_sec": 7020, "departure_time": "01:57:00", "departure_sec": 7020, "dwell_sec": 0}
+            ],
+            "bypassed_through_stations": ["Town_3", "City_3_EW", "Town_2", "City_2", "Town_1"],
+            "post_journey_disposition": {
+                "action": "yard_layover",
+                "staging_track": "City_1_yard_2_bw",
+                "buffer_stop_node": None,
+                "turnaround_dwell_min": 1278.0,
+                "min_turnaround_required_min": 25.0,
+                "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         }

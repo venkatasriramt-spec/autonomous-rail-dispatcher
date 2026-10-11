@@ -8,8 +8,12 @@
       "12002",
       "12005",
       "12006",
-      "12011",
-      "12012"
+      "12009",
+      "12010",
+      "12021",
+      "12022",
+      "12027",
+      "12028"
     ]
   },
   {
@@ -19,10 +23,14 @@
     "assigned_services": [
       "12003",
       "12004",
-      "12009",
-      "12010",
+      "12007",
+      "12008",
+      "12011",
+      "12012",
       "12015",
-      "12016"
+      "12016",
+      "12029",
+      "12030"
     ]
   },
   {
@@ -30,10 +38,49 @@
     "rolling_stock_type": "high_speed_emu_300",
     "home_depot": "Depot_4",
     "assigned_services": [
-      "12007",
-      "12008",
+      "12017",
+      "12018",
+      "12031",
+      "12032",
       "12013",
       "12014"
+    ]
+  },
+  {
+    "rake_id": "HS-Rake-05",
+    "rolling_stock_type": "high_speed_emu_300",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "12019",
+      "12020",
+      "12035",
+      "12036",
+      "12025",
+      "12026"
+    ]
+  },
+  {
+    "rake_id": "HS-Rake-06",
+    "rolling_stock_type": "high_speed_emu_300",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "12033",
+      "12034",
+      "12037",
+      "12038",
+      "12023",
+      "12024"
+    ]
+  },
+  {
+    "rake_id": "REG-C1-05",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "21021",
+      "21022",
+      "21009",
+      "21010"
     ]
   },
   {
@@ -45,8 +92,34 @@
       "21002",
       "21005",
       "21006",
-      "21009",
-      "21010"
+      "21027",
+      "21028"
+    ]
+  },
+  {
+    "rake_id": "REG-C1-03",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "21013",
+      "21014",
+      "21023",
+      "21024",
+      "21017",
+      "21018"
+    ]
+  },
+  {
+    "rake_id": "REG-C1-04",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "21015",
+      "21016",
+      "21025",
+      "21026",
+      "21019",
+      "21020"
     ]
   },
   {
@@ -67,12 +140,40 @@
     "rolling_stock_type": "regional_emu_120",
     "home_depot": "Depot_3",
     "assigned_services": [
+      "32025",
+      "32026",
       "32001",
       "32002",
       "32005",
       "32006",
       "32011",
       "32012"
+    ]
+  },
+  {
+    "rake_id": "REG-C2-04",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_3",
+    "assigned_services": [
+      "32017",
+      "32018",
+      "32027",
+      "32028",
+      "32021",
+      "32022"
+    ]
+  },
+  {
+    "rake_id": "REG-C2-05",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_3",
+    "assigned_services": [
+      "32019",
+      "32020",
+      "32029",
+      "32030",
+      "32023",
+      "32024"
     ]
   },
   {
@@ -96,7 +197,9 @@
       "32007",
       "32008",
       "32013",
-      "32014"
+      "32014",
+      "32031",
+      "32032"
     ]
   },
   {
@@ -116,24 +219,50 @@
     "home_depot": "Depot_1",
     "assigned_services": [
       "12765",
-      "12766"
+      "12766",
+      "12769",
+      "12770"
+    ]
+  },
+  {
+    "rake_id": "REG-C4-04",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_2",
+    "assigned_services": [
+      "41013",
+      "41014",
+      "41015",
+      "41016"
     ]
   },
   {
     "rake_id": "REG-C4-01",
     "rolling_stock_type": "regional_emu_120",
-    "home_depot": "Depot_4",
+    "home_depot": "Depot_2",
     "assigned_services": [
       "41001",
       "41002",
       "41005",
-      "41006"
+      "41006",
+      "41017",
+      "41018"
+    ]
+  },
+  {
+    "rake_id": "REG-C4-03",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_2",
+    "assigned_services": [
+      "41009",
+      "41010",
+      "41011",
+      "41012"
     ]
   },
   {
     "rake_id": "REG-C4-02",
     "rolling_stock_type": "regional_emu_120",
-    "home_depot": "Depot_4",
+    "home_depot": "Depot_2",
     "assigned_services": [
       "41003",
       "41004",
@@ -149,7 +278,9 @@
       "15001",
       "15002",
       "15003",
-      "15004"
+      "15004",
+      "15005",
+      "15006"
     ]
   },
   {
@@ -164,30 +295,56 @@
     ]
   },
   {
+    "rake_id": "REG-XFER-02",
+    "rolling_stock_type": "regional_emu_120",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "51005",
+      "51006",
+      "51007",
+      "51008"
+    ]
+  },
+  {
     "rake_id": "FRT-Rake-01",
     "rolling_stock_type": "heavy_freight_cargo",
     "home_depot": "Depot_1",
     "assigned_services": [
       "68101",
-      "68102"
+      "68102",
+      "68103",
+      "68104"
     ]
   },
   {
     "rake_id": "FRT-Rake-02",
     "rolling_stock_type": "intermodal_container_freight",
-    "home_depot": "Depot_1",
+    "home_depot": "Depot_3",
     "assigned_services": [
       "68201",
-      "68202"
+      "68202",
+      "68203",
+      "68204"
     ]
   },
   {
     "rake_id": "FRT-Rake-03",
     "rolling_stock_type": "heavy_freight_cargo",
-    "home_depot": "Depot_1",
+    "home_depot": "Depot_2",
     "assigned_services": [
       "68301",
-      "68302"
+      "68302",
+      "68303",
+      "68304"
+    ]
+  },
+  {
+    "rake_id": "FRT-Rake-04",
+    "rolling_stock_type": "electric_trunk_freight",
+    "home_depot": "Depot_4",
+    "assigned_services": [
+      "68401",
+      "68402"
     ]
   }
 ]

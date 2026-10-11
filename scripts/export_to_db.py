@@ -137,7 +137,9 @@ def convert_to_sqlite():
         action TEXT NOT NULL,
         staging_track TEXT,
         buffer_stop_node TEXT,
-        turnaround_dwell_min INTEGER,
+        turnaround_dwell_min REAL,
+        min_turnaround_required_min REAL,
+        turnaround_mode TEXT,
         subsequent_service TEXT,
         FOREIGN KEY (train_number) REFERENCES train_services(train_number)
     );
@@ -207,10 +209,11 @@ def convert_to_sqlite():
         disp = s.get("post_journey_disposition", {})
         if disp:
             cur.execute("""
-            INSERT INTO service_post_disposition VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO service_post_disposition VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 s["train_number"], disp.get("action"), disp.get("staging_track"),
                 disp.get("buffer_stop_node"), disp.get("turnaround_dwell_min"),
+                disp.get("min_turnaround_required_min", 10.0), disp.get("turnaround_mode", "standard_cab_swap"),
                 disp.get("subsequent_service")
             ))
 

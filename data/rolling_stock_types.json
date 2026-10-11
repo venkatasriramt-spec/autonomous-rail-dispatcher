@@ -112,5 +112,24 @@
     "passenger_capacity": 0,
     "gui_shape": "rail/cargo",
     "gui_color": "0.6,0.4,0.8"
+  },
+  "electric_trunk_freight": {
+    "type_id": "electric_trunk_freight",
+    "name": "Vectron E-Cargo Trunk Fast Freight (Class 193 + Flatcars)",
+    "service_class": "Freight",
+    "sumo_vclass": "rail_electric",
+    "power_supply": "Electric 15kV / 25kV Multi-System",
+    "track_gauge_mm": 1435,
+    "max_speed_kmh": 100,
+    "max_speed_ms": 27.78,
+    "acceleration_ms2": 0.45,
+    "deceleration_ms2": 0.6,
+    "emergency_decel_ms2": 1.4,
+    "total_length_m": 400.0,
+    "carriages_count": 24,
+    "gross_weight_tons": 2400.0,
+    "passenger_capacity": 0,
+    "gui_shape": "rail/cargo",
+    "gui_color": "0.2,0.65,0.85"
   }
 }
