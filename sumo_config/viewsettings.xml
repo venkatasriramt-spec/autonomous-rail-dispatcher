@@ -1,0 +1,10 @@
+<viewsettings>
+    <scheme name="dark_rail">
+        <opengl antialiase="1" dither="1"/>
+        <background backgroundColor="15,23,42" showGrid="0"/>
+        <edges laneEdgeMode="0" laneShowBorders="1" showLinkDecals="1" showRails="1" edgeName_show="1" edgeName_size="35.0" edgeName_color="148,163,184"/>
+        <vehicles vehicleMode="8" vehicleQuality="2" vehicle_size="2.5" vehicleName_show="1" vehicleName_size="40.0" vehicleName_color="255,255,255"/>
+        <junctions draw="1" drawCrossings="1" junctionName_show="1" junctionName_size="50.0" junctionName_color="245,158,11"/>
+        <additionals addMode="0" showTrainStops="1"/>
+    </scheme>
+</viewsettings>
