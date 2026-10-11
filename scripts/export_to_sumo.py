@@ -16,7 +16,7 @@ from xml.dom import minidom
 TRAINS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(TRAINS_DIR, "data")
 SUMO_CONFIG_DIR = os.path.join(TRAINS_DIR, "sumo_config")
-NETWORK_DATA_DIR = "/home/venkatasriramt/Desktop/network/network_data"
+NETWORK_DATA_DIR = "/home/venkatasriramt/Desktop/tracks/network_data"
 
 os.makedirs(SUMO_CONFIG_DIR, exist_ok=True)
 

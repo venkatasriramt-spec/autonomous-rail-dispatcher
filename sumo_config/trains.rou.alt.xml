@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-11 16:38:34 by Eclipse SUMO duarouter Version 1.12.0
+<!-- generated on 2026-10-11 17:05:26 by Eclipse SUMO duarouter Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>
-        <net-file value="/home/venkatasriramt/Desktop/network/network_data/dense_network.net.xml"/>
-        <additional-files value="/home/venkatasriramt/Desktop/network/network_data/dense_network.add.xml"/>
+        <net-file value="/home/venkatasriramt/Desktop/tracks/network_data/dense_network.net.xml"/>
+        <additional-files value="/home/venkatasriramt/Desktop/tracks/network_data/dense_network.add.xml"/>
         <route-files value="/home/venkatasriramt/Desktop/trains/sumo_config/trains.trips.xml"/>
     </input>
 

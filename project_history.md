@@ -6,11 +6,11 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 
 ### 11 October 2026 — Project Initialization, Rolling Stock Modeling, and Master Scheduling Pipeline
 
-**Objective:** Build an autonomous, realistic train scheduling and fleet management system in `/home/venkatasriramt/Desktop/trains` that operates directly on top of the physical track infrastructure from `/home/venkatasriramt/Desktop/network`.
+**Objective:** Build an autonomous, realistic train scheduling and fleet management system in `/home/venkatasriramt/Desktop/trains` that operates directly on top of the physical track infrastructure from `/home/venkatasriramt/Desktop/tracks`.
 
 #### Phase 1: Separation of Concerns & Repository Architecture
 - Established `/home/venkatasriramt/Desktop/trains` as the dedicated downstream repository for rolling stock, timetables, train rotation, and simulation execution.
-- Linked directly against the track graph (`dense_network.net.xml`) and platform additions (`dense_network.add.xml`) in `/home/venkatasriramt/Desktop/network/network_data/`.
+- Linked directly against the track graph (`dense_network.net.xml`) and platform additions (`dense_network.add.xml`) in `/home/venkatasriramt/Desktop/tracks/network_data/`.
 - Configured local Git author credentials for `Venkata Sriram Topalli <venkatasriramt@gmail.com>` (GitHub: `venkatasriramt-spec`) to ensure all repository commits are correctly attributed.
 
 #### Phase 2: Rolling Stock Fleet Specification (`data/rolling_stock_types.json`)

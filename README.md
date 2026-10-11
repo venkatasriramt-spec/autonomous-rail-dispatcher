@@ -1,6 +1,6 @@
 # Train Scheduling & Rolling Stock Management System
 
-This repository provides an automated, realistic railway scheduling, rolling stock rotation, and timetable compilation system. It operates directly on the physical track infrastructure maintained in `/home/venkatasriramt/Desktop/network`.
+This repository provides an automated, realistic railway scheduling, rolling stock rotation, and timetable compilation system. It operates directly on the physical track infrastructure maintained in `/home/venkatasriramt/Desktop/tracks`.
 
 ---
 

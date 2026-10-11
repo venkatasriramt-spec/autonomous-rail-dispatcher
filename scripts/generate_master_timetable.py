@@ -2,7 +2,7 @@
 """
 generate_master_timetable.py
 Generates the comprehensive rolling stock catalog, master timetable, and physical rake rotation roster
-based on the track infrastructure at /home/venkatasriramt/Desktop/network/network_data/.
+based on the track infrastructure at /home/venkatasriramt/Desktop/tracks/network_data/.
 """
 
 import json
