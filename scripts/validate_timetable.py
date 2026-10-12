@@ -87,6 +87,8 @@ def validate_timetable(net_file=None, rou_file=None, day=None, tolerance_km=0.05
     rou_tree = ET.parse(rou_file)
     vehicles = rou_tree.getroot().findall("vehicle")
 
+    excluded_vehicles = []
+    in_scope_vehicles = []
     missing_routes = []
     unmatched_vehicles = []
     unknown_edges = []
@@ -118,9 +120,12 @@ def validate_timetable(net_file=None, rou_file=None, day=None, tolerance_km=0.05
         if vid not in tt_map:
             if vid in unfiltered_tt_ids:
                 # Skip vehicle belonging to known service excluded from the selected day
+                excluded_vehicles.append(vid)
                 continue
             unmatched_vehicles.append(vid)
             continue
+
+        in_scope_vehicles.append(vid)
 
         route_elem = v.find("route")
         if route_elem is None:
@@ -184,12 +189,18 @@ def validate_timetable(net_file=None, rou_file=None, day=None, tolerance_km=0.05
     unrouted_services = [s_id for s_id in tt_map if s_id not in checked_services]
 
     print("Vehicle and Route Integrity:")
+    if excluded_vehicles:
+        print(f"  [INFO] {len(excluded_vehicles)} compiled vehicles excluded from day filter '{day}' ({len(in_scope_vehicles)} in-scope).")
+
     if missing_routes:
-        print(f"  [FAIL] {len(missing_routes)} / {len(vehicles)} vehicles lack a <route> element!")
+        print(f"  [FAIL] {len(missing_routes)} / {len(in_scope_vehicles)} in-scope vehicles lack a <route> element!")
         for vid in missing_routes[:5]:
             print(f"    - Vehicle {vid}")
     else:
-        print(f"  [PASS] All {len(vehicles)} vehicles have compiled route elements.")
+        if excluded_vehicles:
+            print(f"  [PASS] All {len(in_scope_vehicles)} in-scope vehicles have compiled route elements ({len(excluded_vehicles)} excluded).")
+        else:
+            print(f"  [PASS] All {len(in_scope_vehicles)} vehicles have compiled route elements.")
 
     if unmatched_vehicles:
         print(f"  [FAIL] {len(unmatched_vehicles)} / {len(vehicles)} vehicles lack timetable matches!")
@@ -199,7 +210,7 @@ def validate_timetable(net_file=None, rou_file=None, day=None, tolerance_km=0.05
         print(f"  [PASS] All {len(vehicles)} compiled vehicles match timetable services.")
 
     if unknown_edges:
-        print(f"  [FAIL] {len(unknown_edges)} / {len(vehicles)} vehicles contain edges absent from edge_map!")
+        print(f"  [FAIL] {len(unknown_edges)} / {len(in_scope_vehicles)} in-scope vehicles contain edges absent from edge_map!")
         for ue in unknown_edges[:5]:
             print(f"    - Vehicle {ue['id']}: missing edges {ue['missing_edges']}")
     else:
