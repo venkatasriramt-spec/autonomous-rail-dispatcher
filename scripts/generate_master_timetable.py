@@ -1335,7 +1335,7 @@ def build_timetable():
                 "action": "depot_stabling",
                 "staging_track": "Depot_1_pocket_1_fw",
                 "buffer_stop_node": "Depot_1_buf_1",
-                "turnaround_dwell_min": 240,
+                "turnaround_dwell_min": 335.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68102"
@@ -1403,7 +1403,7 @@ def build_timetable():
                 "action": "depot_stabling",
                 "staging_track": "Depot_3_pocket_1_fw",
                 "buffer_stop_node": "Depot_3_buf_1",
-                "turnaround_dwell_min": 300,
+                "turnaround_dwell_min": 505.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "container_loading_and_inspection",
                 "subsequent_service": "68202"
@@ -1471,7 +1471,7 @@ def build_timetable():
                 "action": "turnaround",
                 "staging_track": "City_6_pocket_1_fw",
                 "buffer_stop_node": "City_6_buf_1",
-                "turnaround_dwell_min": 180,
+                "turnaround_dwell_min": 230.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68302"

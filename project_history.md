@@ -358,5 +358,41 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - Deadlocks: **0**.
      - Fatal Errors: **0**.
 
+---
 
+### 12 October 2026 — Flaw 5 Remediation: Dedicated Nocturnal Freight Corridor Wave & Logistics Flow Optimization
 
+**Objective:** Fully remediate Flaw 5 by systematically segregating heavy freight traffic from peak passenger flows, validating the dedicated Nocturnal Freight & Logistics Wave (21:30–05:25), enforcing coordinated passing loop passenger overtakes, standardizing exact calculated turnaround dwell times across all intermediate yard/depot staging procedures, and verifying 100% conflict-free operation across 86,400 simulation steps.
+
+#### Phase 14: Nocturnal Freight Segregation, Passing Loop Holds & Turnaround Calibration
+
+1. **Temporal & Spatial Flow Segregation (Nocturnal Wave 21:30–05:25)**:
+   - High-density passenger operations cease after the 21:30–22:45 evening wind-down, clearing mainline tracks for heavy freight operations.
+   - 11 of the 14 freight runs operate during the dedicated nocturnal freight wave (21:30–05:25), allowing 2,400 t to 3,800 t heavy freight trains to traverse the network without passenger headway compression or bottleneck conflicts.
+   - Cross-Corridor East–West Electric Fast Freight (`#68401` at 23:15 / `#68402` at 01:30) hauls 2,400 t container trains non-stop at 100 km/h across Corridor 1 using 25kV electric power (`electric_trunk_freight`), bypassing all intermediate towns.
+
+2. **Passing Loop Siding Overtakes & Daytime Pathing**:
+   - Mountain Bulk Ore trains (`#68101` at 04:30 and `#68103` at 22:30) incorporate a scheduled 720s (12-minute) technical hold on the dedicated passing loop siding (`Town_8_Passing_Loop` / `c3_Town_8_Town_9_loop_siding_fw_0`), safely accommodating passenger overtakes.
+   - Daytime freight return runs (`#68302` at 08:30, `#68102` at 11:00, `#68202` at 14:00) operate during wide off-peak headways without impeding commuter flows.
+   - Simulation tripinfo logs verify 0.0s waiting time, 0.0s depart delay, and 0 signal holds across all 14 freight services.
+
+3. **Turnaround Dwell Precision & Disposition Calibration**:
+   - Replaced static placeholder dwell estimates with exact calculated fractional minutes matching physical schedule timestamps:
+     - `#68101` at `Depot_1`: Calibrated from placeholder 240 min to exact **335.0 min** (arr 05:25:00 $\to$ dep 11:00:00).
+     - `#68201` at `Depot_3`: Calibrated from placeholder 300 min to exact **505.0 min** (arr 05:35:00 $\to$ dep 14:00:00).
+     - `#68301` at `City_6`: Calibrated from placeholder 180 min to exact **230.0 min** (arr 04:40:00 $\to$ dep 08:30:00).
+   - Validated multi-day calendar day rotations across midnight for all 4 freight sets (`FRT-Rake-01` to `FRT-Rake-04`), ensuring day-after returns (Mon/Wed/Fri $\to$ Tue/Thu/Sat) match depot availability.
+
+4. **Microscopic Simulation & Route Compilation Results (`86,400s`)**:
+   - `duarouter`: Compiled **242 out of 242 vehicles (100% routing success)** into `sumo_config/trains.rou.xml`.
+   - Full 24-hour SUMO microscopic simulation (`86,400s`):
+     - Inserted / Completed: **242 vehicles** (228 passenger + 14 freight).
+     - Running / Waiting at step 86400: **0**.
+     - Average Fleet Speed: **19.97 m/s (~71.9 km/h)**.
+     - Average Depart Delay: **0.00s**.
+     - Average Waiting Time: **0.47s**.
+     - Emergency Stops: **0**.
+     - Collisions: **0**.
+     - Teleports: **0**.
+     - Deadlocks: **0**.
+     - Fatal Errors: **0**.
