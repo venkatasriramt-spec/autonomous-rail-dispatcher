@@ -41,7 +41,7 @@ The rolling stock specifications in `data/rolling_stock_types.json` strictly adh
 | **`regional_emu_120`**   | Electric 15kV / 25kV | 1435 mm | **120 km/h** | 6 Cars | 160.0 m | 240 t | Local stoppers on Corridors 1, 2, 4, and Bi-Level Hub Flyover Transfer. |
 | **`regional_dmu_120`**   | Diesel-Electric Hybrid | 1435 mm | **120 km/h** | 4 Cars | 120.0 m | 180 t | Mountain runs on Corridor 3 (`City_2` $\leftrightarrow$ `Town_9`). |
 | **`heavy_freight_cargo`**| Diesel Locomotive | 1435 mm | **80 km/h** | 28 Wagons | 420.0 m | 3,800 t | Bulk mineral trains utilizing the Alpine Passing Loop; Coastal cargo. |
-| **`intermodal_container`**| Diesel Locomotive | 1435 mm | **80 km/h** | 24 Wagons | 380.0 m | 2,600 t | Logistics transit between `City_5` and `Depot_3` container terminal. |
+| **`intermodal_container_freight`**| Diesel Locomotive | 1435 mm | **80 km/h** | 24 Wagons | 380.0 m | 2,600 t | Logistics transit between `City_5` and `Depot_3` container terminal. |
 | **`electric_trunk_freight`**| Electric 15kV / 25kV | 1435 mm | **100 km/h** | 24 Wagons | 400.0 m | 2,400 t | Nocturnal trunk express freight across Corridor 1 mainlines (`sumo_vclass="rail_electric"`). |
 
 ---
@@ -145,7 +145,7 @@ python3 scripts/export_to_sumo.py
 ### 4. Run Simulation Verification
 To verify the entire network simulation in headless mode:
 ```bash
-python3 scripts/verify_simulation.py 30000
+python3 scripts/verify_simulation.py 86400  # Full 24-hour verification (or 3600 for quick test)
 ```
 
 ### 5. Interactive Visual Simulation with SUMO GUI

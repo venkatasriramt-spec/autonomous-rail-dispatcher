@@ -17,7 +17,7 @@ def run_verification(max_steps=3600):
     print("RUNNING SUMO RAILWAY SIMULATION VERIFICATION")
     print("=" * 65)
     print(f"Config File: {SUMOCFG}")
-    print(f"Max Sim Steps: {max_steps} seconds (1 hour simulated)")
+    print(f"Max Sim Steps: {max_steps} seconds ({max_steps/3600:.1f} hours simulated)")
 
     cmd = [
         "sumo",
