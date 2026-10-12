@@ -148,11 +148,14 @@ def run_verification(max_steps=86400, day="all", delay_tolerance_sec=300.0, verb
     }
 
     if max_steps >= 86400:
-        uninserted_services = [vid for vid in expected_services if vid not in tripinfo_counts]
-        missing_arrived = [vid for vid in expected_services if vid not in arrived_trips]
+        uninserted_services = [vid for vid in expected_in_window if vid not in tripinfo_counts]
+        missing_arrived = [vid for vid in expected_arrived if vid not in arrived_trips]
     else:
         uninserted_services = [vid for vid in expected_in_window if vid not in tripinfo_counts]
         missing_arrived = [vid for vid in expected_arrived if vid not in arrived_trips]
+
+    unfinished_expected = [vid for vid in unfinished_trips if vid in expected_arrived]
+    unfinished_beyond_cutoff = [vid for vid in unfinished_trips if vid not in expected_arrived]
 
     unexpected_trips = [vid for vid in tripinfo_counts if vid not in expected_services]
 
@@ -249,12 +252,16 @@ def run_verification(max_steps=86400, day="all", delay_tolerance_sec=300.0, verb
     else:
         print(f"  [PASS] All {len(expected_arrived)} expected services completed and arrived at destination.")
 
-    if unfinished_trips and max_steps >= 86400:
-        print(f"  [FAIL] {len(unfinished_trips)} train(s) were still running or stalled at simulation end:")
-        for uf_id, uf_t in list(unfinished_trips.items())[:5]:
+    if unfinished_expected:
+        print(f"  [FAIL] {len(unfinished_expected)} train(s) scheduled to arrive within simulation window were still unfinished/stalled:")
+        for uf_id in unfinished_expected[:5]:
+            uf_t = unfinished_trips[uf_id]
             print(f"    - {uf_id}: duration={uf_t.attrib.get('duration')}s, timeLoss={uf_t.attrib.get('timeLoss')}s")
-    elif unfinished_trips:
-        print(f"  [INFO] {len(unfinished_trips)} train(s) still in transit at partial simulation cutoff ({max_steps}s).")
+        if len(unfinished_expected) > 5:
+            print(f"    ... and {len(unfinished_expected) - 5} more")
+
+    if unfinished_beyond_cutoff:
+        print(f"  [INFO] {len(unfinished_beyond_cutoff)} train(s) still in transit as scheduled beyond simulation cutoff ({max_steps}s).")
 
     print("\n3. TIMETABLE SCHEDULE ADHERENCE & PUNCTUALITY:")
     if punctuality_results:
@@ -303,7 +310,7 @@ def run_verification(max_steps=86400, day="all", delay_tolerance_sec=300.0, verb
         and len(unexpected_trips) == 0
         and len(uninserted_services) == 0
         and len(missing_arrived) == 0
-        and (len(unfinished_trips) == 0 if max_steps >= 86400 else True)
+        and len(unfinished_expected) == 0
         and len(excessive_delays) == 0
     )
 
