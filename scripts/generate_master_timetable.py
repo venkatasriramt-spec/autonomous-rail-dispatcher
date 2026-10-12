@@ -368,8 +368,8 @@ def build_timetable():
             "origin_track": "City_1_plat_1_fw",
             "dest_station": "City_4",
             "dest_track": "City_4_plat_1_fw",
-            "departure_time": format_time(dep_sec),
-            "departure_sec": dep_sec,
+            "departure_time": stops_fwd[0]["departure_time"],
+            "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
             "total_distance_km": 27.45,
@@ -426,8 +426,8 @@ def build_timetable():
             "origin_track": "City_4_plat_1_bw",
             "dest_station": "City_1",
             "dest_track": "City_1_plat_1_bw",
-            "departure_time": format_time(rev_dep_sec),
-            "departure_sec": rev_dep_sec,
+            "departure_time": stops_rev[0]["departure_time"],
+            "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
             "total_distance_km": 27.45,
@@ -530,8 +530,8 @@ def build_timetable():
             "origin_track": "City_1_plat_2_fw",
             "dest_station": "City_4",
             "dest_track": "City_4_plat_2_fw",
-            "departure_time": format_time(dep_sec),
-            "departure_sec": dep_sec,
+            "departure_time": stops_fwd[0]["departure_time"],
+            "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
             "total_distance_km": 27.45,
@@ -583,8 +583,8 @@ def build_timetable():
             "origin_track": "City_4_plat_2_bw",
             "dest_station": "City_1",
             "dest_track": "City_1_plat_2_bw",
-            "departure_time": format_time(rev_dep_sec),
-            "departure_sec": rev_dep_sec,
+            "departure_time": stops_rev[0]["departure_time"],
+            "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
             "total_distance_km": 27.45,
@@ -687,8 +687,8 @@ def build_timetable():
             "origin_track": "City_5_plat_1_fw",
             "dest_station": "City_6",
             "dest_track": "City_6_plat_1_fw",
-            "departure_time": format_time(dep_sec),
-            "departure_sec": dep_sec,
+            "departure_time": stops_fwd[0]["departure_time"],
+            "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
             "total_distance_km": 22.62,
@@ -740,8 +740,8 @@ def build_timetable():
             "origin_track": "City_6_plat_1_bw",
             "dest_station": "City_5",
             "dest_track": "City_5_plat_1_bw",
-            "departure_time": format_time(rev_dep_sec),
-            "departure_sec": rev_dep_sec,
+            "departure_time": stops_rev[0]["departure_time"],
+            "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
             "total_distance_km": 22.62,
@@ -826,8 +826,8 @@ def build_timetable():
             "origin_track": "City_2_plat_3_bw",
             "dest_station": "Town_9",
             "dest_track": "Town_9_plat_1_fw",
-            "departure_time": format_time(dep_sec),
-            "departure_sec": dep_sec,
+            "departure_time": stops_fwd[0]["departure_time"],
+            "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
             "total_distance_km": 8.70,
@@ -880,8 +880,8 @@ def build_timetable():
             "origin_track": "Town_9_plat_1_bw",
             "dest_station": "City_2",
             "dest_track": "City_2_plat_3_fw",
-            "departure_time": format_time(rev_dep_sec),
-            "departure_sec": rev_dep_sec,
+            "departure_time": stops_rev[0]["departure_time"],
+            "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
             "total_distance_km": 8.70,
@@ -984,8 +984,8 @@ def build_timetable():
             "origin_track": "City_1_plat_3_bw",
             "dest_station": "City_6",
             "dest_track": "City_6_plat_3_fw",
-            "departure_time": format_time(dep_sec),
-            "departure_sec": dep_sec,
+            "departure_time": stops_fwd[0]["departure_time"],
+            "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
             "total_distance_km": 27.36,
@@ -1040,8 +1040,8 @@ def build_timetable():
             "origin_track": "City_6_plat_3_bw",
             "dest_station": "City_1",
             "dest_track": "City_1_plat_3_fw",
-            "departure_time": format_time(rev_dep_sec),
-            "departure_sec": rev_dep_sec,
+            "departure_time": stops_rev[0]["departure_time"],
+            "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
             "total_distance_km": 27.36,
@@ -1833,7 +1833,7 @@ def build_timetable():
                 if disp["subsequent_service"] is not None:
                     continue
 
-                gap_sec = next_s["departure_sec"] - curr_s["arrival_sec"]
+                gap_sec = next_s["stops"][0]["arrival_sec"] - curr_s["arrival_sec"]
                 if gap_sec < 0:
                     raise ValueError(
                         f"Infeasible overlapping booking for rake {rake_id} ({curr_s['rolling_stock_type']}) between "
@@ -1895,8 +1895,8 @@ def build_timetable():
                 next_day_svcs = sorted([s for s in svc_objs if next_day_name in expand_days(s)], key=lambda s: s["departure_sec"])
                 if next_day_svcs:
                     next_first = next_day_svcs[0]
-                    if last_s["dest_station"] == next_first["origin_station"] and next_first["departure_sec"] < last_s["arrival_sec"]:
-                        overnight_gap_sec = (86400.0 - last_s["arrival_sec"]) + next_first["departure_sec"]
+                    if last_s["dest_station"] == next_first["origin_station"] and next_first["stops"][0]["arrival_sec"] < last_s["arrival_sec"]:
+                        overnight_gap_sec = (86400.0 - last_s["arrival_sec"]) + next_first["stops"][0]["arrival_sec"]
                         if overnight_gap_sec <= 4 * 3600:
                             overnight_dwell_min = round(overnight_gap_sec / 60.0, 1)
                             r_type = last_s["rolling_stock_type"]
@@ -1953,7 +1953,7 @@ def build_timetable():
         end_s = svc_by_no[end_svc_no]
         disp = end_s["post_journey_disposition"]
         first_s = svc_by_no[rk["assigned_services"][0]]
-        overnight_gap_sec = (first_s["departure_sec"] - end_s["arrival_sec"]) % 86400.0
+        overnight_gap_sec = (first_s["stops"][0]["arrival_sec"] - end_s["arrival_sec"]) % 86400.0
         overnight_dwell_min = round(overnight_gap_sec / 60.0, 1)
 
         if end_s["dest_station"].startswith("Depot") or end_s["dest_station"] == rk["home_depot"]:

@@ -431,3 +431,37 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - **Sat** (145 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
      - **Sun** (141 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
      - **All** (242 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+
+---
+
+### 12 October 2026 — Phase 16: Origin Dwell Synchronization & Departure Convention Alignment
+
+**Objective:** Fully resolve Issue B ("Some trains appear to skip their origin dwell") by aligning the timetable and simulation models on standard railway operating convention (Option 1): top-level `departure_time` and `departure_sec` reflect when the train physically departs the origin station (`stops[0]["departure_time"]` and `stops[0]["departure_sec"]`), resolving discrepancies between recorded origin dwells and SUMO trip insertion times across all 242 scheduled services.
+
+#### Phase 16: Origin Departure Alignment & Cross-System Validation
+
+1. **Timetable Data Model Alignment (`scripts/generate_master_timetable.py`)**:
+   - Standardized top-level service attributes to reflect wheel-roll departure:
+     - `departure_time = stops[0]["departure_time"]`
+     - `departure_sec = stops[0]["departure_sec"]`
+   - Preserved initial platform arrival pulse (`stops[0]["arrival_time"]` / `stops[0]["arrival_sec"]`) and passenger boarding dwells (`stops[0]["dwell_sec"]` of 60s–150s).
+   - In rake chaining and turnaround tracking, calculated turnaround staging intervals relative to the subsequent service's platform staging/arrival time (`next_s["stops"][0]["arrival_sec"] - curr_s["arrival_sec"]`). This preserves exact calibrated pocket and yard turnaround dwells (e.g., 17.8 min, 12.4 min, 13.0 min) without distorting minimum turnaround feasibility checks.
+
+2. **SUMO Microscopic Exporter Alignment (`scripts/export_to_sumo.py`)**:
+   - Updated trip generation and sorting to explicitly reference origin stop departure times (`s["stops"][0]["departure_sec"]`).
+   - Ensures SUMO vehicles are inserted at the precise moment they depart from the origin platform track (`depart = stops[0]["departure_sec"]`), accurately matching downstream station arrival times with zero time drift.
+
+3. **Database Synchronization (`scripts/export_to_db.py` & `data/trains.db`)**:
+   - Re-synchronized the SQLite relational database.
+   - Validated via SQL that across all 242 records, `train_services.departure_sec` exactly matches `service_stops` (sequence 1) `departure_sec`, with 0 discrepancies.
+
+4. **Multi-Day Microscopic Simulation Results (`86,400s` per day)**:
+   - Re-verified all 7 days and composite schedule in headless SUMO simulation (`scripts/verify_simulation.py --all-days 86400`):
+     - **Mon** (232 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Tue** (233 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Wed** (229 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Thu** (235 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Fri** (231 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Sat** (145 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Sun** (141 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **All** (242 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.

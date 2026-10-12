@@ -118,16 +118,20 @@ def compile_sumo_files(day="all", max_services=None):
         })
 
     # 2. Train trips and stops
-    # We sort trips by departure second for duarouter
-    timetable_sorted = sorted(timetable, key=lambda s: s["departure_sec"])
+    # We sort trips by departure second for duarouter (using origin stop departure time)
+    timetable_sorted = sorted(
+        timetable,
+        key=lambda s: s["stops"][0]["departure_sec"] if (s.get("stops") and "departure_sec" in s["stops"][0]) else s["departure_sec"]
+    )
 
     for s in timetable_sorted:
+        dep_sec = s["stops"][0]["departure_sec"] if (s.get("stops") and "departure_sec" in s["stops"][0]) else s["departure_sec"]
         trip_id = f"train_{s['train_number']}_{s['service_class']}"
         trip_elem = ET.SubElement(root, "trip", id=trip_id, **{
             "type": s["rolling_stock_type"],
             "from": s["origin_track"],
             "to": s["dest_track"],
-            "depart": f"{s['departure_sec']:.1f}"
+            "depart": f"{dep_sec:.1f}"
         })
 
         # Add intermediate stops (skip origin and destination if redundant)
