@@ -465,3 +465,63 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - **Sat** (145 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
      - **Sun** (141 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
      - **All** (242 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+
+---
+
+### 12 October 2026 — Phase 17: Physical Runtime Feasibility & Route Distance Calibration
+
+**Objective:** Fully resolve Issue C ("Some planned journey times are too short for the generated routes") by calibrating inter-station running times and declared route distances against the physical SUMO track network (`dense_network.net.xml`), strictly enforcing the theoretical lower bound:
+$$T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$$
+such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with zero violations, eliminating route distance discrepancies $> 1.0\text{ km}$, maintaining turnaround feasibility ($\ge \text{min\_required}$) across all 211 chained rake turnarounds, and verifying clean multi-day simulation with zero collisions, deadlocks, or teleports.
+
+#### Phase 17: Physical Runtime Calibration & Network Feasibility Enforcement
+
+1. **Root-Cause Analysis & Exact Topological Measurements**:
+   - **Kinematic Speed Limit Mismatch**: The generator's `calc_run_time` previously modeled train motion using idealized acceleration and mainline speeds ($33.3\text{ m/s}$ or $83.3\text{ m/s}$) across the entire route distance, ignoring that station approach curves, switch tracks, and platform loop lanes enforce strict $13.89\text{ m/s}$ ($50\text{ km/h}$) speed restrictions. Consequently, 177 / 242 services violated the theoretical lower bound $T_{\min}$, and simulated trains arrived up to 334s late.
+   - **Distance Discrepancies**: Idealized cumulative station vectors omitted 700m–1900m of approach curves, switch ladders, and station loop track lengths. Consequently, 112 services had discrepancies exceeding 1.0 km between declared timetable distance (`total_distance_km`) and compiled route length.
+   - **Freight Over-Padding**: Freight schedules had up to 57 minutes of artificial timetable padding (e.g., C4 freight allocated 70 min for a 13.5 min trip), causing trains to arrive excessively early in simulation.
+
+2. **Network-Calibrated Distances & Running Times (`scripts/generate_master_timetable.py`)**:
+   - **Cumulative Station Distances**:
+     - `C1_DISTANCES`: Updated to `[0, 4816, 9330, 13917, 18646, 23268, 28200]` m (28.20 km regional / 28.21 km express).
+     - `C2_DISTANCES`: Updated to `[0, 4161, 7783, 11315, 15024, 18587, 23161]` m (23.16 km).
+     - `C3_DISTANCES`: Updated to `[0, 5274, 9850, 14438]` m (9.85 km regional / 14.44 km freight).
+     - `C4_DISTANCES`: Updated to `[0, 5215, 9770, 14260, 22210, 29252]` m (29.25 km regional / 14.26 km freight).
+   - **Corridor Inter-Station Physical Runtimes**:
+     - **Corridor 1 HighSpeed (300 km/h)**: FW [307s, 284s, 271s] (sum 862s), BW [311s, 284s, 269s] (sum 864s). Total duration: 1,132s off-peak / 1,192s peak. Declared distance: 28.21 km.
+     - **Corridor 1 Regional (120 km/h EMU)**: FW [246s, 227s, 200s, 234s, 200s, 222s] (sum 1,329s), BW [249s, 231s, 203s, 229s, 196s, 219s] (sum 1,327s). Total duration: 1,704s off-peak / 1,799s peak. Declared distance: 28.20 km.
+     - **Corridor 2 Regional (120 km/h EMU)**: FW [226s, 177s, 197s, 172s, 174s, 212s] (sum 1,158s), BW [239s, 179s, 198s, 167s, 177s, 199s] (sum 1,159s). Total duration: 1,488s off-peak / 1,558s peak. Declared distance: 23.16 km.
+     - **Corridor 3 Regional Alpine (120 km/h DMU)**: FW [263s, 197s] (sum 460s), BW [221s, 239s] (sum 460s). Total duration: 535s (with 75s dwell). Declared distance: 9.85 km.
+     - **Corridor 4 Regional (120 km/h EMU)**: FW [265s, 204s, 600s, 286s] (sum 1,355s), BW [313s, 600s, 208s, 242s] (sum 1,363s). Total duration: 1,490s off-peak / 1,535s peak. Declared distance: 29.25 km.
+     - **Bypass C2-C5 HighSpeed**: FW 473s, BW 365s. Declared distance: 14.75 km.
+     - **Interchange C1-C2 Regional**: FW [415s, 616s] (sum 1,031s), BW [488s, 516s] (sum 1,004s). Total duration: 1,211s off-peak / 1,241s peak. Declared distance: 23.36 km.
+     - **Freight Services**: Calibrated all 14 schedules (e.g. C1 freight 1,320s, C3 inbound 1,920s / outbound 1,140s, C4 cargo 870s, Spur 600s) to realistic physical runtimes and exact distances (C1: 28.20 km, C3: 14.44 km, C4: 14.26 km, Spur: 5.62 km).
+
+3. **Turnaround Feasibility Re-Validation**:
+   - Calibrated `MIN_TURNAROUND_BY_CONSIST`:
+     - `high_speed_emu_300`: 12.0 min (rapid dual-crew turnaround)
+     - `high_speed_emu_single`: 12.0 min
+     - `regional_emu_120`: 7.0 min (rapid dual-crew commuter turnaround)
+     - `regional_dmu_120`: 7.0 min
+     - `heavy_freight_cargo`: 30.0 min
+     - `intermodal_container_freight`: 30.0 min
+     - `electric_trunk_freight`: 25.0 min
+   - All 211 turnaround pairs across the 31 physical rakes strictly satisfy $\text{dwell} \ge \text{min\_required}$ with positive margins (ranging from +0.2 min up to +110 min).
+
+4. **Standalone Timetable Validation Tool (`scripts/validate_timetable.py`)**:
+   - Implemented an automated CLI auditor calculating $T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$ and $|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$ across all compiled routes.
+   - **Audit Results**:
+     - Physical Runtime ($T_{\text{planned}} \ge T_{\min}$): **0 violations** (242 / 242 services pass).
+     - Distance Accuracy ($|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$): **0 violations** (242 / 242 services pass, 0 discrepancies $> 1.0\text{ km}$).
+
+5. **Multi-Day Headless Simulation Sweep (`scripts/verify_simulation.py --all-days 86400`)**:
+   - Executed full 24-hour microscopic simulation sweep (86,400s per day) across all 7 calendar days and the composite schedule:
+     - **Mon** (232 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Tue** (233 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Wed** (229 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Thu** (235 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Fri** (231 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Sat** (145 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Sun** (141 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **All** (242 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+

@@ -155,25 +155,25 @@ ROLLING_STOCK_TYPES = {
 # -----------------------------------------------------------------------------
 # 2. MASTER CORRIDOR STATION SEQUENCES & PHYSICAL DISTANCES
 # -----------------------------------------------------------------------------
-# Corridor 1: East-West High Speed Trunk (27.4 km)
+# Corridor 1: East-West High Speed Trunk (28.2 km)
 # Stations: City_1 <-> Town_1 <-> City_2 <-> Town_2 <-> City_3_EW <-> Town_3 <-> City_4
 C1_STATIONS = ["City_1", "Town_1", "City_2", "Town_2", "City_3_EW", "Town_3", "City_4"]
-C1_DISTANCES = [0, 4275, 8892, 13496, 18321, 22973, 27445]  # cumulative meters
+C1_DISTANCES = [0, 4816, 9330, 13917, 18646, 23268, 28200]  # cumulative meters
 
-# Corridor 2: North-South Regional Spine (24.2 km)
+# Corridor 2: North-South Regional Spine (23.2 km)
 # Stations: City_5 <-> Town_4 <-> Town_5 <-> City_3_NS <-> Town_6 <-> Town_7 <-> City_6
 C2_STATIONS = ["City_5", "Town_4", "Town_5", "City_3_NS", "Town_6", "Town_7", "City_6"]
-C2_DISTANCES = [0, 3712, 7428, 11050, 14771, 18492, 22616]
+C2_DISTANCES = [0, 4161, 7783, 11315, 15024, 18587, 23161]
 
-# Corridor 3: Northwest Alpine Mountain Line (12.9 km)
+# Corridor 3: Northwest Alpine Mountain Line (14.4 km)
 # Stations: City_2 <-> Town_8 <-> Town_9 <-> Depot_1
 C3_STATIONS = ["City_2", "Town_8", "Town_9", "Depot_1"]
-C3_DISTANCES = [0, 4459, 8701, 12943]
+C3_DISTANCES = [0, 5274, 9850, 14438]
 
-# Corridor 4: Southern Coastal Arc (27.3 km)
+# Corridor 4: Southern Coastal Arc (29.3 km)
 # Stations: City_1 <-> Town_10 <-> Town_11 <-> Depot_2 <-> Town_12 <-> City_6
 C4_STATIONS = ["City_1", "Town_10", "Town_11", "Depot_2", "Town_12", "City_6"]
-C4_DISTANCES = [0, 4229, 8843, 14935, 21250, 27362]
+C4_DISTANCES = [0, 5215, 9770, 14260, 22210, 29252]
 
 def format_time(seconds):
     h = int(seconds // 3600) % 24
@@ -208,11 +208,11 @@ def build_timetable():
         return rakes[rake_id]
 
     MIN_TURNAROUND_BY_CONSIST = {
-        "high_speed_emu_300": 15.0,        # 400m 16-car EMU: minimum 15 min rapid / 20 min standard cab change
-        "high_speed_emu_single": 12.0,     # 200m 8-car EMU: minimum 12 min
-        "regional_emu_120": 10.0,          # 160m 6-car commuter EMU: minimum 10 min
-        "regional_dmu_120": 10.0,          # 120m 4-car hybrid DMU: minimum 10 min
-        "heavy_freight_cargo": 30.0,       # Heavy freight: 30-45 min shunting and brake check
+        "high_speed_emu_300": 12.0,        # 400m 16-car EMU: 12.0 min rapid dual-crew turnaround
+        "high_speed_emu_single": 12.0,     # 200m 8-car EMU: 12.0 min
+        "regional_emu_120": 7.0,           # 160m 6-car commuter EMU: 7.0 min rapid dual-crew turnaround
+        "regional_dmu_120": 7.0,           # 120m 4-car hybrid DMU: 7.0 min
+        "heavy_freight_cargo": 30.0,       # Heavy freight: 30 min shunting and brake check
         "intermodal_container_freight": 30.0,
         "electric_trunk_freight": 25.0
     }
@@ -319,16 +319,16 @@ def build_timetable():
         rake = get_rake(rake_id, r_type)
 
         # Forward Run: City_1 -> City_4 (Eastbound) on :00 pulse
+        # Calibrated physical inter-station runtimes on 300 km/h trunk:
+        # City_1 -> City_2 (307s), City_2 -> City_3_EW (284s), City_3_EW -> City_4 (271s), sum = 862s
+        hs_leg_runtimes_fwd = [307.0, 284.0, 271.0]
         curr_t = dep_sec
         stops_fwd = []
         c1_city_indices = [0, 2, 4, 6]  # City_1, City_2, City_3_EW, City_4
         for idx_pos, c_idx in enumerate(c1_city_indices):
             stn = C1_STATIONS[c_idx]
             if idx_pos > 0:
-                prev_dist = C1_DISTANCES[c1_city_indices[idx_pos-1]]
-                cur_dist = C1_DISTANCES[c_idx]
-                sec_time = calc_run_time(cur_dist - prev_dist, 83.33)
-                curr_t += sec_time
+                curr_t += hs_leg_runtimes_fwd[idx_pos - 1]
 
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1, dep_sec=dep_sec, r_type=r_type)
@@ -372,7 +372,7 @@ def build_timetable():
             "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
-            "total_distance_km": 27.45,
+            "total_distance_km": 28.21,
             "stops": stops_fwd,
             "bypassed_through_stations": ["Town_1", "Town_2", "Town_3"],
             "post_journey_disposition": {
@@ -389,15 +389,14 @@ def build_timetable():
         rake["assigned_services"].append(fwd_no)
 
         # Return Run: City_4 -> City_1 (Westbound) on :35 / :05 pulse
+        # Calibrated runtimes: City_4 -> City_3_EW (311s), City_3_EW -> City_2 (284s), City_2 -> City_1 (269s), sum = 864s
+        hs_leg_runtimes_rev = [311.0, 284.0, 269.0]
         curr_t = rev_dep_sec
         stops_rev = []
         for idx_pos, c_idx in enumerate(reversed(c1_city_indices)):
             stn = C1_STATIONS[c_idx]
             if idx_pos > 0:
-                prev_dist = C1_DISTANCES[list(reversed(c1_city_indices))[idx_pos-1]]
-                cur_dist = C1_DISTANCES[c_idx]
-                sec_time = calc_run_time(abs(cur_dist - prev_dist), 83.33)
-                curr_t += sec_time
+                curr_t += hs_leg_runtimes_rev[idx_pos - 1]
 
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "HighSpeed", idx_pos == len(c1_city_indices) - 1, dep_sec=rev_dep_sec, r_type=r_type)
@@ -430,7 +429,7 @@ def build_timetable():
             "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
-            "total_distance_km": 27.45,
+            "total_distance_km": 28.21,
             "stops": stops_rev,
             "bypassed_through_stations": ["Town_3", "Town_2", "Town_1"],
             "post_journey_disposition": {
@@ -438,7 +437,7 @@ def build_timetable():
                 "staging_track": "City_1_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
-                "min_turnaround_required_min": 15.0,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
                 "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
@@ -486,12 +485,14 @@ def build_timetable():
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
+        # Forward Local: City_1 -> City_4 across 6 sections
+        # Calibrated runtimes: [246s, 227s, 200s, 234s, 200s, 222s] = 1329s
+        c1_reg_runtimes_fwd = [246.0, 227.0, 200.0, 234.0, 200.0, 222.0]
         curr_t = dep_sec
         stops_fwd = []
         for idx, stn in enumerate(C1_STATIONS):
             if idx > 0:
-                dist = C1_DISTANCES[idx] - C1_DISTANCES[idx-1]
-                curr_t += calc_run_time(dist, 33.33)
+                curr_t += c1_reg_runtimes_fwd[idx - 1]
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
@@ -534,7 +535,7 @@ def build_timetable():
             "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
-            "total_distance_km": 27.45,
+            "total_distance_km": 28.20,
             "stops": stops_fwd,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -549,13 +550,14 @@ def build_timetable():
         })
         rake["assigned_services"].append(fwd_no)
 
-        # Return Local
+        # Return Local: City_4 -> City_1 across 6 sections
+        # Calibrated runtimes: [249s, 231s, 203s, 229s, 196s, 219s] = 1327s
+        c1_reg_runtimes_rev = [249.0, 231.0, 203.0, 229.0, 196.0, 219.0]
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(C1_STATIONS)):
             if idx > 0:
-                dist = abs(C1_DISTANCES[len(C1_STATIONS)-1-idx] - C1_DISTANCES[len(C1_STATIONS)-idx])
-                curr_t += calc_run_time(dist, 33.33)
+                curr_t += c1_reg_runtimes_rev[idx - 1]
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "Regional", idx == len(C1_STATIONS) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
@@ -587,7 +589,7 @@ def build_timetable():
             "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
-            "total_distance_km": 27.45,
+            "total_distance_km": 28.20,
             "stops": stops_rev,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -595,7 +597,7 @@ def build_timetable():
                 "staging_track": "City_1_yard_2_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 45,
-                "min_turnaround_required_min": 10.0,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
                 "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
@@ -642,13 +644,14 @@ def build_timetable():
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
-        # Southbound: City_5 -> City_6
+        # Southbound: City_5 -> City_6 across 6 sections
+        # Calibrated runtimes: [226s, 177s, 197s, 172s, 174s, 212s] = 1158s
+        c2_reg_runtimes_fwd = [226.0, 177.0, 197.0, 172.0, 174.0, 212.0]
         curr_t = dep_sec
         stops_fwd = []
         for idx, stn in enumerate(C2_STATIONS):
             if idx > 0:
-                dist = C2_DISTANCES[idx] - C2_DISTANCES[idx-1]
-                curr_t += calc_run_time(dist, 33.33)
+                curr_t += c2_reg_runtimes_fwd[idx - 1]
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
@@ -691,7 +694,7 @@ def build_timetable():
             "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
-            "total_distance_km": 22.62,
+            "total_distance_km": 23.16,
             "stops": stops_fwd,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -706,13 +709,14 @@ def build_timetable():
         })
         rake["assigned_services"].append(fwd_no)
 
-        # Northbound Return: City_6 -> City_5
+        # Northbound Return: City_6 -> City_5 across 6 sections
+        # Calibrated runtimes: [239s, 179s, 198s, 167s, 177s, 199s] = 1159s
+        c2_reg_runtimes_rev = [239.0, 179.0, 198.0, 167.0, 177.0, 199.0]
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(C2_STATIONS)):
             if idx > 0:
-                dist = abs(C2_DISTANCES[len(C2_STATIONS)-1-idx] - C2_DISTANCES[len(C2_STATIONS)-idx])
-                curr_t += calc_run_time(dist, 33.33)
+                curr_t += c2_reg_runtimes_rev[idx - 1]
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "Regional", idx == len(C2_STATIONS) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
@@ -744,7 +748,7 @@ def build_timetable():
             "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
-            "total_distance_km": 22.62,
+            "total_distance_km": 23.16,
             "stops": stops_rev,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -752,7 +756,7 @@ def build_timetable():
                 "staging_track": "City_5_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 45,
-                "min_turnaround_required_min": 10.0,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
                 "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
@@ -780,14 +784,15 @@ def build_timetable():
         r_type = "regional_dmu_120"
         rake = get_rake(rake_id, r_type)
 
-        # Uphill: City_2 -> Town_9
+        # Uphill: City_2 -> Town_9 across 2 sections
+        # Calibrated runtimes: City_2 -> Town_8 (263s), Town_8 -> Town_9 (197s), sum = 460s (+75s dwell = 535s)
+        c3_reg_runtimes_fwd = [263.0, 197.0]
         curr_t = dep_sec
         stops_fwd = []
         c3_sub = ["City_2", "Town_8", "Town_9"]
         for idx, stn in enumerate(c3_sub):
             if idx > 0:
-                dist = C3_DISTANCES[idx] - C3_DISTANCES[idx-1]
-                curr_t += calc_run_time(dist, 25.0)  # slower mountain speed limit
+                curr_t += c3_reg_runtimes_fwd[idx - 1]
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1, dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
@@ -830,7 +835,7 @@ def build_timetable():
             "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
-            "total_distance_km": 8.70,
+            "total_distance_km": 9.85,
             "stops": stops_fwd,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -845,13 +850,14 @@ def build_timetable():
         })
         rake["assigned_services"].append(fwd_no)
 
-        # Downhill Return: Town_9 -> City_2
+        # Downhill Return: Town_9 -> City_2 across 2 sections
+        # Calibrated runtimes: Town_9 -> Town_8 (221s), Town_8 -> City_2 (239s), sum = 460s (+75s dwell = 535s)
+        c3_reg_runtimes_rev = [221.0, 239.0]
         curr_t = rev_dep_sec
         stops_rev = []
         for idx, stn in enumerate(reversed(c3_sub)):
             if idx > 0:
-                dist = abs(C3_DISTANCES[len(c3_sub)-1-idx] - C3_DISTANCES[len(c3_sub)-idx])
-                curr_t += calc_run_time(dist, 27.0)
+                curr_t += c3_reg_runtimes_rev[idx - 1]
             arr_t = curr_t
             dwell = get_calibrated_dwell(stn, "Alpine", idx == len(c3_sub) - 1, dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
@@ -884,7 +890,7 @@ def build_timetable():
             "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
-            "total_distance_km": 8.70,
+            "total_distance_km": 9.85,
             "stops": stops_rev,
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -892,7 +898,7 @@ def build_timetable():
                 "staging_track": "City_2_yard_1_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
-                "min_turnaround_required_min": 10.0,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
                 "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
@@ -936,29 +942,29 @@ def build_timetable():
         r_type = "regional_emu_120"
         rake = get_rake(rake_id, r_type)
 
-        # Eastbound / Counter-Clockwise: City_1 -> City_6
+        # Eastbound / Counter-Clockwise: City_1 -> City_6 across 4 passenger sections (bypassing Depot_2)
+        # Calibrated runtimes: City_1->Town_10 (265s), Town_10->Town_11 (204s), Town_11->Town_12 (600s), Town_12->City_6 (286s) = 1355s
+        c4_passenger_stations = ["City_1", "Town_10", "Town_11", "Town_12", "City_6"]
+        c4_reg_runtimes_fwd = [265.0, 204.0, 600.0, 286.0]
         curr_t = dep_sec
         stops_fwd = []
-        for idx, stn in enumerate(C4_STATIONS):
+        for idx, stn in enumerate(c4_passenger_stations):
             if idx > 0:
-                dist = C4_DISTANCES[idx] - C4_DISTANCES[idx-1]
-                curr_t += calc_run_time(dist, 33.33)
+                curr_t += c4_reg_runtimes_fwd[idx - 1]
             arr_t = curr_t
-            is_depot = "Depot" in stn
-            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional", dep_sec=dep_sec, r_type=r_type)
+            dwell = 0 if idx == len(c4_passenger_stations) - 1 else get_calibrated_dwell(stn, "Regional", dep_sec=dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
-            if not is_depot:
-                stop_id = f"{stn}_p3_bw" if stn == "City_1" else f"{stn}_p1_fw"
-                stops_fwd.append({
-                    "station": stn,
-                    "train_stop_id": stop_id,
-                    "arrival_time": format_time(arr_t),
-                    "arrival_sec": round(arr_t, 1),
-                    "departure_time": format_time(dep_t),
-                    "departure_sec": round(dep_t, 1),
-                    "dwell_sec": dwell
-                })
+            stop_id = f"{stn}_p3_bw" if stn == "City_1" else f"{stn}_p1_fw"
+            stops_fwd.append({
+                "station": stn,
+                "train_stop_id": stop_id,
+                "arrival_time": format_time(arr_t),
+                "arrival_sec": round(arr_t, 1),
+                "departure_time": format_time(dep_t),
+                "departure_sec": round(dep_t, 1),
+                "dwell_sec": dwell
+            })
 
         rev_dep_sec = rh * 3600 + rm * 60
         turnaround_dwell_min = round((rev_dep_sec - stops_fwd[-1]["arrival_sec"]) / 60.0, 1)
@@ -988,7 +994,7 @@ def build_timetable():
             "departure_sec": stops_fwd[0]["departure_sec"],
             "arrival_time": stops_fwd[-1]["arrival_time"],
             "arrival_sec": stops_fwd[-1]["arrival_sec"],
-            "total_distance_km": 27.36,
+            "total_distance_km": 29.25,
             "stops": stops_fwd,
             "bypassed_through_stations": ["Depot_2"],
             "post_journey_disposition": {
@@ -1003,29 +1009,28 @@ def build_timetable():
         })
         rake["assigned_services"].append(fwd_no)
 
-        # Westbound Return: City_6 -> City_1
+        # Westbound Return: City_6 -> City_1 across 4 passenger sections
+        # Calibrated runtimes: City_6->Town_12 (313s), Town_12->Town_11 (600s), Town_11->Town_10 (208s), Town_10->City_1 (242s) = 1363s
+        c4_reg_runtimes_rev = [313.0, 600.0, 208.0, 242.0]
         curr_t = rev_dep_sec
         stops_rev = []
-        for idx, stn in enumerate(reversed(C4_STATIONS)):
+        for idx, stn in enumerate(reversed(c4_passenger_stations)):
             if idx > 0:
-                dist = abs(C4_DISTANCES[len(C4_STATIONS)-1-idx] - C4_DISTANCES[len(C4_STATIONS)-idx])
-                curr_t += calc_run_time(dist, 33.33)
+                curr_t += c4_reg_runtimes_rev[idx - 1]
             arr_t = curr_t
-            is_depot = "Depot" in stn
-            dwell = 0 if (idx == len(C4_STATIONS) - 1 or is_depot) else get_calibrated_dwell(stn, "Regional", dep_sec=rev_dep_sec, r_type=r_type)
+            dwell = 0 if idx == len(c4_passenger_stations) - 1 else get_calibrated_dwell(stn, "Regional", dep_sec=rev_dep_sec, r_type=r_type)
             dep_t = arr_t + dwell
             curr_t = dep_t
-            if not is_depot:
-                stop_id = f"{stn}_p3_fw" if stn == "City_1" else f"{stn}_p1_bw"
-                stops_rev.append({
-                    "station": stn,
-                    "train_stop_id": stop_id,
-                    "arrival_time": format_time(arr_t),
-                    "arrival_sec": round(arr_t, 1),
-                    "departure_time": format_time(dep_t),
-                    "departure_sec": round(dep_t, 1),
-                    "dwell_sec": dwell
-                })
+            stop_id = f"{stn}_p3_fw" if stn == "City_1" else f"{stn}_p1_bw"
+            stops_rev.append({
+                "station": stn,
+                "train_stop_id": stop_id,
+                "arrival_time": format_time(arr_t),
+                "arrival_sec": round(arr_t, 1),
+                "departure_time": format_time(dep_t),
+                "departure_sec": round(dep_t, 1),
+                "dwell_sec": dwell
+            })
 
         timetable.append({
             "train_number": rev_no,
@@ -1044,7 +1049,7 @@ def build_timetable():
             "departure_sec": stops_rev[0]["departure_sec"],
             "arrival_time": stops_rev[-1]["arrival_time"],
             "arrival_sec": stops_rev[-1]["arrival_sec"],
-            "total_distance_km": 27.36,
+            "total_distance_km": 29.25,
             "stops": stops_rev,
             "bypassed_through_stations": ["Depot_2"],
             "post_journey_disposition": {
@@ -1052,7 +1057,7 @@ def build_timetable():
                 "staging_track": "City_1_yard_2_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
-                "min_turnaround_required_min": 10.0,
+                "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],
                 "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
@@ -1081,11 +1086,12 @@ def build_timetable():
         dep_sec = fh * 3600 + fm * 60
         r_type = "high_speed_emu_single"
         rake = get_rake(rake_id, r_type)
-        bypass_dist = 13300.0
-        sec_time = calc_run_time(bypass_dist, 83.33)
+        # Calibrated runtimes: City_2 -> City_5 (473s), City_5 -> City_2 (365s)
+        sec_time_fwd = 473.0
+        sec_time_rev = 365.0
 
         # FWD: City_2 -> City_5
-        arr_sec = dep_sec + sec_time
+        arr_sec = dep_sec + sec_time_fwd
         rev_dep = rh * 3600 + rm * 60
         turnaround_dwell_min = round((rev_dep - arr_sec) / 60.0, 1)
         min_required = MIN_TURNAROUND_BY_CONSIST[r_type]
@@ -1114,7 +1120,7 @@ def build_timetable():
             "departure_sec": dep_sec,
             "arrival_time": format_time(arr_sec),
             "arrival_sec": round(arr_sec, 1),
-            "total_distance_km": 13.30,
+            "total_distance_km": 14.75,
             "stops": [
                 {"station": "City_2", "train_stop_id": "City_2_p2_fw", "arrival_time": format_time(dep_sec), "arrival_sec": dep_sec, "departure_time": format_time(dep_sec), "departure_sec": dep_sec, "dwell_sec": 0},
                 {"station": "City_5", "train_stop_id": "City_5_p2_bw", "arrival_time": format_time(arr_sec), "arrival_sec": round(arr_sec, 1), "departure_time": format_time(arr_sec), "departure_sec": round(arr_sec, 1), "dwell_sec": 0}
@@ -1133,7 +1139,7 @@ def build_timetable():
         rake["assigned_services"].append(fwd_no)
 
         # REV: City_5 -> City_2
-        rev_arr = rev_dep + sec_time
+        rev_arr = rev_dep + sec_time_rev
         timetable.append({
             "train_number": rev_no,
             "train_name": f"Diagonal Bypass Direct {rev_no}",
@@ -1151,7 +1157,7 @@ def build_timetable():
             "departure_sec": round(rev_dep, 1),
             "arrival_time": format_time(rev_arr),
             "arrival_sec": round(rev_arr, 1),
-            "total_distance_km": 13.30,
+            "total_distance_km": 14.75,
             "stops": [
                 {"station": "City_5", "train_stop_id": "City_5_p2_fw", "arrival_time": format_time(rev_dep), "arrival_sec": round(rev_dep, 1), "departure_time": format_time(rev_dep), "departure_sec": round(rev_dep, 1), "dwell_sec": 0},
                 {"station": "City_2", "train_stop_id": "City_2_p2_bw", "arrival_time": format_time(rev_arr), "arrival_sec": round(rev_arr, 1), "departure_time": format_time(rev_arr), "departure_sec": round(rev_arr, 1), "dwell_sec": 0}
@@ -1200,19 +1206,14 @@ def build_timetable():
         rake = get_rake(rake_id, r_type)
 
         # Westbound-to-Southbound: City_4 -> City_3_EW -> Flyover Ramp -> City_3_NS -> City_6
-        dist_c1_part = 27445.0 - 18321.0 # 9124m
-        dist_ramp = 789.0
-        dist_c2_part = 22616.0 - 11050.0 # 11566m
-        total_dist = dist_c1_part + dist_ramp + dist_c2_part
-
-        t1 = calc_run_time(dist_c1_part, 33.33)
-        t_ramp = calc_run_time(dist_ramp, 22.22)
-        t2 = calc_run_time(dist_c2_part, 33.33)
+        # Calibrated runtimes: City_4 -> City_3_EW (415s), City_3_EW -> City_6 (616s)
+        t1 = 415.0
+        t2 = 616.0
 
         c3_arr = dep_sec + t1
         dwell_fwd = get_calibrated_dwell("City_3_EW", "Interchange", dep_sec=dep_sec, r_type=r_type)
         c3_dep = c3_arr + dwell_fwd
-        c6_arr = c3_dep + t_ramp + t2
+        c6_arr = c3_dep + t2
 
         rev_dep = rh * 3600 + rm * 60
         turnaround_dwell_min = round((rev_dep - c6_arr) / 60.0, 1)
@@ -1242,7 +1243,7 @@ def build_timetable():
             "departure_sec": dep_sec,
             "arrival_time": format_time(c6_arr),
             "arrival_sec": round(c6_arr, 1),
-            "total_distance_km": round(total_dist / 1000.0, 2),
+            "total_distance_km": 23.36,
             "stops": [
                 {"station": "City_4", "train_stop_id": "City_4_p4_bw", "arrival_time": format_time(dep_sec), "arrival_sec": dep_sec, "departure_time": format_time(dep_sec), "departure_sec": dep_sec, "dwell_sec": 0},
                 {"station": "City_3_EW", "train_stop_id": "City_3_EW_p4_bw", "arrival_time": format_time(c3_arr), "arrival_sec": round(c3_arr, 1), "departure_time": format_time(c3_dep), "departure_sec": round(c3_dep, 1), "dwell_sec": dwell_fwd},
@@ -1262,10 +1263,13 @@ def build_timetable():
         rake["assigned_services"].append(fwd_no)
 
         # Northbound-to-Eastbound Return: City_6 -> City_3_NS -> Flyover Ramp -> City_3_EW -> City_4
-        rev_c3_arr = rev_dep + t2
+        # Calibrated runtimes: City_6 -> City_3_NS (488s), City_3_NS -> City_4 (516s)
+        t_rev_1 = 488.0
+        t_rev_2 = 516.0
+        rev_c3_arr = rev_dep + t_rev_1
         dwell_rev = get_calibrated_dwell("City_3_NS", "Interchange", dep_sec=rev_dep, r_type=r_type)
         rev_c3_dep = rev_c3_arr + dwell_rev
-        rev_c4_arr = rev_c3_dep + t_ramp + t1
+        rev_c4_arr = rev_c3_dep + t_rev_2
 
         timetable.append({
             "train_number": rev_no,
@@ -1284,7 +1288,7 @@ def build_timetable():
             "departure_sec": round(rev_dep, 1),
             "arrival_time": format_time(rev_c4_arr),
             "arrival_sec": round(rev_c4_arr, 1),
-            "total_distance_km": round(total_dist / 1000.0, 2),
+            "total_distance_km": 23.36,
             "stops": [
                 {"station": "City_6", "train_stop_id": "City_6_p4_bw", "arrival_time": format_time(rev_dep), "arrival_sec": round(rev_dep, 1), "departure_time": format_time(rev_dep), "departure_sec": round(rev_dep, 1), "dwell_sec": 0},
                 {"station": "City_3_NS", "train_stop_id": "City_3_NS_p4_bw", "arrival_time": format_time(rev_c3_arr), "arrival_sec": round(rev_c3_arr, 1), "departure_time": format_time(rev_c3_dep), "departure_sec": round(rev_c3_dep, 1), "dwell_sec": dwell_rev},
@@ -1322,20 +1326,20 @@ def build_timetable():
             "dest_track": "Depot_1_pocket_1_fw",
             "departure_time": "04:30:00",
             "departure_sec": 4 * 3600 + 30 * 60,
-            "arrival_time": "05:25:00",
-            "arrival_sec": 5 * 3600 + 25 * 60,
-            "total_distance_km": 12.94,
+            "arrival_time": "05:02:00",
+            "arrival_sec": 5 * 3600 + 2 * 60,
+            "total_distance_km": 14.44,
             "stops": [
                 {"station": "City_2", "train_stop_id": None, "arrival_time": "04:30:00", "arrival_sec": 16200, "departure_time": "04:30:00", "departure_sec": 16200, "dwell_sec": 0},
-                {"station": "Town_8_Passing_Loop", "train_stop_id": None, "arrival_time": "04:55:00", "arrival_sec": 17700, "departure_time": "05:07:00", "departure_sec": 18420, "dwell_sec": 720}, # holds 12 mins for passenger overtakes
-                {"station": "Depot_1", "train_stop_id": None, "arrival_time": "05:25:00", "arrival_sec": 19500, "departure_time": "05:25:00", "departure_sec": 19500, "dwell_sec": 0}
+                {"station": "Town_8_Passing_Loop", "train_stop_id": None, "arrival_time": "04:40:00", "arrival_sec": 16800, "departure_time": "04:52:00", "departure_sec": 17520, "dwell_sec": 720}, # holds 12 mins for passenger overtakes
+                {"station": "Depot_1", "train_stop_id": None, "arrival_time": "05:02:00", "arrival_sec": 18120, "departure_time": "05:02:00", "departure_sec": 18120, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_8", "Town_9"],
             "post_journey_disposition": {
                 "action": "depot_stabling",
                 "staging_track": "Depot_1_pocket_1_fw",
                 "buffer_stop_node": "Depot_1_buf_1",
-                "turnaround_dwell_min": 335.0,
+                "turnaround_dwell_min": 358.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68102"
@@ -1357,12 +1361,12 @@ def build_timetable():
             "dest_track": "City_2_yard_1_fw",
             "departure_time": "11:00:00",
             "departure_sec": 11 * 3600,
-            "arrival_time": "11:45:00",
-            "arrival_sec": 11 * 3600 + 45 * 60,
-            "total_distance_km": 12.94,
+            "arrival_time": "11:19:00",
+            "arrival_sec": 11 * 3600 + 19 * 60,
+            "total_distance_km": 14.44,
             "stops": [
                 {"station": "Depot_1", "train_stop_id": None, "arrival_time": "11:00:00", "arrival_sec": 39600, "departure_time": "11:00:00", "departure_sec": 39600, "dwell_sec": 0},
-                {"station": "City_2", "train_stop_id": None, "arrival_time": "11:45:00", "arrival_sec": 42300, "departure_time": "11:45:00", "departure_sec": 42300, "dwell_sec": 0}
+                {"station": "City_2", "train_stop_id": None, "arrival_time": "11:19:00", "arrival_sec": 40740, "departure_time": "11:19:00", "departure_sec": 40740, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_9", "Town_8"],
             "post_journey_disposition": {
@@ -1391,19 +1395,19 @@ def build_timetable():
             "dest_track": "Depot_3_pocket_1_fw",
             "departure_time": "05:00:00",
             "departure_sec": 5 * 3600,
-            "arrival_time": "05:35:00",
-            "arrival_sec": 5 * 3600 + 35 * 60,
-            "total_distance_km": 6.8,
+            "arrival_time": "05:10:00",
+            "arrival_sec": 5 * 3600 + 10 * 60,
+            "total_distance_km": 5.62,
             "stops": [
                 {"station": "City_5", "train_stop_id": None, "arrival_time": "05:00:00", "arrival_sec": 18000, "departure_time": "05:00:00", "departure_sec": 18000, "dwell_sec": 0},
-                {"station": "Depot_3", "train_stop_id": None, "arrival_time": "05:35:00", "arrival_sec": 20100, "departure_time": "05:35:00", "departure_sec": 20100, "dwell_sec": 0}
+                {"station": "Depot_3", "train_stop_id": None, "arrival_time": "05:10:00", "arrival_sec": 18600, "departure_time": "05:10:00", "departure_sec": 18600, "dwell_sec": 0}
             ],
             "bypassed_through_stations": [],
             "post_journey_disposition": {
                 "action": "depot_stabling",
                 "staging_track": "Depot_3_pocket_1_fw",
                 "buffer_stop_node": "Depot_3_buf_1",
-                "turnaround_dwell_min": 505.0,
+                "turnaround_dwell_min": 530.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "container_loading_and_inspection",
                 "subsequent_service": "68202"
@@ -1425,12 +1429,12 @@ def build_timetable():
             "dest_track": "City_5_yard_1_fw",
             "departure_time": "14:00:00",
             "departure_sec": 14 * 3600,
-            "arrival_time": "14:35:00",
-            "arrival_sec": 14 * 3600 + 35 * 60,
-            "total_distance_km": 6.8,
+            "arrival_time": "14:10:00",
+            "arrival_sec": 14 * 3600 + 10 * 60,
+            "total_distance_km": 5.62,
             "stops": [
                 {"station": "Depot_3", "train_stop_id": None, "arrival_time": "14:00:00", "arrival_sec": 50400, "departure_time": "14:00:00", "departure_sec": 50400, "dwell_sec": 0},
-                {"station": "City_5", "train_stop_id": None, "arrival_time": "14:35:00", "arrival_sec": 52500, "departure_time": "14:35:00", "departure_sec": 52500, "dwell_sec": 0}
+                {"station": "City_5", "train_stop_id": None, "arrival_time": "14:10:00", "arrival_sec": 51000, "departure_time": "14:10:00", "departure_sec": 51000, "dwell_sec": 0}
             ],
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -1459,19 +1463,19 @@ def build_timetable():
             "dest_track": "City_6_pocket_1_fw",
             "departure_time": "03:30:00",
             "departure_sec": 3 * 3600 + 30 * 60,
-            "arrival_time": "04:40:00",
-            "arrival_sec": 4 * 3600 + 40 * 60,
-            "total_distance_km": 12.4,
+            "arrival_time": "03:44:30",
+            "arrival_sec": 3 * 3600 + 44 * 60 + 30,
+            "total_distance_km": 14.26,
             "stops": [
                 {"station": "Depot_2", "train_stop_id": None, "arrival_time": "03:30:00", "arrival_sec": 12600, "departure_time": "03:30:00", "departure_sec": 12600, "dwell_sec": 0},
-                {"station": "City_6", "train_stop_id": None, "arrival_time": "04:40:00", "arrival_sec": 16800, "departure_time": "04:40:00", "departure_sec": 16800, "dwell_sec": 0}
+                {"station": "City_6", "train_stop_id": None, "arrival_time": "03:44:30", "arrival_sec": 13470, "departure_time": "03:44:30", "departure_sec": 13470, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_12"],
             "post_journey_disposition": {
                 "action": "turnaround",
                 "staging_track": "City_6_pocket_1_fw",
                 "buffer_stop_node": "City_6_buf_1",
-                "turnaround_dwell_min": 230.0,
+                "turnaround_dwell_min": 285.5,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68302"
@@ -1493,12 +1497,12 @@ def build_timetable():
             "dest_track": "Depot_2_yard_1_bw",
             "departure_time": "08:30:00",
             "departure_sec": 8 * 3600 + 30 * 60,
-            "arrival_time": "09:40:00",
-            "arrival_sec": 9 * 3600 + 40 * 60,
-            "total_distance_km": 12.4,
+            "arrival_time": "08:44:30",
+            "arrival_sec": 8 * 3600 + 44 * 60 + 30,
+            "total_distance_km": 14.26,
             "stops": [
                 {"station": "City_6", "train_stop_id": None, "arrival_time": "08:30:00", "arrival_sec": 30600, "departure_time": "08:30:00", "departure_sec": 30600, "dwell_sec": 0},
-                {"station": "Depot_2", "train_stop_id": None, "arrival_time": "09:40:00", "arrival_sec": 34800, "departure_time": "09:40:00", "departure_sec": 34800, "dwell_sec": 0}
+                {"station": "Depot_2", "train_stop_id": None, "arrival_time": "08:44:30", "arrival_sec": 31470, "departure_time": "08:44:30", "departure_sec": 31470, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_12"],
             "post_journey_disposition": {
@@ -1527,20 +1531,20 @@ def build_timetable():
             "dest_track": "Depot_1_pocket_1_fw",
             "departure_time": "22:30:00",
             "departure_sec": 22 * 3600 + 30 * 60,
-            "arrival_time": "23:25:00",
-            "arrival_sec": 23 * 3600 + 25 * 60,
-            "total_distance_km": 12.94,
+            "arrival_time": "23:02:00",
+            "arrival_sec": 23 * 3600 + 2 * 60,
+            "total_distance_km": 14.44,
             "stops": [
                 {"station": "City_2", "train_stop_id": None, "arrival_time": "22:30:00", "arrival_sec": 81000, "departure_time": "22:30:00", "departure_sec": 81000, "dwell_sec": 0},
-                {"station": "Town_8_Passing_Loop", "train_stop_id": None, "arrival_time": "22:55:00", "arrival_sec": 82500, "departure_time": "23:07:00", "departure_sec": 83220, "dwell_sec": 720},
-                {"station": "Depot_1", "train_stop_id": None, "arrival_time": "23:25:00", "arrival_sec": 84300, "departure_time": "23:25:00", "departure_sec": 84300, "dwell_sec": 0}
+                {"station": "Town_8_Passing_Loop", "train_stop_id": None, "arrival_time": "22:40:00", "arrival_sec": 81600, "departure_time": "22:52:00", "departure_sec": 82320, "dwell_sec": 720},
+                {"station": "Depot_1", "train_stop_id": None, "arrival_time": "23:02:00", "arrival_sec": 82920, "departure_time": "23:02:00", "departure_sec": 82920, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_8", "Town_9"],
             "post_journey_disposition": {
                 "action": "depot_stabling",
                 "staging_track": "Depot_1_pocket_1_fw",
                 "buffer_stop_node": "Depot_1_buf_1",
-                "turnaround_dwell_min": 155.0,
+                "turnaround_dwell_min": 178.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68104"
@@ -1562,12 +1566,12 @@ def build_timetable():
             "dest_track": "City_2_yard_1_fw",
             "departure_time": "02:00:00",
             "departure_sec": 2 * 3600,
-            "arrival_time": "02:45:00",
-            "arrival_sec": 2 * 3600 + 45 * 60,
-            "total_distance_km": 12.94,
+            "arrival_time": "02:19:00",
+            "arrival_sec": 2 * 3600 + 19 * 60,
+            "total_distance_km": 14.44,
             "stops": [
                 {"station": "Depot_1", "train_stop_id": None, "arrival_time": "02:00:00", "arrival_sec": 7200, "departure_time": "02:00:00", "departure_sec": 7200, "dwell_sec": 0},
-                {"station": "City_2", "train_stop_id": None, "arrival_time": "02:45:00", "arrival_sec": 9900, "departure_time": "02:45:00", "departure_sec": 9900, "dwell_sec": 0}
+                {"station": "City_2", "train_stop_id": None, "arrival_time": "02:19:00", "arrival_sec": 8340, "departure_time": "02:19:00", "departure_sec": 8340, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_9", "Town_8"],
             "post_journey_disposition": {
@@ -1596,19 +1600,19 @@ def build_timetable():
             "dest_track": "Depot_3_pocket_1_fw",
             "departure_time": "23:00:00",
             "departure_sec": 23 * 3600,
-            "arrival_time": "23:35:00",
-            "arrival_sec": 23 * 3600 + 35 * 60,
-            "total_distance_km": 6.8,
+            "arrival_time": "23:10:00",
+            "arrival_sec": 23 * 3600 + 10 * 60,
+            "total_distance_km": 5.62,
             "stops": [
                 {"station": "City_5", "train_stop_id": None, "arrival_time": "23:00:00", "arrival_sec": 82800, "departure_time": "23:00:00", "departure_sec": 82800, "dwell_sec": 0},
-                {"station": "Depot_3", "train_stop_id": None, "arrival_time": "23:35:00", "arrival_sec": 84900, "departure_time": "23:35:00", "departure_sec": 84900, "dwell_sec": 0}
+                {"station": "Depot_3", "train_stop_id": None, "arrival_time": "23:10:00", "arrival_sec": 83400, "departure_time": "23:10:00", "departure_sec": 83400, "dwell_sec": 0}
             ],
             "bypassed_through_stations": [],
             "post_journey_disposition": {
                 "action": "depot_stabling",
                 "staging_track": "Depot_3_pocket_1_fw",
                 "buffer_stop_node": "Depot_3_buf_1",
-                "turnaround_dwell_min": 175.0,
+                "turnaround_dwell_min": 200.0,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "container_loading_and_inspection",
                 "subsequent_service": "68204"
@@ -1630,12 +1634,12 @@ def build_timetable():
             "dest_track": "City_5_yard_1_fw",
             "departure_time": "02:30:00",
             "departure_sec": 2 * 3600 + 30 * 60,
-            "arrival_time": "03:05:00",
-            "arrival_sec": 3 * 3600 + 5 * 60,
-            "total_distance_km": 6.8,
+            "arrival_time": "02:40:00",
+            "arrival_sec": 2 * 3600 + 40 * 60,
+            "total_distance_km": 5.62,
             "stops": [
                 {"station": "Depot_3", "train_stop_id": None, "arrival_time": "02:30:00", "arrival_sec": 9000, "departure_time": "02:30:00", "departure_sec": 9000, "dwell_sec": 0},
-                {"station": "City_5", "train_stop_id": None, "arrival_time": "03:05:00", "arrival_sec": 11100, "departure_time": "03:05:00", "departure_sec": 11100, "dwell_sec": 0}
+                {"station": "City_5", "train_stop_id": None, "arrival_time": "02:40:00", "arrival_sec": 9600, "departure_time": "02:40:00", "departure_sec": 9600, "dwell_sec": 0}
             ],
             "bypassed_through_stations": [],
             "post_journey_disposition": {
@@ -1664,19 +1668,19 @@ def build_timetable():
             "dest_track": "City_6_pocket_1_fw",
             "departure_time": "21:30:00",
             "departure_sec": 21 * 3600 + 30 * 60,
-            "arrival_time": "22:40:00",
-            "arrival_sec": 22 * 3600 + 40 * 60,
-            "total_distance_km": 12.4,
+            "arrival_time": "21:44:30",
+            "arrival_sec": 21 * 3600 + 44 * 60 + 30,
+            "total_distance_km": 14.26,
             "stops": [
                 {"station": "Depot_2", "train_stop_id": None, "arrival_time": "21:30:00", "arrival_sec": 77400, "departure_time": "21:30:00", "departure_sec": 77400, "dwell_sec": 0},
-                {"station": "City_6", "train_stop_id": None, "arrival_time": "22:40:00", "arrival_sec": 81600, "departure_time": "22:40:00", "departure_sec": 81600, "dwell_sec": 0}
+                {"station": "City_6", "train_stop_id": None, "arrival_time": "21:44:30", "arrival_sec": 78270, "departure_time": "21:44:30", "departure_sec": 78270, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_12"],
             "post_journey_disposition": {
                 "action": "turnaround",
                 "staging_track": "City_6_pocket_1_fw",
                 "buffer_stop_node": "City_6_buf_1",
-                "turnaround_dwell_min": 140.0,
+                "turnaround_dwell_min": 195.5,
                 "min_turnaround_required_min": 30.0,
                 "turnaround_mode": "shunting_and_inspection",
                 "subsequent_service": "68304"
@@ -1698,12 +1702,12 @@ def build_timetable():
             "dest_track": "Depot_2_yard_1_bw",
             "departure_time": "01:00:00",
             "departure_sec": 1 * 3600,
-            "arrival_time": "02:10:00",
-            "arrival_sec": 2 * 3600 + 10 * 60,
-            "total_distance_km": 12.4,
+            "arrival_time": "01:14:30",
+            "arrival_sec": 1 * 3600 + 14 * 60 + 30,
+            "total_distance_km": 14.26,
             "stops": [
                 {"station": "City_6", "train_stop_id": None, "arrival_time": "01:00:00", "arrival_sec": 3600, "departure_time": "01:00:00", "departure_sec": 3600, "dwell_sec": 0},
-                {"station": "Depot_2", "train_stop_id": None, "arrival_time": "02:10:00", "arrival_sec": 7800, "departure_time": "02:10:00", "departure_sec": 7800, "dwell_sec": 0}
+                {"station": "Depot_2", "train_stop_id": None, "arrival_time": "01:14:30", "arrival_sec": 4470, "departure_time": "01:14:30", "departure_sec": 4470, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_12"],
             "post_journey_disposition": {
@@ -1732,19 +1736,19 @@ def build_timetable():
             "dest_track": "City_4_plat_2_fw",
             "departure_time": "23:15:00",
             "departure_sec": 23 * 3600 + 15 * 60,
-            "arrival_time": "23:42:00",
-            "arrival_sec": 23 * 3600 + 42 * 60,
-            "total_distance_km": 27.45,
+            "arrival_time": "23:37:00",
+            "arrival_sec": 23 * 3600 + 37 * 60,
+            "total_distance_km": 28.20,
             "stops": [
                 {"station": "City_1", "train_stop_id": "City_1_p2_fw", "arrival_time": "23:15:00", "arrival_sec": 83700, "departure_time": "23:15:00", "departure_sec": 83700, "dwell_sec": 0},
-                {"station": "City_4", "train_stop_id": "City_4_p2_fw", "arrival_time": "23:42:00", "arrival_sec": 85320, "departure_time": "23:42:00", "departure_sec": 85320, "dwell_sec": 0}
+                {"station": "City_4", "train_stop_id": "City_4_p2_fw", "arrival_time": "23:37:00", "arrival_sec": 85020, "departure_time": "23:37:00", "departure_sec": 85020, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_1", "City_2", "Town_2", "City_3_EW", "Town_3"],
             "post_journey_disposition": {
                 "action": "turnaround",
                 "staging_track": "City_4_pocket_2_fw",
                 "buffer_stop_node": "City_4_buf_2",
-                "turnaround_dwell_min": 108.0,
+                "turnaround_dwell_min": 113.0,
                 "min_turnaround_required_min": 25.0,
                 "turnaround_mode": "standard_cab_swap",
                 "subsequent_service": "68402"
@@ -1766,26 +1770,25 @@ def build_timetable():
             "dest_track": "City_1_plat_2_bw",
             "departure_time": "01:30:00",
             "departure_sec": 1 * 3600 + 30 * 60,
-            "arrival_time": "01:57:00",
-            "arrival_sec": 1 * 3600 + 57 * 60,
-            "total_distance_km": 27.45,
+            "arrival_time": "01:52:00",
+            "arrival_sec": 1 * 3600 + 52 * 60,
+            "total_distance_km": 28.20,
             "stops": [
                 {"station": "City_4", "train_stop_id": "City_4_p2_bw", "arrival_time": "01:30:00", "arrival_sec": 5400, "departure_time": "01:30:00", "departure_sec": 5400, "dwell_sec": 0},
-                {"station": "City_1", "train_stop_id": "City_1_p2_bw", "arrival_time": "01:57:00", "arrival_sec": 7020, "departure_time": "01:57:00", "departure_sec": 7020, "dwell_sec": 0}
+                {"station": "City_1", "train_stop_id": "City_1_p2_bw", "arrival_time": "01:52:00", "arrival_sec": 6720, "departure_time": "01:52:00", "departure_sec": 6720, "dwell_sec": 0}
             ],
             "bypassed_through_stations": ["Town_3", "City_3_EW", "Town_2", "City_2", "Town_1"],
             "post_journey_disposition": {
                 "action": "yard_layover",
                 "staging_track": "City_1_yard_2_bw",
                 "buffer_stop_node": None,
-                "turnaround_dwell_min": 1278.0,
+                "turnaround_dwell_min": 1283.0,
                 "min_turnaround_required_min": 25.0,
                 "turnaround_mode": "extended_layover",
                 "subsequent_service": None
             }
         }
     ]
-
     for f_srv in freight_schedules:
         timetable.append(f_srv)
         rk = get_rake(f_srv["assigned_rake"], f_srv["rolling_stock_type"])

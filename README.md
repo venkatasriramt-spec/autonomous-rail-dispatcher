@@ -61,53 +61,53 @@ The schedule in `data/timetable.json` models **242 distinct train services** ope
 
 *Note: The 21:30–05:00 cadence rate is freight-only; late-night passenger services (#12029, #12030, #12042, #21042, #32032, #32043, #32044, #41040) are listed separately, concluding between 21:30 and 22:45 at 4–8 runs/hr.*
 
-### A. Corridor 1: East–West High-Speed Trunk (`City_1` $\leftrightarrow$ `City_4`, 27.4 km)
+### A. Corridor 1: East–West High-Speed Trunk (`City_1` $\leftrightarrow$ `City_4`, 28.2 km)
 * **High-Speed Express (42 runs)**:
   * Clockface cadence: departs `:00` Eastbound (`City_1` $\to$ `City_4`), `:35` Westbound (`City_4` $\to$ `City_1`, and `:05` during peak surge).
   * Full-day density scaling (weekdays): continuous hourly clockface from 06:00 to 22:00 without evening gaps on weekdays (with base weekend cadence; departures do not provide unbroken hourly service on weekends), supplemented by 30-min weekday peak surges (07:00–09:00 AM peak and 16:00–18:30 PM peak).
   * Speeds up to 300 km/h on slab track, bypassing towns (`Town_1`, `Town_2`, `Town_3`) via central through-tracks (`_thru_1`, `_thru_2`).
   * Dynamic calibrated dwells: 150s peak / 120s off-peak at `City_1`, `City_2`, and `City_4`; 180s peak / 150s off-peak at `City_3_EW` bi-level interchange.
-  * Turnaround: 16.3–17.8 min buffer at `City_4` pocket tracks (`City_4_pocket_1_fw`), classified as `rapid_dual_crew` (*Kurzwende*) during peak.
+  * Turnaround: 15.1–16.1 min buffer at `City_4` pocket tracks (`City_4_pocket_1_fw`), classified as `rapid_dual_crew` (*Kurzwende*) during peak.
 * **Regional Local Stoppers (42 runs)**:
   * Clockface cadence: departs `:15` Eastbound, `:55` Westbound (`:25` during peak surge).
   * Full-day density scaling (weekdays): unbroken hourly clockface from 05:15 to 21:15 on weekdays (weekends operate on a reduced base cadence and do not provide unbroken hourly service), with 30-min weekday peak commuter surges (07:15, 07:45, 08:15, 08:45 AM; 16:15, 16:45, 17:15, 17:45, 18:15 PM) deploying peak relief rake `REG-C1-06`.
   * Dynamic calibrated dwells: 60s peak / 45s off-peak at town platform loops; 110s peak / 90s off-peak at cities; 180s peak / 150s off-peak at `City_3_EW`.
-  * Turnaround: 12.4 min turnaround at `City_4_pocket_2_fw`, well exceeding the 10.0 min consist minimum.
+  * Turnaround: 10.0–11.6 min turnaround at `City_4_pocket_2_fw`, well exceeding the consist minimum.
 
-### B. Corridor 2: North–South Regional Spine (`City_5` $\leftrightarrow$ `City_6`, 22.6 km)
+### B. Corridor 2: North–South Regional Spine (`City_5` $\leftrightarrow$ `City_6`, 23.2 km)
 * **Spine InterCity & Commuter (44 runs)**:
   * Clockface cadence: departs `:10` Southbound (`City_5` $\to$ `City_6`), `:45` Northbound (`City_6` $\to$ `City_5`, and `:15` during peak).
   * Full-day density scaling (weekdays): continuous hourly cadence from 05:10 to 22:10 on weekdays (weekends operate on a reduced base schedule without unbroken hourly coverage), compressed to 30-min headways throughout both weekday rush hours (07:10, 07:40, 08:10, 08:40 AM; 16:10, 16:40, 17:10, 17:40, 18:10 PM) utilizing peak relief rake `REG-C2-06`.
   * Dynamic calibrated dwells: 55s peak / 45s off-peak at towns; 110s peak / 90s off-peak at termini; 180s peak / 150s off-peak at `City_3_NS` viaduct interchange.
-  * Turnaround: 10.4–12.5 min turnaround at `City_6_pocket_1_fw` (`rapid_dual_crew`).
+  * Turnaround: 7.2–10.2 min turnaround at `City_6_pocket_1_fw` (`rapid_dual_crew`).
 
-### C. Corridor 3: Northwest Alpine Mountain Line (`City_2` $\leftrightarrow$ `Town_9`, 12.9 km)
+### C. Corridor 3: Northwest Alpine Mountain Line (`City_2` $\leftrightarrow$ `Town_9`, 9.9 km regional / 14.4 km freight)
 * **Alpine Scenic, Glacier, Panorama & Commuter Services (18 passenger runs)**:
   * Multi-day scenic & excursion runs: #12763 (Mon/Thu/Sun), #12765 (Tue/Fri/Sat), #12775 (Daily Shuttle), #12769 (Daily Panorama), #12777 (Daily Express), #12767 (Mon/Thu/Sun), #12779 (Daily Twilight).
   * Weekday commuter surge: #12771 (08:10 AM dep City_2 / 08:38 AM dep Town_9) and #12773 (17:10 PM dep City_2 / 17:38 PM dep Town_9).
   * Clockface cadence: departs `:10` Uphill from `City_2` (synchronized connection from Corridor 1 express), `:40` Downhill from `Town_9` (and `:38` for commuter & twilight shuttles to clear main junction interlocks).
   * Steep gradient mountain operation ($Z=38\text{ m}$ to $Z=130\text{ m}$) with 75s mountain halts.
-  * Turnaround: 18.1/20.1 min turnaround at `Town_9_yard_1_fw` (`standard_cab_swap`).
+  * Turnaround: 17.2–21.1 min turnaround at `Town_9_yard_1_fw` (`standard_cab_swap`).
 
-### D. Corridor 4: Southern Coastal Arc (`City_1` $\leftrightarrow$ `City_6`, 27.4 km)
+### D. Corridor 4: Southern Coastal Arc (`City_1` $\leftrightarrow$ `City_6`, 29.3 km)
 * **Coastal Arc Regional Commuter (40 passenger runs)**:
   * Clockface cadence: departs `:20` Eastbound (`City_1`), `:55` Westbound (`City_6`, and `:25` during peak).
   * Full-day density scaling (weekdays): unbroken hourly clockface from 06:20 to 21:20 on weekdays (weekends operate on a reduced base cadence without unbroken hourly service), compressed to 30-min headway (07:20, 07:50, 08:20, 08:50, 09:20 AM; 16:20, 16:50, 17:20, 17:50 PM) deploying commuter rake `REG-C4-05`.
   * Dynamic calibrated dwells: 60s peak / 45s off-peak at `Town_10`, `Town_11`, and `Town_12`.
-  * Turnaround: 13.0 min turnaround at `City_6_pocket_2_fw`.
+  * Turnaround: 9.3–10.1 min turnaround at `City_6_pocket_2_fw`.
 
-### E. Diagonal High-Speed Bypass (`City_2` $\leftrightarrow$ `City_5`, 13.3 km)
+### E. Diagonal High-Speed Bypass (`City_2` $\leftrightarrow$ `City_5`, 14.8 km)
 * **Bypass Direct Services (16 runs)**:
   * Direct 300 km/h chord transit along `bypass_City_2_City_5` avoiding the central hub.
   * Full-day density scaling: hourly peak relief during rush hours (07:25, 08:25 AM; 17:25, 18:25 PM) with irregular off-peak runs (10:25, 13:25, 15:25, 20:25) using `HS-Rake-04` (`high_speed_emu_single`).
-  * Turnaround: 25.6 min turnaround at `City_5_yard_2_bw` (`standard_cab_swap`).
+  * Turnaround: 22.1–23.9 min turnaround at `City_5_yard_2_bw` (`standard_cab_swap`).
 
-### F. Trans-Hub Bi-Level Flyover Transfer (`City_4` $\leftrightarrow$ `City_6`, 21.5 km)
+### F. Trans-Hub Bi-Level Flyover Transfer (`City_4` $\leftrightarrow$ `City_6`, 23.4 km)
 * **Interchange Link (26 runs)**:
   * Traverses the 789m, 1.77% gradient flyover ramp (`transfer_City_3_EW_NS`) linking Corridor 1 and Corridor 2.
   * Full-day density scaling: hourly runs throughout the day (07:05, 08:05, 09:05, 10:05, 11:05, 12:05, 14:05, 15:05, 16:05, 17:05, 18:05, 19:05, 20:05) with a gap at 13:05; the 07:05, 09:05, and 16:05–18:05 departures are weekday-only, while the remaining listed departures run daily, including weekends.
   * Multi-level interchange dwell: 210s peak / 180s off-peak at `City_3_EW` / `City_3_NS`.
-  * Turnaround: 13.7–14.2 min turnaround at `City_6_pocket_2_fw`.
+  * Turnaround: 9.3–9.8 min turnaround at `City_6_pocket_2_fw`.
 
 ### G. Heavy Freight & Logistics Services (14 runs: 6 Daytime + 8 Nocturnal Wave)
 * **Daytime Freight (6 runs)**:
@@ -163,7 +163,13 @@ python3 scripts/export_to_sumo.py --day Sun      # Sunday (141 services)
 python3 scripts/export_to_sumo.py                # or --day all
 ```
 
-### 4. Run Simulation Verification
+### 4. Validate Timetable Feasibility & Route Distances
+To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($T_{\text{planned}} \ge T_{\min}$) and route lengths ($|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$) are strictly satisfied:
+```bash
+python3 scripts/validate_timetable.py
+```
+
+### 5. Run Simulation Verification
 To verify the entire network simulation in headless mode:
 ```bash
 # Verify a specific operating day (compiles routes and simulates full 24h):
@@ -177,7 +183,7 @@ python3 scripts/verify_simulation.py --all-days 86400
 python3 scripts/verify_simulation.py 86400  # Full 24-hour verification (or 3600 for quick test)
 ```
 
-### 5. Interactive Visual Simulation with SUMO GUI
+### 6. Interactive Visual Simulation with SUMO GUI
 To watch the trains, signals, crossovers, and overtakes live:
 ```bash
 sumo-gui -c sumo_config/train_simulation.sumocfg
