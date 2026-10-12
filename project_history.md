@@ -283,4 +283,80 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - Teleports: **0**.
      - Emergency Stops: **0**.
 
+---
+
+### 12 October 2026 — Flaw 4 Remediation: Full-Day Density Scaling & Network Capacity Optimization
+
+**Objective:** Systematically eliminate network-wide off-peak service deserts, midday schedule gaps, and late-evening drops (Flaw 4) by scaling timetable density across the full 24-hour cycle. Expand the timetable from 188 to **242 scheduled train runs** across the existing 31 physical rakes, eliminate excessive 8–9 hour yard idling periods, achieve balanced fleet utilization, and verify 100% conflict-free routing with 0 errors across 86,400 simulation steps.
+
+#### Phase 13: Full-Day Density Scaling & Network Capacity Overhaul
+
+1. **Full-Day Clockface Cadence Scaling (Expanded from 188 to 242 Scheduled Services)**:
+   - **Corridor 1 High-Speed Express (Expanded from 38 to 42 runs)**:
+     - Injected evening clockface runs `#12039`/`#12040` (19:00 dep City_1 / 19:35 dep City_4) utilizing `HS-Rake-03`.
+     - Injected night clockface runs `#12041`/`#12042` (21:00 dep City_1 / 21:35 dep City_4) utilizing `HS-Rake-06`.
+     - Result: Unbroken, continuous hourly express service across the entire operating window from 06:00 to 22:00.
+   - **Corridor 1 Local Regional Stopper (Expanded from 34 to 42 runs)**:
+     - Injected post-peak transition run `#21035`/`#21036` (09:15 dep City_1 / 09:55 dep City_4) utilizing `REG-C1-05`.
+     - Injected midday clockface fill `#21037`/`#21038` (12:15 dep City_1 / 12:55 dep City_4) utilizing `REG-C1-05`.
+     - Injected evening clockface fills `#21039`/`#21040` (20:15 dep, `REG-C1-04`) and `#21041`/`#21042` (21:15 dep, `REG-C1-03`).
+     - Result: True hourly commuter cadence (:15 EB / :55 WB) from 05:15 to 21:15.
+   - **Corridor 2 North–South Regional Spine (Expanded from 38 to 44 runs)**:
+     - Injected midday clockface fill `#32039`/`#32040` (10:10 dep City_5 / 10:45 dep City_6) utilizing `REG-C2-04`.
+     - Injected evening clockface fill `#32041`/`#32042` (20:10 dep City_5 / 20:45 dep City_6) utilizing `REG-C2-05`.
+     - Injected late-night connector `#32043`/`#32044` (22:10 dep City_5 / 22:45 dep City_6) utilizing `REG-C2-02`.
+     - Result: Continuous hourly spine operation from 05:10 to 22:10 without multi-hour midday or late-night gaps.
+   - **Corridor 3 Northwest Alpine Mountain Line (Expanded from 12 to 18 passenger runs, 22 total)**:
+     - Injected midday excursion run `#12775`/`#12776` (11:10 Uphill / 11:40 Downhill) utilizing `ALP-Rake-01`.
+     - Injected afternoon panorama run `#12777`/`#12778` (14:10 Uphill / 14:40 Downhill) utilizing `ALP-Rake-01`.
+     - Injected twilight return run `#12779`/`#12780` (18:10 Uphill / 18:38 Downhill) utilizing `ALP-Rake-02`.
+     - Calibrated downhill departure #12780 to 18:38 (18.1 min turnaround at Town_9), clearing the City_2 junction ahead of mainline moves and eliminating signal hold emergency stops.
+   - **Corridor 4 Southern Coastal Arc (Expanded from 26 to 40 passenger runs, 44 total)**:
+     - Injected 7 hourly round trips bridging midday and night connectivity (#41027 to #41040) at 10:20, 12:20, 14:20, 15:20, 18:20, 20:20, and 21:20.
+     - Result: Continuous hourly clockface (:20 EB / :55 WB) from 06:20 to 21:20 with 30-min rush-hour surges.
+   - **Diagonal High-Speed Bypass (Expanded from 10 to 16 runs)**:
+     - Injected direct chord services `#15011`/`#15012` (10:25 dep), `#15013`/`#15014` (15:25 dep), and `#15015`/`#15016` (20:25 dep) utilizing `HS-Rake-04`, providing hourly peak relief with irregular off-peak runs.
+   - **Trans-Hub Bi-Level Flyover Transfer (Expanded from 16 to 26 runs)**:
+     - Injected 5 round trips `#51017` to `#51026` across midday and evening (10:05, 12:05, 15:05, 19:05, 20:05), achieving hourly runs with a gap at 13:05.
+
+2. **Fleet Utilization Balancing & Elimination of Excessive Yard Idling**:
+   - Reutilized existing active rolling stock across all 31 rakes, avoiding unnecessary fleet expansion.
+   - Reduced most multi-hour yard idling periods into productive layovers (e.g., `REG-C1-05` reduced from 534 min idle to productive 115–174 min layovers; `REG-C4-03` reduced from 483 min idle to 64–124 min turnarounds), while preserving an extended afternoon maintenance layover for `REG-C4-04` (484.1 min between #41016 and #41037).
+   - Maintained all consist-scaled turnaround constraints (15.0 min for High-Speed 300, 12.0 min for High-Speed Single, 10.0 min for Regional EMU/DMU).
+
+3. **Turnaround & Disposition Chaining Engine Breakdown**:
+   - Total scheduled services: **242**.
+   - Intermediate services chained to exact subsequent runs: **211**.
+   - Final daily services stabled overnight: **31** (exactly one per rake).
+   - Turnaround mode breakdown:
+     - `extended_layover`: 110 services
+     - `rapid_dual_crew`: 63 services
+     - `standard_cab_swap`: 59 services
+     - `shunting_and_inspection`: 5 services
+     - `container_loading_and_inspection`: 3 services
+     - `depot_inspection`: 2 services
+
+4. **Relational Database (`data/trains.db`) Status**:
+   - `rolling_stock_types`: 7 records
+   - `physical_rakes`: 31 records
+   - `train_services`: 242 records
+   - `service_stops`: 1,164 records
+   - `service_post_disposition`: 242 records
+   - `service_operating_days`: 1,446 records
+
+5. **24-Hour Microscopic Simulation & Route Compilation Results (`86,400s`)**:
+   - `duarouter`: Compiled **242 out of 242 vehicles (100% routing success)** into `sumo_config/trains.rou.xml`.
+   - Full 24-hour SUMO microscopic simulation (`86,400s`):
+     - Inserted / Completed: **242 vehicles**.
+     - Running / Waiting at step 86400: **0**.
+     - Average Fleet Speed: **19.97 m/s (~71.9 km/h)**.
+     - Average Depart Delay: **0.00s**.
+     - Average Waiting Time: **0.47s**.
+     - Emergency Stops: **0**.
+     - Collisions: **0**.
+     - Teleports: **0**.
+     - Deadlocks: **0**.
+     - Fatal Errors: **0**.
+
+
 

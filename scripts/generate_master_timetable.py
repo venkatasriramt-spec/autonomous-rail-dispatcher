@@ -306,8 +306,10 @@ def build_timetable():
         (17, 0, 17, 35, "Mon-Fri","12025", "12026", "HS-Rake-05"),
         (17, 30, 18, 5, "Mon-Fri","12023", "12024", "HS-Rake-06"),
         (18, 0, 18, 35, "Daily",  "12015", "12016", "HS-Rake-02"),
-        # Late Evening & Night
+        # Evening Clockface Base
+        (19, 0, 19, 35, "Daily",  "12039", "12040", "HS-Rake-03"),
         (20, 0, 20, 35, "Daily",  "12027", "12028", "HS-Rake-01"),
+        (21, 0, 21, 35, "Daily",  "12041", "12042", "HS-Rake-06"),
         (22, 0, 22, 35, "Daily",  "12029", "12030", "HS-Rake-02"),
     ]
 
@@ -459,9 +461,11 @@ def build_timetable():
         (7, 45, 8, 25, "Mon-Fri", "21015", "21016", "REG-C1-04"),
         (8, 15, 8, 55, "Mon-Fri", "21003", "21004", "REG-C1-02"),
         (8, 45, 9, 25, "Mon-Fri", "21029", "21030", "REG-C1-06"),
-        # Midday Regular Cadence (60-120 min headway)
+        (9, 15, 9, 55, "Daily",   "21035", "21036", "REG-C1-05"),
+        # Midday Regular Cadence (60-min hourly clockface)
         (10, 15, 10, 55, "Daily",  "21005", "21006", "REG-C1-01"),
         (11, 15, 11, 55, "Daily",  "21023", "21024", "REG-C1-03"),
+        (12, 15, 12, 55, "Daily",  "21037", "21038", "REG-C1-05"),
         (13, 15, 13, 55, "Daily",  "21007", "21008", "REG-C1-02"),
         (14, 15, 14, 55, "Daily",  "21025", "21026", "REG-C1-04"),
         (15, 15, 15, 55, "Mon-Fri","21009", "21010", "REG-C1-05"),
@@ -471,8 +475,10 @@ def build_timetable():
         (17, 15, 17, 55, "Daily",  "21011", "21012", "REG-C1-02"),
         (17, 45, 18, 25, "Mon-Fri","21019", "21020", "REG-C1-04"),
         (18, 15, 18, 55, "Mon-Fri","21033", "21034", "REG-C1-06"),
-        # Late Evening
+        # Late Evening Clockface Base
         (19, 15, 19, 55, "Daily",  "21027", "21028", "REG-C1-01"),
+        (20, 15, 20, 55, "Daily",  "21039", "21040", "REG-C1-04"),
+        (21, 15, 21, 55, "Daily",  "21041", "21042", "REG-C1-03"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in reg_c1_offsets:
@@ -611,7 +617,8 @@ def build_timetable():
         (8, 10, 8, 45, "Mon-Fri", "32003", "32004", "REG-C2-02"),
         (8, 40, 9, 15, "Mon-Fri", "32033", "32034", "REG-C2-06"),
         (9, 10, 9, 45, "Daily",   "32005", "32006", "REG-C2-01"),
-        # Midday Regular Cadence (60-min headway)
+        # Midday Regular Cadence (60-min hourly clockface)
+        (10, 10, 10, 45, "Daily", "32039", "32040", "REG-C2-04"),
         (11, 10, 11, 45, "Daily", "32007", "32008", "REG-C2-03"),
         (12, 10, 12, 45, "Daily", "32027", "32028", "REG-C2-04"),
         (13, 10, 13, 45, "Daily", "32009", "32010", "REG-C2-02"),
@@ -625,7 +632,9 @@ def build_timetable():
         (18, 10, 18, 45, "Mon-Fri","32023", "32024", "REG-C2-05"),
         # Late Evening Base
         (19, 10, 19, 45, "Daily", "32015", "32016", "REG-C2-02"),
+        (20, 10, 20, 45, "Daily", "32041", "32042", "REG-C2-05"),
         (21, 10, 21, 45, "Daily", "32031", "32032", "REG-C2-03"),
+        (22, 10, 22, 45, "Daily", "32043", "32044", "REG-C2-02"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in c2_services:
@@ -758,9 +767,12 @@ def build_timetable():
         ("12763", "Alpine Scenic Shuttle 12763", ["Mon", "Thu", "Sun"], 7, 10, 7, 40, "ALP-Rake-01", "12764"),
         ("12771", "Alpine Morning Commuter 12771", ["Mon-Fri"], 8, 10, 8, 38, "ALP-Rake-02", "12772"),
         ("12765", "Alpine Glacier Express 12765", ["Tue", "Fri", "Sat"], 10, 10, 10, 40, "ALP-Rake-02", "12766"),
+        ("12775", "Alpine Midday Shuttle 12775", ["Daily"], 11, 10, 11, 40, "ALP-Rake-01", "12776"),
         ("12769", "Alpine Panorama Express 12769", ["Daily"], 13, 10, 13, 40, "ALP-Rake-02", "12770"),
+        ("12777", "Alpine Afternoon Express 12777", ["Daily"], 14, 10, 14, 40, "ALP-Rake-01", "12778"),
         ("12767", "Alpine Evening Shuttle 12767", ["Mon", "Thu", "Sun"], 16, 10, 16, 40, "ALP-Rake-01", "12768"),
         ("12773", "Alpine Evening Commuter 12773", ["Mon-Fri"], 17, 10, 17, 38, "ALP-Rake-01", "12774"),
+        ("12779", "Alpine Twilight Express 12779", ["Daily"], 18, 10, 18, 38, "ALP-Rake-02", "12780"),
     ]
 
     for fwd_no, name, days, fh, fm, rh, rm, rake_id, rev_no in c3_mountain_passenger:
@@ -900,16 +912,23 @@ def build_timetable():
         (8, 20, 8, 55, "Mon-Fri", "41009", "41010", "REG-C4-03"),
         (8, 50, 9, 25, "Mon-Fri", "41021", "41022", "REG-C4-01"),
         (9, 20, 9, 55, "Mon-Fri", "41003", "41004", "REG-C4-02"),
-        # Midday Base (60-120 min headway)
+        # Midday Base (60-min hourly cadence)
+        (10, 20, 10, 55, "Daily", "41027", "41028", "REG-C4-03"),
         (11, 20, 11, 55, "Daily", "41015", "41016", "REG-C4-04"),
+        (12, 20, 12, 55, "Daily", "41029", "41030", "REG-C4-03"),
         (13, 20, 13, 55, "Daily", "41005", "41006", "REG-C4-01"),
+        (14, 20, 14, 55, "Daily", "41031", "41032", "REG-C4-03"),
+        (15, 20, 15, 55, "Daily", "41033", "41034", "REG-C4-05"),
         (16, 20, 16, 55, "Daily", "41007", "41008", "REG-C4-02"),
         # Evening Peak Surge (30-min headway)
         (16, 50, 17, 25, "Mon-Fri", "41023", "41024", "REG-C4-05"),
         (17, 20, 17, 55, "Mon-Fri", "41011", "41012", "REG-C4-03"),
         (17, 50, 18, 25, "Mon-Fri", "41025", "41026", "REG-C4-02"),
-        # Evening Base
+        # Evening Base & Night Connectivity
+        (18, 20, 18, 55, "Daily", "41035", "41036", "REG-C4-05"),
         (19, 20, 19, 55, "Daily", "41017", "41018", "REG-C4-01"),
+        (20, 20, 20, 55, "Daily", "41037", "41038", "REG-C4-04"),
+        (21, 20, 21, 55, "Daily", "41039", "41040", "REG-C4-02"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in c4_services:
@@ -1046,14 +1065,16 @@ def build_timetable():
     # PEAK SURGE: Direct chord commuter relief runs during morning (07:25, 08:25) and evening (17:25, 18:25).
     bypass_services = [
         # (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id)
-        # Morning Peak Surge
+        # Morning Peak Surge & Midday Base
         (7, 25, 7, 55, "Mon-Fri", "15007", "15008", "HS-Rake-04"),
         (8, 25, 8, 55, "Mon-Fri", "15001", "15002", "HS-Rake-04"),
-        # Midday Base
+        (10, 25, 10, 55, "Daily",  "15011", "15012", "HS-Rake-04"),
         (13, 25, 13, 55, "Daily",  "15003", "15004", "HS-Rake-04"),
-        # Evening Peak Surge
+        (15, 25, 15, 55, "Daily",  "15013", "15014", "HS-Rake-04"),
+        # Evening Peak Surge & Night Base
         (17, 25, 17, 55, "Mon-Fri", "15005", "15006", "HS-Rake-04"),
         (18, 25, 18, 55, "Mon-Fri", "15009", "15010", "HS-Rake-04"),
+        (20, 25, 20, 55, "Daily",  "15015", "15016", "HS-Rake-04"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in bypass_services:
@@ -1158,13 +1179,19 @@ def build_timetable():
         (7, 5, 7, 35,   "Mon-Fri", "51009", "51010", "REG-XFER-02"),
         (8, 5, 8, 35,   "Daily",   "51001", "51002", "REG-XFER-01"),
         (9, 5, 9, 35,   "Mon-Fri", "51011", "51012", "REG-XFER-01"),
-        # Midday Base
+        # Midday Regular Cadence
+        (10, 5, 10, 35, "Daily",   "51017", "51018", "REG-XFER-02"),
         (11, 5, 11, 35, "Daily",   "51005", "51006", "REG-XFER-02"),
+        (12, 5, 12, 35, "Daily",   "51019", "51020", "REG-XFER-01"),
         (14, 5, 14, 35, "Daily",   "51003", "51004", "REG-XFER-01"),
+        (15, 5, 15, 35, "Daily",   "51021", "51022", "REG-XFER-02"),
         # Evening Peak Surge
         (16, 5, 16, 35, "Mon-Fri", "51013", "51014", "REG-XFER-01"),
         (17, 5, 17, 35, "Mon-Fri", "51007", "51008", "REG-XFER-02"),
         (18, 5, 18, 35, "Mon-Fri", "51015", "51016", "REG-XFER-02"),
+        # Evening Base & Late Night
+        (19, 5, 19, 35, "Daily",   "51023", "51024", "REG-XFER-01"),
+        (20, 5, 20, 35, "Daily",   "51025", "51026", "REG-XFER-02"),
     ]
 
     for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in transfer_services:
