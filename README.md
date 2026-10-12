@@ -67,19 +67,19 @@ The schedule in `data/timetable.json` models **242 distinct train services** ope
   * Full-day density scaling (weekdays): continuous hourly clockface from 06:00 to 22:00 without evening gaps on weekdays (with base weekend cadence; departures do not provide unbroken hourly service on weekends), supplemented by 30-min weekday peak surges (07:00–09:00 AM peak and 16:00–18:30 PM peak).
   * Speeds up to 300 km/h on slab track, bypassing towns (`Town_1`, `Town_2`, `Town_3`) via central through-tracks (`_thru_1`, `_thru_2`).
   * Dynamic calibrated dwells: 150s peak / 120s off-peak at `City_1`, `City_2`, and `City_4`; 180s peak / 150s off-peak at `City_3_EW` bi-level interchange.
-  * Turnaround: 15.1–16.1 min buffer at `City_4` pocket tracks (`City_4_pocket_1_fw`), classified as `rapid_dual_crew` (*Kurzwende*) during peak.
+  * Turnaround: 12.6–14.1 min buffer at `City_4` pocket tracks (`City_4_pocket_1_fw`), classified as `rapid_dual_crew` (*Kurzwende*).
 * **Regional Local Stoppers (42 runs)**:
   * Clockface cadence: departs `:15` Eastbound, `:55` Westbound (`:25` during peak surge).
   * Full-day density scaling (weekdays): unbroken hourly clockface from 05:15 to 21:15 on weekdays (weekends operate on a reduced base cadence and do not provide unbroken hourly service), with 30-min weekday peak commuter surges (07:15, 07:45, 08:15, 08:45 AM; 16:15, 16:45, 17:15, 17:45, 18:15 PM) deploying peak relief rake `REG-C1-06`.
   * Dynamic calibrated dwells: 60s peak / 45s off-peak at town platform loops; 110s peak / 90s off-peak at cities; 180s peak / 150s off-peak at `City_3_EW`.
-  * Turnaround: 10.0–11.6 min turnaround at `City_4_pocket_2_fw`, well exceeding the consist minimum.
+  * Turnaround: 8.2–10.1 min turnaround at `City_4_pocket_2_fw` with the 7.0-minute consist minimum.
 
 ### B. Corridor 2: North–South Regional Spine (`City_5` $\leftrightarrow$ `City_6`, 23.2 km)
 * **Spine InterCity & Commuter (44 runs)**:
   * Clockface cadence: departs `:10` Southbound (`City_5` $\to$ `City_6`), `:45` Northbound (`City_6` $\to$ `City_5`, and `:15` during peak).
   * Full-day density scaling (weekdays): continuous hourly cadence from 05:10 to 22:10 on weekdays (weekends operate on a reduced base schedule without unbroken hourly coverage), compressed to 30-min headways throughout both weekday rush hours (07:10, 07:40, 08:10, 08:40 AM; 16:10, 16:40, 17:10, 17:40, 18:10 PM) utilizing peak relief rake `REG-C2-06`.
   * Dynamic calibrated dwells: 55s peak / 45s off-peak at towns; 110s peak / 90s off-peak at termini; 180s peak / 150s off-peak at `City_3_NS` viaduct interchange.
-  * Turnaround: 7.2–10.2 min turnaround at `City_6_pocket_1_fw` (`rapid_dual_crew`).
+  * Turnaround: 7.2–8.7 min turnaround at `City_6_pocket_1_fw` (`rapid_dual_crew`).
 
 ### C. Corridor 3: Northwest Alpine Mountain Line (`City_2` $\leftrightarrow$ `Town_9`, 9.9 km regional / 14.4 km freight)
 * **Alpine Scenic, Glacier, Panorama & Commuter Services (18 passenger runs)**:
@@ -87,14 +87,14 @@ The schedule in `data/timetable.json` models **242 distinct train services** ope
   * Weekday commuter surge: #12771 (08:10 AM dep City_2 / 08:38 AM dep Town_9) and #12773 (17:10 PM dep City_2 / 17:38 PM dep Town_9).
   * Clockface cadence: departs `:10` Uphill from `City_2` (synchronized connection from Corridor 1 express), `:40` Downhill from `Town_9` (and `:38` for commuter & twilight shuttles to clear main junction interlocks).
   * Steep gradient mountain operation ($Z=38\text{ m}$ to $Z=130\text{ m}$) with 75s mountain halts.
-  * Turnaround: 17.2–21.1 min turnaround at `Town_9_yard_1_fw` (`standard_cab_swap`).
+  * Turnaround: 17.2–19.6 min turnaround at `Town_9_yard_1_fw` (`standard_cab_swap`).
 
 ### D. Corridor 4: Southern Coastal Arc (`City_1` $\leftrightarrow$ `City_6`, 29.3 km)
 * **Coastal Arc Regional Commuter (40 passenger runs)**:
   * Clockface cadence: departs `:20` Eastbound (`City_1`), `:55` Westbound (`City_6`, and `:25` during peak).
   * Full-day density scaling (weekdays): unbroken hourly clockface from 06:20 to 21:20 on weekdays (weekends operate on a reduced base cadence without unbroken hourly service), compressed to 30-min headway (07:20, 07:50, 08:20, 08:50, 09:20 AM; 16:20, 16:50, 17:20, 17:50 PM) deploying commuter rake `REG-C4-05`.
   * Dynamic calibrated dwells: 60s peak / 45s off-peak at `Town_10`, `Town_11`, and `Town_12`.
-  * Turnaround: 9.3–10.1 min turnaround at `City_6_pocket_2_fw`.
+  * Turnaround: 7.6–8.7 min turnaround at `City_6_pocket_2_fw`.
 
 ### E. Diagonal High-Speed Bypass (`City_2` $\leftrightarrow$ `City_5`, 14.8 km)
 * **Bypass Direct Services (16 runs)**:
