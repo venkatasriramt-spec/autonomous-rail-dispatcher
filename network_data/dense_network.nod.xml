@@ -226,22 +226,27 @@
     <node id="bypass_City_2_City_5_bw_signal_7" x="-1403.59" y="4202.94" z="40.95" type="rail_signal"/>
     <node id="bypass_City_2_City_5_bw_signal_8" x="-2369.88" y="3279.72" z="38.90" type="rail_signal"/>
     <node id="bypass_City_2_City_5_bw_signal_9" x="-3140.76" y="2616.15" z="38.10" type="rail_signal"/>
+    <node id="City_1_buf_1" x="-13976.90" y="786.22" z="15.00" type="dead_end"/>
+    <node id="City_1_buf_2" x="-13978.15" y="792.09" z="15.00" type="dead_end"/>
+    <node id="City_1_buf_3" x="-13979.40" y="797.96" z="15.00" type="dead_end"/>
     <node id="City_4_buf_1" x="15184.29" y="-176.60" z="2.00" type="dead_end"/>
     <node id="City_4_buf_2" x="15185.33" y="-170.69" z="2.00" type="dead_end"/>
+    <node id="City_5_buf_1" x="4127.25" y="13497.35" z="60.00" type="dead_end"/>
+    <node id="City_5_buf_2" x="4133.24" y="13497.77" z="60.00" type="dead_end"/>
     <node id="City_6_buf_1" x="6606.75" y="-10994.29" z="2.00" type="dead_end"/>
     <node id="City_6_buf_2" x="6612.72" y="-10993.63" z="2.00" type="dead_end"/>
-    <node id="Depot_1_buf_1" x="-13988.61" y="11701.34" z="165.00" type="dead_end"/>
-    <node id="Depot_1_buf_2" x="-13992.85" y="11697.10" z="165.00" type="dead_end"/>
-    <node id="Depot_1_buf_3" x="-13997.10" y="11692.85" z="165.00" type="dead_end"/>
-    <node id="Depot_1_buf_4" x="-14001.34" y="11688.61" z="165.00" type="dead_end"/>
-    <node id="Depot_3_buf_1" x="8110.72" y="15342.21" z="55.00" type="dead_end"/>
-    <node id="Depot_3_buf_2" x="8107.72" y="15347.40" z="55.00" type="dead_end"/>
-    <node id="Depot_3_buf_3" x="8104.72" y="15352.60" z="55.00" type="dead_end"/>
-    <node id="Depot_3_buf_4" x="8101.72" y="15357.79" z="55.00" type="dead_end"/>
-    <node id="Depot_4_buf_1" x="9860.86" y="3030.96" z="18.00" type="dead_end"/>
-    <node id="Depot_4_buf_2" x="9858.81" y="3036.60" z="18.00" type="dead_end"/>
-    <node id="Depot_4_buf_3" x="9856.76" y="3042.23" z="18.00" type="dead_end"/>
-    <node id="Depot_4_buf_4" x="9854.71" y="3047.87" z="18.00" type="dead_end"/>
+    <node id="Depot_1_buf_1" x="-14130.03" y="11842.76" z="165.00" type="dead_end"/>
+    <node id="Depot_1_buf_2" x="-14134.27" y="11838.52" z="165.00" type="dead_end"/>
+    <node id="Depot_1_buf_3" x="-14138.52" y="11834.27" z="165.00" type="dead_end"/>
+    <node id="Depot_1_buf_4" x="-14142.76" y="11830.03" z="165.00" type="dead_end"/>
+    <node id="Depot_3_buf_1" x="8283.92" y="15442.21" z="55.00" type="dead_end"/>
+    <node id="Depot_3_buf_2" x="8280.92" y="15447.40" z="55.00" type="dead_end"/>
+    <node id="Depot_3_buf_3" x="8277.92" y="15452.60" z="55.00" type="dead_end"/>
+    <node id="Depot_3_buf_4" x="8274.92" y="15457.79" z="55.00" type="dead_end"/>
+    <node id="Depot_4_buf_1" x="10048.80" y="3099.36" z="18.00" type="dead_end"/>
+    <node id="Depot_4_buf_2" x="10046.75" y="3105.00" z="18.00" type="dead_end"/>
+    <node id="Depot_4_buf_3" x="10044.70" y="3110.64" z="18.00" type="dead_end"/>
+    <node id="Depot_4_buf_4" x="10042.65" y="3116.28" z="18.00" type="dead_end"/>
     <node id="City_1_Throat1" x="-13537.981180403593" y="885.6485700502324" z="15" type="rail_signal"/>
     <node id="City_1_Throat2" x="-12462.018819596407" y="1114.3514299497676" z="15" type="rail_signal"/>
     <node id="Town_1_Throat1" x="-9215.912588871459" y="1741.5472975967725" z="25" type="rail_signal"/>

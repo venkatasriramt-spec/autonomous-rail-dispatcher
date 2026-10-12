@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-10 18:02:33 by Eclipse SUMO netconvert Version 1.12.0
+<!-- generated on 2026-10-12 17:27:45 by Eclipse SUMO netconvert Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
-        <node-files value="/home/venkatasriramt/Desktop/network/scripts/../network_data/dense_network.nod.xml"/>
-        <edge-files value="/home/venkatasriramt/Desktop/network/scripts/../network_data/dense_network.edg.xml"/>
-        <connection-files value="/home/venkatasriramt/Desktop/network/scripts/../network_data/dense_network.con.xml"/>
+        <node-files value="/home/venkatasriramt/Desktop/tracks/scripts/../network_data/dense_network.nod.xml"/>
+        <edge-files value="/home/venkatasriramt/Desktop/tracks/scripts/../network_data/dense_network.edg.xml"/>
+        <connection-files value="/home/venkatasriramt/Desktop/tracks/scripts/../network_data/dense_network.con.xml"/>
     </input>
 
     <output>
-        <output-file value="/home/venkatasriramt/Desktop/network/scripts/../network_data/dense_network.net.xml"/>
-        <railway.topology.output value="/home/venkatasriramt/Desktop/network/scripts/../network_data/railway_topology.xml"/>
+        <output-file value="/home/venkatasriramt/Desktop/tracks/scripts/../network_data/dense_network.net.xml"/>
+        <railway.topology.output value="/home/venkatasriramt/Desktop/tracks/scripts/../network_data/railway_topology.xml"/>
     </output>
 
     <junctions>
@@ -34,8 +34,13 @@
         <error id="d" meaning="an outgoing edge has a sharp angle from all incoming edges"/>
     </legend>
     <railNodeType in="1" out="1">
+        <node id="City_1_buf_1"/>
+        <node id="City_1_buf_2"/>
+        <node id="City_1_buf_3"/>
         <node id="City_4_buf_1"/>
         <node id="City_4_buf_2"/>
+        <node id="City_5_buf_1"/>
+        <node id="City_5_buf_2"/>
         <node id="City_6_buf_1"/>
         <node id="City_6_buf_2"/>
         <node id="Depot_1_buf_1"/>
@@ -321,10 +326,6 @@
         <node id="Town_7_Throat1"/>
     </railNodeType>
     <railNodeType in="8" out="8">
-        <node id="City_1_Throat1"/>
-        <node id="City_1_Throat2"/>
-        <node id="City_4_Throat1"/>
-        <node id="City_5_Throat1"/>
         <node id="Depot_1_Throat2"/>
         <node id="Depot_3_Throat2"/>
         <node id="Depot_4_Throat2"/>
@@ -332,13 +333,21 @@
     <railNodeType in="9" out="9">
         <node id="City_3_EW_Throat1"/>
         <node id="City_3_EW_Throat2"/>
-        <node id="City_4_Throat2"/>
         <node id="City_5_Throat2"/>
         <node id="City_6_Throat1"/>
         <node id="City_6_Throat2"/>
     </railNodeType>
+    <railNodeType in="10" out="10">
+        <node id="City_4_Throat1"/>
+        <node id="City_5_Throat1"/>
+    </railNodeType>
     <railNodeType in="11" out="11">
+        <node id="City_1_Throat2"/>
         <node id="City_2_Throat1"/>
         <node id="City_2_Throat2"/>
+        <node id="City_4_Throat2"/>
+    </railNodeType>
+    <railNodeType in="14" out="14">
+        <node id="City_1_Throat1"/>
     </railNodeType>
 </railwayTopology>

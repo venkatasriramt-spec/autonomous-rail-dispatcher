@@ -15,7 +15,7 @@ def prettify(elem): return minidom.parseString(ET.tostring(elem, 'utf-8')).topre
 TRACK_PROFILES = {
     "high_speed": {"speed": "83.33", "allow": "rail_electric", "capacity_tons": "2500", "voltage": "25000", "gauge": "1435", "material": "concrete", "wear_rate": "0.01"},
     "regional": {"speed": "33.33", "allow": "rail rail_electric", "capacity_tons": "5000", "voltage": "15000", "gauge": "1435", "material": "ballast", "wear_rate": "0.05"},
-    "freight": {"speed": "22.22", "allow": "rail", "capacity_tons": "12000", "voltage": "none", "gauge": "1435", "material": "wood", "wear_rate": "0.10"}
+    "freight": {"speed": "22.22", "allow": "rail rail_electric", "capacity_tons": "12000", "voltage": "25000", "gauge": "1435", "material": "ballast", "wear_rate": "0.10"}
 }
 
 def compute_min_radius(pts):
@@ -676,13 +676,13 @@ def generate_sumo_network():
     # Intermediate towns feature 4-track Shinkansen/TGV layouts with central 300 km/h or 120 km/h through-tracks
     stations = {
         # Corridor 1: East-West Trans-Regional High-Speed Trunk
-        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=2, length=800, thru_tracks=0),
+        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=5, length=800, thru_tracks=0),
         'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
         'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900, thru_tracks=0),
         'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
         'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=2, length=900, thru_tracks=0),
         'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
-        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=2, length=800, thru_tracks=0),
+        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=4, length=800, thru_tracks=0),
 
         # Corridor 2: North-South Inter-City Trunk (elevated viaduct passing overhead through City_3_NS)
         'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=2, length=800, thru_tracks=0),
@@ -771,11 +771,13 @@ def generate_sumo_network():
 
     # Terminal Turn-Around Pocket Tracks with Dead-End Buffer Stops (Kopfmachen & Reversal Infrastructure)
     terminal_specs = [
+        ('City_1', 1, -1.0, 3, 450.0, 13.89, "high_speed"),
         ('City_4', 2, 1.0, 2, 450.0, 13.89, "high_speed"),
+        ('City_5', 1, -1.0, 2, 450.0, 13.89, "regional"),
         ('City_6', 2, 1.0, 2, 450.0, 13.89, "regional"),
-        ('Depot_1', 2, 1.0, 4, 300.0, 5.55, "freight"),
-        ('Depot_3', 2, 1.0, 4, 300.0, 5.55, "freight"),
-        ('Depot_4', 2, 1.0, 4, 300.0, 5.55, "freight"),
+        ('Depot_1', 2, 1.0, 4, 500.0, 5.55, "freight"),
+        ('Depot_3', 2, 1.0, 4, 500.0, 5.55, "freight"),
+        ('Depot_4', 2, 1.0, 4, 500.0, 5.55, "freight"),
     ]
 
     for stn_id, throat_idx, dir_sign, num_pockets, length, p_speed, prof_key in terminal_specs:
@@ -818,6 +820,9 @@ def generate_sumo_network():
             ET.SubElement(efw, 'param', key="is_tail_track", value="true")
             ET.SubElement(ebw, 'param', key="is_tail_track", value="true")
 
+            # Explicit turnaround connection at dead-end buffer stop
+            ET.SubElement(conns_root, 'connection', **{"from": efw_id, "to": ebw_id, "fromLane": "0", "toLane": "0"})
+
             if throat_idx == 2:
                 for p_fw in s.fw_edges:
                     ET.SubElement(conns_root, 'connection', **{"from": p_fw, "to": efw_id, "fromLane": "0", "toLane": "0"})
@@ -845,6 +850,9 @@ def generate_sumo_network():
         for plat_bw in s.bw_edges:
             for out_e in out_m1:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_bw, "to": out_e, "fromLane": "0", "toLane": "0"})
+        for plat_bw in s.bw_edges:
+            for plat_fw in s.fw_edges:
+                ET.SubElement(conns_root, 'connection', **{"from": plat_bw, "to": plat_fw, "fromLane": "0", "toLane": "0"})
 
         in_m2 = [bw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_start == s.t2] + \
                 [fw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_end == s.t2]
@@ -860,6 +868,9 @@ def generate_sumo_network():
         for plat_fw in s.fw_edges:
             for out_e in out_m2:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_fw, "to": out_e, "fromLane": "0", "toLane": "0"})
+        for plat_fw in s.fw_edges:
+            for plat_bw in s.bw_edges:
+                ET.SubElement(conns_root, 'connection', **{"from": plat_fw, "to": plat_bw, "fromLane": "0", "toLane": "0"})
 
     # Write network source XMLs
     for n in nd.values(): ET.SubElement(nodes_root, 'node', **{k:str(v) for k,v in n.items() if k != 'out_vec'})

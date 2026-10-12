@@ -180,4 +180,21 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Implemented `scripts/plot_passing_loop.py` producing `scripts/alpine_passing_loop.png`, showcasing the 2D plan view of the siding and the +11.8‰ mountain grade profile.
   - Implemented `scripts/plot_terminal_pockets.py` producing `scripts/terminal_pocket_tracks.png`, showcasing 4-panel multi-terminal layouts for `City_4`, `City_6`, `Depot_1`, and `Depot_3`.
 
+#### Phase 13: Full Rolling Stock Lifecycle Track Infrastructure Overhaul
+- **Motivation:** To support realistic fleet lifecycle operations from morning depot rollout to evening stabling—preventing train consist overhangs, vehicle access restrictions, and dead-end trapping—seven fundamental track engineering changes were implemented:
+  1. *Depot Pocket & Siding Expansion:* Increased pocket track lengths at `Depot_1`, `Depot_3`, and `Depot_4` from $300\text{ m}$ to **$500\text{ m}$**, accommodating full $400\text{ m}$ High-Speed EMUs (`high_speed_emu_300`) and $420\text{ m}$ freight consists (`heavy_freight_cargo`) without switch foul or throat overhang.
+  2. *Depot & Access Spur Electrification:* Updated the `freight` profile to `allow="rail rail_electric"` and `voltage="25000"`, enabling electric passenger EMUs (such as Corridor 1 rakes `HS-Rake-01` through `10`) to physically enter and stable at their designated home base (`Depot_4`) via `spur_City_3_EW_Depot_4`.
+  3. *Buffer Stop Reversing Connections:* Injected explicit `<connection from="..._fw" to="..._bw"/>` elements across all 21 buffer stop nodes (`*_buf_*`). This transforms dead-end stubs into interlocked reversing points, preventing trains from getting permanently trapped in pocket tracks.
+  4. *Western Terminus Turnaround (`City_1`):* Added 3 parallel electrified high-speed pocket tracks (`City_1_pocket_1_fw/bw` through `_3_fw/bw`, $L=450\text{ m}$) with buffer stops (`City_1_buf_1/2/3`) extending west of `City_1_Throat1`. Inbound Corridor 1 trains arriving on `City_1_plat_*_bw` can now pull into a pocket track, reverse, and return east on Corridor 1 via `City_1_plat_*_fw` without being forced onto Corridor 4.
+  5. *Northern Terminus Turnaround (`City_5`):* Added 2 parallel regional pocket tracks (`City_5_pocket_1_fw/bw`, `City_5_pocket_2_fw/bw`, $L=450\text{ m}$) with buffer stops (`City_5_buf_1/2`) north of `City_5_Throat1`, enabling Corridor 2 and Bypass terminating trains to reverse without travelling 6 km down the freight spur into `Depot_3`.
+  6. *Bi-Directional Throat Interlocking Routing (Same-Platform Turnarounds):* Wired scissors crossover connections at station throats linking platform backward edges to forward edges (`plat_bw -> plat_fw` at Throat 1; `plat_fw -> plat_bw` at Throat 2). Trains can now execute fast cab-swap reversals directly at station platforms (*Kopfmachen*).
+  7. *Overnight Stabling Sidings:* Expanded yard tracks at `City_1` from 2 to 5 electrified stabling tracks ($L=800\text{ m}$) and at `City_4` from 2 to 4 stabling tracks, providing overnight stabling capacity for high-speed rakes directly at their commercial departure terminals.
+
+- **Topological & Compilation Verification:**
+  - Recompiled cleanly via `netconvert`: **Exit code 0**.
+  - Evaluated `network_data/railway_topology.xml`: **0 error nodes**, **0 broken nodes**, **0 angle conflicts**, **0 disconnected lanes** across 294 nodes, 712 edges, 116 train stops, and 1,029 explicit connections.
+  - All 21 buffer stop nodes validated cleanly as `railNodeType in="1" out="1"`.
+  - Audited against `/home/venkatasriramt/Desktop/trains/scripts/export_to_sumo.py`: all 242 trips compiled with **100% verified routes** (242/242).
+
+
 
