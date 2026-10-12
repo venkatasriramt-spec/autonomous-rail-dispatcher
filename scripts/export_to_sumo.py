@@ -55,14 +55,12 @@ def expand_service_days(svc):
         days = [days]
     res = set()
     for d in days:
-        if d == "Daily":
-            res.update(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
-        elif d == "Mon-Fri":
-            res.update(["Mon", "Tue", "Wed", "Thu", "Fri"])
-        elif d in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
-            res.add(d)
-        else:
-            for part in d.replace(",", " ").replace("/", " ").split():
+        for part in d.replace(",", " ").replace("/", " ").split():
+            if part in ("Daily", "daily"):
+                res.update(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+            elif part in ("Mon-Fri", "mon-fri"):
+                res.update(["Mon", "Tue", "Wed", "Thu", "Fri"])
+            else:
                 norm = normalize_day(part)
                 if norm in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
                     res.add(norm)

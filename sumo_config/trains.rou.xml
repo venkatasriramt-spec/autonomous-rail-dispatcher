@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-12 12:46:48 by Eclipse SUMO duarouter Version 1.12.0
+<!-- generated on 2026-10-12 12:49:20 by Eclipse SUMO duarouter Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>
@@ -23,28 +23,11 @@
 -->
 
 <routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
-    <vType id="heavy_freight_cargo" length="420.00" maxSpeed="22.22" vClass="rail" guiShape="rail/cargo" color="217,153,38" accel="0.35" decel="0.5" emergencyDecel="1.2"/>
-    <vehicle id="train_68304_Freight" type="heavy_freight_cargo" depart="3600.00">
-        <route edges="City_6_pocket_1_bw City_6_plat_4_bw c4_Town_12_City_6_bw_b0 c4_Town_12_City_6_bw_b1 c4_Town_12_City_6_bw_b2 c4_Town_12_City_6_bw_b3 c4_Town_12_City_6_bw_b4 c4_Town_12_City_6_bw_b5 c4_Town_12_City_6_bw_b6 Town_12_thru_1_bw c4_Depot_2_Town_12_xov_T1_post_bw_b3 c4_Depot_2_Town_12_xov_T1_post_bw_b2 c4_Depot_2_Town_12_xov_T1_post_bw_b1 c4_Depot_2_Town_12_xov_T1_post_bw_b0 c4_Depot_2_Town_12_xov_xov2_bw c4_Depot_2_Town_12_xov_T2_mid_bw c4_Depot_2_Town_12_xov_T2_post_bw_b3 c4_Depot_2_Town_12_xov_T2_post_bw_b2 c4_Depot_2_Town_12_xov_T2_post_bw_b1 c4_Depot_2_Town_12_xov_T2_post_bw_b0 Depot_2_yard_1_bw"/>
-    </vehicle>
     <vType id="electric_trunk_freight" length="400.00" maxSpeed="27.78" vClass="rail_electric" guiShape="rail/cargo" color="51,166,217" accel="0.45" decel="0.6" emergencyDecel="1.4"/>
     <vehicle id="train_68402_Freight" type="electric_trunk_freight" depart="5400.00">
         <route edges="City_4_plat_2_bw c1_Town_3_City_4_bw_b0 c1_Town_3_City_4_bw_b1 c1_Town_3_City_4_bw_b2 c1_Town_3_City_4_bw_b3 Town_3_thru_1_bw c1_City_3_EW_Town_3_xov_T2_pre_bw_b2 c1_City_3_EW_Town_3_xov_T2_pre_bw_b1 c1_City_3_EW_Town_3_xov_T2_pre_bw_b0 c1_City_3_EW_Town_3_xov_T2_mid_bw c1_City_3_EW_Town_3_xov_xov1_bw c1_City_3_EW_Town_3_xov_T1_pre_bw_b1 c1_City_3_EW_Town_3_xov_T1_pre_bw_b0 City_3_EW_plat_4_bw c1_Town_2_City_3_EW_xov_T1_post_bw_b2 c1_Town_2_City_3_EW_xov_T1_post_bw_b1 c1_Town_2_City_3_EW_xov_T1_post_bw_b0 c1_Town_2_City_3_EW_xov_T1_mid_bw c1_Town_2_City_3_EW_xov_T1_pre_bw_b2 c1_Town_2_City_3_EW_xov_T1_pre_bw_b1 c1_Town_2_City_3_EW_xov_T1_pre_bw_b0 Town_2_thru_1_bw c1_City_2_Town_2_xov_T2_pre_bw_b2 c1_City_2_Town_2_xov_T2_pre_bw_b1 c1_City_2_Town_2_xov_T2_pre_bw_b0 c1_City_2_Town_2_xov_T2_mid_bw c1_City_2_Town_2_xov_xov1_bw c1_City_2_Town_2_xov_T1_pre_bw_b1 c1_City_2_Town_2_xov_T1_pre_bw_b0 City_2_plat_4_bw c1_Town_1_City_2_xov_T1_post_bw_b1 c1_Town_1_City_2_xov_T1_post_bw_b0 c1_Town_1_City_2_xov_T1_mid_bw c1_Town_1_City_2_xov_T1_pre_bw_b1 c1_Town_1_City_2_xov_T1_pre_bw_b0 Town_1_thru_1_bw c1_City_1_Town_1_bw_b0 c1_City_1_Town_1_bw_b1 c1_City_1_Town_1_bw_b2 c1_City_1_Town_1_bw_b3 City_1_plat_2_bw"/>
     </vehicle>
-    <vehicle id="train_68104_Freight" type="heavy_freight_cargo" depart="7200.00">
-        <route edges="Depot_1_pocket_1_bw Depot_1_yard_2_bw c3_Town_9_Depot_1_bw_b0 c3_Town_9_Depot_1_bw_b1 c3_Town_9_Depot_1_bw_b2 c3_Town_9_Depot_1_bw_b3 c3_Town_9_Depot_1_bw_b4 c3_Town_9_Depot_1_bw_b5 Town_9_plat_2_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_2_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_yard_1_fw"/>
-    </vehicle>
     <vType id="intermodal_container_freight" length="380.00" maxSpeed="22.22" vClass="rail" guiShape="rail/cargo" color="153,102,204" accel="0.4" decel="0.55" emergencyDecel="1.3"/>
-    <vehicle id="train_68204_Freight" type="intermodal_container_freight" depart="9000.00">
-        <route edges="Depot_3_pocket_1_bw Depot_3_yard_2_bw spur_City_5_Depot_3_bw_b0 spur_City_5_Depot_3_bw_b1 spur_City_5_Depot_3_bw_b2 spur_City_5_Depot_3_bw_b3 spur_City_5_Depot_3_bw_b4 spur_City_5_Depot_3_bw_b5 City_5_yard_1_fw"/>
-    </vehicle>
-    <vehicle id="train_68301_Freight" type="heavy_freight_cargo" depart="12600.00">
-        <route edges="Depot_2_yard_1_fw c4_Depot_2_Town_12_xov_T2_post_fw_b0 c4_Depot_2_Town_12_xov_T2_post_fw_b1 c4_Depot_2_Town_12_xov_T2_post_fw_b2 c4_Depot_2_Town_12_xov_T2_post_fw_b3 c4_Depot_2_Town_12_xov_T2_mid_fw c4_Depot_2_Town_12_xov_xov2_fw c4_Depot_2_Town_12_xov_T1_post_fw_b0 c4_Depot_2_Town_12_xov_T1_post_fw_b1 c4_Depot_2_Town_12_xov_T1_post_fw_b2 c4_Depot_2_Town_12_xov_T1_post_fw_b3 Town_12_thru_1_fw c4_Town_12_City_6_fw_b0 c4_Town_12_City_6_fw_b1 c4_Town_12_City_6_fw_b2 c4_Town_12_City_6_fw_b3 c4_Town_12_City_6_fw_b4 c4_Town_12_City_6_fw_b5 c4_Town_12_City_6_fw_b6 City_6_plat_4_fw City_6_pocket_1_fw"/>
-    </vehicle>
-    <vehicle id="train_68101_Freight" type="heavy_freight_cargo" depart="16200.00">
-        <route edges="City_2_yard_1_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_2_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_lead_in_fw c3_Town_8_Town_9_loop_siding_fw c3_Town_8_Town_9_loop_lead_out_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_2_fw c3_Town_9_Depot_1_fw_b0 c3_Town_9_Depot_1_fw_b1 c3_Town_9_Depot_1_fw_b2 c3_Town_9_Depot_1_fw_b3 c3_Town_9_Depot_1_fw_b4 c3_Town_9_Depot_1_fw_b5 Depot_1_yard_2_fw Depot_1_pocket_1_fw"/>
-        <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" duration="720.00"/>
-    </vehicle>
     <vehicle id="train_68201_Freight" type="intermodal_container_freight" depart="18000.00">
         <route edges="City_5_yard_1_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 spur_City_5_Depot_3_fw_b5 Depot_3_yard_2_fw Depot_3_pocket_1_fw"/>
     </vehicle>
@@ -311,9 +294,6 @@
         <stop busStop="City_2_p1_fw" duration="150.00"/>
         <stop busStop="City_3_EW_p1_fw" duration="180.00"/>
     </vehicle>
-    <vehicle id="train_68302_Freight" type="heavy_freight_cargo" depart="30600.00">
-        <route edges="City_6_pocket_1_bw City_6_plat_4_bw c4_Town_12_City_6_bw_b0 c4_Town_12_City_6_bw_b1 c4_Town_12_City_6_bw_b2 c4_Town_12_City_6_bw_b3 c4_Town_12_City_6_bw_b4 c4_Town_12_City_6_bw_b5 c4_Town_12_City_6_bw_b6 Town_12_thru_1_bw c4_Depot_2_Town_12_xov_T1_post_bw_b3 c4_Depot_2_Town_12_xov_T1_post_bw_b2 c4_Depot_2_Town_12_xov_T1_post_bw_b1 c4_Depot_2_Town_12_xov_T1_post_bw_b0 c4_Depot_2_Town_12_xov_xov2_bw c4_Depot_2_Town_12_xov_T2_mid_bw c4_Depot_2_Town_12_xov_T2_post_bw_b3 c4_Depot_2_Town_12_xov_T2_post_bw_b2 c4_Depot_2_Town_12_xov_T2_post_bw_b1 c4_Depot_2_Town_12_xov_T2_post_bw_b0 Depot_2_yard_1_bw"/>
-    </vehicle>
     <vehicle id="train_12006_HighSpeed" type="high_speed_emu_300" depart="30900.00">
         <route edges="City_4_plat_1_bw c1_Town_3_City_4_bw_b0 c1_Town_3_City_4_bw_b1 c1_Town_3_City_4_bw_b2 c1_Town_3_City_4_bw_b3 Town_3_thru_2_bw c1_City_3_EW_Town_3_xov_T1_post_bw_b1 c1_City_3_EW_Town_3_xov_T1_post_bw_b0 c1_City_3_EW_Town_3_xov_T1_mid_bw c1_City_3_EW_Town_3_xov_T1_pre_bw_b1 c1_City_3_EW_Town_3_xov_T1_pre_bw_b0 City_3_EW_plat_1_bw c1_Town_2_City_3_EW_xov_T1_post_bw_b2 c1_Town_2_City_3_EW_xov_T1_post_bw_b1 c1_Town_2_City_3_EW_xov_T1_post_bw_b0 c1_Town_2_City_3_EW_xov_T1_mid_bw c1_Town_2_City_3_EW_xov_T1_pre_bw_b2 c1_Town_2_City_3_EW_xov_T1_pre_bw_b1 c1_Town_2_City_3_EW_xov_T1_pre_bw_b0 Town_2_thru_1_bw c1_City_2_Town_2_xov_T2_pre_bw_b2 c1_City_2_Town_2_xov_T2_pre_bw_b1 c1_City_2_Town_2_xov_T2_pre_bw_b0 c1_City_2_Town_2_xov_T2_mid_bw c1_City_2_Town_2_xov_xov1_bw c1_City_2_Town_2_xov_T1_pre_bw_b1 c1_City_2_Town_2_xov_T1_pre_bw_b0 City_2_plat_1_bw c1_Town_1_City_2_xov_T1_post_bw_b1 c1_Town_1_City_2_xov_T1_post_bw_b0 c1_Town_1_City_2_xov_T1_mid_bw c1_Town_1_City_2_xov_T1_pre_bw_b1 c1_Town_1_City_2_xov_T1_pre_bw_b0 Town_1_thru_1_bw c1_City_1_Town_1_bw_b0 c1_City_1_Town_1_bw_b1 c1_City_1_Town_1_bw_b2 c1_City_1_Town_1_bw_b3 City_1_plat_1_bw"/>
         <stop busStop="City_3_EW_p1_bw" duration="180.00"/>
@@ -480,10 +460,6 @@
         <stop busStop="Town_6_p1_fw" duration="45.00"/>
         <stop busStop="Town_7_p1_fw" duration="45.00"/>
     </vehicle>
-    <vehicle id="train_12765_Regional" type="regional_dmu_120" depart="36600.00">
-        <route edges="City_2_plat_3_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
-        <stop busStop="Town_8_p1_fw" duration="75.00"/>
-    </vehicle>
     <vehicle id="train_21005_Regional" type="regional_emu_120" depart="36900.00">
         <route edges="City_1_plat_2_fw c1_City_1_Town_1_fw_b0 c1_City_1_Town_1_fw_b1 c1_City_1_Town_1_fw_b2 c1_City_1_Town_1_fw_b3 Town_1_plat_2_fw c1_Town_1_City_2_xov_T1_pre_fw_b0 c1_Town_1_City_2_xov_T1_pre_fw_b1 c1_Town_1_City_2_xov_T1_mid_fw c1_Town_1_City_2_xov_T1_post_fw_b0 c1_Town_1_City_2_xov_T1_post_fw_b1 City_2_plat_2_fw c1_City_2_Town_2_xov_T1_pre_fw_b0 c1_City_2_Town_2_xov_T1_pre_fw_b1 c1_City_2_Town_2_xov_xov1_fw c1_City_2_Town_2_xov_T2_mid_fw c1_City_2_Town_2_xov_T2_pre_fw_b0 c1_City_2_Town_2_xov_T2_pre_fw_b1 c1_City_2_Town_2_xov_T2_pre_fw_b2 Town_2_plat_2_fw c1_Town_2_City_3_EW_xov_T1_pre_fw_b0 c1_Town_2_City_3_EW_xov_T1_pre_fw_b1 c1_Town_2_City_3_EW_xov_T1_pre_fw_b2 c1_Town_2_City_3_EW_xov_T1_mid_fw c1_Town_2_City_3_EW_xov_T1_post_fw_b0 c1_Town_2_City_3_EW_xov_T1_post_fw_b1 c1_Town_2_City_3_EW_xov_T1_post_fw_b2 City_3_EW_plat_2_fw c1_City_3_EW_Town_3_xov_T1_pre_fw_b0 c1_City_3_EW_Town_3_xov_T1_pre_fw_b1 c1_City_3_EW_Town_3_xov_xov1_fw c1_City_3_EW_Town_3_xov_T2_mid_fw c1_City_3_EW_Town_3_xov_T2_pre_fw_b0 c1_City_3_EW_Town_3_xov_T2_pre_fw_b1 c1_City_3_EW_Town_3_xov_T2_pre_fw_b2 Town_3_plat_2_fw c1_Town_3_City_4_fw_b0 c1_Town_3_City_4_fw_b1 c1_Town_3_City_4_fw_b2 c1_Town_3_City_4_fw_b3 City_4_plat_2_fw"/>
         <stop busStop="Town_1_p2_fw" duration="45.00"/>
@@ -509,10 +485,6 @@
     <vehicle id="train_51018_Regional" type="regional_emu_120" depart="38100.00">
         <route edges="City_6_plat_4_bw c2_Town_7_City_6_bw_b0 c2_Town_7_City_6_bw_b1 c2_Town_7_City_6_bw_b2 c2_Town_7_City_6_bw_b3 c2_Town_7_City_6_bw_b4 Town_7_thru_2_bw c2_Town_6_Town_7_xov_T1_post_bw_b1 c2_Town_6_Town_7_xov_T1_post_bw_b0 c2_Town_6_Town_7_xov_T1_mid_bw c2_Town_6_Town_7_xov_T1_pre_bw_b1 c2_Town_6_Town_7_xov_T1_pre_bw_b0 Town_6_thru_2_bw c2_City_3_NS_Town_6_bw_b0 c2_City_3_NS_Town_6_bw_b1 c2_City_3_NS_Town_6_bw_b2 c2_City_3_NS_Town_6_bw_b3 City_3_NS_plat_4_bw transfer_City_3_EW_NS_bw City_3_EW_plat_3_fw c1_City_3_EW_Town_3_xov_T1_pre_fw_b0 c1_City_3_EW_Town_3_xov_T1_pre_fw_b1 c1_City_3_EW_Town_3_xov_xov1_fw c1_City_3_EW_Town_3_xov_T2_mid_fw c1_City_3_EW_Town_3_xov_T2_pre_fw_b0 c1_City_3_EW_Town_3_xov_T2_pre_fw_b1 c1_City_3_EW_Town_3_xov_T2_pre_fw_b2 Town_3_thru_1_fw c1_Town_3_City_4_fw_b0 c1_Town_3_City_4_fw_b1 c1_Town_3_City_4_fw_b2 c1_Town_3_City_4_fw_b3 City_4_plat_4_fw"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
-    </vehicle>
-    <vehicle id="train_12766_Regional" type="regional_dmu_120" depart="38400.00">
-        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_3_fw"/>
-        <stop busStop="Town_8_p1_bw" duration="75.00"/>
     </vehicle>
     <vehicle id="train_32040_Regional" type="regional_emu_120" depart="38700.00">
         <route edges="City_6_plat_1_bw c2_Town_7_City_6_bw_b0 c2_Town_7_City_6_bw_b1 c2_Town_7_City_6_bw_b2 c2_Town_7_City_6_bw_b3 c2_Town_7_City_6_bw_b4 Town_7_plat_1_bw c2_Town_6_Town_7_xov_T1_post_bw_b1 c2_Town_6_Town_7_xov_T1_post_bw_b0 c2_Town_6_Town_7_xov_T1_mid_bw c2_Town_6_Town_7_xov_T1_pre_bw_b1 c2_Town_6_Town_7_xov_T1_pre_bw_b0 Town_6_plat_1_bw c2_City_3_NS_Town_6_bw_b0 c2_City_3_NS_Town_6_bw_b1 c2_City_3_NS_Town_6_bw_b2 c2_City_3_NS_Town_6_bw_b3 City_3_NS_plat_1_bw c2_Town_5_City_3_NS_bw_b0 c2_Town_5_City_3_NS_bw_b1 c2_Town_5_City_3_NS_bw_b2 c2_Town_5_City_3_NS_bw_b3 Town_5_plat_1_bw c2_Town_4_Town_5_xov_T1_post_bw_b1 c2_Town_4_Town_5_xov_T1_post_bw_b0 c2_Town_4_Town_5_xov_T1_mid_bw c2_Town_4_Town_5_xov_T1_pre_bw_b1 c2_Town_4_Town_5_xov_T1_pre_bw_b0 Town_4_plat_1_bw c2_City_5_Town_4_bw_b0 c2_City_5_Town_4_bw_b1 c2_City_5_Town_4_bw_b2 c2_City_5_Town_4_bw_b3 City_5_plat_1_bw"/>
@@ -543,9 +515,6 @@
         <route edges="City_1_plat_1_fw c1_City_1_Town_1_fw_b0 c1_City_1_Town_1_fw_b1 c1_City_1_Town_1_fw_b2 c1_City_1_Town_1_fw_b3 Town_1_thru_1_fw c1_Town_1_City_2_xov_T1_pre_fw_b0 c1_Town_1_City_2_xov_T1_pre_fw_b1 c1_Town_1_City_2_xov_T1_mid_fw c1_Town_1_City_2_xov_T1_post_fw_b0 c1_Town_1_City_2_xov_T1_post_fw_b1 City_2_plat_1_fw c1_City_2_Town_2_xov_T1_pre_fw_b0 c1_City_2_Town_2_xov_T1_pre_fw_b1 c1_City_2_Town_2_xov_xov1_fw c1_City_2_Town_2_xov_T2_mid_fw c1_City_2_Town_2_xov_T2_pre_fw_b0 c1_City_2_Town_2_xov_T2_pre_fw_b1 c1_City_2_Town_2_xov_T2_pre_fw_b2 Town_2_thru_1_fw c1_Town_2_City_3_EW_xov_T1_pre_fw_b0 c1_Town_2_City_3_EW_xov_T1_pre_fw_b1 c1_Town_2_City_3_EW_xov_T1_pre_fw_b2 c1_Town_2_City_3_EW_xov_T1_mid_fw c1_Town_2_City_3_EW_xov_T1_post_fw_b0 c1_Town_2_City_3_EW_xov_T1_post_fw_b1 c1_Town_2_City_3_EW_xov_T1_post_fw_b2 City_3_EW_plat_1_fw c1_City_3_EW_Town_3_xov_T1_pre_fw_b0 c1_City_3_EW_Town_3_xov_T1_pre_fw_b1 c1_City_3_EW_Town_3_xov_T1_mid_fw c1_City_3_EW_Town_3_xov_T1_post_fw_b0 c1_City_3_EW_Town_3_xov_T1_post_fw_b1 Town_3_thru_1_fw c1_Town_3_City_4_fw_b0 c1_Town_3_City_4_fw_b1 c1_Town_3_City_4_fw_b2 c1_Town_3_City_4_fw_b3 City_4_plat_1_fw"/>
         <stop busStop="City_2_p1_fw" duration="120.00"/>
         <stop busStop="City_3_EW_p1_fw" duration="150.00"/>
-    </vehicle>
-    <vehicle id="train_68102_Freight" type="heavy_freight_cargo" depart="39600.00">
-        <route edges="Depot_1_pocket_1_bw Depot_1_yard_2_bw c3_Town_9_Depot_1_bw_b0 c3_Town_9_Depot_1_bw_b1 c3_Town_9_Depot_1_bw_b2 c3_Town_9_Depot_1_bw_b3 c3_Town_9_Depot_1_bw_b4 c3_Town_9_Depot_1_bw_b5 Town_9_plat_2_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_2_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_yard_1_fw"/>
     </vehicle>
     <vehicle id="train_51005_Regional" type="regional_emu_120" depart="39900.00">
         <route edges="City_4_plat_4_bw c1_Town_3_City_4_bw_b0 c1_Town_3_City_4_bw_b1 c1_Town_3_City_4_bw_b2 c1_Town_3_City_4_bw_b3 Town_3_thru_1_bw c1_City_3_EW_Town_3_xov_T2_pre_bw_b2 c1_City_3_EW_Town_3_xov_T2_pre_bw_b1 c1_City_3_EW_Town_3_xov_T2_pre_bw_b0 c1_City_3_EW_Town_3_xov_T2_mid_bw c1_City_3_EW_Town_3_xov_xov1_bw c1_City_3_EW_Town_3_xov_T1_pre_bw_b1 c1_City_3_EW_Town_3_xov_T1_pre_bw_b0 City_3_EW_plat_4_bw transfer_City_3_EW_NS_fw City_3_NS_plat_2_fw c2_City_3_NS_Town_6_fw_b0 c2_City_3_NS_Town_6_fw_b1 c2_City_3_NS_Town_6_fw_b2 c2_City_3_NS_Town_6_fw_b3 Town_6_thru_1_fw c2_Town_6_Town_7_xov_T1_pre_fw_b0 c2_Town_6_Town_7_xov_T1_pre_fw_b1 c2_Town_6_Town_7_xov_T1_mid_fw c2_Town_6_Town_7_xov_T1_post_fw_b0 c2_Town_6_Town_7_xov_T1_post_fw_b1 Town_7_thru_1_fw c2_Town_7_City_6_fw_b0 c2_Town_7_City_6_fw_b1 c2_Town_7_City_6_fw_b2 c2_Town_7_City_6_fw_b3 c2_Town_7_City_6_fw_b4 City_6_plat_4_fw"/>
@@ -1370,6 +1339,7 @@
         <stop busStop="Town_11_p1_fw" duration="45.00"/>
         <stop busStop="Town_12_p1_fw" duration="45.00"/>
     </vehicle>
+    <vType id="heavy_freight_cargo" length="420.00" maxSpeed="22.22" vClass="rail" guiShape="rail/cargo" color="217,153,38" accel="0.35" decel="0.5" emergencyDecel="1.2"/>
     <vehicle id="train_68303_Freight" type="heavy_freight_cargo" depart="77400.00">
         <route edges="Depot_2_yard_1_fw c4_Depot_2_Town_12_xov_T2_post_fw_b0 c4_Depot_2_Town_12_xov_T2_post_fw_b1 c4_Depot_2_Town_12_xov_T2_post_fw_b2 c4_Depot_2_Town_12_xov_T2_post_fw_b3 c4_Depot_2_Town_12_xov_T2_mid_fw c4_Depot_2_Town_12_xov_xov2_fw c4_Depot_2_Town_12_xov_T1_post_fw_b0 c4_Depot_2_Town_12_xov_T1_post_fw_b1 c4_Depot_2_Town_12_xov_T1_post_fw_b2 c4_Depot_2_Town_12_xov_T1_post_fw_b3 Town_12_thru_1_fw c4_Town_12_City_6_fw_b0 c4_Town_12_City_6_fw_b1 c4_Town_12_City_6_fw_b2 c4_Town_12_City_6_fw_b3 c4_Town_12_City_6_fw_b4 c4_Town_12_City_6_fw_b5 c4_Town_12_City_6_fw_b6 City_6_plat_4_fw City_6_pocket_1_fw"/>
     </vehicle>
@@ -1429,9 +1399,6 @@
         <stop busStop="City_3_NS_p1_bw" duration="150.00"/>
         <stop busStop="Town_5_p1_bw" duration="45.00"/>
         <stop busStop="Town_4_p1_bw" duration="45.00"/>
-    </vehicle>
-    <vehicle id="train_68203_Freight" type="intermodal_container_freight" depart="82800.00">
-        <route edges="City_5_yard_1_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 spur_City_5_Depot_3_fw_b5 Depot_3_yard_2_fw Depot_3_pocket_1_fw"/>
     </vehicle>
     <vehicle id="train_68401_Freight" type="electric_trunk_freight" depart="83700.00">
         <route edges="City_1_plat_2_fw c1_City_1_Town_1_fw_b0 c1_City_1_Town_1_fw_b1 c1_City_1_Town_1_fw_b2 c1_City_1_Town_1_fw_b3 Town_1_thru_1_fw c1_Town_1_City_2_xov_T1_pre_fw_b0 c1_Town_1_City_2_xov_T1_pre_fw_b1 c1_Town_1_City_2_xov_T1_mid_fw c1_Town_1_City_2_xov_T1_post_fw_b0 c1_Town_1_City_2_xov_T1_post_fw_b1 City_2_plat_5_fw c1_City_2_Town_2_xov_T1_pre_fw_b0 c1_City_2_Town_2_xov_T1_pre_fw_b1 c1_City_2_Town_2_xov_xov1_fw c1_City_2_Town_2_xov_T2_mid_fw c1_City_2_Town_2_xov_T2_pre_fw_b0 c1_City_2_Town_2_xov_T2_pre_fw_b1 c1_City_2_Town_2_xov_T2_pre_fw_b2 Town_2_thru_1_fw c1_Town_2_City_3_EW_xov_T1_pre_fw_b0 c1_Town_2_City_3_EW_xov_T1_pre_fw_b1 c1_Town_2_City_3_EW_xov_T1_pre_fw_b2 c1_Town_2_City_3_EW_xov_T1_mid_fw c1_Town_2_City_3_EW_xov_T1_post_fw_b0 c1_Town_2_City_3_EW_xov_T1_post_fw_b1 c1_Town_2_City_3_EW_xov_T1_post_fw_b2 City_3_EW_plat_4_fw c1_City_3_EW_Town_3_xov_T1_pre_fw_b0 c1_City_3_EW_Town_3_xov_T1_pre_fw_b1 c1_City_3_EW_Town_3_xov_xov1_fw c1_City_3_EW_Town_3_xov_T2_mid_fw c1_City_3_EW_Town_3_xov_T2_pre_fw_b0 c1_City_3_EW_Town_3_xov_T2_pre_fw_b1 c1_City_3_EW_Town_3_xov_T2_pre_fw_b2 Town_3_thru_1_fw c1_Town_3_City_4_fw_b0 c1_Town_3_City_4_fw_b1 c1_Town_3_City_4_fw_b2 c1_Town_3_City_4_fw_b3 City_4_plat_2_fw"/>
