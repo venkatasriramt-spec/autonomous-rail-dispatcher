@@ -73,6 +73,8 @@ def validate_timetable(net_file=None, rou_file=None, day=None, tolerance_km=0.05
     with open(TIMETABLE_FILE, "r", encoding="utf-8") as f:
         timetable = json.load(f)
 
+    unfiltered_tt_ids = {f"train_{s['train_number']}_{s['service_class']}" for s in timetable}
+
     if day:
         norm_day = normalize_day(day)
         if norm_day not in SUPPORTED_DAYS:
@@ -113,16 +115,19 @@ def validate_timetable(net_file=None, rou_file=None, day=None, tolerance_km=0.05
         rs_info = rs_types.get(vtype)
         vmax = rs_info["max_speed_ms"] if rs_info else 55.56
 
+        if vid not in tt_map:
+            if vid in unfiltered_tt_ids:
+                # Skip vehicle belonging to known service excluded from the selected day
+                continue
+            unmatched_vehicles.append(vid)
+            continue
+
         route_elem = v.find("route")
         if route_elem is None:
             missing_routes.append(vid)
             continue
 
-        svc = tt_map.get(vid)
-        if not svc:
-            unmatched_vehicles.append(vid)
-            continue
-
+        svc = tt_map[vid]
         checked_services.add(vid)
 
         edges = route_elem.attrib["edges"].split()
