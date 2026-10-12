@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-12 18:41:23 by Eclipse SUMO duarouter Version 1.12.0
+<!-- generated on 2026-10-12 18:52:55 by Eclipse SUMO duarouter Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>
@@ -27,11 +27,11 @@
     <vehicle id="FRT-Rake-03" type="heavy_freight_cargo" depart="3000.00">
         <route edges="City_6_yard_1_fw City_6_pocket_1_fw City_6_pocket_1_bw City_6_plat_4_bw c4_Town_12_City_6_bw_b0 c4_Town_12_City_6_bw_b1 c4_Town_12_City_6_bw_b2 c4_Town_12_City_6_bw_b3 c4_Town_12_City_6_bw_b4 c4_Town_12_City_6_bw_b5 c4_Town_12_City_6_bw_b6 Town_12_thru_1_bw c4_Depot_2_Town_12_xov_T1_post_bw_b3 c4_Depot_2_Town_12_xov_T1_post_bw_b2 c4_Depot_2_Town_12_xov_T1_post_bw_b1 c4_Depot_2_Town_12_xov_T1_post_bw_b0 c4_Depot_2_Town_12_xov_xov2_bw c4_Depot_2_Town_12_xov_T2_mid_bw c4_Depot_2_Town_12_xov_T2_post_bw_b3 c4_Depot_2_Town_12_xov_T2_post_bw_b2 c4_Depot_2_Town_12_xov_T2_post_bw_b1 c4_Depot_2_Town_12_xov_T2_post_bw_b0 Depot_2_yard_1_bw Depot_2_yard_1_fw c4_Depot_2_Town_12_xov_T2_post_fw_b0 c4_Depot_2_Town_12_xov_T2_post_fw_b1 c4_Depot_2_Town_12_xov_T2_post_fw_b2 c4_Depot_2_Town_12_xov_T2_post_fw_b3 c4_Depot_2_Town_12_xov_T2_mid_fw c4_Depot_2_Town_12_xov_xov2_fw c4_Depot_2_Town_12_xov_T1_post_fw_b0 c4_Depot_2_Town_12_xov_T1_post_fw_b1 c4_Depot_2_Town_12_xov_T1_post_fw_b2 c4_Depot_2_Town_12_xov_T1_post_fw_b3 Town_12_thru_1_fw c4_Town_12_City_6_fw_b0 c4_Town_12_City_6_fw_b1 c4_Town_12_City_6_fw_b2 c4_Town_12_City_6_fw_b3 c4_Town_12_City_6_fw_b4 c4_Town_12_City_6_fw_b5 c4_Town_12_City_6_fw_b6 City_6_yard_1_fw City_6_pocket_1_fw City_6_pocket_1_bw City_6_plat_4_bw c4_Town_12_City_6_bw_b0 c4_Town_12_City_6_bw_b1 c4_Town_12_City_6_bw_b2 c4_Town_12_City_6_bw_b3 c4_Town_12_City_6_bw_b4 c4_Town_12_City_6_bw_b5 c4_Town_12_City_6_bw_b6 Town_12_thru_1_bw c4_Depot_2_Town_12_xov_T1_post_bw_b3 c4_Depot_2_Town_12_xov_T1_post_bw_b2 c4_Depot_2_Town_12_xov_T1_post_bw_b1 c4_Depot_2_Town_12_xov_T1_post_bw_b0 c4_Depot_2_Town_12_xov_xov2_bw c4_Depot_2_Town_12_xov_T2_mid_bw c4_Depot_2_Town_12_xov_T2_post_bw_b3 c4_Depot_2_Town_12_xov_T2_post_bw_b2 c4_Depot_2_Town_12_xov_T2_post_bw_b1 c4_Depot_2_Town_12_xov_T2_post_bw_b0 Depot_2_yard_1_bw Depot_2_yard_1_fw c4_Depot_2_Town_12_xov_T2_post_fw_b0 c4_Depot_2_Town_12_xov_T2_post_fw_b1 c4_Depot_2_Town_12_xov_T2_post_fw_b2 c4_Depot_2_Town_12_xov_T2_post_fw_b3 c4_Depot_2_Town_12_xov_T2_mid_fw c4_Depot_2_Town_12_xov_xov2_fw c4_Depot_2_Town_12_xov_T1_post_fw_b0 c4_Depot_2_Town_12_xov_T1_post_fw_b1 c4_Depot_2_Town_12_xov_T1_post_fw_b2 c4_Depot_2_Town_12_xov_T1_post_fw_b3 Town_12_thru_1_fw c4_Town_12_City_6_fw_b0 c4_Town_12_City_6_fw_b1 c4_Town_12_City_6_fw_b2 c4_Town_12_City_6_fw_b3 c4_Town_12_City_6_fw_b4 c4_Town_12_City_6_fw_b5 c4_Town_12_City_6_fw_b6 City_6_yard_1_fw"/>
         <stop lane="City_6_pocket_1_bw_0" duration="60.00" until="3600.00"/>
-        <stop lane="Depot_2_yard_1_bw_0" duration="60.00" until="12600.00"/>
+        <stop lane="Depot_2_yard_1_bw_0" duration="60.00" until="12300.00"/>
         <stop lane="Depot_2_yard_1_fw_0" duration="60.00" until="12600.00"/>
-        <stop lane="City_6_yard_1_fw_0" duration="60.00" until="30600.00"/>
+        <stop lane="City_6_yard_1_fw_0" duration="60.00" until="30300.00"/>
         <stop lane="City_6_pocket_1_bw_0" duration="60.00" until="30600.00"/>
-        <stop lane="Depot_2_yard_1_bw_0" duration="60.00" until="77400.00"/>
+        <stop lane="Depot_2_yard_1_bw_0" duration="60.00" until="77100.00"/>
         <stop lane="Depot_2_yard_1_fw_0" duration="60.00" until="77400.00"/>
         <stop lane="City_6_yard_1_fw_0" duration="3600.00"/>
     </vehicle>
@@ -40,7 +40,7 @@
         <route edges="City_4_yard_2_fw City_4_plat_2_bw c1_Town_3_City_4_bw_b0 c1_Town_3_City_4_bw_b1 c1_Town_3_City_4_bw_b2 c1_Town_3_City_4_bw_b3 Town_3_thru_1_bw c1_City_3_EW_Town_3_xov_T2_pre_bw_b2 c1_City_3_EW_Town_3_xov_T2_pre_bw_b1 c1_City_3_EW_Town_3_xov_T2_pre_bw_b0 c1_City_3_EW_Town_3_xov_T2_mid_bw c1_City_3_EW_Town_3_xov_xov1_bw c1_City_3_EW_Town_3_xov_T1_pre_bw_b1 c1_City_3_EW_Town_3_xov_T1_pre_bw_b0 City_3_EW_plat_4_bw c1_Town_2_City_3_EW_xov_T1_post_bw_b2 c1_Town_2_City_3_EW_xov_T1_post_bw_b1 c1_Town_2_City_3_EW_xov_T1_post_bw_b0 c1_Town_2_City_3_EW_xov_T1_mid_bw c1_Town_2_City_3_EW_xov_T1_pre_bw_b2 c1_Town_2_City_3_EW_xov_T1_pre_bw_b1 c1_Town_2_City_3_EW_xov_T1_pre_bw_b0 Town_2_thru_1_bw c1_City_2_Town_2_xov_T2_pre_bw_b2 c1_City_2_Town_2_xov_T2_pre_bw_b1 c1_City_2_Town_2_xov_T2_pre_bw_b0 c1_City_2_Town_2_xov_T2_mid_bw c1_City_2_Town_2_xov_xov1_bw c1_City_2_Town_2_xov_T1_pre_bw_b1 c1_City_2_Town_2_xov_T1_pre_bw_b0 City_2_plat_4_bw c1_Town_1_City_2_xov_T1_post_bw_b1 c1_Town_1_City_2_xov_T1_post_bw_b0 c1_Town_1_City_2_xov_T1_mid_bw c1_Town_1_City_2_xov_T1_pre_bw_b1 c1_Town_1_City_2_xov_T1_pre_bw_b0 Town_1_thru_1_bw c1_City_1_Town_1_bw_b0 c1_City_1_Town_1_bw_b1 c1_City_1_Town_1_bw_b2 c1_City_1_Town_1_bw_b3 City_1_plat_2_bw City_1_plat_5_fw City_1_yard_2_bw City_1_plat_2_fw c1_City_1_Town_1_fw_b0 c1_City_1_Town_1_fw_b1 c1_City_1_Town_1_fw_b2 c1_City_1_Town_1_fw_b3 Town_1_thru_1_fw c1_Town_1_City_2_xov_T1_pre_fw_b0 c1_Town_1_City_2_xov_T1_pre_fw_b1 c1_Town_1_City_2_xov_T1_mid_fw c1_Town_1_City_2_xov_T1_post_fw_b0 c1_Town_1_City_2_xov_T1_post_fw_b1 City_2_plat_5_fw c1_City_2_Town_2_xov_T1_pre_fw_b0 c1_City_2_Town_2_xov_T1_pre_fw_b1 c1_City_2_Town_2_xov_xov1_fw c1_City_2_Town_2_xov_T2_mid_fw c1_City_2_Town_2_xov_T2_pre_fw_b0 c1_City_2_Town_2_xov_T2_pre_fw_b1 c1_City_2_Town_2_xov_T2_pre_fw_b2 Town_2_thru_2_fw c1_Town_2_City_3_EW_xov_T1_pre_fw_b0 c1_Town_2_City_3_EW_xov_T1_pre_fw_b1 c1_Town_2_City_3_EW_xov_T1_pre_fw_b2 c1_Town_2_City_3_EW_xov_T1_mid_fw c1_Town_2_City_3_EW_xov_T1_post_fw_b0 c1_Town_2_City_3_EW_xov_T1_post_fw_b1 c1_Town_2_City_3_EW_xov_T1_post_fw_b2 City_3_EW_plat_4_fw c1_City_3_EW_Town_3_xov_T1_pre_fw_b0 c1_City_3_EW_Town_3_xov_T1_pre_fw_b1 c1_City_3_EW_Town_3_xov_xov1_fw c1_City_3_EW_Town_3_xov_T2_mid_fw c1_City_3_EW_Town_3_xov_T2_pre_fw_b0 c1_City_3_EW_Town_3_xov_T2_pre_fw_b1 c1_City_3_EW_Town_3_xov_T2_pre_fw_b2 Town_3_thru_1_fw c1_Town_3_City_4_fw_b0 c1_Town_3_City_4_fw_b1 c1_Town_3_City_4_fw_b2 c1_Town_3_City_4_fw_b3 City_4_plat_2_fw City_4_plat_2_bw City_4_yard_2_fw"/>
         <stop busStop="City_4_p2_bw" until="5400.00"/>
         <stop busStop="City_1_p2_bw" duration="60.00"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60.00" until="83700.00"/>
+        <stop lane="City_1_yard_2_bw_0" duration="60.00" until="83400.00"/>
         <stop busStop="City_1_p2_fw" until="83700.00"/>
         <stop busStop="City_4_p2_fw" duration="60.00"/>
         <stop lane="City_4_yard_2_fw_0" duration="3600.00"/>
@@ -48,12 +48,12 @@
     <vehicle id="FRT-Rake-01" type="heavy_freight_cargo" depart="6600.00">
         <route edges="Depot_1_pocket_1_fw Depot_1_pocket_1_bw Depot_1_yard_2_bw c3_Town_9_Depot_1_bw_b0 c3_Town_9_Depot_1_bw_b1 c3_Town_9_Depot_1_bw_b2 c3_Town_9_Depot_1_bw_b3 c3_Town_9_Depot_1_bw_b4 c3_Town_9_Depot_1_bw_b5 Town_9_plat_2_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_2_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_yard_1_fw City_2_yard_1_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_2_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_lead_in_fw c3_Town_8_Town_9_loop_siding_fw c3_Town_8_Town_9_loop_lead_out_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_2_fw c3_Town_9_Depot_1_fw_b0 c3_Town_9_Depot_1_fw_b1 c3_Town_9_Depot_1_fw_b2 c3_Town_9_Depot_1_fw_b3 c3_Town_9_Depot_1_fw_b4 c3_Town_9_Depot_1_fw_b5 Depot_1_yard_2_fw Depot_1_pocket_1_fw Depot_1_pocket_1_bw Depot_1_yard_2_bw c3_Town_9_Depot_1_bw_b0 c3_Town_9_Depot_1_bw_b1 c3_Town_9_Depot_1_bw_b2 c3_Town_9_Depot_1_bw_b3 c3_Town_9_Depot_1_bw_b4 c3_Town_9_Depot_1_bw_b5 Town_9_plat_2_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_2_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_yard_1_fw City_2_yard_1_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_2_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_lead_in_fw c3_Town_8_Town_9_loop_siding_fw c3_Town_8_Town_9_loop_lead_out_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_2_fw c3_Town_9_Depot_1_fw_b0 c3_Town_9_Depot_1_fw_b1 c3_Town_9_Depot_1_fw_b2 c3_Town_9_Depot_1_fw_b3 c3_Town_9_Depot_1_fw_b4 c3_Town_9_Depot_1_fw_b5 Depot_1_yard_2_fw Depot_1_pocket_1_fw"/>
         <stop lane="Depot_1_pocket_1_bw_0" duration="60.00" until="7200.00"/>
-        <stop lane="City_2_yard_1_fw_0" duration="60.00" until="16200.00"/>
+        <stop lane="City_2_yard_1_fw_0" duration="60.00" until="15900.00"/>
         <stop lane="City_2_yard_1_bw_0" duration="60.00" until="16200.00"/>
         <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" duration="720.00"/>
-        <stop lane="Depot_1_pocket_1_fw_0" duration="60.00" until="39600.00"/>
+        <stop lane="Depot_1_pocket_1_fw_0" duration="60.00" until="39300.00"/>
         <stop lane="Depot_1_pocket_1_bw_0" duration="60.00" until="39600.00"/>
-        <stop lane="City_2_yard_1_fw_0" duration="60.00" until="81000.00"/>
+        <stop lane="City_2_yard_1_fw_0" duration="60.00" until="80700.00"/>
         <stop lane="City_2_yard_1_bw_0" duration="60.00" until="81000.00"/>
         <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" duration="720.00"/>
         <stop lane="Depot_1_pocket_1_fw_0" duration="3600.00"/>
@@ -62,11 +62,11 @@
     <vehicle id="FRT-Rake-02" type="intermodal_container_freight" depart="8400.00">
         <route edges="Depot_3_pocket_1_fw Depot_3_pocket_1_bw Depot_3_yard_2_bw spur_City_5_Depot_3_bw_b0 spur_City_5_Depot_3_bw_b1 spur_City_5_Depot_3_bw_b2 spur_City_5_Depot_3_bw_b3 spur_City_5_Depot_3_bw_b4 spur_City_5_Depot_3_bw_b5 City_5_yard_1_fw City_5_yard_1_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 spur_City_5_Depot_3_fw_b5 Depot_3_yard_2_fw Depot_3_pocket_1_fw Depot_3_pocket_1_bw Depot_3_yard_2_bw spur_City_5_Depot_3_bw_b0 spur_City_5_Depot_3_bw_b1 spur_City_5_Depot_3_bw_b2 spur_City_5_Depot_3_bw_b3 spur_City_5_Depot_3_bw_b4 spur_City_5_Depot_3_bw_b5 City_5_yard_1_fw City_5_yard_1_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 spur_City_5_Depot_3_fw_b5 Depot_3_yard_2_fw Depot_3_pocket_1_fw"/>
         <stop lane="Depot_3_pocket_1_bw_0" duration="60.00" until="9000.00"/>
-        <stop lane="City_5_yard_1_fw_0" duration="60.00" until="18000.00"/>
+        <stop lane="City_5_yard_1_fw_0" duration="60.00" until="17700.00"/>
         <stop lane="City_5_yard_1_bw_0" duration="60.00" until="18000.00"/>
-        <stop lane="Depot_3_pocket_1_fw_0" duration="60.00" until="50400.00"/>
+        <stop lane="Depot_3_pocket_1_fw_0" duration="60.00" until="50100.00"/>
         <stop lane="Depot_3_pocket_1_bw_0" duration="60.00" until="50400.00"/>
-        <stop lane="City_5_yard_1_fw_0" duration="60.00" until="82800.00"/>
+        <stop lane="City_5_yard_1_fw_0" duration="60.00" until="82500.00"/>
         <stop lane="City_5_yard_1_bw_0" duration="60.00" until="82800.00"/>
         <stop lane="Depot_3_pocket_1_fw_0" duration="3600.00"/>
     </vehicle>
@@ -506,55 +506,55 @@
         <stop busStop="City_4_p4_bw" until="25500.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="210.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="27300.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="27000.00"/>
         <stop busStop="City_6_p4_bw" until="27300.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="210.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="36300.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="36000.00"/>
         <stop busStop="City_4_p4_bw" until="36300.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="38100.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="37800.00"/>
         <stop busStop="City_6_p4_bw" until="38100.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="39900.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="39600.00"/>
         <stop busStop="City_4_p4_bw" until="39900.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="41700.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="41400.00"/>
         <stop busStop="City_6_p4_bw" until="41700.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="54300.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="54000.00"/>
         <stop busStop="City_4_p4_bw" until="54300.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="56100.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="55800.00"/>
         <stop busStop="City_6_p4_bw" until="56100.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="61500.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="61200.00"/>
         <stop busStop="City_4_p4_bw" until="61500.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="210.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="63300.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="63000.00"/>
         <stop busStop="City_6_p4_bw" until="63300.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="210.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="65100.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="64800.00"/>
         <stop busStop="City_4_p4_bw" until="65100.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="210.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="66900.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="66600.00"/>
         <stop busStop="City_6_p4_bw" until="66900.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="210.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="72300.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="72000.00"/>
         <stop busStop="City_4_p4_bw" until="72300.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="74100.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="73800.00"/>
         <stop busStop="City_6_p4_bw" until="74100.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
@@ -794,49 +794,49 @@
         <route edges="City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw City_2_plat_2_fw bypass_City_2_City_5_fw_b0 bypass_City_2_City_5_fw_b1 bypass_City_2_City_5_fw_b2 bypass_City_2_City_5_fw_b3 bypass_City_2_City_5_fw_b4 bypass_City_2_City_5_fw_b5 bypass_City_2_City_5_fw_b6 bypass_City_2_City_5_fw_b7 bypass_City_2_City_5_fw_b8 bypass_City_2_City_5_fw_b9 bypass_City_2_City_5_fw_b10 City_5_plat_2_bw City_5_plat_3_fw City_5_yard_2_bw City_5_plat_2_fw bypass_City_2_City_5_bw_b0 bypass_City_2_City_5_bw_b1 bypass_City_2_City_5_bw_b2 bypass_City_2_City_5_bw_b3 bypass_City_2_City_5_bw_b4 bypass_City_2_City_5_bw_b5 bypass_City_2_City_5_bw_b6 bypass_City_2_City_5_bw_b7 bypass_City_2_City_5_bw_b8 bypass_City_2_City_5_bw_b9 bypass_City_2_City_5_bw_b10 City_2_plat_2_bw City_2_plat_1_fw City_2_yard_2_bw"/>
         <stop busStop="City_2_p2_fw" until="26700.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="28500.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="28200.00"/>
         <stop busStop="City_5_p2_fw" until="28500.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="30300.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="30000.00"/>
         <stop busStop="City_2_p2_fw" until="30300.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="32100.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="31800.00"/>
         <stop busStop="City_5_p2_fw" until="32100.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="37500.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="37200.00"/>
         <stop busStop="City_2_p2_fw" until="37500.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="39300.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="39000.00"/>
         <stop busStop="City_5_p2_fw" until="39300.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="48300.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="48000.00"/>
         <stop busStop="City_2_p2_fw" until="48300.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="50100.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="49800.00"/>
         <stop busStop="City_5_p2_fw" until="50100.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="55500.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="55200.00"/>
         <stop busStop="City_2_p2_fw" until="55500.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="57300.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="57000.00"/>
         <stop busStop="City_5_p2_fw" until="57300.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="62700.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="62400.00"/>
         <stop busStop="City_2_p2_fw" until="62700.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="64500.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="64200.00"/>
         <stop busStop="City_5_p2_fw" until="64500.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="66300.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="66000.00"/>
         <stop busStop="City_2_p2_fw" until="66300.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="68100.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="67800.00"/>
         <stop busStop="City_5_p2_fw" until="68100.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="73500.00"/>
+        <stop lane="City_2_yard_2_bw_0" duration="60.00" until="73200.00"/>
         <stop busStop="City_2_p2_fw" until="73500.00"/>
         <stop busStop="City_5_p2_bw" duration="60.00"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="75300.00"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60.00" until="75000.00"/>
         <stop busStop="City_5_p2_fw" until="75300.00"/>
         <stop busStop="City_2_p2_bw" duration="60.00"/>
         <stop lane="City_2_yard_2_bw_0" duration="3600.00"/>
@@ -1074,47 +1074,47 @@
         <stop busStop="City_4_p4_bw" until="29100.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="210.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="30900.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="30600.00"/>
         <stop busStop="City_6_p4_bw" until="30900.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="210.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="32700.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="32400.00"/>
         <stop busStop="City_4_p4_bw" until="32700.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="210.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="34500.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="34200.00"/>
         <stop busStop="City_6_p4_bw" until="34500.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="43500.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="43200.00"/>
         <stop busStop="City_4_p4_bw" until="43500.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="45300.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="45000.00"/>
         <stop busStop="City_6_p4_bw" until="45300.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="50700.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="50400.00"/>
         <stop busStop="City_4_p4_bw" until="50700.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="52500.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="52200.00"/>
         <stop busStop="City_6_p4_bw" until="52500.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="57900.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="57600.00"/>
         <stop busStop="City_4_p4_bw" until="57900.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="210.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="59700.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="59400.00"/>
         <stop busStop="City_6_p4_bw" until="59700.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="210.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="68700.00"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60.00" until="68400.00"/>
         <stop busStop="City_4_p4_bw" until="68700.00"/>
         <stop busStop="City_3_EW_p4_bw" duration="180.00"/>
         <stop busStop="City_6_p4_fw" duration="60.00"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="70500.00"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60.00" until="70200.00"/>
         <stop busStop="City_6_p4_bw" until="70500.00"/>
         <stop busStop="City_3_NS_p4_bw" duration="180.00"/>
         <stop busStop="City_4_p4_fw" duration="60.00"/>

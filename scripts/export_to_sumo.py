@@ -182,6 +182,10 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
                 if staging:
                     first_plat_arr = next_s["stops"][0].get("arrival_sec")
                     target_until = first_plat_arr if first_plat_arr is not None else next_s["departure_sec"]
+                    if target_until >= next_s["departure_sec"]:
+                        target_until = next_s["departure_sec"] - 300.0
+                    curr_arr = s["stops"][-1].get("arrival_sec") or s.get("arrival_sec", 0.0)
+                    target_until = max(curr_arr, target_until)
                     stops_xml.append(("lane", f"{staging}_0", "60", str(target_until)))
                 next_orig_ts = next_s["stops"][0].get("train_stop_id")
                 if next_orig_ts:

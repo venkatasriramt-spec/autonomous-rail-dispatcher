@@ -457,6 +457,10 @@ if __name__ == "__main__":
                 delay_tolerance_sec=args.delay_tolerance,
                 verbose=args.verbose
             )
+            try:
+                compile_sumo_files(mode=args.mode if args.mode != "auto" else "rakes", day="all")
+            except Exception as e:
+                print(f"[!] Warning: failed to recompile composite schedule: {e}")
         else:
             success = run_verification(
                 max_steps=args.steps,
