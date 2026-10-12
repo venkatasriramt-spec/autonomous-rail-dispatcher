@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-12 12:37:08 by Eclipse SUMO duarouter Version 1.12.0
+<!-- generated on 2026-10-12 12:46:48 by Eclipse SUMO duarouter Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>
@@ -18,10 +18,6 @@
         <repair value="true"/>
         <routing-algorithm value="astar"/>
     </processing>
-
-    <report>
-        <ignore-errors value="true"/>
-    </report>
 
 </configuration>
 -->

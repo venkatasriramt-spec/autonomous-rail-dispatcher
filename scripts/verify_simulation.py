@@ -51,7 +51,16 @@ def run_verification(max_steps=3600):
 
 def verify_day(day, max_steps=86400):
     print(f"\n>>> Compiling SUMO files for: {day} <<<")
-    compile_sumo_files(day=day)
+    try:
+        ok = compile_sumo_files(day=day)
+    except Exception as e:
+        print(f"[!] Route compilation failed with exception: {e}")
+        return False
+
+    if not ok:
+        print(f"[!] Route compilation failed for day '{day}'. Stopping verification before running SUMO.")
+        return False
+
     return run_verification(max_steps=max_steps)
 
 def verify_all_days(max_steps=86400):

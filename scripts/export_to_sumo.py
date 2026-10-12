@@ -9,6 +9,7 @@ Compiles the JSON timetable and rolling stock types into SUMO-compatible files:
 
 import json
 import os
+import sys
 import subprocess
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
@@ -40,6 +41,8 @@ DAY_NAME_MAP = {
     "all": "all", "composite": "all"
 }
 
+SUPPORTED_DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "all"]
+
 def normalize_day(day_str):
     if not day_str:
         return "all"
@@ -59,9 +62,10 @@ def expand_service_days(svc):
         elif d in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
             res.add(d)
         else:
-            for part in d.replace(",", " ").split():
-                if part in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
-                    res.add(part)
+            for part in d.replace(",", " ").replace("/", " ").split():
+                norm = normalize_day(part)
+                if norm in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
+                    res.add(norm)
     return res
 
 def service_runs_on_day(svc, target_day):
@@ -76,6 +80,10 @@ def compile_sumo_files(day="all", max_services=None):
         day = "all"
 
     norm_day = normalize_day(day)
+    if norm_day not in SUPPORTED_DAYS:
+        raise ValueError(
+            f"Invalid operating day '{day}'. Supported days: {', '.join(SUPPORTED_DAYS)}"
+        )
 
     with open(os.path.join(DATA_DIR, "rolling_stock_types.json"), "r") as f:
         rs_types = json.load(f)
@@ -155,15 +163,29 @@ def compile_sumo_files(day="all", max_services=None):
         "--route-files", TRIPS_FILE,
         "--output-file", ROU_FILE,
         "--routing-algorithm", "astar",
-        "--ignore-errors", "true",
         "--repair", "true"
     ]
     res = subprocess.run(cmd, capture_output=True, text=True)
     if res.returncode != 0:
-        print("Duarouter Warning / Error:")
+        print("Duarouter Error:")
         print(res.stderr)
-    else:
-        print(f"   Compiled routes file successfully: {ROU_FILE}")
+        return False
+
+    # Verify that the compiled route count matches the selected services
+    try:
+        rou_tree = ET.parse(ROU_FILE)
+        compiled_routes = len(rou_tree.getroot().findall("vehicle"))
+    except Exception as e:
+        print(f"Error parsing compiled routes file {ROU_FILE}: {e}")
+        return False
+
+    if compiled_routes != len(timetable):
+        print(
+            f"Error: Compiled route count mismatch! Expected {len(timetable)} routes, but found {compiled_routes} in {ROU_FILE}."
+        )
+        return False
+
+    print(f"   Compiled routes file successfully: {ROU_FILE} ({compiled_routes}/{len(timetable)} routes verified)")
 
     # 4. Generate train_simulation.sumocfg
     cfg_root = ET.Element("configuration")
@@ -186,6 +208,7 @@ def compile_sumo_files(day="all", max_services=None):
     with open(SUMOCFG_FILE, "w", encoding="utf-8") as f:
         f.write(prettify(cfg_root))
     print(f"3. Written master simulation config: {SUMOCFG_FILE}")
+    return True
 
 if __name__ == "__main__":
     import argparse
@@ -219,4 +242,10 @@ if __name__ == "__main__":
         chosen_day = args.day or args.pos_day or os.environ.get("SUMO_DAY") or os.environ.get("SIMULATION_DAY") or "all"
         max_svcs = args.max_services
 
-    compile_sumo_files(day=chosen_day, max_services=max_svcs)
+    try:
+        success = compile_sumo_files(day=chosen_day, max_services=max_svcs)
+        if not success:
+            sys.exit(1)
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        sys.exit(2)
