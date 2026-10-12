@@ -151,6 +151,12 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
             orig_ts = first_s["stops"][0].get("train_stop_id")
             if orig_ts:
                 stops_xml.append(("trainStop", orig_ts, None, str(first_s["departure_sec"])))
+            else:
+                orig_lane = f"{first_s['origin_track']}_0"
+                if stops_xml and stops_xml[-1][0] == "lane" and stops_xml[-1][1] == orig_lane:
+                    stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(first_s["departure_sec"]))
+                else:
+                    stops_xml.append(("lane", orig_lane, "60", str(first_s["departure_sec"])))
 
         for idx, sid in enumerate(services):
             s = tt_by_id[sid]
@@ -174,11 +180,18 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
             if idx < len(services) - 1:
                 next_s = tt_by_id[services[idx + 1]]
                 if staging:
-                    dwell = int(pjd.get("turnaround_dwell_min", 10) * 60)
-                    stops_xml.append(("lane", f"{staging}_0", str(dwell), None))
+                    first_plat_arr = next_s["stops"][0].get("arrival_sec")
+                    target_until = first_plat_arr if first_plat_arr is not None else next_s["departure_sec"]
+                    stops_xml.append(("lane", f"{staging}_0", "60", str(target_until)))
                 next_orig_ts = next_s["stops"][0].get("train_stop_id")
                 if next_orig_ts:
                     stops_xml.append(("trainStop", next_orig_ts, None, str(next_s["departure_sec"])))
+                else:
+                    next_lane = f"{next_s['origin_track']}_0"
+                    if stops_xml and stops_xml[-1][0] == "lane" and stops_xml[-1][1] == next_lane:
+                        stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(next_s["departure_sec"]))
+                    else:
+                        stops_xml.append(("lane", next_lane, "60", str(next_s["departure_sec"])))
             else:
                 # End-of-day stabling
                 if stabling_track:

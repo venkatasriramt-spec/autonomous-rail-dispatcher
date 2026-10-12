@@ -244,7 +244,7 @@ def validate_rakes_mode(net_file, rou_file, day=None, verbose=False):
     for r in roster:
         rid = r["rake_id"]
         raw_services = r.get("assigned_services", [])
-        if norm_day != "all":
+        if norm_day not in ("all", "composite"):
             valid_svcs = [sid for sid in raw_services if sid in tt_by_id and service_runs_on_day(tt_by_id[sid], norm_day)]
         else:
             valid_svcs = [sid for sid in raw_services if sid in tt_by_id]
@@ -259,6 +259,8 @@ def validate_rakes_mode(net_file, rou_file, day=None, verbose=False):
     missing_routes = []
     unknown_edges = []
     lifecycle_turnaround_violations = []
+    location_continuity_violations = []
+    stabling_mismatch_violations = []
 
     print("=" * 75)
     print("AUDITING CONTINUOUS RAKE LIFECYCLES (PHYSICAL RAKES MODE)")
@@ -288,13 +290,29 @@ def validate_rakes_mode(net_file, rou_file, day=None, verbose=False):
             unknown_edges.append((rid, missing_edge_list))
             continue
 
-        # Check turnaround dwells between consecutive services
+        # Check turnaround dwells & location continuity between consecutive services
         sorted_services = sorted(services, key=lambda sid: tt_by_id[sid]["departure_sec"])
         for idx in range(len(sorted_services) - 1):
             curr_s = tt_by_id[sorted_services[idx]]
             next_s = tt_by_id[sorted_services[idx + 1]]
             pjd = curr_s.get("post_journey_disposition", {})
-            dwell_min = pjd.get("turnaround_dwell_min", 0.0)
+            curr_stop = curr_s["stops"][-1]
+            next_stop = next_s["stops"][0]
+
+            # Verify next service departs from location where current service arrives
+            curr_loc = curr_stop.get("station") or curr_s.get("dest_station")
+            next_loc = next_stop.get("station") or next_s.get("origin_station")
+            if curr_loc != next_loc:
+                location_continuity_violations.append({
+                    "rake": rid,
+                    "service_from": curr_s["train_number"],
+                    "service_to": next_s["train_number"],
+                    "arrival_loc": curr_loc,
+                    "departure_loc": next_loc
+                })
+
+            dwell_sec = next_stop["departure_sec"] - curr_stop["arrival_sec"]
+            dwell_min = dwell_sec / 60.0
             min_req = pjd.get("min_turnaround_required_min", 7.0)
             if dwell_min < min_req - 1e-2:
                 lifecycle_turnaround_violations.append({
@@ -303,6 +321,19 @@ def validate_rakes_mode(net_file, rou_file, day=None, verbose=False):
                     "service_to": next_s["train_number"],
                     "dwell_min": dwell_min,
                     "min_req": min_req
+                })
+
+        # Check end-of-day staging track vs roster overnight stabling track
+        if sorted_services:
+            last_s = tt_by_id[sorted_services[-1]]
+            eod_staging = last_s.get("post_journey_disposition", {}).get("staging_track")
+            roster_stabling = r_info.get("overnight_stabling_track")
+            if eod_staging and roster_stabling and eod_staging != roster_stabling:
+                stabling_mismatch_violations.append({
+                    "rake": rid,
+                    "last_service": last_s["train_number"],
+                    "staging_track": eod_staging,
+                    "overnight_stabling_track": roster_stabling
                 })
 
     print("Rake Fleet & Lifecycle Integrity:")
@@ -331,12 +362,28 @@ def validate_rakes_mode(net_file, rou_file, day=None, verbose=False):
     else:
         print(f"  [PASS] All turnaround intervals satisfy minimum consist turn times (0 violations)!")
 
+    if location_continuity_violations:
+        print(f"  [FAIL] {len(location_continuity_violations)} service transitions violate location continuity!")
+        for viol in location_continuity_violations[:5]:
+            print(f"    - Rake {viol['rake']} between {viol['service_from']} ({viol['arrival_loc']}) -> {viol['service_to']} ({viol['departure_loc']})")
+    else:
+        print(f"  [PASS] All service transitions satisfy location continuity (0 violations)!")
+
+    if stabling_mismatch_violations:
+        print(f"  [FAIL] {len(stabling_mismatch_violations)} rakes have end-of-day staging mismatch with roster stabling track!")
+        for viol in stabling_mismatch_violations[:5]:
+            print(f"    - Rake {viol['rake']} (service {viol['last_service']}): timetable staging '{viol['staging_track']}' != roster stabling '{viol['overnight_stabling_track']}'")
+    else:
+        print(f"  [PASS] All rakes have synchronized end-of-day staging and roster stabling tracks (0 violations)!")
+
     print("=" * 75)
     return (
         len(missing_rakes) == 0
         and len(missing_routes) == 0
         and len(unknown_edges) == 0
         and len(lifecycle_turnaround_violations) == 0
+        and len(location_continuity_violations) == 0
+        and len(stabling_mismatch_violations) == 0
     )
 
 
@@ -353,6 +400,12 @@ def validate_timetable(net_file=None, rou_file=None, day=None, mode="auto", tole
     if mode == "both":
         services_rou = os.path.join(SUMO_CONFIG_DIR, "trains_services.rou.xml")
         rakes_rou = os.path.join(SUMO_CONFIG_DIR, "trains_rakes.rou.xml")
+        if not os.path.exists(services_rou):
+            print(f"Error: Route file {services_rou} not found. Run export_to_sumo.py first.")
+            return False
+        if not os.path.exists(rakes_rou):
+            print(f"Error: Route file {rakes_rou} not found. Run export_to_sumo.py first.")
+            return False
         ok_svcs = validate_services_mode(net_file, services_rou, day, tolerance_km, max_discrepancy_km, verbose)
         print()
         ok_rakes = validate_rakes_mode(net_file, rakes_rou, day, verbose)

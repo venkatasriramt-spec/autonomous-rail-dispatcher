@@ -83,7 +83,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
         for r in roster:
             rid = r["rake_id"]
             raw_svcs = r.get("assigned_services", [])
-            if norm_day != "all":
+            if norm_day not in ("all", "composite"):
                 valid_svcs = [sid for sid in raw_svcs if sid in tt_by_id and service_runs_on_day(tt_by_id[sid], norm_day)]
             else:
                 valid_svcs = [sid for sid in raw_svcs if sid in tt_by_id]
@@ -448,12 +448,22 @@ if __name__ == "__main__":
             verbose=args.verbose
         )
     else:
-        success = run_verification(
-            max_steps=args.steps,
-            day=args.day,
-            mode=args.mode,
-            delay_tolerance_sec=args.delay_tolerance,
-            verbose=args.verbose
-        )
+        chosen_day = normalize_day(args.day) if args.day else "all"
+        if chosen_day not in ("all", "composite"):
+            success = verify_day(
+                chosen_day,
+                max_steps=args.steps,
+                mode=args.mode,
+                delay_tolerance_sec=args.delay_tolerance,
+                verbose=args.verbose
+            )
+        else:
+            success = run_verification(
+                max_steps=args.steps,
+                day=args.day,
+                mode=args.mode,
+                delay_tolerance_sec=args.delay_tolerance,
+                verbose=args.verbose
+            )
 
     sys.exit(0 if success else 1)

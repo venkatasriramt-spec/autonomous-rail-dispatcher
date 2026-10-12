@@ -570,7 +570,7 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
 
 #### Phase 4: Dual-Mode Feasibility & Safety Verification
 - **Timetable Feasibility (`scripts/validate_timetable.py --mode both`):**
-  - Services Mode: 242 / 242 services satisfy physical lower bound ({\text{planned}} \ge T_{\min}$) with 0 distance violations.
+  - Services Mode: 242 / 242 services satisfy physical lower bound ($T_{\text{planned}} \ge T_{\min}$) with 0 distance violations.
   - Rakes Mode: 31 / 31 rakes validated with 100% route integrity, continuous edge sequences, and consist turnaround dwell compliance.
 - **Microscopic SUMO Simulation (`scripts/verify_simulation.py`):**
   - Validated both Rakes Mode and Services Mode in headless simulation:

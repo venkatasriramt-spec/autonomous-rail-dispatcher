@@ -564,7 +564,7 @@
       "68302",
       "68303"
     ],
-    "overnight_stabling_track": "City_6_pocket_1_fw",
+    "overnight_stabling_track": "City_6_yard_1_fw",
     "stabling_station": "City_6",
     "first_departure_time": "01:00:00",
     "last_arrival_time": "21:44:30"
@@ -577,7 +577,7 @@
       "68402",
       "68401"
     ],
-    "overnight_stabling_track": "City_4_pocket_2_fw",
+    "overnight_stabling_track": "City_4_yard_2_fw",
     "stabling_station": "City_4",
     "first_departure_time": "01:30:00",
     "last_arrival_time": "23:37:00"
