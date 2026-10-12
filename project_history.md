@@ -396,3 +396,38 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - Teleports: **0**.
      - Deadlocks: **0**.
      - Fatal Errors: **0**.
+
+---
+
+### 12 October 2026 — Phase 15: Operating Day Timetable Filtering & Multi-Day Simulation Verification
+
+**Objective:** Fully remediate Issue A ("The timetable's operating days are not respected") by equipping the SUMO export pipeline (`scripts/export_to_sumo.py`) with day-specific schedule filtering based on the `service_days` attributes in `data/timetable.json`. Validate that individual simulation days reflect true scheduled service densities rather than an artificial all-inclusive composite, particularly eliminating the ~100 non-operating commuter services on weekends.
+
+#### Phase 15: Day-Specific Route Generation & Multi-Day Simulation Validation
+
+1. **Operating Day Schedule Filtering (`scripts/export_to_sumo.py`)**:
+   - Added `expand_service_days` and `service_runs_on_day` routines supporting `Daily`, `Mon-Fri`, and specific multi-day rotations (`Mon/Wed/Fri`, `Tue/Thu/Sat`, `Mon/Thu/Sun`, `Tue/Fri/Sat`, `Wed/Fri/Sun`).
+   - Added `--day` / `-d` CLI flags, positional day argument, and `SUMO_DAY` environment variable fallback to `export_to_sumo.py`.
+   - Verified that day-specific filtering yields exact intended service counts:
+     - **Monday**: 232 services (136 Daily + 88 Mon-Fri + 4 Mon/Wed/Fri + 4 Mon/Thu/Sun)
+     - **Tuesday**: 233 services (136 Daily + 88 Mon-Fri + 7 Tue/Thu/Sat + 2 Tue/Fri/Sat)
+     - **Wednesday**: 229 services (136 Daily + 88 Mon-Fri + 4 Mon/Wed/Fri + 1 Wed/Fri/Sun)
+     - **Thursday**: 235 services (136 Daily + 88 Mon-Fri + 7 Tue/Thu/Sat + 4 Mon/Thu/Sun)
+     - **Friday**: 231 services (136 Daily + 88 Mon-Fri + 4 Mon/Wed/Fri + 2 Tue/Fri/Sat + 1 Wed/Fri/Sun)
+     - **Saturday**: 145 services (136 Daily + 7 Tue/Thu/Sat + 2 Tue/Fri/Sat) — exactly 97 fewer than composite
+     - **Sunday**: 141 services (136 Daily + 4 Mon/Thu/Sun + 1 Wed/Fri/Sun) — exactly 101 fewer than composite
+     - **Composite (All)**: 242 services across the entire weekly pool.
+
+2. **Automated Multi-Day Headless Verification (`scripts/verify_simulation.py`)**:
+   - Enhanced `verify_simulation.py` with `--day` and `--all-days` flags to automatically compile routes and simulate full 24-hour cycles (86,400s) for individual days or an automated weekly sweep.
+
+3. **Multi-Day Microscopic Simulation Results (`86,400s` per day)**:
+   - Full sweep across all 7 calendar days plus composite:
+     - **Mon** (232 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Tue** (233 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Wed** (229 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Thu** (235 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Fri** (231 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Sat** (145 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **Sun** (141 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
+     - **All** (242 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.

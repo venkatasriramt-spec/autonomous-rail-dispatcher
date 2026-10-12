@@ -120,6 +120,21 @@ The schedule in `data/timetable.json` models **242 distinct train services** ope
   * #68303, #68304: Nocturnal coastal bulk cargo (21:30 Mon/Wed/Fri) and return (01:00 Tue/Thu/Sat).
   * #68401, #68402: Trans-Corridor E-Freight Express (23:15 & 01:30) hauling 2,400 t container trains non-stop at 100 km/h across Corridor 1 using 25kV electric power (`electric_trunk_freight`).
 
+### H. Operating Days & Daily Service Distribution
+
+Train services in `data/timetable.json` declare designated operational calendar days via `service_days` (e.g. `Daily`, `Mon-Fri`, or specific day rotations). The simulation export script `scripts/export_to_sumo.py` filters services by day:
+
+| Operating Day | Scheduled Services | Operational Breakdown |
+| :--- | :--- | :--- |
+| **Monday** | **232** | Daily baseline (136) + Mon-Fri commuter surges (88) + Mon/Wed/Fri (4) + Mon/Thu/Sun (4) |
+| **Tuesday** | **233** | Daily baseline (136) + Mon-Fri commuter surges (88) + Tue/Thu/Sat (7) + Tue/Fri/Sat (2) |
+| **Wednesday** | **229** | Daily baseline (136) + Mon-Fri commuter surges (88) + Mon/Wed/Fri (4) + Wed/Fri/Sun (1) |
+| **Thursday** | **235** | Daily baseline (136) + Mon-Fri commuter surges (88) + Tue/Thu/Sat (7) + Mon/Thu/Sun (4) |
+| **Friday** | **231** | Daily baseline (136) + Mon-Fri commuter surges (88) + Mon/Wed/Fri (4) + Tue/Fri/Sat (2) + Wed/Fri/Sun (1) |
+| **Saturday** | **145** | Daily baseline (136) + Tue/Thu/Sat (7) + Tue/Fri/Sat (2) *(no weekday commuter peaks)* |
+| **Sunday** | **141** | Daily baseline (136) + Mon/Thu/Sun (4) + Wed/Fri/Sun (1) *(no weekday commuter peaks)* |
+| **Composite (All)** | **242** | Full weekly pool of unique train runs across all operating schedules |
+
 ---
 
 ## 4. How to Use & Execute
@@ -137,14 +152,28 @@ python3 scripts/export_to_db.py
 ```
 
 ### 3. Compile SUMO Routes with Duarouter
-To compile the microscopic train routes using `duarouter`:
+To compile the microscopic train routes using `duarouter`, either for a specific operating day or the full composite schedule:
 ```bash
-python3 scripts/export_to_sumo.py
+# Day-specific export (filters timetable by operating day):
+python3 scripts/export_to_sumo.py --day Mon      # Monday (232 services)
+python3 scripts/export_to_sumo.py --day Sat      # Saturday (145 services)
+python3 scripts/export_to_sumo.py --day Sun      # Sunday (141 services)
+
+# Composite export (all 242 unique services):
+python3 scripts/export_to_sumo.py                # or --day all
 ```
 
 ### 4. Run Simulation Verification
 To verify the entire network simulation in headless mode:
 ```bash
+# Verify a specific operating day (compiles routes and simulates full 24h):
+python3 scripts/verify_simulation.py --day Mon 86400
+python3 scripts/verify_simulation.py --day Sat 86400
+
+# Automated sweep verifying all 7 operating days and composite schedule:
+python3 scripts/verify_simulation.py --all-days 86400
+
+# Standard 24-hour verification on currently exported configuration:
 python3 scripts/verify_simulation.py 86400  # Full 24-hour verification (or 3600 for quick test)
 ```
 

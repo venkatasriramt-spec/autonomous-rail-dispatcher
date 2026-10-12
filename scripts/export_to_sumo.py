@@ -29,15 +29,72 @@ SUMOCFG_FILE = os.path.join(SUMO_CONFIG_DIR, "train_simulation.sumocfg")
 def prettify(elem):
     return minidom.parseString(ET.tostring(elem, 'utf-8')).toprettyxml(indent="    ")
 
-def compile_sumo_files(max_services=None):
+DAY_NAME_MAP = {
+    "mon": "Mon", "monday": "Mon",
+    "tue": "Tue", "tuesday": "Tue",
+    "wed": "Wed", "wednesday": "Wed",
+    "thu": "Thu", "thursday": "Thu",
+    "fri": "Fri", "friday": "Fri",
+    "sat": "Sat", "saturday": "Sat",
+    "sun": "Sun", "sunday": "Sun",
+    "all": "all", "composite": "all"
+}
+
+def normalize_day(day_str):
+    if not day_str:
+        return "all"
+    key = str(day_str).strip().lower()
+    return DAY_NAME_MAP.get(key, day_str)
+
+def expand_service_days(svc):
+    days = svc.get("service_days", [])
+    if isinstance(days, str):
+        days = [days]
+    res = set()
+    for d in days:
+        if d == "Daily":
+            res.update(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"])
+        elif d == "Mon-Fri":
+            res.update(["Mon", "Tue", "Wed", "Thu", "Fri"])
+        elif d in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
+            res.add(d)
+        else:
+            for part in d.replace(",", " ").split():
+                if part in ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]:
+                    res.add(part)
+    return res
+
+def service_runs_on_day(svc, target_day):
+    norm = normalize_day(target_day)
+    if norm in ("all", "composite"):
+        return True
+    return norm in expand_service_days(svc)
+
+def compile_sumo_files(day="all", max_services=None):
+    if isinstance(day, int):
+        max_services = day
+        day = "all"
+
+    norm_day = normalize_day(day)
+
     with open(os.path.join(DATA_DIR, "rolling_stock_types.json"), "r") as f:
         rs_types = json.load(f)
 
     with open(os.path.join(DATA_DIR, "timetable.json"), "r") as f:
         timetable = json.load(f)
 
+    total_services = len(timetable)
+
+    # Filter by operating day
+    if norm_day != "all":
+        timetable = [s for s in timetable if service_runs_on_day(s, norm_day)]
+        print(f"Exporting schedule for {norm_day}: {len(timetable)} of {total_services} services")
+    else:
+        print(f"Exporting composite schedule (all days): {len(timetable)} services")
+
     if max_services:
         timetable = timetable[:max_services]
+        print(f"Capped at first {max_services} services for debugging")
 
     root = ET.Element("routes")
 
@@ -131,4 +188,35 @@ def compile_sumo_files(max_services=None):
     print(f"3. Written master simulation config: {SUMOCFG_FILE}")
 
 if __name__ == "__main__":
-    compile_sumo_files()
+    import argparse
+    parser = argparse.ArgumentParser(
+        description="Compiles timetable schedules into SUMO trips and routes filtered by operating day."
+    )
+    parser.add_argument(
+        "pos_day",
+        nargs="?",
+        default=None,
+        help="Operating day (Mon, Tue, Wed, Thu, Fri, Sat, Sun, or all/composite)"
+    )
+    parser.add_argument(
+        "-d", "--day",
+        type=str,
+        default=None,
+        help="Operating day to export (Mon, Tue, Wed, Thu, Fri, Sat, Sun, or all/composite)"
+    )
+    parser.add_argument(
+        "--max-services",
+        type=int,
+        default=None,
+        help="Cap maximum number of services to export"
+    )
+    args = parser.parse_args()
+
+    if args.pos_day and args.pos_day.isdigit() and args.max_services is None:
+        chosen_day = args.day or "all"
+        max_svcs = int(args.pos_day)
+    else:
+        chosen_day = args.day or args.pos_day or os.environ.get("SUMO_DAY") or os.environ.get("SIMULATION_DAY") or "all"
+        max_svcs = args.max_services
+
+    compile_sumo_files(day=chosen_day, max_services=max_svcs)
