@@ -27,3 +27,21 @@ temp/
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# Python
+.Python
+*.so
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environment (alternative names)
+pyenv/
+.venv2/

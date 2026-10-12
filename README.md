@@ -19,6 +19,7 @@ The project separates commercial timetabling and physical vehicle logistics into
 │   ├── generate_master_timetable.py # Procedural timetable and fleet generator
 │   ├── export_to_db.py              # Synchronizes JSON timetable into SQLite database
 │   ├── export_to_sumo.py            # Compiles XML trips and routes via duarouter
+│   ├── validate_timetable.py        # Validates timetable against physical network (T_min, distances)
 │   └── verify_simulation.py         # Headless SUMO simulation validator (0 errors/collisions)
 ├── sumo_config/
 │   ├── trains.trips.xml          # Scheduled train trips with platform stops and dwell times
