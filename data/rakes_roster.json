@@ -14,7 +14,11 @@
       "12022",
       "12027",
       "12028"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_1_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "06:02:00",
+    "last_arrival_time": "20:55:54"
   },
   {
     "rake_id": "HS-Rake-02",
@@ -31,7 +35,11 @@
       "12016",
       "12029",
       "12030"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_1_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "07:02:30",
+    "last_arrival_time": "22:55:54"
   },
   {
     "rake_id": "HS-Rake-03",
@@ -46,7 +54,11 @@
       "12014",
       "12039",
       "12040"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_1_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "07:32:30",
+    "last_arrival_time": "19:55:54"
   },
   {
     "rake_id": "HS-Rake-05",
@@ -59,7 +71,11 @@
       "12036",
       "12025",
       "12026"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_2_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "08:32:30",
+    "last_arrival_time": "17:57:24"
   },
   {
     "rake_id": "HS-Rake-06",
@@ -74,7 +90,11 @@
       "12024",
       "12041",
       "12042"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_2_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "11:02:00",
+    "last_arrival_time": "21:55:54"
   },
   {
     "rake_id": "REG-C1-05",
@@ -91,7 +111,11 @@
       "21010",
       "21031",
       "21032"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_4_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "05:16:30",
+    "last_arrival_time": "17:56:47"
   },
   {
     "rake_id": "REG-C1-01",
@@ -104,7 +128,11 @@
       "21006",
       "21027",
       "21028"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_3_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "06:16:30",
+    "last_arrival_time": "20:24:52"
   },
   {
     "rake_id": "REG-C1-03",
@@ -119,7 +147,11 @@
       "21018",
       "21041",
       "21042"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_3_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "07:16:50",
+    "last_arrival_time": "22:24:52"
   },
   {
     "rake_id": "REG-C1-04",
@@ -134,7 +166,11 @@
       "21020",
       "21039",
       "21040"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_4_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "07:46:50",
+    "last_arrival_time": "21:24:52"
   },
   {
     "rake_id": "REG-C1-02",
@@ -147,7 +183,11 @@
       "21008",
       "21011",
       "21012"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_3_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "08:16:50",
+    "last_arrival_time": "18:26:47"
   },
   {
     "rake_id": "REG-C1-06",
@@ -158,7 +198,11 @@
       "21030",
       "21033",
       "21034"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_4_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "08:46:50",
+    "last_arrival_time": "19:24:52"
   },
   {
     "rake_id": "REG-C2-01",
@@ -173,7 +217,11 @@
       "32012",
       "32037",
       "32038"
-    ]
+    ],
+    "overnight_stabling_track": "City_5_yard_1_bw",
+    "stabling_station": "City_5",
+    "first_departure_time": "05:11:30",
+    "last_arrival_time": "18:42:49"
   },
   {
     "rake_id": "REG-C2-02",
@@ -190,7 +238,11 @@
       "32016",
       "32043",
       "32044"
-    ]
+    ],
+    "overnight_stabling_track": "City_5_yard_1_bw",
+    "stabling_station": "City_5",
+    "first_departure_time": "06:11:30",
+    "last_arrival_time": "23:11:19"
   },
   {
     "rake_id": "REG-C2-04",
@@ -205,7 +257,11 @@
       "32028",
       "32021",
       "32022"
-    ]
+    ],
+    "overnight_stabling_track": "City_5_yard_1_bw",
+    "stabling_station": "City_5",
+    "first_departure_time": "07:11:50",
+    "last_arrival_time": "17:12:49"
   },
   {
     "rake_id": "REG-C2-05",
@@ -220,7 +276,11 @@
       "32024",
       "32041",
       "32042"
-    ]
+    ],
+    "overnight_stabling_track": "City_5_yard_1_bw",
+    "stabling_station": "City_5",
+    "first_departure_time": "07:41:50",
+    "last_arrival_time": "21:11:19"
   },
   {
     "rake_id": "REG-C2-06",
@@ -231,7 +291,11 @@
       "32034",
       "32035",
       "32036"
-    ]
+    ],
+    "overnight_stabling_track": "City_5_yard_1_bw",
+    "stabling_station": "City_5",
+    "first_departure_time": "08:41:50",
+    "last_arrival_time": "17:42:49"
   },
   {
     "rake_id": "REG-C2-03",
@@ -244,7 +308,11 @@
       "32014",
       "32031",
       "32032"
-    ]
+    ],
+    "overnight_stabling_track": "City_5_yard_1_bw",
+    "stabling_station": "City_5",
+    "first_departure_time": "11:11:30",
+    "last_arrival_time": "22:11:19"
   },
   {
     "rake_id": "ALP-Rake-01",
@@ -261,7 +329,11 @@
       "12768",
       "12773",
       "12774"
-    ]
+    ],
+    "overnight_stabling_track": "City_2_yard_1_bw",
+    "stabling_station": "City_2",
+    "first_departure_time": "07:11:50",
+    "last_arrival_time": "17:48:10"
   },
   {
     "rake_id": "ALP-Rake-02",
@@ -276,7 +348,11 @@
       "12770",
       "12779",
       "12780"
-    ]
+    ],
+    "overnight_stabling_track": "City_2_yard_1_bw",
+    "stabling_station": "City_2",
+    "first_departure_time": "08:11:50",
+    "last_arrival_time": "18:48:10"
   },
   {
     "rake_id": "REG-C4-04",
@@ -289,7 +365,11 @@
       "41016",
       "41037",
       "41038"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_5_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "06:21:30",
+    "last_arrival_time": "21:21:28"
   },
   {
     "rake_id": "REG-C4-01",
@@ -304,7 +384,11 @@
       "41006",
       "41017",
       "41018"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_5_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "07:21:50",
+    "last_arrival_time": "20:21:28"
   },
   {
     "rake_id": "REG-C4-05",
@@ -319,7 +403,11 @@
       "41024",
       "41035",
       "41036"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_5_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "07:51:50",
+    "last_arrival_time": "19:21:28"
   },
   {
     "rake_id": "REG-C4-03",
@@ -336,7 +424,11 @@
       "41032",
       "41011",
       "41012"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_5_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "08:21:50",
+    "last_arrival_time": "18:22:33"
   },
   {
     "rake_id": "REG-C4-02",
@@ -351,7 +443,11 @@
       "41026",
       "41039",
       "41040"
-    ]
+    ],
+    "overnight_stabling_track": "City_1_yard_5_bw",
+    "stabling_station": "City_1",
+    "first_departure_time": "09:21:50",
+    "last_arrival_time": "22:21:28"
   },
   {
     "rake_id": "HS-Rake-04",
@@ -374,7 +470,11 @@
       "15010",
       "15015",
       "15016"
-    ]
+    ],
+    "overnight_stabling_track": "City_2_yard_2_bw",
+    "stabling_station": "City_2",
+    "first_departure_time": "07:25:00",
+    "last_arrival_time": "21:01:05"
   },
   {
     "rake_id": "REG-XFER-02",
@@ -395,7 +495,11 @@
       "51016",
       "51025",
       "51026"
-    ]
+    ],
+    "overnight_stabling_track": "City_4_yard_1_bw",
+    "stabling_station": "City_4",
+    "first_departure_time": "07:05:00",
+    "last_arrival_time": "20:54:44"
   },
   {
     "rake_id": "REG-XFER-01",
@@ -414,48 +518,68 @@
       "51014",
       "51023",
       "51024"
-    ]
+    ],
+    "overnight_stabling_track": "City_4_yard_1_bw",
+    "stabling_station": "City_4",
+    "first_departure_time": "08:05:00",
+    "last_arrival_time": "19:54:44"
   },
   {
     "rake_id": "FRT-Rake-01",
     "rolling_stock_type": "heavy_freight_cargo",
     "home_depot": "Depot_1",
     "assigned_services": [
-      "68103",
       "68104",
       "68101",
-      "68102"
-    ]
+      "68102",
+      "68103"
+    ],
+    "overnight_stabling_track": "Depot_1_pocket_1_fw",
+    "stabling_station": "Depot_1",
+    "first_departure_time": "02:00:00",
+    "last_arrival_time": "23:02:00"
   },
   {
     "rake_id": "FRT-Rake-02",
     "rolling_stock_type": "intermodal_container_freight",
     "home_depot": "Depot_3",
     "assigned_services": [
-      "68203",
       "68204",
       "68201",
-      "68202"
-    ]
+      "68202",
+      "68203"
+    ],
+    "overnight_stabling_track": "Depot_3_pocket_1_fw",
+    "stabling_station": "Depot_3",
+    "first_departure_time": "02:30:00",
+    "last_arrival_time": "23:10:00"
   },
   {
     "rake_id": "FRT-Rake-03",
     "rolling_stock_type": "heavy_freight_cargo",
     "home_depot": "Depot_2",
     "assigned_services": [
-      "68303",
       "68304",
       "68301",
-      "68302"
-    ]
+      "68302",
+      "68303"
+    ],
+    "overnight_stabling_track": "City_6_pocket_1_fw",
+    "stabling_station": "City_6",
+    "first_departure_time": "01:00:00",
+    "last_arrival_time": "21:44:30"
   },
   {
     "rake_id": "FRT-Rake-04",
     "rolling_stock_type": "electric_trunk_freight",
     "home_depot": "Depot_4",
     "assigned_services": [
-      "68401",
-      "68402"
-    ]
+      "68402",
+      "68401"
+    ],
+    "overnight_stabling_track": "City_4_pocket_2_fw",
+    "stabling_station": "City_4",
+    "first_departure_time": "01:30:00",
+    "last_arrival_time": "23:37:00"
   }
 ]

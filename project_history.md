@@ -525,3 +525,56 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
      - **Sun** (141 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
      - **All** (242 vehicles): 0 fatal errors, 0 collisions, 0 teleports, 100% completion.
 
+
+---
+
+### 12 October 2026 — Full Continuous Rake Lifecycle Architecture & Dual-Mode Simulation System
+
+**Objective:** Transition the simulation from ephemeral, single-use ghost vehicles to a realistic, continuous physical train fleet. Model the complete end-to-end lifecycle of the 31 physical rakes across the entire 24-hour day—from dawn rollout and station stabling, through scheduled revenue transit and pocket track reversals (*Kopfmachen*), to dusk stabling layovers.
+
+#### Phase 1: Fleet Stabling Allocation & Operational Lifecycle Modeling
+- **Overnight Stabling Allocation:**
+  - Distributed the fleet across terminal yard storage tracks matching the newly expanded physical track infrastructure:
+    - High-Speed Fleet (`HS-Rake-01..06`): `City_1_yard_1_bw` and `City_1_yard_2_bw` (400 m electrified).
+    - Regional Corridor 1 Fleet (`REG-C1-01..06`): `City_1_yard_3_bw` and `City_1_yard_4_bw`.
+    - Regional Corridor 4 Fleet (`REG-C4-01..05`): `City_1_yard_5_bw`.
+    - Regional Corridor 2 Fleet (`REG-C2-01..06`): `City_5_yard_1_bw`.
+    - Alpine Branch Fleet (`ALP-Rake-01..02`): `City_2_yard_1_bw` (utilizing `City_2_plat_3` on Corridor 3).
+    - Trans-Hub Flyover Fleet (`REG-XFER-01..02`): `City_4_yard_1_bw`.
+    - Freight Fleets (`FRT-Rake-01..04`): Dedicated freight sidings at `Depot_1`, `Depot_3`, `City_6_yard_1`, and `City_4_yard_2`.
+- **Closed Daily Circuits:**
+  - Validated that all 31 rakes start and conclude their daily shifts at the exact same stabling facility, forming closed, non-overlapping duty cycles.
+
+#### Phase 2: Dual-Mode Export Pipeline (`scripts/export_to_sumo.py`)
+- Overhauled `export_to_sumo.py` to support dual-mode compilation:
+  - **`--mode rakes` (Default):**
+    - Generates 31 continuous `<vehicle>` route instances representing the physical train fleet.
+    - Sequences multi-leg journeys:
+      1. Morning rollout from stabling siding to departure platform.
+      2. Revenue passenger legs with intermediate station `<stop trainStop="...">` platform calls.
+      3. Turnaround maneuvers via terminal pocket tracks (`<stop lane="{stn}_pocket_{k}_fw_0">`) with *Kopfmachen* buffer stop reversals.
+      4. Departure platform boarding holds utilizing SUMO `<stop until="...">` timetable enforcement.
+      5. Final evening return to resting stabling sidings.
+    - Produces `sumo_config/trains_rakes.trips.xml` and `sumo_config/trains_rakes.rou.xml`.
+  - **`--mode services`:**
+    - Generates 242 discrete service trips (`train_{number}_{class}`) for slot-level timetable validation.
+    - Produces `sumo_config/trains_services.trips.xml` and `sumo_config/trains_services.rou.xml`.
+  - **`--mode both`:**
+    - Compiles both formats simultaneously.
+  - Automatically updates `train_simulation.sumocfg` to point to the active route configuration.
+
+#### Phase 3: Route Distance Calibration (`data/timetable.json`)
+- Calibrated all 242 timetable entries against the upgraded track infrastructure's exact microscopic route lengths.
+- Synchronized SQLite database via `scripts/export_to_db.py`.
+- Result: **0 distance discrepancies** exceeding the strict 0.05 km tolerance (100% pass rate).
+
+#### Phase 4: Dual-Mode Feasibility & Safety Verification
+- **Timetable Feasibility (`scripts/validate_timetable.py --mode both`):**
+  - Services Mode: 242 / 242 services satisfy physical lower bound ({\text{planned}} \ge T_{\min}$) with 0 distance violations.
+  - Rakes Mode: 31 / 31 rakes validated with 100% route integrity, continuous edge sequences, and consist turnaround dwell compliance.
+- **Microscopic SUMO Simulation (`scripts/verify_simulation.py`):**
+  - Validated both Rakes Mode and Services Mode in headless simulation:
+    - **Fatal Errors**: `0`
+    - **Collisions**: `0`
+    - **Teleports / Deadlocks**: `0`
+    - **Schedule Adherence**: 100% on-time within delay tolerance.

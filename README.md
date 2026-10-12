@@ -22,8 +22,10 @@ The project separates commercial timetabling and physical vehicle logistics into
 │   ├── validate_timetable.py        # Validates timetable against physical network (T_min, distances)
 │   └── verify_simulation.py         # Headless SUMO simulation validator (0 errors/collisions)
 ├── sumo_config/
-│   ├── trains.trips.xml          # Scheduled train trips with platform stops and dwell times
-│   ├── trains.rou.xml            # Compiled microscopic edge-by-edge route paths
+│   ├── trains_rakes.rou.xml      # 31 continuous physical rakes with full daily lifecycles
+│   ├── trains_services.rou.xml   # 242 discrete service trips for slot validation
+│   ├── trains.trips.xml          # Active train trips with platform stops and dwell times
+│   ├── trains.rou.xml            # Active compiled microscopic route paths (default: rakes)
 │   ├── viewsettings.xml         # Dark railway theme for sumo-gui visualizer
 │   └── train_simulation.sumocfg  # Master SUMO simulation configuration
 └── README.md                     # Comprehensive architecture and operation guide
@@ -152,36 +154,44 @@ To synchronize JSON data into `data/trains.db`:
 python3 scripts/export_to_db.py
 ```
 
-### 3. Compile SUMO Routes with Duarouter
-To compile the microscopic train routes using `duarouter`, either for a specific operating day or the full composite schedule:
+### 3. Compile SUMO Routes with Duarouter (Dual-Mode)
+To compile microscopic train routes using `duarouter`, either for continuous physical rakes (the 31-train fleet with full daily lifecycles) or discrete commercial service trips:
 ```bash
-# Day-specific export (filters timetable by operating day):
-python3 scripts/export_to_sumo.py --day Mon      # Monday (232 services)
-python3 scripts/export_to_sumo.py --day Sat      # Saturday (145 services)
-python3 scripts/export_to_sumo.py --day Sun      # Sunday (141 services)
+# Continuous Physical Rakes Mode (Default: 31 physical trainsets with stabling & pocket turnarounds):
+python3 scripts/export_to_sumo.py --mode rakes
 
-# Composite export (all 242 unique services):
-python3 scripts/export_to_sumo.py                # or --day all
+# Discrete Services Mode (242 independent commercial timetable runs):
+python3 scripts/export_to_sumo.py --mode services
+
+# Dual-Mode Export (Compiles both formats simultaneously):
+python3 scripts/export_to_sumo.py --mode both
+
+# Day-specific export (filters timetable by operating day):
+python3 scripts/export_to_sumo.py --day Mon      # Monday
+python3 scripts/export_to_sumo.py --day Sat      # Saturday
 ```
 
-### 4. Validate Timetable Feasibility & Route Distances
-To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($T_{\text{planned}} \ge T_{\min}$) and route lengths ($|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$) are strictly satisfied:
+### 4. Validate Timetable Feasibility, Distances & Rake Lifecycles
+To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($T_{\text{planned}} \ge T_{\min}$), route lengths ($|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$), and continuous rake rotation duty cycles are strictly satisfied:
 ```bash
+# Auto-detects mode from active route file:
 python3 scripts/validate_timetable.py
+
+# Explicitly audit both discrete services and continuous rakes:
+python3 scripts/validate_timetable.py --mode both
 ```
 
 ### 5. Run Simulation Verification
-To verify the entire network simulation in headless mode:
+To verify the entire network simulation in headless mode (auto-detects rakes vs services mode):
 ```bash
-# Verify a specific operating day (compiles routes and simulates full 24h):
-python3 scripts/verify_simulation.py --day Mon 86400
-python3 scripts/verify_simulation.py --day Sat 86400
-
-# Automated sweep verifying all 7 operating days and composite schedule:
-python3 scripts/verify_simulation.py --all-days 86400
-
 # Standard 24-hour verification on currently exported configuration:
-python3 scripts/verify_simulation.py 86400  # Full 24-hour verification (or 3600 for quick test)
+python3 scripts/verify_simulation.py 86400  # Full 24-hour verification
+
+# Quick 7-hour verification:
+python3 scripts/verify_simulation.py 26000
+
+# Automated sweep verifying all 7 operating days:
+python3 scripts/verify_simulation.py --all-days 86400
 ```
 
 ### 6. Interactive Visual Simulation with SUMO GUI
