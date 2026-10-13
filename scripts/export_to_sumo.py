@@ -179,14 +179,26 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
             staging = pjd.get("staging_track")
             if idx < len(services) - 1:
                 next_s = tt_by_id[services[idx + 1]]
-                if staging:
+                dep_sec = next_s["departure_sec"]
+                curr_arr = s["stops"][-1].get("arrival_sec") or s.get("arrival_sec", 0.0)
+                turnaround_gap = dep_sec - curr_arr
+
+                effective_staging = staging
+                if not effective_staging and turnaround_gap > 1200.0:
+                    stabling = r.get("overnight_stabling_track")
+                    if stabling and "yard" in stabling and stabling.startswith(s["dest_station"]):
+                        effective_staging = stabling
+
+                if effective_staging:
                     first_plat_arr = next_s["stops"][0].get("arrival_sec")
-                    target_until = first_plat_arr if first_plat_arr is not None else next_s["departure_sec"]
-                    if target_until >= next_s["departure_sec"]:
-                        target_until = next_s["departure_sec"] - 300.0
-                    curr_arr = s["stops"][-1].get("arrival_sec") or s.get("arrival_sec", 0.0)
+                    target_until = dep_sec - 300.0
+                    if first_plat_arr is not None and first_plat_arr < target_until:
+                        target_until = first_plat_arr
                     target_until = max(curr_arr, target_until)
-                    stops_xml.append(("lane", f"{staging}_0", "60", str(target_until)))
+                    if s["dest_track"].startswith("City_1_plat") and effective_staging.startswith("City_1_yard"):
+                        p_idx = 1 if "HS" in rake_id else (2 if "REG-C1" in rake_id else 3)
+                        stops_xml.append(("lane", f"City_1_pocket_{p_idx}_fw_0", "1", None))
+                    stops_xml.append(("lane", f"{effective_staging}_0", "60", str(target_until)))
                 next_orig_ts = next_s["stops"][0].get("train_stop_id")
                 if next_orig_ts:
                     stops_xml.append(("trainStop", next_orig_ts, None, str(next_s["departure_sec"])))
@@ -199,7 +211,10 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
             else:
                 # End-of-day stabling
                 if stabling_track:
-                    stops_xml.append(("lane", f"{stabling_track}_0", "3600", None))
+                    if s["dest_track"].startswith("City_1_plat") and stabling_track.startswith("City_1_yard"):
+                        p_idx = 1 if "HS" in rake_id else (2 if "REG-C1" in rake_id else 3)
+                        stops_xml.append(("lane", f"City_1_pocket_{p_idx}_fw_0", "1", None))
+                    stops_xml.append(("lane", f"{stabling_track}_0", "60", None))
 
         rake_entries.append((start_dep, rake_id, rs_type, start_from, end_to, stops_xml))
 

@@ -36,7 +36,7 @@
       "12029",
       "12030"
     ],
-    "overnight_stabling_track": "City_1_yard_1_bw",
+    "overnight_stabling_track": "City_1_yard_2_bw",
     "stabling_station": "City_1",
     "first_departure_time": "07:02:30",
     "last_arrival_time": "22:55:54"
@@ -55,7 +55,7 @@
       "12039",
       "12040"
     ],
-    "overnight_stabling_track": "City_1_yard_1_bw",
+    "overnight_stabling_track": "City_1_yard_3_bw",
     "stabling_station": "City_1",
     "first_departure_time": "07:32:30",
     "last_arrival_time": "19:55:54"
@@ -72,7 +72,7 @@
       "12025",
       "12026"
     ],
-    "overnight_stabling_track": "City_1_yard_2_bw",
+    "overnight_stabling_track": "City_1_yard_4_bw",
     "stabling_station": "City_1",
     "first_departure_time": "08:32:30",
     "last_arrival_time": "17:57:24"
@@ -91,7 +91,7 @@
       "12041",
       "12042"
     ],
-    "overnight_stabling_track": "City_1_yard_2_bw",
+    "overnight_stabling_track": "City_1_yard_5_bw",
     "stabling_station": "City_1",
     "first_departure_time": "11:02:00",
     "last_arrival_time": "21:55:54"
@@ -112,7 +112,7 @@
       "21031",
       "21032"
     ],
-    "overnight_stabling_track": "City_1_yard_4_bw",
+    "overnight_stabling_track": "City_1_yard_10_bw",
     "stabling_station": "City_1",
     "first_departure_time": "05:16:30",
     "last_arrival_time": "17:56:47"
@@ -129,7 +129,7 @@
       "21027",
       "21028"
     ],
-    "overnight_stabling_track": "City_1_yard_3_bw",
+    "overnight_stabling_track": "City_1_yard_6_bw",
     "stabling_station": "City_1",
     "first_departure_time": "06:16:30",
     "last_arrival_time": "20:24:52"
@@ -148,7 +148,7 @@
       "21041",
       "21042"
     ],
-    "overnight_stabling_track": "City_1_yard_3_bw",
+    "overnight_stabling_track": "City_1_yard_8_bw",
     "stabling_station": "City_1",
     "first_departure_time": "07:16:50",
     "last_arrival_time": "22:24:52"
@@ -167,7 +167,7 @@
       "21039",
       "21040"
     ],
-    "overnight_stabling_track": "City_1_yard_4_bw",
+    "overnight_stabling_track": "City_1_yard_9_bw",
     "stabling_station": "City_1",
     "first_departure_time": "07:46:50",
     "last_arrival_time": "21:24:52"
@@ -184,7 +184,7 @@
       "21011",
       "21012"
     ],
-    "overnight_stabling_track": "City_1_yard_3_bw",
+    "overnight_stabling_track": "City_1_yard_7_bw",
     "stabling_station": "City_1",
     "first_departure_time": "08:16:50",
     "last_arrival_time": "18:26:47"
@@ -199,7 +199,7 @@
       "21033",
       "21034"
     ],
-    "overnight_stabling_track": "City_1_yard_4_bw",
+    "overnight_stabling_track": "City_1_yard_11_bw",
     "stabling_station": "City_1",
     "first_departure_time": "08:46:50",
     "last_arrival_time": "19:24:52"
@@ -239,7 +239,7 @@
       "32043",
       "32044"
     ],
-    "overnight_stabling_track": "City_5_yard_1_bw",
+    "overnight_stabling_track": "City_5_yard_2_bw",
     "stabling_station": "City_5",
     "first_departure_time": "06:11:30",
     "last_arrival_time": "23:11:19"
@@ -258,7 +258,7 @@
       "32021",
       "32022"
     ],
-    "overnight_stabling_track": "City_5_yard_1_bw",
+    "overnight_stabling_track": "City_5_yard_4_bw",
     "stabling_station": "City_5",
     "first_departure_time": "07:11:50",
     "last_arrival_time": "17:12:49"
@@ -277,7 +277,7 @@
       "32041",
       "32042"
     ],
-    "overnight_stabling_track": "City_5_yard_1_bw",
+    "overnight_stabling_track": "City_5_yard_5_bw",
     "stabling_station": "City_5",
     "first_departure_time": "07:41:50",
     "last_arrival_time": "21:11:19"
@@ -292,7 +292,7 @@
       "32035",
       "32036"
     ],
-    "overnight_stabling_track": "City_5_yard_1_bw",
+    "overnight_stabling_track": "City_5_yard_6_bw",
     "stabling_station": "City_5",
     "first_departure_time": "08:41:50",
     "last_arrival_time": "17:42:49"
@@ -309,7 +309,7 @@
       "32031",
       "32032"
     ],
-    "overnight_stabling_track": "City_5_yard_1_bw",
+    "overnight_stabling_track": "City_5_yard_3_bw",
     "stabling_station": "City_5",
     "first_departure_time": "11:11:30",
     "last_arrival_time": "22:11:19"
@@ -330,7 +330,7 @@
       "12773",
       "12774"
     ],
-    "overnight_stabling_track": "City_2_yard_1_bw",
+    "overnight_stabling_track": "City_2_plat_3_bw",
     "stabling_station": "City_2",
     "first_departure_time": "07:11:50",
     "last_arrival_time": "17:48:10"
@@ -349,7 +349,7 @@
       "12779",
       "12780"
     ],
-    "overnight_stabling_track": "City_2_yard_1_bw",
+    "overnight_stabling_track": "City_2_plat_4_bw",
     "stabling_station": "City_2",
     "first_departure_time": "08:11:50",
     "last_arrival_time": "18:48:10"
@@ -366,7 +366,7 @@
       "41037",
       "41038"
     ],
-    "overnight_stabling_track": "City_1_yard_5_bw",
+    "overnight_stabling_track": "City_1_yard_15_bw",
     "stabling_station": "City_1",
     "first_departure_time": "06:21:30",
     "last_arrival_time": "21:21:28"
@@ -385,7 +385,7 @@
       "41017",
       "41018"
     ],
-    "overnight_stabling_track": "City_1_yard_5_bw",
+    "overnight_stabling_track": "City_1_yard_12_bw",
     "stabling_station": "City_1",
     "first_departure_time": "07:21:50",
     "last_arrival_time": "20:21:28"
@@ -404,7 +404,7 @@
       "41035",
       "41036"
     ],
-    "overnight_stabling_track": "City_1_yard_5_bw",
+    "overnight_stabling_track": "City_1_yard_16_bw",
     "stabling_station": "City_1",
     "first_departure_time": "07:51:50",
     "last_arrival_time": "19:21:28"
@@ -425,7 +425,7 @@
       "41011",
       "41012"
     ],
-    "overnight_stabling_track": "City_1_yard_5_bw",
+    "overnight_stabling_track": "City_1_yard_14_bw",
     "stabling_station": "City_1",
     "first_departure_time": "08:21:50",
     "last_arrival_time": "18:22:33"
@@ -444,7 +444,7 @@
       "41039",
       "41040"
     ],
-    "overnight_stabling_track": "City_1_yard_5_bw",
+    "overnight_stabling_track": "City_1_yard_13_bw",
     "stabling_station": "City_1",
     "first_departure_time": "09:21:50",
     "last_arrival_time": "22:21:28"
@@ -471,7 +471,7 @@
       "15015",
       "15016"
     ],
-    "overnight_stabling_track": "City_2_yard_2_bw",
+    "overnight_stabling_track": "City_2_plat_5_bw",
     "stabling_station": "City_2",
     "first_departure_time": "07:25:00",
     "last_arrival_time": "21:01:05"
@@ -496,7 +496,7 @@
       "51025",
       "51026"
     ],
-    "overnight_stabling_track": "City_4_yard_1_bw",
+    "overnight_stabling_track": "City_4_yard_2_bw",
     "stabling_station": "City_4",
     "first_departure_time": "07:05:00",
     "last_arrival_time": "20:54:44"
@@ -534,7 +534,7 @@
       "68102",
       "68103"
     ],
-    "overnight_stabling_track": "Depot_1_pocket_1_fw",
+    "overnight_stabling_track": "Depot_1_yard_1_fw",
     "stabling_station": "Depot_1",
     "first_departure_time": "02:00:00",
     "last_arrival_time": "23:02:00"
@@ -549,7 +549,7 @@
       "68202",
       "68203"
     ],
-    "overnight_stabling_track": "Depot_3_pocket_1_fw",
+    "overnight_stabling_track": "Depot_3_yard_1_fw",
     "stabling_station": "Depot_3",
     "first_departure_time": "02:30:00",
     "last_arrival_time": "23:10:00"
@@ -577,7 +577,7 @@
       "68402",
       "68401"
     ],
-    "overnight_stabling_track": "City_4_yard_2_fw",
+    "overnight_stabling_track": "City_4_yard_3_fw",
     "stabling_station": "City_4",
     "first_departure_time": "01:30:00",
     "last_arrival_time": "23:37:00"

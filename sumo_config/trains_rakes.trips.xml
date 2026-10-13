@@ -9,43 +9,40 @@
     <vType id="electric_trunk_freight" vClass="rail_electric" length="400.0" maxSpeed="27.78" accel="0.45" decel="0.6" emergencyDecel="1.4" guiShape="rail/cargo" color="0.2,0.65,0.85"/>
     <trip id="FRT-Rake-03" type="heavy_freight_cargo" from="City_6_yard_1_fw" to="City_6_yard_1_fw" depart="3000.0">
         <stop lane="City_6_pocket_1_bw_0" duration="60" until="3600"/>
-        <stop lane="Depot_2_yard_1_bw_0" duration="60" until="12300.0"/>
         <stop lane="Depot_2_yard_1_fw_0" duration="60" until="12600"/>
         <stop lane="City_6_yard_1_fw_0" duration="60" until="30300.0"/>
         <stop lane="City_6_pocket_1_bw_0" duration="60" until="30600"/>
-        <stop lane="Depot_2_yard_1_bw_0" duration="60" until="77100.0"/>
         <stop lane="Depot_2_yard_1_fw_0" duration="60" until="77400"/>
-        <stop lane="City_6_yard_1_fw_0" duration="3600"/>
+        <stop lane="City_6_yard_1_fw_0" duration="60"/>
     </trip>
-    <trip id="FRT-Rake-04" type="electric_trunk_freight" from="City_4_yard_2_fw" to="City_4_yard_2_fw" depart="4800.0">
+    <trip id="FRT-Rake-04" type="electric_trunk_freight" from="City_4_yard_3_fw" to="City_4_yard_3_fw" depart="4800.0">
         <stop trainStop="City_4_p2_bw" until="5400"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60" until="83400.0"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_17_bw_0" duration="60" until="83400.0"/>
         <stop trainStop="City_1_p2_fw" until="83700"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_yard_2_fw_0" duration="3600"/>
+        <stop lane="City_4_yard_3_fw_0" duration="60"/>
     </trip>
-    <trip id="FRT-Rake-01" type="heavy_freight_cargo" from="Depot_1_pocket_1_fw" to="Depot_1_pocket_1_fw" depart="6600.0">
+    <trip id="FRT-Rake-01" type="heavy_freight_cargo" from="Depot_1_yard_1_fw" to="Depot_1_yard_1_fw" depart="6600.0">
         <stop lane="Depot_1_pocket_1_bw_0" duration="60" until="7200"/>
-        <stop lane="City_2_yard_1_fw_0" duration="60" until="15900.0"/>
+        <stop lane="City_2_yard_3_bw_0" duration="60" until="15900.0"/>
         <stop lane="City_2_yard_1_bw_0" duration="60" until="16200"/>
         <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" duration="720"/>
-        <stop lane="Depot_1_pocket_1_fw_0" duration="60" until="39300.0"/>
+        <stop lane="Depot_1_yard_1_fw_0" duration="60" until="39300.0"/>
         <stop lane="Depot_1_pocket_1_bw_0" duration="60" until="39600"/>
-        <stop lane="City_2_yard_1_fw_0" duration="60" until="80700.0"/>
+        <stop lane="City_2_yard_3_bw_0" duration="60" until="80700.0"/>
         <stop lane="City_2_yard_1_bw_0" duration="60" until="81000"/>
         <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" duration="720"/>
-        <stop lane="Depot_1_pocket_1_fw_0" duration="3600"/>
+        <stop lane="Depot_1_yard_1_fw_0" duration="60"/>
     </trip>
-    <trip id="FRT-Rake-02" type="intermodal_container_freight" from="Depot_3_pocket_1_fw" to="Depot_3_pocket_1_fw" depart="8400.0">
+    <trip id="FRT-Rake-02" type="intermodal_container_freight" from="Depot_3_yard_1_fw" to="Depot_3_yard_1_fw" depart="8400.0">
         <stop lane="Depot_3_pocket_1_bw_0" duration="60" until="9000"/>
-        <stop lane="City_5_yard_1_fw_0" duration="60" until="17700.0"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="18000"/>
-        <stop lane="Depot_3_pocket_1_fw_0" duration="60" until="50100.0"/>
+        <stop lane="City_5_yard_7_bw_0" duration="60" until="18000"/>
+        <stop lane="Depot_3_yard_1_fw_0" duration="60" until="50100.0"/>
         <stop lane="Depot_3_pocket_1_bw_0" duration="60" until="50400"/>
-        <stop lane="City_5_yard_1_fw_0" duration="60" until="82500.0"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="82800"/>
-        <stop lane="Depot_3_pocket_1_fw_0" duration="3600"/>
+        <stop lane="City_5_yard_7_bw_0" duration="60" until="82800"/>
+        <stop lane="Depot_3_yard_1_fw_0" duration="60"/>
     </trip>
     <trip id="REG-C2-01" type="regional_emu_120" from="City_5_yard_1_bw" to="City_5_yard_1_bw" depart="18090.0">
         <stop trainStop="City_5_p1_fw" until="18690"/>
@@ -55,7 +52,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="20700"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="20490.0"/>
         <stop trainStop="City_6_p1_bw" until="20790"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -63,7 +60,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="33000"/>
+        <stop lane="City_5_yard_1_bw_0" duration="60" until="32810.0"/>
         <stop trainStop="City_5_p1_fw" until="33110"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -71,7 +68,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="35100"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="34890.0"/>
         <stop trainStop="City_6_p1_bw" until="35190"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -79,7 +76,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="54600"/>
+        <stop lane="City_5_yard_1_bw_0" duration="60" until="54390.0"/>
         <stop trainStop="City_5_p1_fw" until="54690"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -87,7 +84,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="56700"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="56490.0"/>
         <stop trainStop="City_6_p1_bw" until="56790"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -95,7 +92,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="63600"/>
+        <stop lane="City_5_yard_1_bw_0" duration="60" until="63410.0"/>
         <stop trainStop="City_5_p1_fw" until="63710"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -103,7 +100,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="65700"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="65510.0"/>
         <stop trainStop="City_6_p1_bw" until="65810"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -111,9 +108,9 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_5_yard_1_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C1-05" type="regional_emu_120" from="City_1_yard_4_bw" to="City_1_yard_4_bw" depart="18390.0">
+    <trip id="REG-C1-05" type="regional_emu_120" from="City_1_yard_10_bw" to="City_1_yard_10_bw" depart="18390.0">
         <stop trainStop="City_1_p2_fw" until="18990"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -121,7 +118,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="21300"/>
         <stop trainStop="City_4_p2_bw" until="21390"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -129,7 +125,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="33300"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_10_bw_0" duration="60" until="33110.0"/>
         <stop trainStop="City_1_p2_fw" until="33410"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -137,7 +134,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="35700"/>
         <stop trainStop="City_4_p2_bw" until="35790"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -145,7 +141,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="44100"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_10_bw_0" duration="60" until="43890.0"/>
         <stop trainStop="City_1_p2_fw" until="44190"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -153,7 +150,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="46500"/>
         <stop trainStop="City_4_p2_bw" until="46590"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -161,7 +157,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="54900"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_10_bw_0" duration="60" until="54690.0"/>
         <stop trainStop="City_1_p2_fw" until="54990"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -169,7 +166,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="57300"/>
         <stop trainStop="City_4_p2_bw" until="57390"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -177,7 +173,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="60300"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_10_bw_0" duration="60" until="60110.0"/>
         <stop trainStop="City_1_p2_fw" until="60410"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -185,7 +182,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="62700"/>
         <stop trainStop="City_4_p2_bw" until="62810"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -193,61 +189,62 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_10_bw_0" duration="60"/>
     </trip>
     <trip id="HS-Rake-01" type="high_speed_emu_300" from="City_1_yard_1_bw" to="City_1_yard_1_bw" depart="21120.0">
         <stop trainStop="City_1_p1_fw" until="21720"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="23700"/>
         <stop trainStop="City_4_p1_bw" until="23820"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="28800"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_1_bw_0" duration="60" until="28650.0"/>
         <stop trainStop="City_1_p1_fw" until="28950"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="30900"/>
         <stop trainStop="City_4_p1_bw" until="31050"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="43200"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_1_bw_0" duration="60" until="43020.0"/>
         <stop trainStop="City_1_p1_fw" until="43320"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="45300"/>
         <stop trainStop="City_4_p1_bw" until="45420"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="59400"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_1_bw_0" duration="60" until="59250.0"/>
         <stop trainStop="City_1_p1_fw" until="59550"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="61500"/>
         <stop trainStop="City_4_p1_bw" until="61650"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="72000"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_1_bw_0" duration="60" until="71820.0"/>
         <stop trainStop="City_1_p1_fw" until="72120"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="74100"/>
         <stop trainStop="City_4_p1_bw" until="74220"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_1_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C2-02" type="regional_emu_120" from="City_5_yard_1_bw" to="City_5_yard_1_bw" depart="21690.0">
+    <trip id="REG-C2-02" type="regional_emu_120" from="City_5_yard_2_bw" to="City_5_yard_2_bw" depart="21690.0">
         <stop trainStop="City_5_p1_fw" until="22290"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -255,7 +252,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="24300"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="24090.0"/>
         <stop trainStop="City_6_p1_bw" until="24390"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -263,7 +260,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="29400"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60" until="29210.0"/>
         <stop trainStop="City_5_p1_fw" until="29510"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -271,7 +268,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="31500"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="31310.0"/>
         <stop trainStop="City_6_p1_bw" until="31610"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -279,7 +276,7 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="47400"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60" until="47190.0"/>
         <stop trainStop="City_5_p1_fw" until="47490"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -287,7 +284,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="49500"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="49290.0"/>
         <stop trainStop="City_6_p1_bw" until="49590"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -295,7 +292,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="69000"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60" until="68790.0"/>
         <stop trainStop="City_5_p1_fw" until="69090"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -303,7 +300,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="71100"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="70890.0"/>
         <stop trainStop="City_6_p1_bw" until="71190"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -311,7 +308,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="79800"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60" until="79590.0"/>
         <stop trainStop="City_5_p1_fw" until="79890"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -319,7 +316,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="81900"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="81690.0"/>
         <stop trainStop="City_6_p1_bw" until="81990"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -327,9 +324,9 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_5_yard_2_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C1-01" type="regional_emu_120" from="City_1_yard_3_bw" to="City_1_yard_3_bw" depart="21990.0">
+    <trip id="REG-C1-01" type="regional_emu_120" from="City_1_yard_6_bw" to="City_1_yard_6_bw" depart="21990.0">
         <stop trainStop="City_1_p2_fw" until="22590"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -337,7 +334,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="24900"/>
         <stop trainStop="City_4_p2_bw" until="24990"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -345,7 +341,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="36900"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_6_bw_0" duration="60" until="36690.0"/>
         <stop trainStop="City_1_p2_fw" until="36990"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -353,7 +350,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="39300"/>
         <stop trainStop="City_4_p2_bw" until="39390"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -361,7 +357,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="69300"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_6_bw_0" duration="60" until="69090.0"/>
         <stop trainStop="City_1_p2_fw" until="69390"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -369,7 +366,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="71700"/>
         <stop trainStop="City_4_p2_bw" until="71790"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -377,157 +373,159 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_6_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C4-04" type="regional_emu_120" from="City_1_yard_5_bw" to="City_1_yard_5_bw" depart="22290.0">
+    <trip id="REG-C4-04" type="regional_emu_120" from="City_1_yard_15_bw" to="City_1_yard_15_bw" depart="22290.0">
         <stop trainStop="City_1_p3_bw" until="22890"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="24900"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="24690.0"/>
         <stop trainStop="City_6_p1_bw" until="24990"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="40800"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_15_bw_0" duration="60" until="40590.0"/>
         <stop trainStop="City_1_p3_bw" until="40890"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="42900"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="42690.0"/>
         <stop trainStop="City_6_p1_bw" until="42990"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="73200"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_15_bw_0" duration="60" until="72990.0"/>
         <stop trainStop="City_1_p3_bw" until="73290"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="75300"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="75090.0"/>
         <stop trainStop="City_6_p1_bw" until="75390"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_15_bw_0" duration="60"/>
     </trip>
-    <trip id="HS-Rake-02" type="high_speed_emu_300" from="City_1_yard_1_bw" to="City_1_yard_1_bw" depart="24750.0">
+    <trip id="HS-Rake-02" type="high_speed_emu_300" from="City_1_yard_2_bw" to="City_1_yard_2_bw" depart="24750.0">
         <stop trainStop="City_1_p1_fw" until="25350"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="27300"/>
         <stop trainStop="City_4_p1_bw" until="27450"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="36000"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_2_bw_0" duration="60" until="35820.0"/>
         <stop trainStop="City_1_p1_fw" until="36120"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="38100"/>
         <stop trainStop="City_4_p1_bw" until="38220"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="50400"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_2_bw_0" duration="60" until="50220.0"/>
         <stop trainStop="City_1_p1_fw" until="50520"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="52500"/>
         <stop trainStop="City_4_p1_bw" until="52620"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="64800"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_2_bw_0" duration="60" until="64650.0"/>
         <stop trainStop="City_1_p1_fw" until="64950"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="66900"/>
         <stop trainStop="City_4_p1_bw" until="67050"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="79200"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_2_bw_0" duration="60" until="79020.0"/>
         <stop trainStop="City_1_p1_fw" until="79320"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="81300"/>
         <stop trainStop="City_4_p1_bw" until="81420"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_2_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-XFER-02" type="regional_emu_120" from="City_4_yard_1_bw" to="City_4_yard_1_bw" depart="24900.0">
+    <trip id="REG-XFER-02" type="regional_emu_120" from="City_4_yard_2_bw" to="City_4_yard_2_bw" depart="24900.0">
         <stop trainStop="City_4_p4_bw" until="25500"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="27000.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="27000.0"/>
         <stop trainStop="City_6_p4_bw" until="27300"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="36000.0"/>
+        <stop lane="City_4_yard_2_bw_0" duration="60" until="36000.0"/>
         <stop trainStop="City_4_p4_bw" until="36300"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="37800.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="37800.0"/>
         <stop trainStop="City_6_p4_bw" until="38100"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="39600.0"/>
         <stop trainStop="City_4_p4_bw" until="39900"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="41400.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="41400.0"/>
         <stop trainStop="City_6_p4_bw" until="41700"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="54000.0"/>
+        <stop lane="City_4_yard_2_bw_0" duration="60" until="54000.0"/>
         <stop trainStop="City_4_p4_bw" until="54300"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="55800.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="55800.0"/>
         <stop trainStop="City_6_p4_bw" until="56100"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="61200.0"/>
+        <stop lane="City_4_yard_2_bw_0" duration="60" until="61200.0"/>
         <stop trainStop="City_4_p4_bw" until="61500"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="63000.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="63000.0"/>
         <stop trainStop="City_6_p4_bw" until="63300"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="64800.0"/>
         <stop trainStop="City_4_p4_bw" until="65100"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="66600.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="66600.0"/>
         <stop trainStop="City_6_p4_bw" until="66900"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="72000.0"/>
+        <stop lane="City_4_yard_2_bw_0" duration="60" until="72000.0"/>
         <stop trainStop="City_4_p4_bw" until="72300"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="73800.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="73800.0"/>
         <stop trainStop="City_6_p4_bw" until="74100"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_4_yard_2_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C2-04" type="regional_emu_120" from="City_5_yard_1_bw" to="City_5_yard_1_bw" depart="25310.0">
+    <trip id="REG-C2-04" type="regional_emu_120" from="City_5_yard_4_bw" to="City_5_yard_4_bw" depart="25310.0">
         <stop trainStop="City_5_p1_fw" until="25910"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -535,7 +533,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="27900"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="27710.0"/>
         <stop trainStop="City_6_p1_bw" until="28010"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -543,7 +541,7 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="36600"/>
+        <stop lane="City_5_yard_4_bw_0" duration="60" until="36390.0"/>
         <stop trainStop="City_5_p1_fw" until="36690"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -551,7 +549,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="38700"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="38490.0"/>
         <stop trainStop="City_6_p1_bw" until="38790"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -559,7 +557,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="43800"/>
+        <stop lane="City_5_yard_4_bw_0" duration="60" until="43590.0"/>
         <stop trainStop="City_5_p1_fw" until="43890"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -567,7 +565,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="45900"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="45690.0"/>
         <stop trainStop="City_6_p1_bw" until="45990"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -575,7 +573,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="58200"/>
+        <stop lane="City_5_yard_4_bw_0" duration="60" until="58010.0"/>
         <stop trainStop="City_5_p1_fw" until="58310"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -583,7 +581,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="60300"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="60110.0"/>
         <stop trainStop="City_6_p1_bw" until="60410"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -591,51 +589,9 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_5_yard_4_bw_0" duration="60"/>
     </trip>
-    <trip id="ALP-Rake-01" type="regional_dmu_120" from="City_2_yard_1_bw" to="City_2_yard_1_bw" depart="25310.0">
-        <stop trainStop="City_2_p3_fw" until="25910"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="27600"/>
-        <stop trainStop="Town_9_p1_bw" until="27675"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="40200"/>
-        <stop trainStop="City_2_p3_fw" until="40290"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="42000"/>
-        <stop trainStop="Town_9_p1_bw" until="42075"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="51000"/>
-        <stop trainStop="City_2_p3_fw" until="51090"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="52800"/>
-        <stop trainStop="Town_9_p1_bw" until="52875"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="58200"/>
-        <stop trainStop="City_2_p3_fw" until="58310"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="60000"/>
-        <stop trainStop="Town_9_p1_bw" until="60075"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="61800"/>
-        <stop trainStop="City_2_p3_fw" until="61910"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="63480"/>
-        <stop trainStop="Town_9_p1_bw" until="63555"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="3600"/>
-    </trip>
-    <trip id="REG-C1-03" type="regional_emu_120" from="City_1_yard_3_bw" to="City_1_yard_3_bw" depart="25610.0">
+    <trip id="REG-C1-03" type="regional_emu_120" from="City_1_yard_8_bw" to="City_1_yard_8_bw" depart="25610.0">
         <stop trainStop="City_1_p2_fw" until="26210"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -643,7 +599,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="28500"/>
         <stop trainStop="City_4_p2_bw" until="28610"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -651,7 +606,8 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="40500"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_8_bw_0" duration="60" until="40290.0"/>
         <stop trainStop="City_1_p2_fw" until="40590"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -659,7 +615,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="42900"/>
         <stop trainStop="City_4_p2_bw" until="42990"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -667,7 +622,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="58500"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_8_bw_0" duration="60" until="58310.0"/>
         <stop trainStop="City_1_p2_fw" until="58610"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -675,7 +631,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="60900"/>
         <stop trainStop="City_4_p2_bw" until="61010"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -683,7 +638,8 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="76500"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_8_bw_0" duration="60" until="76290.0"/>
         <stop trainStop="City_1_p2_fw" until="76590"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -691,7 +647,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="78900"/>
         <stop trainStop="City_4_p2_bw" until="78990"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -699,151 +654,173 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_8_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C4-01" type="regional_emu_120" from="City_1_yard_5_bw" to="City_1_yard_5_bw" depart="25910.0">
+    <trip id="ALP-Rake-01" type="regional_dmu_120" from="City_2_plat_3_bw" to="City_2_plat_3_bw" depart="25910.0">
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="27675"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p3_fw" duration="60"/>
+        <stop trainStop="City_2_p3_bw" until="40290"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="42075"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p3_fw" duration="60"/>
+        <stop trainStop="City_2_p3_bw" until="51090"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="52875"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p3_fw" duration="60"/>
+        <stop trainStop="City_2_p3_bw" until="58310"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="60075"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p3_fw" duration="60"/>
+        <stop trainStop="City_2_p3_bw" until="61910"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="63555"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p3_fw" duration="60"/>
+        <stop lane="City_2_plat_3_bw_0" duration="60"/>
+    </trip>
+    <trip id="REG-C4-01" type="regional_emu_120" from="City_1_yard_12_bw" to="City_1_yard_12_bw" depart="25910.0">
         <stop trainStop="City_1_p3_bw" until="26510"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="28500"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="28310.0"/>
         <stop trainStop="City_6_p1_bw" until="28610"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="31800"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_12_bw_0" duration="60" until="31610.0"/>
         <stop trainStop="City_1_p3_bw" until="31910"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="33900"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="33710.0"/>
         <stop trainStop="City_6_p1_bw" until="34010"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="48000"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_12_bw_0" duration="60" until="47790.0"/>
         <stop trainStop="City_1_p3_bw" until="48090"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="50100"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="49890.0"/>
         <stop trainStop="City_6_p1_bw" until="50190"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="69600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_12_bw_0" duration="60" until="69390.0"/>
         <stop trainStop="City_1_p3_bw" until="69690"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="71700"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="71490.0"/>
         <stop trainStop="City_6_p1_bw" until="71790"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_12_bw_0" duration="60"/>
     </trip>
-    <trip id="HS-Rake-04" type="high_speed_emu_single" from="City_2_yard_2_bw" to="City_2_yard_2_bw" depart="26100.0">
-        <stop trainStop="City_2_p2_fw" until="26700"/>
+    <trip id="HS-Rake-04" type="high_speed_emu_single" from="City_2_plat_5_bw" to="City_2_plat_5_bw" depart="26100.0">
+        <stop trainStop="City_2_p5_fw" until="26700"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="28200.0"/>
         <stop trainStop="City_5_p2_fw" until="28500"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="30000.0"/>
-        <stop trainStop="City_2_p2_fw" until="30300"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="30300"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="31800.0"/>
         <stop trainStop="City_5_p2_fw" until="32100"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="37200.0"/>
-        <stop trainStop="City_2_p2_fw" until="37500"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="37500"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="39000.0"/>
         <stop trainStop="City_5_p2_fw" until="39300"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="48000.0"/>
-        <stop trainStop="City_2_p2_fw" until="48300"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="48300"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="49800.0"/>
         <stop trainStop="City_5_p2_fw" until="50100"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="55200.0"/>
-        <stop trainStop="City_2_p2_fw" until="55500"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="55500"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="57000.0"/>
         <stop trainStop="City_5_p2_fw" until="57300"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="62400.0"/>
-        <stop trainStop="City_2_p2_fw" until="62700"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="62700"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="64200.0"/>
         <stop trainStop="City_5_p2_fw" until="64500"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="66000.0"/>
-        <stop trainStop="City_2_p2_fw" until="66300"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="66300"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="67800.0"/>
         <stop trainStop="City_5_p2_fw" until="68100"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="60" until="73200.0"/>
-        <stop trainStop="City_2_p2_fw" until="73500"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop trainStop="City_2_p5_fw" until="73500"/>
         <stop trainStop="City_5_p2_bw" duration="60"/>
-        <stop lane="City_5_yard_2_bw_0" duration="60" until="75000.0"/>
         <stop trainStop="City_5_p2_fw" until="75300"/>
-        <stop trainStop="City_2_p2_bw" duration="60"/>
-        <stop lane="City_2_yard_2_bw_0" duration="3600"/>
+        <stop trainStop="City_2_p5_bw" duration="60"/>
+        <stop lane="City_2_plat_5_bw_0" duration="60"/>
     </trip>
-    <trip id="HS-Rake-03" type="high_speed_emu_300" from="City_1_yard_1_bw" to="City_1_yard_1_bw" depart="26550.0">
+    <trip id="HS-Rake-03" type="high_speed_emu_300" from="City_1_yard_3_bw" to="City_1_yard_3_bw" depart="26550.0">
         <stop trainStop="City_1_p1_fw" until="27150"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="29100"/>
         <stop trainStop="City_4_p1_bw" until="29250"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="32400"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_3_bw_0" duration="60" until="32250.0"/>
         <stop trainStop="City_1_p1_fw" until="32550"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="34500"/>
         <stop trainStop="City_4_p1_bw" until="34620"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="57600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_3_bw_0" duration="60" until="57450.0"/>
         <stop trainStop="City_1_p1_fw" until="57750"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="59700"/>
         <stop trainStop="City_4_p1_bw" until="59850"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="60" until="68400"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_3_bw_0" duration="60" until="68220.0"/>
         <stop trainStop="City_1_p1_fw" until="68520"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="70500"/>
         <stop trainStop="City_4_p1_bw" until="70620"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_3_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C2-05" type="regional_emu_120" from="City_5_yard_1_bw" to="City_5_yard_1_bw" depart="27110.0">
+    <trip id="REG-C2-05" type="regional_emu_120" from="City_5_yard_5_bw" to="City_5_yard_5_bw" depart="27110.0">
         <stop trainStop="City_5_p1_fw" until="27710"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -851,7 +828,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="29700"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="29510.0"/>
         <stop trainStop="City_6_p1_bw" until="29810"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -859,7 +836,7 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="51000"/>
+        <stop lane="City_5_yard_5_bw_0" duration="60" until="50790.0"/>
         <stop trainStop="City_5_p1_fw" until="51090"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -867,7 +844,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="53100"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="52890.0"/>
         <stop trainStop="City_6_p1_bw" until="53190"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -875,7 +852,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="65400"/>
+        <stop lane="City_5_yard_5_bw_0" duration="60" until="65210.0"/>
         <stop trainStop="City_5_p1_fw" until="65510"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -883,7 +860,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="67500"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="67310.0"/>
         <stop trainStop="City_6_p1_bw" until="67610"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -891,7 +868,7 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="72600"/>
+        <stop lane="City_5_yard_5_bw_0" duration="60" until="72390.0"/>
         <stop trainStop="City_5_p1_fw" until="72690"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -899,7 +876,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="74700"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="74490.0"/>
         <stop trainStop="City_6_p1_bw" until="74790"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -907,9 +884,9 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_5_yard_5_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C1-04" type="regional_emu_120" from="City_1_yard_4_bw" to="City_1_yard_4_bw" depart="27410.0">
+    <trip id="REG-C1-04" type="regional_emu_120" from="City_1_yard_9_bw" to="City_1_yard_9_bw" depart="27410.0">
         <stop trainStop="City_1_p2_fw" until="28010"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -917,7 +894,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="30300"/>
         <stop trainStop="City_4_p2_bw" until="30410"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -925,7 +901,8 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="51300"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_9_bw_0" duration="60" until="51090.0"/>
         <stop trainStop="City_1_p2_fw" until="51390"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -933,7 +910,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="53700"/>
         <stop trainStop="City_4_p2_bw" until="53790"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -941,7 +917,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="63900"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_9_bw_0" duration="60" until="63710.0"/>
         <stop trainStop="City_1_p2_fw" until="64010"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -949,7 +926,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="66300"/>
         <stop trainStop="City_4_p2_bw" until="66410"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -957,7 +933,8 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="72900"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_9_bw_0" duration="60" until="72690.0"/>
         <stop trainStop="City_1_p2_fw" until="72990"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -965,7 +942,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="75300"/>
         <stop trainStop="City_4_p2_bw" until="75390"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -973,71 +949,75 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_9_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C4-05" type="regional_emu_120" from="City_1_yard_5_bw" to="City_1_yard_5_bw" depart="27710.0">
+    <trip id="REG-C4-05" type="regional_emu_120" from="City_1_yard_16_bw" to="City_1_yard_16_bw" depart="27710.0">
         <stop trainStop="City_1_p3_bw" until="28310"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="30300"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="30110.0"/>
         <stop trainStop="City_6_p1_bw" until="30410"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="55200"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_16_bw_0" duration="60" until="54990.0"/>
         <stop trainStop="City_1_p3_bw" until="55290"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="57300"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="57090.0"/>
         <stop trainStop="City_6_p1_bw" until="57390"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="60600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_16_bw_0" duration="60" until="60410.0"/>
         <stop trainStop="City_1_p3_bw" until="60710"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="62700"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="62510.0"/>
         <stop trainStop="City_6_p1_bw" until="62810"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="66000"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_16_bw_0" duration="60" until="65810.0"/>
         <stop trainStop="City_1_p3_bw" until="66110"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="68100"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="67890.0"/>
         <stop trainStop="City_6_p1_bw" until="68190"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_16_bw_0" duration="60"/>
     </trip>
     <trip id="REG-XFER-01" type="regional_emu_120" from="City_4_yard_1_bw" to="City_4_yard_1_bw" depart="28500.0">
         <stop trainStop="City_4_p4_bw" until="29100"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="30600.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="30600.0"/>
         <stop trainStop="City_6_p4_bw" until="30900"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="60" until="32400.0"/>
         <stop trainStop="City_4_p4_bw" until="32700"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="34200.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="34200.0"/>
         <stop trainStop="City_6_p4_bw" until="34500"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
@@ -1045,7 +1025,7 @@
         <stop trainStop="City_4_p4_bw" until="43500"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="45000.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="45000.0"/>
         <stop trainStop="City_6_p4_bw" until="45300"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
@@ -1053,7 +1033,7 @@
         <stop trainStop="City_4_p4_bw" until="50700"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="52200.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="52200.0"/>
         <stop trainStop="City_6_p4_bw" until="52500"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
@@ -1061,7 +1041,7 @@
         <stop trainStop="City_4_p4_bw" until="57900"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="59400.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="59400.0"/>
         <stop trainStop="City_6_p4_bw" until="59700"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
@@ -1069,47 +1049,13 @@
         <stop trainStop="City_4_p4_bw" until="68700"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180"/>
         <stop trainStop="City_6_p4_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="70200.0"/>
+        <stop lane="City_6_yard_2_fw_0" duration="60" until="70200.0"/>
         <stop trainStop="City_6_p4_bw" until="70500"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180"/>
         <stop trainStop="City_4_p4_fw" duration="60"/>
-        <stop lane="City_4_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_4_yard_1_bw_0" duration="60"/>
     </trip>
-    <trip id="ALP-Rake-02" type="regional_dmu_120" from="City_2_yard_1_bw" to="City_2_yard_1_bw" depart="28910.0">
-        <stop trainStop="City_2_p3_fw" until="29510"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="31080"/>
-        <stop trainStop="Town_9_p1_bw" until="31155"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="36600"/>
-        <stop trainStop="City_2_p3_fw" until="36690"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="38400"/>
-        <stop trainStop="Town_9_p1_bw" until="38475"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="47400"/>
-        <stop trainStop="City_2_p3_fw" until="47490"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="49200"/>
-        <stop trainStop="Town_9_p1_bw" until="49275"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="60" until="65400"/>
-        <stop trainStop="City_2_p3_fw" until="65510"/>
-        <stop trainStop="Town_8_p1_fw" duration="75"/>
-        <stop trainStop="Town_9_p1_fw" duration="60"/>
-        <stop lane="Town_9_yard_1_fw_0" duration="60" until="67080"/>
-        <stop trainStop="Town_9_p1_bw" until="67155"/>
-        <stop trainStop="Town_8_p1_bw" duration="75"/>
-        <stop trainStop="City_2_p3_fw" duration="60"/>
-        <stop lane="City_2_yard_1_bw_0" duration="3600"/>
-    </trip>
-    <trip id="REG-C1-02" type="regional_emu_120" from="City_1_yard_3_bw" to="City_1_yard_3_bw" depart="29210.0">
+    <trip id="REG-C1-02" type="regional_emu_120" from="City_1_yard_7_bw" to="City_1_yard_7_bw" depart="29210.0">
         <stop trainStop="City_1_p2_fw" until="29810"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -1117,7 +1063,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="32100"/>
         <stop trainStop="City_4_p2_bw" until="32210"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -1125,7 +1070,8 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="47700"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_7_bw_0" duration="60" until="47490.0"/>
         <stop trainStop="City_1_p2_fw" until="47790"/>
         <stop trainStop="Town_1_p2_fw" duration="45"/>
         <stop trainStop="City_2_p2_fw" duration="90"/>
@@ -1133,7 +1079,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="150"/>
         <stop trainStop="Town_3_p2_fw" duration="45"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="50100"/>
         <stop trainStop="City_4_p2_bw" until="50190"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -1141,7 +1086,8 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="60" until="62100"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_7_bw_0" duration="60" until="61910.0"/>
         <stop trainStop="City_1_p2_fw" until="62210"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -1149,7 +1095,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="64500"/>
         <stop trainStop="City_4_p2_bw" until="64610"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -1157,103 +1102,135 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_3_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_7_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C4-03" type="regional_emu_120" from="City_1_yard_5_bw" to="City_1_yard_5_bw" depart="29510.0">
+    <trip id="ALP-Rake-02" type="regional_dmu_120" from="City_2_plat_4_bw" to="City_2_plat_4_bw" depart="29510.0">
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="31155"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p4_fw" duration="60"/>
+        <stop trainStop="City_2_p4_bw" until="36690"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="38475"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p4_fw" duration="60"/>
+        <stop trainStop="City_2_p4_bw" until="47490"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="49275"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p4_fw" duration="60"/>
+        <stop trainStop="City_2_p4_bw" until="65510"/>
+        <stop trainStop="Town_8_p1_fw" duration="75"/>
+        <stop trainStop="Town_9_p1_fw" duration="60"/>
+        <stop trainStop="Town_9_p1_bw" until="67155"/>
+        <stop trainStop="Town_8_p1_bw" duration="75"/>
+        <stop trainStop="City_2_p4_fw" duration="60"/>
+        <stop lane="City_2_plat_4_bw_0" duration="60"/>
+    </trip>
+    <trip id="REG-C4-03" type="regional_emu_120" from="City_1_yard_14_bw" to="City_1_yard_14_bw" depart="29510.0">
         <stop trainStop="City_1_p3_bw" until="30110"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="32100"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="31910.0"/>
         <stop trainStop="City_6_p1_bw" until="32210"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="37200"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_14_bw_0" duration="60" until="36990.0"/>
         <stop trainStop="City_1_p3_bw" until="37290"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="39300"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="39090.0"/>
         <stop trainStop="City_6_p1_bw" until="39390"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="44400"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_14_bw_0" duration="60" until="44190.0"/>
         <stop trainStop="City_1_p3_bw" until="44490"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="46500"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="46290.0"/>
         <stop trainStop="City_6_p1_bw" until="46590"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="51600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_14_bw_0" duration="60" until="51390.0"/>
         <stop trainStop="City_1_p3_bw" until="51690"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="53700"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="53490.0"/>
         <stop trainStop="City_6_p1_bw" until="53790"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="62400"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_14_bw_0" duration="60" until="62210.0"/>
         <stop trainStop="City_1_p3_bw" until="62510"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="64500"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="64310.0"/>
         <stop trainStop="City_6_p1_bw" until="64610"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_14_bw_0" duration="60"/>
     </trip>
-    <trip id="HS-Rake-05" type="high_speed_emu_300" from="City_1_yard_2_bw" to="City_1_yard_2_bw" depart="30150.0">
+    <trip id="HS-Rake-05" type="high_speed_emu_300" from="City_1_yard_4_bw" to="City_1_yard_4_bw" depart="30150.0">
         <stop trainStop="City_1_p1_fw" until="30750"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="32700"/>
         <stop trainStop="City_4_p1_bw" until="32850"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60" until="46800"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_4_bw_0" duration="60" until="46620.0"/>
         <stop trainStop="City_1_p1_fw" until="46920"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="48900"/>
         <stop trainStop="City_4_p1_bw" until="49020"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60" until="61200"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_4_bw_0" duration="60" until="61050.0"/>
         <stop trainStop="City_1_p1_fw" until="61350"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="63300"/>
         <stop trainStop="City_4_p1_bw" until="63450"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_4_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C2-06" type="regional_emu_120" from="City_5_yard_1_bw" to="City_5_yard_1_bw" depart="30710.0">
+    <trip id="REG-C2-06" type="regional_emu_120" from="City_5_yard_6_bw" to="City_5_yard_6_bw" depart="30710.0">
         <stop trainStop="City_5_p1_fw" until="31310"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -1261,7 +1238,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="33300"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="33110.0"/>
         <stop trainStop="City_6_p1_bw" until="33410"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -1269,7 +1246,7 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="60000"/>
+        <stop lane="City_5_yard_6_bw_0" duration="60" until="59810.0"/>
         <stop trainStop="City_5_p1_fw" until="60110"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -1277,7 +1254,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="62100"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="61910.0"/>
         <stop trainStop="City_6_p1_bw" until="62210"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -1285,9 +1262,9 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_5_yard_6_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C1-06" type="regional_emu_120" from="City_1_yard_4_bw" to="City_1_yard_4_bw" depart="31010.0">
+    <trip id="REG-C1-06" type="regional_emu_120" from="City_1_yard_11_bw" to="City_1_yard_11_bw" depart="31010.0">
         <stop trainStop="City_1_p2_fw" until="31610"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -1295,7 +1272,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="33900"/>
         <stop trainStop="City_4_p2_bw" until="34010"/>
         <stop trainStop="Town_3_p2_bw" duration="60"/>
         <stop trainStop="City_3_EW_p2_bw" duration="180"/>
@@ -1303,7 +1279,8 @@
         <stop trainStop="City_2_p2_bw" duration="110"/>
         <stop trainStop="Town_1_p2_bw" duration="60"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="60" until="65700"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_11_bw_0" duration="60" until="65510.0"/>
         <stop trainStop="City_1_p2_fw" until="65810"/>
         <stop trainStop="Town_1_p2_fw" duration="60"/>
         <stop trainStop="City_2_p2_fw" duration="110"/>
@@ -1311,7 +1288,6 @@
         <stop trainStop="City_3_EW_p2_fw" duration="180"/>
         <stop trainStop="Town_3_p2_fw" duration="60"/>
         <stop trainStop="City_4_p2_fw" duration="60"/>
-        <stop lane="City_4_pocket_2_fw_0" duration="60" until="68100"/>
         <stop trainStop="City_4_p2_bw" until="68190"/>
         <stop trainStop="Town_3_p2_bw" duration="45"/>
         <stop trainStop="City_3_EW_p2_bw" duration="150"/>
@@ -1319,101 +1295,106 @@
         <stop trainStop="City_2_p2_bw" duration="90"/>
         <stop trainStop="Town_1_p2_bw" duration="45"/>
         <stop trainStop="City_1_p2_bw" duration="60"/>
-        <stop lane="City_1_yard_4_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_2_fw_0" duration="1"/>
+        <stop lane="City_1_yard_11_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C4-02" type="regional_emu_120" from="City_1_yard_5_bw" to="City_1_yard_5_bw" depart="33110.0">
+    <trip id="REG-C4-02" type="regional_emu_120" from="City_1_yard_13_bw" to="City_1_yard_13_bw" depart="33110.0">
         <stop trainStop="City_1_p3_bw" until="33710"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="35700"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="35490.0"/>
         <stop trainStop="City_6_p1_bw" until="35790"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="58800"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_13_bw_0" duration="60" until="58610.0"/>
         <stop trainStop="City_1_p3_bw" until="58910"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="60900"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="60710.0"/>
         <stop trainStop="City_6_p1_bw" until="61010"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="64200"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_13_bw_0" duration="60" until="64010.0"/>
         <stop trainStop="City_1_p3_bw" until="64310"/>
         <stop trainStop="Town_10_p1_fw" duration="60"/>
         <stop trainStop="Town_11_p1_fw" duration="60"/>
         <stop trainStop="Town_12_p1_fw" duration="60"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="66300"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="66110.0"/>
         <stop trainStop="City_6_p1_bw" until="66410"/>
         <stop trainStop="Town_12_p1_bw" duration="60"/>
         <stop trainStop="Town_11_p1_bw" duration="60"/>
         <stop trainStop="Town_10_p1_bw" duration="60"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="60" until="76800"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_13_bw_0" duration="60" until="76590.0"/>
         <stop trainStop="City_1_p3_bw" until="76890"/>
         <stop trainStop="Town_10_p1_fw" duration="45"/>
         <stop trainStop="Town_11_p1_fw" duration="45"/>
         <stop trainStop="Town_12_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_2_fw_0" duration="60" until="78900"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="78690.0"/>
         <stop trainStop="City_6_p1_bw" until="78990"/>
         <stop trainStop="Town_12_p1_bw" duration="45"/>
         <stop trainStop="Town_11_p1_bw" duration="45"/>
         <stop trainStop="Town_10_p1_bw" duration="45"/>
         <stop trainStop="City_1_p3_fw" duration="60"/>
-        <stop lane="City_1_yard_5_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
+        <stop lane="City_1_yard_13_bw_0" duration="60"/>
     </trip>
-    <trip id="HS-Rake-06" type="high_speed_emu_300" from="City_1_yard_2_bw" to="City_1_yard_2_bw" depart="39120.0">
+    <trip id="HS-Rake-06" type="high_speed_emu_300" from="City_1_yard_5_bw" to="City_1_yard_5_bw" depart="39120.0">
         <stop trainStop="City_1_p1_fw" until="39720"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="41700"/>
         <stop trainStop="City_4_p1_bw" until="41820"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60" until="54000"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_5_bw_0" duration="60" until="53820.0"/>
         <stop trainStop="City_1_p1_fw" until="54120"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="56100"/>
         <stop trainStop="City_4_p1_bw" until="56220"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60" until="63000"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_5_bw_0" duration="60" until="62850.0"/>
         <stop trainStop="City_1_p1_fw" until="63150"/>
         <stop trainStop="City_2_p1_fw" duration="150"/>
         <stop trainStop="City_3_EW_p1_fw" duration="180"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="65100"/>
         <stop trainStop="City_4_p1_bw" until="65250"/>
         <stop trainStop="City_3_EW_p1_bw" duration="180"/>
         <stop trainStop="City_2_p1_bw" duration="150"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="60" until="75600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_5_bw_0" duration="60" until="75420.0"/>
         <stop trainStop="City_1_p1_fw" until="75720"/>
         <stop trainStop="City_2_p1_fw" duration="120"/>
         <stop trainStop="City_3_EW_p1_fw" duration="150"/>
         <stop trainStop="City_4_p1_fw" duration="60"/>
-        <stop lane="City_4_pocket_1_fw_0" duration="60" until="77700"/>
         <stop trainStop="City_4_p1_bw" until="77820"/>
         <stop trainStop="City_3_EW_p1_bw" duration="150"/>
         <stop trainStop="City_2_p1_bw" duration="120"/>
         <stop trainStop="City_1_p1_bw" duration="60"/>
-        <stop lane="City_1_yard_2_bw_0" duration="3600"/>
+        <stop lane="City_1_pocket_1_fw_0" duration="1"/>
+        <stop lane="City_1_yard_5_bw_0" duration="60"/>
     </trip>
-    <trip id="REG-C2-03" type="regional_emu_120" from="City_5_yard_1_bw" to="City_5_yard_1_bw" depart="39690.0">
+    <trip id="REG-C2-03" type="regional_emu_120" from="City_5_yard_3_bw" to="City_5_yard_3_bw" depart="39690.0">
         <stop trainStop="City_5_p1_fw" until="40290"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -1421,7 +1402,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="42300"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="42090.0"/>
         <stop trainStop="City_6_p1_bw" until="42390"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -1429,7 +1410,7 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="61800"/>
+        <stop lane="City_5_yard_3_bw_0" duration="60" until="61610.0"/>
         <stop trainStop="City_5_p1_fw" until="61910"/>
         <stop trainStop="Town_4_p1_fw" duration="55"/>
         <stop trainStop="Town_5_p1_fw" duration="55"/>
@@ -1437,7 +1418,7 @@
         <stop trainStop="Town_6_p1_fw" duration="55"/>
         <stop trainStop="Town_7_p1_fw" duration="55"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="63900"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="63710.0"/>
         <stop trainStop="City_6_p1_bw" until="64010"/>
         <stop trainStop="Town_7_p1_bw" duration="55"/>
         <stop trainStop="Town_6_p1_bw" duration="55"/>
@@ -1445,7 +1426,7 @@
         <stop trainStop="Town_5_p1_bw" duration="55"/>
         <stop trainStop="Town_4_p1_bw" duration="55"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="60" until="76200"/>
+        <stop lane="City_5_yard_3_bw_0" duration="60" until="75990.0"/>
         <stop trainStop="City_5_p1_fw" until="76290"/>
         <stop trainStop="Town_4_p1_fw" duration="45"/>
         <stop trainStop="Town_5_p1_fw" duration="45"/>
@@ -1453,7 +1434,7 @@
         <stop trainStop="Town_6_p1_fw" duration="45"/>
         <stop trainStop="Town_7_p1_fw" duration="45"/>
         <stop trainStop="City_6_p1_fw" duration="60"/>
-        <stop lane="City_6_pocket_1_fw_0" duration="60" until="78300"/>
+        <stop lane="City_6_pocket_1_fw_0" duration="60" until="78090.0"/>
         <stop trainStop="City_6_p1_bw" until="78390"/>
         <stop trainStop="Town_7_p1_bw" duration="45"/>
         <stop trainStop="Town_6_p1_bw" duration="45"/>
@@ -1461,6 +1442,6 @@
         <stop trainStop="Town_5_p1_bw" duration="45"/>
         <stop trainStop="Town_4_p1_bw" duration="45"/>
         <stop trainStop="City_5_p1_bw" duration="60"/>
-        <stop lane="City_5_yard_1_bw_0" duration="3600"/>
+        <stop lane="City_5_yard_3_bw_0" duration="60"/>
     </trip>
 </routes>

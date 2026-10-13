@@ -93,7 +93,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 last_s = tt_by_id[sorted_svcs[-1]]
                 stabling_track = r.get("overnight_stabling_track")
                 dep_sec = max(0.0, first_s["departure_sec"] - 600.0) if (stabling_track and stabling_track != first_s["origin_track"]) else first_s["departure_sec"]
-                arr_sec = last_s["arrival_sec"]
+                arr_sec = (last_s["arrival_sec"] + 900.0) if (stabling_track and stabling_track != last_s["dest_track"]) else last_s["arrival_sec"]
                 expected_entities[rid] = {
                     "id": rid,
                     "type": r["rolling_stock_type"],
@@ -462,6 +462,11 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"[!] Warning: failed to recompile composite schedule: {e}")
         else:
+            if args.mode != "auto":
+                try:
+                    compile_sumo_files(mode=args.mode, day="all")
+                except Exception as e:
+                    print(f"[!] Warning: failed to recompile schedule: {e}")
             success = run_verification(
                 max_steps=args.steps,
                 day=args.day,

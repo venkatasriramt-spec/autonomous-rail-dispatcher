@@ -1113,7 +1113,7 @@ def build_timetable():
             "corridor": "Bypass_C2_C5",
             "direction": "Northeast_FW",
             "origin_station": "City_2",
-            "origin_track": "City_2_plat_2_fw",
+            "origin_track": "City_2_plat_5_fw",
             "dest_station": "City_5",
             "dest_track": "City_5_plat_2_bw",
             "departure_time": format_time(dep_sec),
@@ -1122,7 +1122,7 @@ def build_timetable():
             "arrival_sec": round(arr_sec, 1),
             "total_distance_km": 14.75,
             "stops": [
-                {"station": "City_2", "train_stop_id": "City_2_p2_fw", "arrival_time": format_time(dep_sec), "arrival_sec": dep_sec, "departure_time": format_time(dep_sec), "departure_sec": dep_sec, "dwell_sec": 0},
+                {"station": "City_2", "train_stop_id": "City_2_p5_fw", "arrival_time": format_time(dep_sec), "arrival_sec": dep_sec, "departure_time": format_time(dep_sec), "departure_sec": dep_sec, "dwell_sec": 0},
                 {"station": "City_5", "train_stop_id": "City_5_p2_bw", "arrival_time": format_time(arr_sec), "arrival_sec": round(arr_sec, 1), "departure_time": format_time(arr_sec), "departure_sec": round(arr_sec, 1), "dwell_sec": 0}
             ],
             "bypassed_through_stations": [],
@@ -1152,7 +1152,7 @@ def build_timetable():
             "origin_station": "City_5",
             "origin_track": "City_5_plat_2_fw",
             "dest_station": "City_2",
-            "dest_track": "City_2_plat_2_bw",
+            "dest_track": "City_2_plat_5_bw",
             "departure_time": format_time(rev_dep),
             "departure_sec": round(rev_dep, 1),
             "arrival_time": format_time(rev_arr),
@@ -1160,12 +1160,12 @@ def build_timetable():
             "total_distance_km": 14.75,
             "stops": [
                 {"station": "City_5", "train_stop_id": "City_5_p2_fw", "arrival_time": format_time(rev_dep), "arrival_sec": round(rev_dep, 1), "departure_time": format_time(rev_dep), "departure_sec": round(rev_dep, 1), "dwell_sec": 0},
-                {"station": "City_2", "train_stop_id": "City_2_p2_bw", "arrival_time": format_time(rev_arr), "arrival_sec": round(rev_arr, 1), "departure_time": format_time(rev_arr), "departure_sec": round(rev_arr, 1), "dwell_sec": 0}
+                {"station": "City_2", "train_stop_id": "City_2_p5_bw", "arrival_time": format_time(rev_arr), "arrival_sec": round(rev_arr, 1), "departure_time": format_time(rev_arr), "departure_sec": round(rev_arr, 1), "dwell_sec": 0}
             ],
             "bypassed_through_stations": [],
             "post_journey_disposition": {
                 "action": "yard_layover",
-                "staging_track": "City_2_yard_2_bw",
+                "staging_track": "City_2_plat_5_bw",
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
                 "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],

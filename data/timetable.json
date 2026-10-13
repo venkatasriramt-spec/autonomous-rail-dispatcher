@@ -20,7 +20,7 @@
     "departure_sec": 3600,
     "arrival_time": "01:14:30",
     "arrival_sec": 4470,
-    "total_distance_km": 14.26,
+    "total_distance_km": 14.59,
     "stops": [
       {
         "station": "City_6",
@@ -46,7 +46,7 @@
     ],
     "post_journey_disposition": {
       "action": "depot_stabling",
-      "staging_track": "Depot_2_yard_1_bw",
+      "staging_track": "Depot_2_yard_1_fw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 135.5,
       "min_turnaround_required_min": 30.0,
@@ -73,7 +73,7 @@
     "departure_sec": 5400,
     "arrival_time": "01:52:00",
     "arrival_sec": 6720,
-    "total_distance_km": 28.18,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_4",
@@ -103,7 +103,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_17_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 1283.0,
       "min_turnaround_required_min": 25.0,
@@ -132,7 +132,7 @@
     "departure_sec": 7200,
     "arrival_time": "02:19:00",
     "arrival_sec": 8340,
-    "total_distance_km": 14.64,
+    "total_distance_km": 14.58,
     "stops": [
       {
         "station": "Depot_1",
@@ -159,7 +159,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_fw",
+      "staging_track": "City_2_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 131.0,
       "min_turnaround_required_min": 30.0,
@@ -186,9 +186,9 @@
     "dest_track": "City_5_yard_1_fw",
     "departure_time": "02:30:00",
     "departure_sec": 9000,
-    "arrival_time": "02:40:00",
-    "arrival_sec": 9600,
-    "total_distance_km": 5.81,
+    "arrival_time": "02:41:00",
+    "arrival_sec": 9660,
+    "total_distance_km": 6.02,
     "stops": [
       {
         "station": "Depot_3",
@@ -202,19 +202,19 @@
       {
         "station": "City_5",
         "train_stop_id": null,
-        "arrival_time": "02:40:00",
-        "arrival_sec": 9600,
-        "departure_time": "02:40:00",
-        "departure_sec": 9600,
+        "arrival_time": "02:41:00",
+        "arrival_sec": 9660,
+        "departure_time": "02:41:00",
+        "departure_sec": 9660,
         "dwell_sec": 0
       }
     ],
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_fw",
+      "staging_track": "City_5_yard_7_bw",
       "buffer_stop_node": null,
-      "turnaround_dwell_min": 140.0,
+      "turnaround_dwell_min": 139.0,
       "min_turnaround_required_min": 30.0,
       "turnaround_mode": "container_loading_and_inspection",
       "subsequent_service": "68201"
@@ -241,7 +241,7 @@
     "departure_sec": 12600,
     "arrival_time": "03:44:30",
     "arrival_sec": 13470,
-    "total_distance_km": 14.25,
+    "total_distance_km": 14.58,
     "stops": [
       {
         "station": "Depot_2",
@@ -296,7 +296,7 @@
     "departure_sec": 16200,
     "arrival_time": "05:02:00",
     "arrival_sec": 18120,
-    "total_distance_km": 14.64,
+    "total_distance_km": 14.59,
     "stops": [
       {
         "station": "City_2",
@@ -332,7 +332,7 @@
     ],
     "post_journey_disposition": {
       "action": "depot_stabling",
-      "staging_track": "Depot_1_pocket_1_fw",
+      "staging_track": "Depot_1_yard_1_fw",
       "buffer_stop_node": "Depot_1_buf_1",
       "turnaround_dwell_min": 358.0,
       "min_turnaround_required_min": 30.0,
@@ -354,14 +354,14 @@
     "corridor": "Spur_City_5_Depot_3",
     "direction": "Spur_Inbound",
     "origin_station": "City_5",
-    "origin_track": "City_5_yard_1_bw",
+    "origin_track": "City_5_yard_7_bw",
     "dest_station": "Depot_3",
     "dest_track": "Depot_3_pocket_1_fw",
     "departure_time": "05:00:00",
     "departure_sec": 18000,
-    "arrival_time": "05:10:00",
-    "arrival_sec": 18600,
-    "total_distance_km": 5.81,
+    "arrival_time": "05:11:00",
+    "arrival_sec": 18660,
+    "total_distance_km": 6.01,
     "stops": [
       {
         "station": "City_5",
@@ -375,19 +375,19 @@
       {
         "station": "Depot_3",
         "train_stop_id": null,
-        "arrival_time": "05:10:00",
-        "arrival_sec": 18600,
-        "departure_time": "05:10:00",
-        "departure_sec": 18600,
+        "arrival_time": "05:11:00",
+        "arrival_sec": 18660,
+        "departure_time": "05:11:00",
+        "departure_sec": 18660,
         "dwell_sec": 0
       }
     ],
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "depot_stabling",
-      "staging_track": "Depot_3_pocket_1_fw",
+      "staging_track": "Depot_3_yard_1_fw",
       "buffer_stop_node": "Depot_3_buf_1",
-      "turnaround_dwell_min": 530.0,
+      "turnaround_dwell_min": 529.0,
       "min_turnaround_required_min": 30.0,
       "turnaround_mode": "container_loading_and_inspection",
       "subsequent_service": "68202"
@@ -412,7 +412,7 @@
     "departure_sec": 18690,
     "arrival_time": "05:36:18",
     "arrival_sec": 20178.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -508,7 +508,7 @@
     "departure_sec": 18990,
     "arrival_time": "05:44:54",
     "arrival_sec": 20694.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -577,7 +577,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -604,7 +604,7 @@
     "departure_sec": 20790,
     "arrival_time": "06:11:19",
     "arrival_sec": 22279.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -700,7 +700,7 @@
     "departure_sec": 21390,
     "arrival_time": "06:24:52",
     "arrival_sec": 23092.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -769,7 +769,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_10_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 170.1,
       "min_turnaround_required_min": 7.0,
@@ -796,7 +796,7 @@
     "departure_sec": 21720,
     "arrival_time": "06:20:52",
     "arrival_sec": 22852.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -842,7 +842,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -869,7 +869,7 @@
     "departure_sec": 22290,
     "arrival_time": "06:36:18",
     "arrival_sec": 23778.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -965,7 +965,7 @@
     "departure_sec": 22590,
     "arrival_time": "06:44:54",
     "arrival_sec": 24294.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -1034,7 +1034,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -1061,7 +1061,7 @@
     "departure_sec": 22890,
     "arrival_time": "06:46:20",
     "arrival_sec": 24380.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -1141,7 +1141,7 @@
     "departure_sec": 23820,
     "arrival_time": "06:55:54",
     "arrival_sec": 24954.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -1214,7 +1214,7 @@
     "departure_sec": 24390,
     "arrival_time": "07:11:19",
     "arrival_sec": 25879.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -1283,7 +1283,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 58.7,
       "min_turnaround_required_min": 7.0,
@@ -1310,7 +1310,7 @@
     "departure_sec": 24990,
     "arrival_time": "07:24:52",
     "arrival_sec": 26692.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -1379,7 +1379,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_6_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 170.1,
       "min_turnaround_required_min": 7.0,
@@ -1406,7 +1406,7 @@
     "departure_sec": 24990,
     "arrival_time": "07:21:28",
     "arrival_sec": 26488.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -1459,7 +1459,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_15_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 238.5,
       "min_turnaround_required_min": 7.0,
@@ -1486,7 +1486,7 @@
     "departure_sec": 25350,
     "arrival_time": "07:22:22",
     "arrival_sec": 26542.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -1532,7 +1532,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -1559,7 +1559,7 @@
     "departure_sec": 25500,
     "arrival_time": "07:25:41",
     "arrival_sec": 26741.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -1596,7 +1596,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.3,
       "min_turnaround_required_min": 7.0,
@@ -1623,7 +1623,7 @@
     "departure_sec": 25910,
     "arrival_time": "07:37:48",
     "arrival_sec": 27468.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -1721,11 +1721,11 @@
     "departure_sec": 25910,
     "arrival_time": "07:20:45",
     "arrival_sec": 26445.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p3_bw",
         "arrival_time": "07:10:00",
         "arrival_sec": 25800,
         "departure_time": "07:11:50",
@@ -1755,7 +1755,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.2,
       "min_turnaround_required_min": 7.0,
@@ -1782,7 +1782,7 @@
     "departure_sec": 26210,
     "arrival_time": "07:46:49",
     "arrival_sec": 28009.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -1851,7 +1851,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -1878,7 +1878,7 @@
     "departure_sec": 26510,
     "arrival_time": "07:47:25",
     "arrival_sec": 28045.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -1951,18 +1951,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "07:25:00",
     "departure_sec": 26700,
     "arrival_time": "07:32:53",
     "arrival_sec": 27173.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "07:25:00",
         "arrival_sec": 26700,
         "departure_time": "07:25:00",
@@ -1982,7 +1982,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -2009,7 +2009,7 @@
     "departure_sec": 27150,
     "arrival_time": "07:52:22",
     "arrival_sec": 28342.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -2055,7 +2055,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -2082,7 +2082,7 @@
     "departure_sec": 27300,
     "arrival_time": "07:55:14",
     "arrival_sec": 28514.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -2119,7 +2119,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": "City_4_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 129.8,
       "min_turnaround_required_min": 7.0,
@@ -2146,7 +2146,7 @@
     "departure_sec": 27450,
     "arrival_time": "07:57:24",
     "arrival_sec": 28644.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -2192,7 +2192,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 122.6,
       "min_turnaround_required_min": 12.0,
@@ -2221,7 +2221,7 @@
     "departure_sec": 27675,
     "arrival_time": "07:50:10",
     "arrival_sec": 28210.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -2254,7 +2254,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 199.8,
       "min_turnaround_required_min": 7.0,
@@ -2281,7 +2281,7 @@
     "departure_sec": 27710,
     "arrival_time": "08:07:48",
     "arrival_sec": 29268.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -2377,7 +2377,7 @@
     "departure_sec": 28010,
     "arrival_time": "08:16:49",
     "arrival_sec": 29809.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -2446,7 +2446,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -2473,7 +2473,7 @@
     "departure_sec": 28010,
     "arrival_time": "08:12:49",
     "arrival_sec": 29569.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -2542,7 +2542,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 117.2,
       "min_turnaround_required_min": 7.0,
@@ -2569,7 +2569,7 @@
     "departure_sec": 28310,
     "arrival_time": "08:17:25",
     "arrival_sec": 29845.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -2644,12 +2644,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "07:55:00",
     "departure_sec": 28500,
     "arrival_time": "08:01:05",
     "arrival_sec": 28865.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -2662,7 +2662,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "08:01:05",
         "arrival_sec": 28865.0,
         "departure_time": "08:01:05",
@@ -2673,7 +2673,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 23.9,
       "min_turnaround_required_min": 12.0,
@@ -2700,7 +2700,7 @@
     "departure_sec": 28610,
     "arrival_time": "08:26:47",
     "arrival_sec": 30407.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -2769,7 +2769,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_8_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 168.2,
       "min_turnaround_required_min": 7.0,
@@ -2796,7 +2796,7 @@
     "departure_sec": 28610,
     "arrival_time": "08:22:33",
     "arrival_sec": 30153.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -2849,7 +2849,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 27.4,
       "min_turnaround_required_min": 7.0,
@@ -2876,7 +2876,7 @@
     "departure_sec": 28950,
     "arrival_time": "08:22:22",
     "arrival_sec": 30142.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -2922,7 +2922,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -2949,7 +2949,7 @@
     "departure_sec": 29100,
     "arrival_time": "08:25:41",
     "arrival_sec": 30341.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -2986,7 +2986,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.3,
       "min_turnaround_required_min": 7.0,
@@ -3013,7 +3013,7 @@
     "departure_sec": 29250,
     "arrival_time": "08:27:24",
     "arrival_sec": 30444.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -3059,7 +3059,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 32.6,
       "min_turnaround_required_min": 12.0,
@@ -3086,7 +3086,7 @@
     "departure_sec": 29510,
     "arrival_time": "08:37:48",
     "arrival_sec": 31068.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -3175,18 +3175,18 @@
     "corridor": "Corridor_3",
     "direction": "Uphill_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_3_bw",
+    "origin_track": "City_2_plat_4_bw",
     "dest_station": "Town_9",
     "dest_track": "Town_9_plat_1_fw",
     "departure_time": "08:11:50",
     "departure_sec": 29510,
     "arrival_time": "08:20:45",
     "arrival_sec": 30045.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_bw",
         "arrival_time": "08:10:00",
         "arrival_sec": 29400,
         "departure_time": "08:11:50",
@@ -3216,7 +3216,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 17.2,
       "min_turnaround_required_min": 7.0,
@@ -3243,7 +3243,7 @@
     "departure_sec": 29810,
     "arrival_time": "08:46:49",
     "arrival_sec": 31609.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -3312,7 +3312,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -3339,7 +3339,7 @@
     "departure_sec": 29810,
     "arrival_time": "08:42:49",
     "arrival_sec": 31369.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -3408,7 +3408,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 327.2,
       "min_turnaround_required_min": 7.0,
@@ -3435,7 +3435,7 @@
     "departure_sec": 30110,
     "arrival_time": "08:47:25",
     "arrival_sec": 31645.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -3508,18 +3508,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "08:25:00",
     "departure_sec": 30300,
     "arrival_time": "08:32:53",
     "arrival_sec": 30773.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "08:25:00",
         "arrival_sec": 30300,
         "departure_time": "08:25:00",
@@ -3539,7 +3539,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -3566,7 +3566,7 @@
     "departure_sec": 30410,
     "arrival_time": "08:56:47",
     "arrival_sec": 32207.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -3635,7 +3635,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_9_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 318.2,
       "min_turnaround_required_min": 7.0,
@@ -3662,7 +3662,7 @@
     "departure_sec": 30410,
     "arrival_time": "08:52:33",
     "arrival_sec": 31953.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -3715,7 +3715,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_16_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 387.4,
       "min_turnaround_required_min": 7.0,
@@ -3744,7 +3744,7 @@
     "departure_sec": 30600,
     "arrival_time": "08:44:30",
     "arrival_sec": 31470,
-    "total_distance_km": 14.26,
+    "total_distance_km": 14.59,
     "stops": [
       {
         "station": "City_6",
@@ -3770,7 +3770,7 @@
     ],
     "post_journey_disposition": {
       "action": "depot_stabling",
-      "staging_track": "Depot_2_yard_1_bw",
+      "staging_track": "Depot_2_yard_1_fw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 765.5,
       "min_turnaround_required_min": 30.0,
@@ -3797,7 +3797,7 @@
     "departure_sec": 30750,
     "arrival_time": "08:52:22",
     "arrival_sec": 31942.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -3843,7 +3843,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -3870,7 +3870,7 @@
     "departure_sec": 30900,
     "arrival_time": "08:55:14",
     "arrival_sec": 32114.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -3907,7 +3907,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -3934,7 +3934,7 @@
     "departure_sec": 31050,
     "arrival_time": "08:57:24",
     "arrival_sec": 32244.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -4002,12 +4002,12 @@
     "origin_station": "Town_9",
     "origin_track": "Town_9_plat_1_bw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_3_fw",
+    "dest_track": "City_2_plat_4_fw",
     "departure_time": "08:39:15",
     "departure_sec": 31155,
     "arrival_time": "08:48:10",
     "arrival_sec": 31690.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -4029,7 +4029,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_fw",
         "arrival_time": "08:48:10",
         "arrival_sec": 31690.0,
         "departure_time": "08:48:10",
@@ -4040,7 +4040,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 81.8,
       "min_turnaround_required_min": 7.0,
@@ -4067,7 +4067,7 @@
     "departure_sec": 31310,
     "arrival_time": "09:07:48",
     "arrival_sec": 32868.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -4163,7 +4163,7 @@
     "departure_sec": 31610,
     "arrival_time": "09:16:49",
     "arrival_sec": 33409.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -4232,7 +4232,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -4259,7 +4259,7 @@
     "departure_sec": 31610,
     "arrival_time": "09:12:49",
     "arrival_sec": 33169.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -4328,7 +4328,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 237.2,
       "min_turnaround_required_min": 7.0,
@@ -4355,7 +4355,7 @@
     "departure_sec": 31910,
     "arrival_time": "09:17:25",
     "arrival_sec": 33445.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -4430,12 +4430,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "08:55:00",
     "departure_sec": 32100,
     "arrival_time": "09:01:05",
     "arrival_sec": 32465.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -4448,7 +4448,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "09:01:05",
         "arrival_sec": 32465.0,
         "departure_time": "09:01:05",
@@ -4459,7 +4459,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 83.9,
       "min_turnaround_required_min": 12.0,
@@ -4486,7 +4486,7 @@
     "departure_sec": 32210,
     "arrival_time": "09:26:47",
     "arrival_sec": 34007.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -4555,7 +4555,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_7_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 228.2,
       "min_turnaround_required_min": 7.0,
@@ -4582,7 +4582,7 @@
     "departure_sec": 32210,
     "arrival_time": "09:22:33",
     "arrival_sec": 33753.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -4635,7 +4635,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_14_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 57.5,
       "min_turnaround_required_min": 7.0,
@@ -4662,7 +4662,7 @@
     "departure_sec": 32550,
     "arrival_time": "09:22:22",
     "arrival_sec": 33742.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -4708,7 +4708,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -4735,7 +4735,7 @@
     "departure_sec": 32700,
     "arrival_time": "09:25:41",
     "arrival_sec": 33941.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -4772,7 +4772,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.3,
       "min_turnaround_required_min": 7.0,
@@ -4799,7 +4799,7 @@
     "departure_sec": 32850,
     "arrival_time": "09:27:24",
     "arrival_sec": 34044.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -4845,7 +4845,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 212.6,
       "min_turnaround_required_min": 12.0,
@@ -4872,7 +4872,7 @@
     "departure_sec": 33110,
     "arrival_time": "09:37:48",
     "arrival_sec": 34668.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -4968,7 +4968,7 @@
     "departure_sec": 33410,
     "arrival_time": "09:46:49",
     "arrival_sec": 35209.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -5037,7 +5037,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -5064,7 +5064,7 @@
     "departure_sec": 33410,
     "arrival_time": "09:42:49",
     "arrival_sec": 34969.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -5133,7 +5133,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_6_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 417.2,
       "min_turnaround_required_min": 7.0,
@@ -5160,7 +5160,7 @@
     "departure_sec": 33710,
     "arrival_time": "09:47:25",
     "arrival_sec": 35245.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -5240,7 +5240,7 @@
     "departure_sec": 34010,
     "arrival_time": "09:56:47",
     "arrival_sec": 35807.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -5309,7 +5309,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_11_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 498.2,
       "min_turnaround_required_min": 7.0,
@@ -5336,7 +5336,7 @@
     "departure_sec": 34010,
     "arrival_time": "09:52:33",
     "arrival_sec": 35553.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -5389,7 +5389,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_12_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 207.4,
       "min_turnaround_required_min": 7.0,
@@ -5416,7 +5416,7 @@
     "departure_sec": 34500,
     "arrival_time": "09:54:44",
     "arrival_sec": 35684.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -5480,7 +5480,7 @@
     "departure_sec": 34620,
     "arrival_time": "09:55:54",
     "arrival_sec": 35754.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -5526,7 +5526,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 364.1,
       "min_turnaround_required_min": 12.0,
@@ -5553,7 +5553,7 @@
     "departure_sec": 35190,
     "arrival_time": "10:11:19",
     "arrival_sec": 36679.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -5649,7 +5649,7 @@
     "departure_sec": 35790,
     "arrival_time": "10:24:52",
     "arrival_sec": 37492.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -5718,7 +5718,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_10_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 110.1,
       "min_turnaround_required_min": 7.0,
@@ -5745,7 +5745,7 @@
     "departure_sec": 35790,
     "arrival_time": "10:21:28",
     "arrival_sec": 37288.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -5798,7 +5798,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_13_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 358.5,
       "min_turnaround_required_min": 7.0,
@@ -5825,7 +5825,7 @@
     "departure_sec": 36120,
     "arrival_time": "10:20:52",
     "arrival_sec": 37252.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -5871,7 +5871,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -5898,7 +5898,7 @@
     "departure_sec": 36300,
     "arrival_time": "10:25:11",
     "arrival_sec": 37511.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -5935,7 +5935,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -5962,7 +5962,7 @@
     "departure_sec": 36690,
     "arrival_time": "10:36:18",
     "arrival_sec": 38178.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -6053,18 +6053,18 @@
     "corridor": "Corridor_3",
     "direction": "Uphill_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_3_bw",
+    "origin_track": "City_2_plat_4_bw",
     "dest_station": "Town_9",
     "dest_track": "Town_9_plat_1_fw",
     "departure_time": "10:11:30",
     "departure_sec": 36690,
     "arrival_time": "10:20:25",
     "arrival_sec": 37225.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_bw",
         "arrival_time": "10:10:00",
         "arrival_sec": 36600,
         "departure_time": "10:11:30",
@@ -6094,7 +6094,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.6,
       "min_turnaround_required_min": 7.0,
@@ -6121,7 +6121,7 @@
     "departure_sec": 36990,
     "arrival_time": "10:44:54",
     "arrival_sec": 38694.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -6190,7 +6190,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -6217,7 +6217,7 @@
     "departure_sec": 37290,
     "arrival_time": "10:46:20",
     "arrival_sec": 38780.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -6290,18 +6290,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "10:25:00",
     "departure_sec": 37500,
     "arrival_time": "10:32:53",
     "arrival_sec": 37973.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "10:25:00",
         "arrival_sec": 37500,
         "departure_time": "10:25:00",
@@ -6321,7 +6321,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -6348,7 +6348,7 @@
     "departure_sec": 38100,
     "arrival_time": "10:54:44",
     "arrival_sec": 39284.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -6385,7 +6385,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 10.3,
       "min_turnaround_required_min": 7.0,
@@ -6412,7 +6412,7 @@
     "departure_sec": 38220,
     "arrival_time": "10:55:54",
     "arrival_sec": 39354.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -6458,7 +6458,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 184.1,
       "min_turnaround_required_min": 12.0,
@@ -6482,12 +6482,12 @@
     "origin_station": "Town_9",
     "origin_track": "Town_9_plat_1_bw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_3_fw",
+    "dest_track": "City_2_plat_4_fw",
     "departure_time": "10:41:15",
     "departure_sec": 38475,
     "arrival_time": "10:50:10",
     "arrival_sec": 39010.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -6509,7 +6509,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_fw",
         "arrival_time": "10:50:10",
         "arrival_sec": 39010.0,
         "departure_time": "10:50:10",
@@ -6520,7 +6520,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 139.8,
       "min_turnaround_required_min": 7.0,
@@ -6547,7 +6547,7 @@
     "departure_sec": 38790,
     "arrival_time": "11:11:19",
     "arrival_sec": 40279.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -6616,7 +6616,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 58.7,
       "min_turnaround_required_min": 7.0,
@@ -6638,12 +6638,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "10:55:00",
     "departure_sec": 39300,
     "arrival_time": "11:01:05",
     "arrival_sec": 39665.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -6656,7 +6656,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "11:01:05",
         "arrival_sec": 39665.0,
         "departure_time": "11:01:05",
@@ -6667,7 +6667,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 143.9,
       "min_turnaround_required_min": 12.0,
@@ -6694,7 +6694,7 @@
     "departure_sec": 39390,
     "arrival_time": "11:24:52",
     "arrival_sec": 41092.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -6763,7 +6763,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_6_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 470.1,
       "min_turnaround_required_min": 7.0,
@@ -6790,7 +6790,7 @@
     "departure_sec": 39390,
     "arrival_time": "11:21:28",
     "arrival_sec": 40888.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -6843,7 +6843,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_14_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 58.5,
       "min_turnaround_required_min": 7.0,
@@ -6872,7 +6872,7 @@
     "departure_sec": 39600,
     "arrival_time": "11:19:00",
     "arrival_sec": 40740,
-    "total_distance_km": 14.64,
+    "total_distance_km": 14.58,
     "stops": [
       {
         "station": "Depot_1",
@@ -6899,7 +6899,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_fw",
+      "staging_track": "City_2_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 671.0,
       "min_turnaround_required_min": 30.0,
@@ -6926,7 +6926,7 @@
     "departure_sec": 39720,
     "arrival_time": "11:20:52",
     "arrival_sec": 40852.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -6972,7 +6972,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -6999,7 +6999,7 @@
     "departure_sec": 39900,
     "arrival_time": "11:25:11",
     "arrival_sec": 41111.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -7036,7 +7036,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -7063,7 +7063,7 @@
     "departure_sec": 40290,
     "arrival_time": "11:36:18",
     "arrival_sec": 41778.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -7159,11 +7159,11 @@
     "departure_sec": 40290,
     "arrival_time": "11:20:25",
     "arrival_sec": 40825.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p3_bw",
         "arrival_time": "11:10:00",
         "arrival_sec": 40200,
         "departure_time": "11:11:30",
@@ -7193,7 +7193,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.6,
       "min_turnaround_required_min": 7.0,
@@ -7220,7 +7220,7 @@
     "departure_sec": 40590,
     "arrival_time": "11:44:54",
     "arrival_sec": 42294.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -7289,7 +7289,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -7316,7 +7316,7 @@
     "departure_sec": 40890,
     "arrival_time": "11:46:20",
     "arrival_sec": 42380.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -7396,7 +7396,7 @@
     "departure_sec": 41700,
     "arrival_time": "11:54:44",
     "arrival_sec": 42884.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -7433,7 +7433,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": "City_4_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 190.3,
       "min_turnaround_required_min": 7.0,
@@ -7460,7 +7460,7 @@
     "departure_sec": 41820,
     "arrival_time": "11:55:54",
     "arrival_sec": 42954.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -7506,7 +7506,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 184.1,
       "min_turnaround_required_min": 12.0,
@@ -7533,7 +7533,7 @@
     "departure_sec": 42075,
     "arrival_time": "11:50:10",
     "arrival_sec": 42610.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -7566,7 +7566,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 139.8,
       "min_turnaround_required_min": 7.0,
@@ -7593,7 +7593,7 @@
     "departure_sec": 42390,
     "arrival_time": "12:11:19",
     "arrival_sec": 43879.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -7662,7 +7662,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 298.7,
       "min_turnaround_required_min": 7.0,
@@ -7689,7 +7689,7 @@
     "departure_sec": 42990,
     "arrival_time": "12:24:52",
     "arrival_sec": 44692.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -7758,7 +7758,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_8_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 230.1,
       "min_turnaround_required_min": 7.0,
@@ -7785,7 +7785,7 @@
     "departure_sec": 42990,
     "arrival_time": "12:21:28",
     "arrival_sec": 44488.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -7838,7 +7838,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_15_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 478.5,
       "min_turnaround_required_min": 7.0,
@@ -7865,7 +7865,7 @@
     "departure_sec": 43320,
     "arrival_time": "12:20:52",
     "arrival_sec": 44452.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -7911,7 +7911,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -7938,7 +7938,7 @@
     "departure_sec": 43500,
     "arrival_time": "12:25:11",
     "arrival_sec": 44711.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -7975,7 +7975,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -8002,7 +8002,7 @@
     "departure_sec": 43890,
     "arrival_time": "12:36:18",
     "arrival_sec": 45378.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -8098,7 +8098,7 @@
     "departure_sec": 44190,
     "arrival_time": "12:44:54",
     "arrival_sec": 45894.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -8167,7 +8167,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -8194,7 +8194,7 @@
     "departure_sec": 44490,
     "arrival_time": "12:46:20",
     "arrival_sec": 45980.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -8274,7 +8274,7 @@
     "departure_sec": 45300,
     "arrival_time": "12:54:44",
     "arrival_sec": 46484.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -8338,7 +8338,7 @@
     "departure_sec": 45420,
     "arrival_time": "12:55:54",
     "arrival_sec": 46554.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -8411,7 +8411,7 @@
     "departure_sec": 45990,
     "arrival_time": "13:11:19",
     "arrival_sec": 47479.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -8480,7 +8480,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 178.7,
       "min_turnaround_required_min": 7.0,
@@ -8507,7 +8507,7 @@
     "departure_sec": 46590,
     "arrival_time": "13:24:52",
     "arrival_sec": 48292.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -8576,7 +8576,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_10_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 110.1,
       "min_turnaround_required_min": 7.0,
@@ -8603,7 +8603,7 @@
     "departure_sec": 46590,
     "arrival_time": "13:21:28",
     "arrival_sec": 48088.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -8656,7 +8656,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_14_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 58.5,
       "min_turnaround_required_min": 7.0,
@@ -8683,7 +8683,7 @@
     "departure_sec": 46920,
     "arrival_time": "13:20:52",
     "arrival_sec": 48052.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -8729,7 +8729,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -8756,7 +8756,7 @@
     "departure_sec": 47490,
     "arrival_time": "13:36:18",
     "arrival_sec": 48978.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -8845,18 +8845,18 @@
     "corridor": "Corridor_3",
     "direction": "Uphill_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_3_bw",
+    "origin_track": "City_2_plat_4_bw",
     "dest_station": "Town_9",
     "dest_track": "Town_9_plat_1_fw",
     "departure_time": "13:11:30",
     "departure_sec": 47490,
     "arrival_time": "13:20:25",
     "arrival_sec": 48025.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_bw",
         "arrival_time": "13:10:00",
         "arrival_sec": 47400,
         "departure_time": "13:11:30",
@@ -8886,7 +8886,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.6,
       "min_turnaround_required_min": 7.0,
@@ -8913,7 +8913,7 @@
     "departure_sec": 47790,
     "arrival_time": "13:44:54",
     "arrival_sec": 49494.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -8982,7 +8982,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -9009,7 +9009,7 @@
     "departure_sec": 48090,
     "arrival_time": "13:46:20",
     "arrival_sec": 49580.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -9082,18 +9082,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "13:25:00",
     "departure_sec": 48300,
     "arrival_time": "13:32:53",
     "arrival_sec": 48773.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "13:25:00",
         "arrival_sec": 48300,
         "departure_time": "13:25:00",
@@ -9113,7 +9113,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -9140,7 +9140,7 @@
     "departure_sec": 49020,
     "arrival_time": "13:55:54",
     "arrival_sec": 50154.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -9186,7 +9186,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 184.1,
       "min_turnaround_required_min": 12.0,
@@ -9208,12 +9208,12 @@
     "origin_station": "Town_9",
     "origin_track": "Town_9_plat_1_bw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_3_fw",
+    "dest_track": "City_2_plat_4_fw",
     "departure_time": "13:41:15",
     "departure_sec": 49275,
     "arrival_time": "13:50:10",
     "arrival_sec": 49810.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -9235,7 +9235,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_fw",
         "arrival_time": "13:50:10",
         "arrival_sec": 49810.0,
         "departure_time": "13:50:10",
@@ -9246,7 +9246,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 259.8,
       "min_turnaround_required_min": 7.0,
@@ -9273,7 +9273,7 @@
     "departure_sec": 49590,
     "arrival_time": "14:11:19",
     "arrival_sec": 51079.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -9342,7 +9342,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 298.7,
       "min_turnaround_required_min": 7.0,
@@ -9364,12 +9364,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "13:55:00",
     "departure_sec": 50100,
     "arrival_time": "14:01:05",
     "arrival_sec": 50465.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -9382,7 +9382,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "14:01:05",
         "arrival_sec": 50465.0,
         "departure_time": "14:01:05",
@@ -9393,7 +9393,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 83.9,
       "min_turnaround_required_min": 12.0,
@@ -9420,7 +9420,7 @@
     "departure_sec": 50190,
     "arrival_time": "14:24:52",
     "arrival_sec": 51892.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -9489,7 +9489,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_7_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 170.1,
       "min_turnaround_required_min": 7.0,
@@ -9516,7 +9516,7 @@
     "departure_sec": 50190,
     "arrival_time": "14:21:28",
     "arrival_sec": 51688.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -9569,7 +9569,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_12_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 298.5,
       "min_turnaround_required_min": 7.0,
@@ -9596,9 +9596,9 @@
     "dest_track": "City_5_yard_1_fw",
     "departure_time": "14:00:00",
     "departure_sec": 50400,
-    "arrival_time": "14:10:00",
-    "arrival_sec": 51000,
-    "total_distance_km": 5.81,
+    "arrival_time": "14:11:00",
+    "arrival_sec": 51060,
+    "total_distance_km": 6.02,
     "stops": [
       {
         "station": "Depot_3",
@@ -9612,19 +9612,19 @@
       {
         "station": "City_5",
         "train_stop_id": null,
-        "arrival_time": "14:10:00",
-        "arrival_sec": 51000,
-        "departure_time": "14:10:00",
-        "departure_sec": 51000,
+        "arrival_time": "14:11:00",
+        "arrival_sec": 51060,
+        "departure_time": "14:11:00",
+        "departure_sec": 51060,
         "dwell_sec": 0
       }
     ],
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_fw",
+      "staging_track": "City_5_yard_7_bw",
       "buffer_stop_node": null,
-      "turnaround_dwell_min": 530.0,
+      "turnaround_dwell_min": 529.0,
       "min_turnaround_required_min": 30.0,
       "turnaround_mode": "extended_layover",
       "subsequent_service": null
@@ -9649,7 +9649,7 @@
     "departure_sec": 50520,
     "arrival_time": "14:20:52",
     "arrival_sec": 51652.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -9695,7 +9695,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -9722,7 +9722,7 @@
     "departure_sec": 50700,
     "arrival_time": "14:25:11",
     "arrival_sec": 51911.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -9759,7 +9759,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -9786,7 +9786,7 @@
     "departure_sec": 51090,
     "arrival_time": "14:36:18",
     "arrival_sec": 52578.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -9882,11 +9882,11 @@
     "departure_sec": 51090,
     "arrival_time": "14:20:25",
     "arrival_sec": 51625.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p3_bw",
         "arrival_time": "14:10:00",
         "arrival_sec": 51000,
         "departure_time": "14:11:30",
@@ -9916,7 +9916,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.6,
       "min_turnaround_required_min": 7.0,
@@ -9943,7 +9943,7 @@
     "departure_sec": 51390,
     "arrival_time": "14:44:54",
     "arrival_sec": 53094.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -10012,7 +10012,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -10039,7 +10039,7 @@
     "departure_sec": 51690,
     "arrival_time": "14:46:20",
     "arrival_sec": 53180.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -10119,7 +10119,7 @@
     "departure_sec": 52500,
     "arrival_time": "14:54:44",
     "arrival_sec": 53684.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -10183,7 +10183,7 @@
     "departure_sec": 52620,
     "arrival_time": "14:55:54",
     "arrival_sec": 53754.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -10229,7 +10229,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 184.1,
       "min_turnaround_required_min": 12.0,
@@ -10256,7 +10256,7 @@
     "departure_sec": 52875,
     "arrival_time": "14:50:10",
     "arrival_sec": 53410.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -10289,7 +10289,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 79.8,
       "min_turnaround_required_min": 7.0,
@@ -10316,7 +10316,7 @@
     "departure_sec": 53190,
     "arrival_time": "15:11:19",
     "arrival_sec": 54679.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -10385,7 +10385,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 178.7,
       "min_turnaround_required_min": 7.0,
@@ -10412,7 +10412,7 @@
     "departure_sec": 53790,
     "arrival_time": "15:24:52",
     "arrival_sec": 55492.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -10481,7 +10481,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_9_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 140.1,
       "min_turnaround_required_min": 7.0,
@@ -10508,7 +10508,7 @@
     "departure_sec": 53790,
     "arrival_time": "15:21:28",
     "arrival_sec": 55288.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -10561,7 +10561,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_14_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 118.5,
       "min_turnaround_required_min": 7.0,
@@ -10588,7 +10588,7 @@
     "departure_sec": 54120,
     "arrival_time": "15:20:52",
     "arrival_sec": 55252.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -10634,7 +10634,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -10661,7 +10661,7 @@
     "departure_sec": 54300,
     "arrival_time": "15:25:11",
     "arrival_sec": 55511.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -10698,7 +10698,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -10725,7 +10725,7 @@
     "departure_sec": 54690,
     "arrival_time": "15:36:18",
     "arrival_sec": 56178.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -10821,7 +10821,7 @@
     "departure_sec": 54990,
     "arrival_time": "15:44:54",
     "arrival_sec": 56694.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -10890,7 +10890,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -10917,7 +10917,7 @@
     "departure_sec": 55290,
     "arrival_time": "15:46:20",
     "arrival_sec": 56780.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -10990,18 +10990,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "15:25:00",
     "departure_sec": 55500,
     "arrival_time": "15:32:53",
     "arrival_sec": 55973.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "15:25:00",
         "arrival_sec": 55500,
         "departure_time": "15:25:00",
@@ -11021,7 +11021,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -11048,7 +11048,7 @@
     "departure_sec": 56100,
     "arrival_time": "15:54:44",
     "arrival_sec": 57284.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -11085,7 +11085,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": "City_4_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 70.3,
       "min_turnaround_required_min": 7.0,
@@ -11112,7 +11112,7 @@
     "departure_sec": 56220,
     "arrival_time": "15:55:54",
     "arrival_sec": 57354.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -11158,7 +11158,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 94.1,
       "min_turnaround_required_min": 12.0,
@@ -11185,7 +11185,7 @@
     "departure_sec": 56790,
     "arrival_time": "16:11:19",
     "arrival_sec": 58279.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -11276,12 +11276,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "15:55:00",
     "departure_sec": 57300,
     "arrival_time": "16:01:05",
     "arrival_sec": 57665.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -11294,7 +11294,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "16:01:05",
         "arrival_sec": 57665.0,
         "departure_time": "16:01:05",
@@ -11305,7 +11305,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 83.9,
       "min_turnaround_required_min": 12.0,
@@ -11332,7 +11332,7 @@
     "departure_sec": 57390,
     "arrival_time": "16:24:52",
     "arrival_sec": 59092.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -11401,7 +11401,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 20.1,
       "min_turnaround_required_min": 7.0,
@@ -11428,7 +11428,7 @@
     "departure_sec": 57390,
     "arrival_time": "16:21:28",
     "arrival_sec": 58888.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -11481,7 +11481,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 28.5,
       "min_turnaround_required_min": 7.0,
@@ -11508,7 +11508,7 @@
     "departure_sec": 57750,
     "arrival_time": "16:22:22",
     "arrival_sec": 58942.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -11554,7 +11554,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -11581,7 +11581,7 @@
     "departure_sec": 57900,
     "arrival_time": "16:25:41",
     "arrival_sec": 59141.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -11618,7 +11618,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.3,
       "min_turnaround_required_min": 7.0,
@@ -11645,7 +11645,7 @@
     "departure_sec": 58310,
     "arrival_time": "16:37:48",
     "arrival_sec": 59868.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -11743,11 +11743,11 @@
     "departure_sec": 58310,
     "arrival_time": "16:20:45",
     "arrival_sec": 58845.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p3_bw",
         "arrival_time": "16:10:00",
         "arrival_sec": 58200,
         "departure_time": "16:11:50",
@@ -11777,7 +11777,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.2,
       "min_turnaround_required_min": 7.0,
@@ -11804,7 +11804,7 @@
     "departure_sec": 58610,
     "arrival_time": "16:46:49",
     "arrival_sec": 60409.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -11873,7 +11873,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -11900,7 +11900,7 @@
     "departure_sec": 58910,
     "arrival_time": "16:47:25",
     "arrival_sec": 60445.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -11980,7 +11980,7 @@
     "departure_sec": 59550,
     "arrival_time": "16:52:22",
     "arrival_sec": 60742.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -12026,7 +12026,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -12053,7 +12053,7 @@
     "departure_sec": 59700,
     "arrival_time": "16:55:14",
     "arrival_sec": 60914.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -12117,7 +12117,7 @@
     "departure_sec": 59850,
     "arrival_time": "16:57:24",
     "arrival_sec": 61044.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -12163,7 +12163,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 122.6,
       "min_turnaround_required_min": 12.0,
@@ -12192,7 +12192,7 @@
     "departure_sec": 60075,
     "arrival_time": "16:50:10",
     "arrival_sec": 60610.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -12225,7 +12225,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 19.8,
       "min_turnaround_required_min": 7.0,
@@ -12252,7 +12252,7 @@
     "departure_sec": 60110,
     "arrival_time": "17:07:48",
     "arrival_sec": 61668.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -12348,7 +12348,7 @@
     "departure_sec": 60410,
     "arrival_time": "17:16:49",
     "arrival_sec": 62209.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -12417,7 +12417,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -12444,7 +12444,7 @@
     "departure_sec": 60410,
     "arrival_time": "17:12:49",
     "arrival_sec": 61969.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -12513,7 +12513,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 837.2,
       "min_turnaround_required_min": 7.0,
@@ -12540,7 +12540,7 @@
     "departure_sec": 60710,
     "arrival_time": "17:17:25",
     "arrival_sec": 62245.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -12620,7 +12620,7 @@
     "departure_sec": 61010,
     "arrival_time": "17:26:47",
     "arrival_sec": 62807.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -12689,7 +12689,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_8_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 228.2,
       "min_turnaround_required_min": 7.0,
@@ -12716,7 +12716,7 @@
     "departure_sec": 61010,
     "arrival_time": "17:22:33",
     "arrival_sec": 62553.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -12769,7 +12769,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 27.4,
       "min_turnaround_required_min": 7.0,
@@ -12796,7 +12796,7 @@
     "departure_sec": 61350,
     "arrival_time": "17:22:22",
     "arrival_sec": 62542.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -12842,7 +12842,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -12869,7 +12869,7 @@
     "departure_sec": 61500,
     "arrival_time": "17:25:41",
     "arrival_sec": 62741.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -12906,7 +12906,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.3,
       "min_turnaround_required_min": 7.0,
@@ -12933,7 +12933,7 @@
     "departure_sec": 61650,
     "arrival_time": "17:27:24",
     "arrival_sec": 62844.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -13006,7 +13006,7 @@
     "departure_sec": 61910,
     "arrival_time": "17:37:48",
     "arrival_sec": 63468.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -13102,11 +13102,11 @@
     "departure_sec": 61910,
     "arrival_time": "17:20:45",
     "arrival_sec": 62445.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p3_bw",
         "arrival_time": "17:10:00",
         "arrival_sec": 61800,
         "departure_time": "17:11:50",
@@ -13136,7 +13136,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 17.2,
       "min_turnaround_required_min": 7.0,
@@ -13163,7 +13163,7 @@
     "departure_sec": 62210,
     "arrival_time": "17:46:49",
     "arrival_sec": 64009.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -13232,7 +13232,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -13259,7 +13259,7 @@
     "departure_sec": 62210,
     "arrival_time": "17:42:49",
     "arrival_sec": 63769.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -13328,7 +13328,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_6_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 897.2,
       "min_turnaround_required_min": 7.0,
@@ -13355,7 +13355,7 @@
     "departure_sec": 62510,
     "arrival_time": "17:47:25",
     "arrival_sec": 64045.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -13428,18 +13428,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "17:25:00",
     "departure_sec": 62700,
     "arrival_time": "17:32:53",
     "arrival_sec": 63173.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "17:25:00",
         "arrival_sec": 62700,
         "departure_time": "17:25:00",
@@ -13459,7 +13459,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -13486,7 +13486,7 @@
     "departure_sec": 62810,
     "arrival_time": "17:56:47",
     "arrival_sec": 64607.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -13555,7 +13555,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_10_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 678.2,
       "min_turnaround_required_min": 7.0,
@@ -13582,7 +13582,7 @@
     "departure_sec": 62810,
     "arrival_time": "17:52:33",
     "arrival_sec": 64353.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -13635,7 +13635,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 27.4,
       "min_turnaround_required_min": 7.0,
@@ -13662,7 +13662,7 @@
     "departure_sec": 63150,
     "arrival_time": "17:52:22",
     "arrival_sec": 64342.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -13708,7 +13708,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -13735,7 +13735,7 @@
     "departure_sec": 63300,
     "arrival_time": "17:55:14",
     "arrival_sec": 64514.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -13772,7 +13772,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -13799,7 +13799,7 @@
     "departure_sec": 63450,
     "arrival_time": "17:57:24",
     "arrival_sec": 64644.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -13845,7 +13845,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 872.6,
       "min_turnaround_required_min": 12.0,
@@ -13872,7 +13872,7 @@
     "departure_sec": 63555,
     "arrival_time": "17:48:10",
     "arrival_sec": 64090.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -13905,7 +13905,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": "City_2_plat_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 801.8,
       "min_turnaround_required_min": 7.0,
@@ -13932,7 +13932,7 @@
     "departure_sec": 63710,
     "arrival_time": "18:07:48",
     "arrival_sec": 65268.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -14028,7 +14028,7 @@
     "departure_sec": 64010,
     "arrival_time": "18:16:49",
     "arrival_sec": 65809.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -14097,7 +14097,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -14124,7 +14124,7 @@
     "departure_sec": 64010,
     "arrival_time": "18:12:49",
     "arrival_sec": 65569.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -14193,7 +14193,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 177.2,
       "min_turnaround_required_min": 7.0,
@@ -14220,7 +14220,7 @@
     "departure_sec": 64310,
     "arrival_time": "18:17:25",
     "arrival_sec": 65845.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -14295,12 +14295,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "17:55:00",
     "departure_sec": 64500,
     "arrival_time": "18:01:05",
     "arrival_sec": 64865.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -14313,7 +14313,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "18:01:05",
         "arrival_sec": 64865.0,
         "departure_time": "18:01:05",
@@ -14324,7 +14324,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 23.9,
       "min_turnaround_required_min": 12.0,
@@ -14351,7 +14351,7 @@
     "departure_sec": 64610,
     "arrival_time": "18:26:47",
     "arrival_sec": 66407.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -14420,7 +14420,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_7_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 828.2,
       "min_turnaround_required_min": 7.0,
@@ -14447,7 +14447,7 @@
     "departure_sec": 64610,
     "arrival_time": "18:22:33",
     "arrival_sec": 66153.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -14500,7 +14500,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_14_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 837.5,
       "min_turnaround_required_min": 7.0,
@@ -14527,7 +14527,7 @@
     "departure_sec": 64950,
     "arrival_time": "18:22:22",
     "arrival_sec": 66142.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -14573,7 +14573,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 12.6,
       "min_turnaround_required_min": 12.0,
@@ -14600,7 +14600,7 @@
     "departure_sec": 65100,
     "arrival_time": "18:25:41",
     "arrival_sec": 66341.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -14637,7 +14637,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.3,
       "min_turnaround_required_min": 7.0,
@@ -14664,7 +14664,7 @@
     "departure_sec": 65250,
     "arrival_time": "18:27:24",
     "arrival_sec": 66444.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -14710,7 +14710,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 152.6,
       "min_turnaround_required_min": 12.0,
@@ -14737,7 +14737,7 @@
     "departure_sec": 65510,
     "arrival_time": "18:37:48",
     "arrival_sec": 67068.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -14826,18 +14826,18 @@
     "corridor": "Corridor_3",
     "direction": "Uphill_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_3_bw",
+    "origin_track": "City_2_plat_4_bw",
     "dest_station": "Town_9",
     "dest_track": "Town_9_plat_1_fw",
     "departure_time": "18:11:50",
     "departure_sec": 65510,
     "arrival_time": "18:20:45",
     "arrival_sec": 66045.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_bw",
         "arrival_time": "18:10:00",
         "arrival_sec": 65400,
         "departure_time": "18:11:50",
@@ -14867,7 +14867,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "Town_9_yard_1_fw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 17.2,
       "min_turnaround_required_min": 7.0,
@@ -14894,7 +14894,7 @@
     "departure_sec": 65810,
     "arrival_time": "18:46:49",
     "arrival_sec": 67609.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -14963,7 +14963,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 8.2,
       "min_turnaround_required_min": 7.0,
@@ -14990,7 +14990,7 @@
     "departure_sec": 65810,
     "arrival_time": "18:42:49",
     "arrival_sec": 67369.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -15086,7 +15086,7 @@
     "departure_sec": 66110,
     "arrival_time": "18:47:25",
     "arrival_sec": 67645.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -15159,18 +15159,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "18:25:00",
     "departure_sec": 66300,
     "arrival_time": "18:32:53",
     "arrival_sec": 66773.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "18:25:00",
         "arrival_sec": 66300,
         "departure_time": "18:25:00",
@@ -15190,7 +15190,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -15217,7 +15217,7 @@
     "departure_sec": 66410,
     "arrival_time": "18:56:47",
     "arrival_sec": 68207.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -15286,7 +15286,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_9_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 78.2,
       "min_turnaround_required_min": 7.0,
@@ -15313,7 +15313,7 @@
     "departure_sec": 66410,
     "arrival_time": "18:52:33",
     "arrival_sec": 67953.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -15366,7 +15366,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_13_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 147.4,
       "min_turnaround_required_min": 7.0,
@@ -15393,7 +15393,7 @@
     "departure_sec": 66900,
     "arrival_time": "18:55:14",
     "arrival_sec": 68114.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -15430,7 +15430,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": "City_4_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 69.8,
       "min_turnaround_required_min": 7.0,
@@ -15457,7 +15457,7 @@
     "departure_sec": 67050,
     "arrival_time": "18:57:24",
     "arrival_sec": 68244.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -15503,7 +15503,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 182.6,
       "min_turnaround_required_min": 12.0,
@@ -15525,12 +15525,12 @@
     "origin_station": "Town_9",
     "origin_track": "Town_9_plat_1_bw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_3_fw",
+    "dest_track": "City_2_plat_4_fw",
     "departure_time": "18:39:15",
     "departure_sec": 67155,
     "arrival_time": "18:48:10",
     "arrival_sec": 67690.0,
-    "total_distance_km": 9.85,
+    "total_distance_km": 9.8,
     "stops": [
       {
         "station": "Town_9",
@@ -15552,7 +15552,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p3_fw",
+        "train_stop_id": "City_2_p4_fw",
         "arrival_time": "18:48:10",
         "arrival_sec": 67690.0,
         "departure_time": "18:48:10",
@@ -15563,7 +15563,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_1_bw",
+      "staging_track": "City_2_plat_4_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 801.8,
       "min_turnaround_required_min": 7.0,
@@ -15590,7 +15590,7 @@
     "departure_sec": 67610,
     "arrival_time": "19:12:49",
     "arrival_sec": 69169.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -15659,7 +15659,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 57.2,
       "min_turnaround_required_min": 7.0,
@@ -15681,12 +15681,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "18:55:00",
     "departure_sec": 68100,
     "arrival_time": "19:01:05",
     "arrival_sec": 68465.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -15699,7 +15699,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "19:01:05",
         "arrival_sec": 68465.0,
         "departure_time": "19:01:05",
@@ -15710,7 +15710,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 83.9,
       "min_turnaround_required_min": 12.0,
@@ -15737,7 +15737,7 @@
     "departure_sec": 68190,
     "arrival_time": "19:24:52",
     "arrival_sec": 69892.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -15806,7 +15806,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_11_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 800.1,
       "min_turnaround_required_min": 7.0,
@@ -15833,7 +15833,7 @@
     "departure_sec": 68190,
     "arrival_time": "19:21:28",
     "arrival_sec": 69688.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -15886,7 +15886,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_16_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 748.5,
       "min_turnaround_required_min": 7.0,
@@ -15913,7 +15913,7 @@
     "departure_sec": 68520,
     "arrival_time": "19:20:52",
     "arrival_sec": 69652.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -15959,7 +15959,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -15986,7 +15986,7 @@
     "departure_sec": 68700,
     "arrival_time": "19:25:11",
     "arrival_sec": 69911.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -16023,7 +16023,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -16050,7 +16050,7 @@
     "departure_sec": 69090,
     "arrival_time": "19:36:18",
     "arrival_sec": 70578.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -16146,7 +16146,7 @@
     "departure_sec": 69390,
     "arrival_time": "19:44:54",
     "arrival_sec": 71094.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -16215,7 +16215,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -16242,7 +16242,7 @@
     "departure_sec": 69690,
     "arrival_time": "19:46:20",
     "arrival_sec": 71180.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -16322,7 +16322,7 @@
     "departure_sec": 70500,
     "arrival_time": "19:54:44",
     "arrival_sec": 71684.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -16386,7 +16386,7 @@
     "departure_sec": 70620,
     "arrival_time": "19:55:54",
     "arrival_sec": 71754.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -16432,7 +16432,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 694.1,
       "min_turnaround_required_min": 12.0,
@@ -16459,7 +16459,7 @@
     "departure_sec": 71190,
     "arrival_time": "20:11:19",
     "arrival_sec": 72679.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -16528,7 +16528,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 118.7,
       "min_turnaround_required_min": 7.0,
@@ -16555,7 +16555,7 @@
     "departure_sec": 71790,
     "arrival_time": "20:24:52",
     "arrival_sec": 73492.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -16624,7 +16624,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_6_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 590.1,
       "min_turnaround_required_min": 7.0,
@@ -16651,7 +16651,7 @@
     "departure_sec": 71790,
     "arrival_time": "20:21:28",
     "arrival_sec": 73288.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -16704,7 +16704,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_12_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 658.5,
       "min_turnaround_required_min": 7.0,
@@ -16731,7 +16731,7 @@
     "departure_sec": 72120,
     "arrival_time": "20:20:52",
     "arrival_sec": 73252.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -16777,7 +16777,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -16804,7 +16804,7 @@
     "departure_sec": 72300,
     "arrival_time": "20:25:11",
     "arrival_sec": 73511.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_4",
@@ -16841,7 +16841,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_6_pocket_2_fw",
+      "staging_track": "City_6_yard_2_fw",
       "buffer_stop_node": "City_6_buf_2",
       "turnaround_dwell_min": 9.8,
       "min_turnaround_required_min": 7.0,
@@ -16868,7 +16868,7 @@
     "departure_sec": 72690,
     "arrival_time": "20:36:18",
     "arrival_sec": 74178.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -16964,7 +16964,7 @@
     "departure_sec": 72990,
     "arrival_time": "20:44:54",
     "arrival_sec": 74694.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -17033,7 +17033,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -17060,7 +17060,7 @@
     "departure_sec": 73290,
     "arrival_time": "20:46:20",
     "arrival_sec": 74780.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -17133,18 +17133,18 @@
     "corridor": "Bypass_C2_C5",
     "direction": "Northeast_FW",
     "origin_station": "City_2",
-    "origin_track": "City_2_plat_2_fw",
+    "origin_track": "City_2_plat_5_fw",
     "dest_station": "City_5",
     "dest_track": "City_5_plat_2_bw",
     "departure_time": "20:25:00",
     "departure_sec": 73500,
     "arrival_time": "20:32:53",
     "arrival_sec": 73973.0,
-    "total_distance_km": 14.67,
+    "total_distance_km": 14.9,
     "stops": [
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_fw",
+        "train_stop_id": "City_2_p5_fw",
         "arrival_time": "20:25:00",
         "arrival_sec": 73500,
         "departure_time": "20:25:00",
@@ -17164,7 +17164,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_5_yard_2_bw",
+      "staging_track": null,
       "buffer_stop_node": null,
       "turnaround_dwell_min": 22.1,
       "min_turnaround_required_min": 12.0,
@@ -17191,7 +17191,7 @@
     "departure_sec": 74100,
     "arrival_time": "20:54:44",
     "arrival_sec": 75284.0,
-    "total_distance_km": 23.36,
+    "total_distance_km": 23.69,
     "stops": [
       {
         "station": "City_6",
@@ -17228,7 +17228,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_4_yard_1_bw",
+      "staging_track": "City_4_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 610.3,
       "min_turnaround_required_min": 7.0,
@@ -17255,7 +17255,7 @@
     "departure_sec": 74220,
     "arrival_time": "20:55:54",
     "arrival_sec": 75354.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -17328,7 +17328,7 @@
     "departure_sec": 74790,
     "arrival_time": "21:11:19",
     "arrival_sec": 76279.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -17397,7 +17397,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 628.7,
       "min_turnaround_required_min": 7.0,
@@ -17419,12 +17419,12 @@
     "origin_station": "City_5",
     "origin_track": "City_5_plat_2_fw",
     "dest_station": "City_2",
-    "dest_track": "City_2_plat_2_bw",
+    "dest_track": "City_2_plat_5_bw",
     "departure_time": "20:55:00",
     "departure_sec": 75300,
     "arrival_time": "21:01:05",
     "arrival_sec": 75665.0,
-    "total_distance_km": 14.7,
+    "total_distance_km": 14.89,
     "stops": [
       {
         "station": "City_5",
@@ -17437,7 +17437,7 @@
       },
       {
         "station": "City_2",
-        "train_stop_id": "City_2_p2_bw",
+        "train_stop_id": "City_2_p5_bw",
         "arrival_time": "21:01:05",
         "arrival_sec": 75665.0,
         "departure_time": "21:01:05",
@@ -17448,7 +17448,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_2_yard_2_bw",
+      "staging_track": "City_2_plat_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 623.9,
       "min_turnaround_required_min": 12.0,
@@ -17475,7 +17475,7 @@
     "departure_sec": 75390,
     "arrival_time": "21:24:52",
     "arrival_sec": 77092.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -17544,7 +17544,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_4_bw",
+      "staging_track": "City_1_yard_9_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 620.1,
       "min_turnaround_required_min": 7.0,
@@ -17571,7 +17571,7 @@
     "departure_sec": 75390,
     "arrival_time": "21:21:28",
     "arrival_sec": 76888.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -17624,7 +17624,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_15_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 538.5,
       "min_turnaround_required_min": 7.0,
@@ -17651,7 +17651,7 @@
     "departure_sec": 75720,
     "arrival_time": "21:20:52",
     "arrival_sec": 76852.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -17697,7 +17697,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -17724,7 +17724,7 @@
     "departure_sec": 76290,
     "arrival_time": "21:36:18",
     "arrival_sec": 77778.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -17820,7 +17820,7 @@
     "departure_sec": 76590,
     "arrival_time": "21:44:54",
     "arrival_sec": 78294.0,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -17889,7 +17889,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_2_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 10.1,
       "min_turnaround_required_min": 7.0,
@@ -17916,7 +17916,7 @@
     "departure_sec": 76890,
     "arrival_time": "21:46:20",
     "arrival_sec": 78380.0,
-    "total_distance_km": 29.23,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_1",
@@ -17998,7 +17998,7 @@
     "departure_sec": 77400,
     "arrival_time": "21:44:30",
     "arrival_sec": 78270,
-    "total_distance_km": 14.25,
+    "total_distance_km": 14.58,
     "stops": [
       {
         "station": "Depot_2",
@@ -18051,7 +18051,7 @@
     "departure_sec": 77820,
     "arrival_time": "21:55:54",
     "arrival_sec": 78954.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -18097,7 +18097,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_2_bw",
+      "staging_track": "City_1_yard_5_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 784.1,
       "min_turnaround_required_min": 12.0,
@@ -18124,7 +18124,7 @@
     "departure_sec": 78390,
     "arrival_time": "22:11:19",
     "arrival_sec": 79879.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -18193,7 +18193,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_3_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 778.7,
       "min_turnaround_required_min": 7.0,
@@ -18220,7 +18220,7 @@
     "departure_sec": 78990,
     "arrival_time": "22:24:52",
     "arrival_sec": 80692.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.4,
     "stops": [
       {
         "station": "City_4",
@@ -18289,7 +18289,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_3_bw",
+      "staging_track": "City_1_yard_8_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 530.1,
       "min_turnaround_required_min": 7.0,
@@ -18316,7 +18316,7 @@
     "departure_sec": 78990,
     "arrival_time": "22:21:28",
     "arrival_sec": 80488.0,
-    "total_distance_km": 29.17,
+    "total_distance_km": 29.84,
     "stops": [
       {
         "station": "City_6",
@@ -18369,7 +18369,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_5_bw",
+      "staging_track": "City_1_yard_13_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 658.5,
       "min_turnaround_required_min": 7.0,
@@ -18396,7 +18396,7 @@
     "departure_sec": 79320,
     "arrival_time": "22:20:52",
     "arrival_sec": 80452.0,
-    "total_distance_km": 28.17,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_1",
@@ -18442,7 +18442,7 @@
     ],
     "post_journey_disposition": {
       "action": "turnaround",
-      "staging_track": "City_4_pocket_1_fw",
+      "staging_track": null,
       "buffer_stop_node": "City_4_buf_1",
       "turnaround_dwell_min": 14.1,
       "min_turnaround_required_min": 12.0,
@@ -18469,7 +18469,7 @@
     "departure_sec": 79890,
     "arrival_time": "22:36:18",
     "arrival_sec": 81378.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_5",
@@ -18567,7 +18567,7 @@
     "departure_sec": 81000,
     "arrival_time": "23:02:00",
     "arrival_sec": 82920,
-    "total_distance_km": 14.64,
+    "total_distance_km": 14.59,
     "stops": [
       {
         "station": "City_2",
@@ -18603,7 +18603,7 @@
     ],
     "post_journey_disposition": {
       "action": "depot_stabling",
-      "staging_track": "Depot_1_pocket_1_fw",
+      "staging_track": "Depot_1_yard_1_fw",
       "buffer_stop_node": "Depot_1_buf_1",
       "turnaround_dwell_min": 178.0,
       "min_turnaround_required_min": 30.0,
@@ -18630,7 +18630,7 @@
     "departure_sec": 81420,
     "arrival_time": "22:55:54",
     "arrival_sec": 82554.0,
-    "total_distance_km": 28.19,
+    "total_distance_km": 28.42,
     "stops": [
       {
         "station": "City_4",
@@ -18676,7 +18676,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_1_yard_1_bw",
+      "staging_track": "City_1_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 484.1,
       "min_turnaround_required_min": 12.0,
@@ -18703,7 +18703,7 @@
     "departure_sec": 81990,
     "arrival_time": "23:11:19",
     "arrival_sec": 83479.0,
-    "total_distance_km": 23.08,
+    "total_distance_km": 23.24,
     "stops": [
       {
         "station": "City_6",
@@ -18772,7 +18772,7 @@
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_5_yard_1_bw",
+      "staging_track": "City_5_yard_2_bw",
       "buffer_stop_node": null,
       "turnaround_dwell_min": 418.7,
       "min_turnaround_required_min": 7.0,
@@ -18794,14 +18794,14 @@
     "corridor": "Spur_City_5_Depot_3",
     "direction": "Spur_Inbound",
     "origin_station": "City_5",
-    "origin_track": "City_5_yard_1_bw",
+    "origin_track": "City_5_yard_7_bw",
     "dest_station": "Depot_3",
     "dest_track": "Depot_3_pocket_1_fw",
     "departure_time": "23:00:00",
     "departure_sec": 82800,
-    "arrival_time": "23:10:00",
-    "arrival_sec": 83400,
-    "total_distance_km": 5.81,
+    "arrival_time": "23:11:00",
+    "arrival_sec": 83460,
+    "total_distance_km": 6.01,
     "stops": [
       {
         "station": "City_5",
@@ -18815,19 +18815,19 @@
       {
         "station": "Depot_3",
         "train_stop_id": null,
-        "arrival_time": "23:10:00",
-        "arrival_sec": 83400,
-        "departure_time": "23:10:00",
-        "departure_sec": 83400,
+        "arrival_time": "23:11:00",
+        "arrival_sec": 83460,
+        "departure_time": "23:11:00",
+        "departure_sec": 83460,
         "dwell_sec": 0
       }
     ],
     "bypassed_through_stations": [],
     "post_journey_disposition": {
       "action": "depot_stabling",
-      "staging_track": "Depot_3_pocket_1_fw",
+      "staging_track": "Depot_3_yard_1_fw",
       "buffer_stop_node": "Depot_3_buf_1",
-      "turnaround_dwell_min": 200.0,
+      "turnaround_dwell_min": 199.0,
       "min_turnaround_required_min": 30.0,
       "turnaround_mode": "container_loading_and_inspection",
       "subsequent_service": "68204"
@@ -18852,7 +18852,7 @@
     "departure_sec": 83700,
     "arrival_time": "23:37:00",
     "arrival_sec": 85020,
-    "total_distance_km": 28.2,
+    "total_distance_km": 28.39,
     "stops": [
       {
         "station": "City_1",
@@ -18882,7 +18882,7 @@
     ],
     "post_journey_disposition": {
       "action": "yard_layover",
-      "staging_track": "City_4_yard_2_fw",
+      "staging_track": "City_4_yard_3_fw",
       "buffer_stop_node": "City_4_buf_2",
       "turnaround_dwell_min": 113.0,
       "min_turnaround_required_min": 25.0,

@@ -578,3 +578,30 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
     - **Collisions**: `0`
     - **Teleports / Deadlocks**: `0`
     - **Schedule Adherence**: 100% on-time within delay tolerance.
+
+#### Phase 5: Continuous Rake Operational Stabilization & Multi-Day Verification Sweep
+
+1. **City 2 High-Speed Platform Dedication**:
+   - Diagnosed platform contention at `City_2`: `HS-Rake-04` performing an 84-minute midday layover previously occupied `City_2_plat_2_bw`, fouling the main Westbound Regional platform and causing cascaded delays on Corridor 1 rakes (`REG-C1-01`, `REG-C1-02`, `REG-C1-05`).
+   - Reassigned `HS-Rake-04` Diagonal Bypass services (15001–15016) to dedicated terminal platform tracks `City_2_plat_5_fw` / `City_2_plat_5_bw`. This completely isolated the High-Speed bypass service from the Regional commuter trunk, eliminating all delay cascading at City 2.
+
+2. **City 1 Shunting Pocket Intermediate Routing**:
+   - Resolved duarouter shunting detours between `City_1_plat_*_bw` and `City_1_yard_*_bw`: duarouter previously chose a 10 km detour down the mainline to Town 1 because direct platform turnarounds had equal routing costs.
+   - Enforced intermediate pocket reversals via `City_1_pocket_1_fw_0` (for High-Speed rakes) and `City_1_pocket_3_fw_0` (for Corridor 4 rakes), routing all morning yard rollouts and evening yard stabling directly through the station throat.
+
+3. **Weekend Extended Layover Yard Staging Fallback**:
+   - On weekends, weekday peak services are filtered out, creating extended 2-to-5-hour layovers for Corridor 4 rakes at `City_1` (e.g. `REG-C4-01` 5.0h between 41002 and 41005, `REG-C4-02` 4.0h between 41008 and 41039, `REG-C4-05` 2.0h between 41034 and 41035).
+   - In `export_to_sumo.py`, implemented dynamic yard stabling fallback: whenever the turnaround gap between consecutive revenue services for a rake on that operating day exceeds 1,200 seconds (20 minutes), the train automatically vacates the passenger platform and shunts into its designated yard siding (`City_1_yard_12..16_bw`), releasing to the passenger platform 300 seconds before scheduled departure.
+   - This prevents trains from blocking passenger platforms during midday lulls, allowing all arriving and departing trains unhindered access.
+
+4. **Comprehensive Multi-Day Simulation Sweep Across All 8 Schedules**:
+   - Both continuous rakes mode (`verify_simulation.py -m rakes --all-days 86400`) and discrete services mode (`verify_simulation.py -m services --all-days 86400`) achieved 100% PASS across every calendar day and composite schedule:
+     - **Mon** (31 rakes / 232 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Tue** (31 rakes / 233 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Wed** (31 rakes / 229 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Thu** (31 rakes / 235 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Fri** (31 rakes / 231 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Sat** (29 rakes / 145 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Sun** (27 rakes / 141 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **All** (31 rakes / 242 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+
