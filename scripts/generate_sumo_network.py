@@ -680,7 +680,7 @@ def generate_sumo_network():
         # Corridor 1: East-West Trans-Regional High-Speed Trunk
         'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=18, length=800, thru_tracks=0),
         'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
-        'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900, thru_tracks=0),
+        'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=4, length=900, thru_tracks=0),
         'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
         'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=4, length=900, thru_tracks=0),
         'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
