@@ -1,15 +1,15 @@
 <?xml version="1.0" ?>
 <additionals>
-    <trainStop id="City_1_p1_fw" lane="City_1_plat_1_fw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p1_bw" lane="City_1_plat_1_bw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p2_fw" lane="City_1_plat_2_fw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p2_bw" lane="City_1_plat_2_bw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p3_fw" lane="City_1_plat_3_fw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p3_bw" lane="City_1_plat_3_bw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p4_fw" lane="City_1_plat_4_fw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p4_bw" lane="City_1_plat_4_bw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p5_fw" lane="City_1_plat_5_fw_0" startPos="390.0" endPos="1130.0"/>
-    <trainStop id="City_1_p5_bw" lane="City_1_plat_5_bw_0" startPos="390.0" endPos="1130.0"/>
+    <trainStop id="City_1_p1_fw" lane="City_1_plat_1_fw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p1_bw" lane="City_1_plat_1_bw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p2_fw" lane="City_1_plat_2_fw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p2_bw" lane="City_1_plat_2_bw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p3_fw" lane="City_1_plat_3_fw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p3_bw" lane="City_1_plat_3_bw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p4_fw" lane="City_1_plat_4_fw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p4_bw" lane="City_1_plat_4_bw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p5_fw" lane="City_1_plat_5_fw_0" startPos="414.0" endPos="1154.0"/>
+    <trainStop id="City_1_p5_bw" lane="City_1_plat_5_bw_0" startPos="414.0" endPos="1154.0"/>
     <trainStop id="Town_1_p1_fw" lane="Town_1_plat_1_fw_0" startPos="250.0" endPos="590.0"/>
     <trainStop id="Town_1_p1_bw" lane="Town_1_plat_1_bw_0" startPos="250.0" endPos="590.0"/>
     <trainStop id="Town_1_p2_fw" lane="Town_1_plat_2_fw_0" startPos="250.0" endPos="590.0"/>
@@ -52,16 +52,16 @@
     <trainStop id="City_4_p4_bw" lane="City_4_plat_4_bw_0" startPos="270.0" endPos="1010.0"/>
     <trainStop id="City_4_p5_fw" lane="City_4_plat_5_fw_0" startPos="270.0" endPos="1010.0"/>
     <trainStop id="City_4_p5_bw" lane="City_4_plat_5_bw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p1_fw" lane="City_5_plat_1_fw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p1_bw" lane="City_5_plat_1_bw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p2_fw" lane="City_5_plat_2_fw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p2_bw" lane="City_5_plat_2_bw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p3_fw" lane="City_5_plat_3_fw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p3_bw" lane="City_5_plat_3_bw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p4_fw" lane="City_5_plat_4_fw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p4_bw" lane="City_5_plat_4_bw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p5_fw" lane="City_5_plat_5_fw_0" startPos="270.0" endPos="1010.0"/>
-    <trainStop id="City_5_p5_bw" lane="City_5_plat_5_bw_0" startPos="270.0" endPos="1010.0"/>
+    <trainStop id="City_5_p1_fw" lane="City_5_plat_1_fw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p1_bw" lane="City_5_plat_1_bw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p2_fw" lane="City_5_plat_2_fw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p2_bw" lane="City_5_plat_2_bw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p3_fw" lane="City_5_plat_3_fw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p3_bw" lane="City_5_plat_3_bw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p4_fw" lane="City_5_plat_4_fw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p4_bw" lane="City_5_plat_4_bw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p5_fw" lane="City_5_plat_5_fw_0" startPos="294.0" endPos="1034.0"/>
+    <trainStop id="City_5_p5_bw" lane="City_5_plat_5_bw_0" startPos="294.0" endPos="1034.0"/>
     <trainStop id="Town_4_p1_fw" lane="Town_4_plat_1_fw_0" startPos="250.0" endPos="590.0"/>
     <trainStop id="Town_4_p1_bw" lane="Town_4_plat_1_bw_0" startPos="250.0" endPos="590.0"/>
     <trainStop id="Town_4_p2_fw" lane="Town_4_plat_2_fw_0" startPos="250.0" endPos="590.0"/>

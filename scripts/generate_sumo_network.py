@@ -678,7 +678,7 @@ def generate_sumo_network():
     # Intermediate towns feature 4-track Shinkansen/TGV layouts with central 300 km/h or 120 km/h through-tracks
     stations = {
         # Corridor 1: East-West Trans-Regional High-Speed Trunk
-        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=16, length=800, thru_tracks=0),
+        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=18, length=800, thru_tracks=0),
         'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
         'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900, thru_tracks=0),
         'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
@@ -687,7 +687,7 @@ def generate_sumo_network():
         'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=6, length=800, thru_tracks=0),
 
         # Corridor 2: North-South Inter-City Trunk (elevated viaduct passing overhead through City_3_NS)
-        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=6, length=800, thru_tracks=0),
+        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=8, length=800, thru_tracks=0),
         'Town_4': StationSpec('Town_4', 4500, 8800, 45, -85.4, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
         'Town_5': StationSpec('Town_5', 4850, 5100, 32, -84.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
         'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 26, -83.7, platforms=4, yards=4, length=900, thru_tracks=0),
