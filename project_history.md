@@ -196,5 +196,23 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - All 21 buffer stop nodes validated cleanly as `railNodeType in="1" out="1"`.
   - Audited against `/home/venkatasriramt/Desktop/trains/scripts/export_to_sumo.py`: all 242 trips compiled with **100% verified routes** (242/242).
 
-
-
+#### Phase 14: Terminal Yard Ladder Expansion, Pocket Clearance & Interlocking Disambiguation
+- **Motivation:** Following an operational capacity audit against full-lifecycle fleet requirements (31 physical trainsets), severe bottlenecks, switch geometry penalties, and track clearance deficits were resolved:
+  1. *Yard Ladder Capacity Expansion:*
+     - `City_1`: Expanded stabling yard tracks from 5 to **16 dedicated electrified tracks** ($L=800\text{ m}$), eliminating the -11 track deficit and providing an individual physical home for all 16 assigned trainsets (5 HS, 6 REG-C1, 5 REG-C4).
+     - `City_5`: Expanded stabling yard tracks from 2 to **6 dedicated electrified tracks** ($L=800\text{ m}$), providing full individual capacity for all 6 assigned regional rakes (`REG-C2-01` to `06`).
+     - `City_3_EW` & `City_3_NS`: Expanded from 2 & 1 to **4 yard tracks each** ($L=900\text{ m}$), plus 2 high-speed pocket tracks at `City_3_EW` for on-site staging at the central bi-level interchange hub.
+     - `City_4`: Expanded to **6 stabling tracks** ($L=800\text{ m}$).
+     - `City_6`: Expanded to **4 stabling tracks** ($L=800\text{ m}$).
+  2. *Pocket Track Clearance Extension (≥500 m Clear Standing Length):*
+     - Accounted for junction cluster boundary clipping (~73m) at major station throats by increasing nominal pocket lengths to **550m–600m** (`City_1` 580m, `City_4` 550m, `City_5` 580m, `City_6` 550m, `City_3_EW` 580m, `Depot_1/3/4` 600m).
+     - Verified netconvert lane lengths: every pocket track across the network maintains between **485.6m and 598.8m** clear lane standing length, ensuring 400m High-Speed EMUs (`high_speed_emu_300`) and 420m freights (`heavy_freight_cargo`) clear fouling points with 85m to 178m margin.
+  3. *Throat Turnaround Disambiguation & Interlocking Refinement:*
+     - Replaced all-to-all cross-platform permutations with deterministic pairwise same-track reversals (`for fw, bw in zip(plat_fw, plat_bw): connect bw -> fw`).
+     - Strictly excluded express through-tracks (`*_thru_*`) from turnaround connections.
+     - Scaled station switch lead lengths with track counts (`lead_extra`), easing turnout fan angles from $22^\circ$ down to $<10^\circ$ ($R > 300\text{ m}$).
+  4. *Compilation & Geometry Verification:*
+     - **Microscopic Overlaps:** 0 warnings (reduced from 9 to 0).
+     - **Sharp Turnout Speed Reductions:** 1 warning across the entire network (reduced from 105 to 1, a 99% reduction).
+     - **Topology Audit:** 0 error nodes, 0 broken nodes, 0 angle conflicts, 0 disconnected lanes across 296 nodes, 738 edges, 116 train stops.
+     - **Downstream Routing:** Tested against `trains/scripts/export_to_sumo.py` with 100% verified route compilation across all continuous rakes.

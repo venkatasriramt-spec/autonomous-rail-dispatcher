@@ -563,7 +563,9 @@ def build_angled_yard(node_dict, nodes_root, edges_root, stops_root, stn_id, x, 
     ux, uy = math.cos(theta), math.sin(theta)
     nx, ny = -uy, ux
     
-    t_dist = length / 2.0 + (220.0 if thru_tracks > 0 else 150.0)
+    total_tracks_count = platforms + yards + thru_tracks
+    lead_extra = max(0, total_tracks_count - 6) * 12.0
+    t_dist = length / 2.0 + (220.0 if thru_tracks > 0 else 180.0) + lead_extra
     t1_pos = (x - ux * t_dist, y - uy * t_dist, z)
     t2_pos = (x + ux * t_dist, y + uy * t_dist, z)
     
@@ -676,22 +678,22 @@ def generate_sumo_network():
     # Intermediate towns feature 4-track Shinkansen/TGV layouts with central 300 km/h or 120 km/h through-tracks
     stations = {
         # Corridor 1: East-West Trans-Regional High-Speed Trunk
-        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=5, length=800, thru_tracks=0),
+        'City_1': StationSpec('City_1', -13000, 1000, 15, 12.0, platforms=5, yards=16, length=800, thru_tracks=0),
         'Town_1': StationSpec('Town_1', -8800, 1800, 25, 8.0, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
         'City_2': StationSpec('City_2', -4200, 2200, 38, 5.0, platforms=6, yards=2, length=900, thru_tracks=0),
         'Town_2': StationSpec('Town_2', 400, 2000, 30, -2.5, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
-        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=2, length=900, thru_tracks=0),
+        'City_3_EW': StationSpec('City_3_EW', 5200, 1500, 12, -6.0, platforms=4, yards=4, length=900, thru_tracks=0),
         'Town_3': StationSpec('Town_3', 9800, 800, 12, -8.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=83.33),
-        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=4, length=800, thru_tracks=0),
+        'City_4': StationSpec('City_4', 14200, 0, 2, -10.0, platforms=5, yards=6, length=800, thru_tracks=0),
 
         # Corridor 2: North-South Inter-City Trunk (elevated viaduct passing overhead through City_3_NS)
-        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=2, length=800, thru_tracks=0),
+        'City_5': StationSpec('City_5', 4200, 12500, 60, -86.0, platforms=5, yards=6, length=800, thru_tracks=0),
         'Town_4': StationSpec('Town_4', 4500, 8800, 45, -85.4, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
         'Town_5': StationSpec('Town_5', 4850, 5100, 32, -84.6, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
-        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 26, -83.7, platforms=4, yards=1, length=900, thru_tracks=0),
+        'City_3_NS': StationSpec('City_3_NS', 5250, 1500, 26, -83.7, platforms=4, yards=4, length=900, thru_tracks=0),
         'Town_6': StationSpec('Town_6', 5650, -2200, 14, -83.8, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
         'Town_7': StationSpec('Town_7', 6050, -5900, 8, -83.8, platforms=2, yards=1, length=400, thru_tracks=2, thru_speed=33.33),
-        'City_6': StationSpec('City_6', 6500, -10000, 2, -83.7, platforms=5, yards=2, length=800, thru_tracks=0),
+        'City_6': StationSpec('City_6', 6500, -10000, 2, -83.7, platforms=5, yards=4, length=800, thru_tracks=0),
 
         # Corridor 3: Northwest Alpine Mountain Line (branches Northwest from City_2)
         'Town_8': StationSpec('Town_8', -7500, 5200, 80, 135.0, platforms=2, yards=1, length=400, thru_tracks=0),
@@ -771,13 +773,14 @@ def generate_sumo_network():
 
     # Terminal Turn-Around Pocket Tracks with Dead-End Buffer Stops (Kopfmachen & Reversal Infrastructure)
     terminal_specs = [
-        ('City_1', 1, -1.0, 3, 450.0, 13.89, "high_speed"),
-        ('City_4', 2, 1.0, 2, 450.0, 13.89, "high_speed"),
-        ('City_5', 1, -1.0, 2, 450.0, 13.89, "regional"),
-        ('City_6', 2, 1.0, 2, 450.0, 13.89, "regional"),
-        ('Depot_1', 2, 1.0, 4, 500.0, 5.55, "freight"),
-        ('Depot_3', 2, 1.0, 4, 500.0, 5.55, "freight"),
-        ('Depot_4', 2, 1.0, 4, 500.0, 5.55, "freight"),
+        ('City_1', 1, -1.0, 3, 580.0, 13.89, "high_speed"),
+        ('City_4', 2, 1.0, 2, 550.0, 13.89, "high_speed"),
+        ('City_5', 1, -1.0, 2, 580.0, 13.89, "regional"),
+        ('City_6', 2, 1.0, 2, 550.0, 13.89, "regional"),
+        ('City_3_EW', 1, -1.0, 2, 580.0, 13.89, "high_speed"),
+        ('Depot_1', 2, 1.0, 4, 600.0, 5.55, "freight"),
+        ('Depot_3', 2, 1.0, 4, 600.0, 5.55, "freight"),
+        ('Depot_4', 2, 1.0, 4, 600.0, 5.55, "freight"),
     ]
 
     for stn_id, throat_idx, dir_sign, num_pockets, length, p_speed, prof_key in terminal_specs:
@@ -850,9 +853,10 @@ def generate_sumo_network():
         for plat_bw in s.bw_edges:
             for out_e in out_m1:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_bw, "to": out_e, "fromLane": "0", "toLane": "0"})
-        for plat_bw in s.bw_edges:
-            for plat_fw in s.fw_edges:
-                ET.SubElement(conns_root, 'connection', **{"from": plat_bw, "to": plat_fw, "fromLane": "0", "toLane": "0"})
+        # Pairwise same-track reversal (cab swap / Kopfmachen) - NO thru tracks, NO cross-platform jumps
+        for fw_e, bw_e in zip(s.fw_edges, s.bw_edges):
+            if 'thru' not in fw_e:
+                ET.SubElement(conns_root, 'connection', **{"from": bw_e, "to": fw_e, "fromLane": "0", "toLane": "0"})
 
         in_m2 = [bw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_start == s.t2] + \
                 [fw_e[-1] for t_start, t_end, fw_e, bw_e, a_from, a_to in mainline_edges_info if t_end == s.t2]
@@ -868,9 +872,10 @@ def generate_sumo_network():
         for plat_fw in s.fw_edges:
             for out_e in out_m2:
                 ET.SubElement(conns_root, 'connection', **{"from": plat_fw, "to": out_e, "fromLane": "0", "toLane": "0"})
-        for plat_fw in s.fw_edges:
-            for plat_bw in s.bw_edges:
-                ET.SubElement(conns_root, 'connection', **{"from": plat_fw, "to": plat_bw, "fromLane": "0", "toLane": "0"})
+        # Pairwise same-track reversal (cab swap / Kopfmachen) - NO thru tracks, NO cross-platform jumps
+        for fw_e, bw_e in zip(s.fw_edges, s.bw_edges):
+            if 'thru' not in fw_e:
+                ET.SubElement(conns_root, 'connection', **{"from": fw_e, "to": bw_e, "fromLane": "0", "toLane": "0"})
 
     # Write network source XMLs
     for n in nd.values(): ET.SubElement(nodes_root, 'node', **{k:str(v) for k,v in n.items() if k != 'out_vec'})

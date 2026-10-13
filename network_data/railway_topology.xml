@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-12 17:27:45 by Eclipse SUMO netconvert Version 1.12.0
+<!-- generated on 2026-10-13 15:26:32 by Eclipse SUMO netconvert Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/netconvertConfiguration.xsd">
 
     <input>
@@ -37,6 +37,8 @@
         <node id="City_1_buf_1"/>
         <node id="City_1_buf_2"/>
         <node id="City_1_buf_3"/>
+        <node id="City_3_EW_buf_1"/>
+        <node id="City_3_EW_buf_2"/>
         <node id="City_4_buf_1"/>
         <node id="City_4_buf_2"/>
         <node id="City_5_buf_1"/>
@@ -64,7 +66,6 @@
         <node id="bypass_City_2_City_5_bw_signal_6"/>
         <node id="bypass_City_2_City_5_bw_signal_7"/>
         <node id="bypass_City_2_City_5_bw_signal_8"/>
-        <node id="bypass_City_2_City_5_bw_signal_9"/>
         <node id="bypass_City_2_City_5_fw_signal_0"/>
         <node id="bypass_City_2_City_5_fw_signal_1"/>
         <node id="bypass_City_2_City_5_fw_signal_2"/>
@@ -74,7 +75,6 @@
         <node id="bypass_City_2_City_5_fw_signal_6"/>
         <node id="bypass_City_2_City_5_fw_signal_7"/>
         <node id="bypass_City_2_City_5_fw_signal_8"/>
-        <node id="bypass_City_2_City_5_fw_signal_9"/>
         <node id="c1_City_1_Town_1_bw_signal_0"/>
         <node id="c1_City_1_Town_1_bw_signal_1"/>
         <node id="c1_City_1_Town_1_bw_signal_2"/>
@@ -125,12 +125,10 @@
         <node id="c3_Town_9_Depot_1_bw_signal_1"/>
         <node id="c3_Town_9_Depot_1_bw_signal_2"/>
         <node id="c3_Town_9_Depot_1_bw_signal_3"/>
-        <node id="c3_Town_9_Depot_1_bw_signal_4"/>
         <node id="c3_Town_9_Depot_1_fw_signal_0"/>
         <node id="c3_Town_9_Depot_1_fw_signal_1"/>
         <node id="c3_Town_9_Depot_1_fw_signal_2"/>
         <node id="c3_Town_9_Depot_1_fw_signal_3"/>
-        <node id="c3_Town_9_Depot_1_fw_signal_4"/>
         <node id="c4_City_1_Town_10_bw_signal_0"/>
         <node id="c4_City_1_Town_10_bw_signal_1"/>
         <node id="c4_City_1_Town_10_bw_signal_2"/>
@@ -180,7 +178,8 @@
         <node id="spur_City_5_Depot_3_fw_signal_1"/>
         <node id="spur_City_5_Depot_3_fw_signal_2"/>
         <node id="spur_City_5_Depot_3_fw_signal_3"/>
-        <node id="spur_City_5_Depot_3_fw_signal_4"/>
+        <node id="transfer_City_3_EW_NS_bw_signal_0"/>
+        <node id="transfer_City_3_EW_NS_fw_signal_0"/>
     </railNodeType>
     <railNodeType in="2" out="2">
         <node id="c1_City_2_Town_2_xov_T1_post_sig_0"/>
@@ -299,7 +298,6 @@
         <node id="Town_9_Throat1"/>
     </railNodeType>
     <railNodeType in="6" out="6">
-        <node id="City_3_NS_Throat2"/>
         <node id="Depot_2_Throat2"/>
         <node id="Town_10_Throat1"/>
         <node id="Town_11_Throat2"/>
@@ -312,7 +310,6 @@
         <node id="Town_7_Throat2"/>
     </railNodeType>
     <railNodeType in="7" out="7">
-        <node id="City_3_NS_Throat1"/>
         <node id="Town_10_Throat2"/>
         <node id="Town_11_Throat1"/>
         <node id="Town_12_Throat1"/>
@@ -331,23 +328,33 @@
         <node id="Depot_4_Throat2"/>
     </railNodeType>
     <railNodeType in="9" out="9">
-        <node id="City_3_EW_Throat1"/>
+        <node id="City_3_NS_Throat2"/>
+    </railNodeType>
+    <railNodeType in="10" out="10">
+        <node id="City_3_NS_Throat1"/>
+    </railNodeType>
+    <railNodeType in="11" out="11">
+        <node id="City_2_Throat1"/>
+        <node id="City_2_Throat2"/>
         <node id="City_3_EW_Throat2"/>
-        <node id="City_5_Throat2"/>
         <node id="City_6_Throat1"/>
         <node id="City_6_Throat2"/>
     </railNodeType>
-    <railNodeType in="10" out="10">
+    <railNodeType in="12" out="12">
         <node id="City_4_Throat1"/>
-        <node id="City_5_Throat1"/>
     </railNodeType>
-    <railNodeType in="11" out="11">
-        <node id="City_1_Throat2"/>
-        <node id="City_2_Throat1"/>
-        <node id="City_2_Throat2"/>
+    <railNodeType in="13" out="13">
+        <node id="City_3_EW_Throat1"/>
         <node id="City_4_Throat2"/>
+        <node id="City_5_Throat2"/>
     </railNodeType>
     <railNodeType in="14" out="14">
+        <node id="City_5_Throat1"/>
+    </railNodeType>
+    <railNodeType in="22" out="22">
+        <node id="City_1_Throat2"/>
+    </railNodeType>
+    <railNodeType in="25" out="25">
         <node id="City_1_Throat1"/>
     </railNodeType>
 </railwayTopology>
