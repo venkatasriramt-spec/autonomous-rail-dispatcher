@@ -1082,7 +1082,7 @@ def build_timetable():
         (20, 25, 20, 55, "Daily",  "15015", "15016", "HS-Rake-04"),
     ]
 
-    for fh, fm, rh, rm, days, fwd_no, rev_no, rake_id in bypass_services:
+    for idx, (fh, fm, rh, rm, days, fwd_no, rev_no, rake_id) in enumerate(bypass_services):
         dep_sec = fh * 3600 + fm * 60
         r_type = "high_speed_emu_single"
         rake = get_rake(rake_id, r_type)
@@ -1165,7 +1165,7 @@ def build_timetable():
             "bypassed_through_stations": [],
             "post_journey_disposition": {
                 "action": "yard_layover",
-                "staging_track": "City_2_plat_5_bw",
+                "staging_track": "City_2_plat_5_bw" if idx == len(bypass_services) - 1 else None,
                 "buffer_stop_node": None,
                 "turnaround_dwell_min": 60,
                 "min_turnaround_required_min": MIN_TURNAROUND_BY_CONSIST[r_type],

@@ -93,14 +93,17 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 last_s = tt_by_id[sorted_svcs[-1]]
                 stabling_track = r.get("overnight_stabling_track")
                 dep_sec = max(0.0, first_s["departure_sec"] - 600.0) if (stabling_track and stabling_track != first_s["origin_track"]) else first_s["departure_sec"]
-                arr_sec = (last_s["arrival_sec"] + 900.0) if (stabling_track and stabling_track != last_s["dest_track"]) else last_s["arrival_sec"]
+                arr_sec = last_s["arrival_sec"]
                 expected_entities[rid] = {
                     "id": rid,
                     "type": r["rolling_stock_type"],
                     "corridor": first_s.get("corridor", "Fleet"),
                     "departure_sec": dep_sec,
                     "arrival_sec": arr_sec,
-                    "services_count": len(sorted_svcs)
+                    "services_count": len(sorted_svcs),
+                    "dest_train_stop_id": last_s["stops"][-1].get("train_stop_id"),
+                    "dest_track": last_s["dest_track"],
+                    "stabling_track": stabling_track
                 }
     else:
         expected_entities = {
@@ -110,7 +113,10 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 "class": s["service_class"],
                 "corridor": s.get("corridor", "N/A"),
                 "departure_sec": s["stops"][0].get("departure_sec", s.get("departure_sec", 0)),
-                "arrival_sec": s["stops"][-1].get("arrival_sec", s.get("arrival_sec", 0))
+                "arrival_sec": s["stops"][-1].get("arrival_sec", s.get("arrival_sec", 0)),
+                "dest_train_stop_id": s["stops"][-1].get("train_stop_id"),
+                "dest_track": s["dest_track"],
+                "stabling_track": None
             }
             for s in target_timetable
         }
@@ -118,9 +124,11 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
     compiled_counts = collections.Counter(compiled_vehicle_ids)
     duplicate_compiled = [vid for vid, count in compiled_counts.items() if count > 1]
 
-    # Create temporary tripinfo file
+    # Create temporary tripinfo and stopinfo files
     tripinfo_fd, tripinfo_path = tempfile.mkstemp(prefix="sumo_tripinfo_", suffix=".xml")
     os.close(tripinfo_fd)
+    stopinfo_fd, stopinfo_path = tempfile.mkstemp(prefix="sumo_stopinfo_", suffix=".xml")
+    os.close(stopinfo_fd)
 
     print("=" * 75)
     print(f"SUMO RAILWAY SIMULATION AUDIT & SAFETY VERIFICATION ({active_mode.upper()} MODE)")
@@ -141,7 +149,9 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
         "--duration-log.statistics", "true",
         "--no-step-log", "true",
         "--tripinfo-output", tripinfo_path,
-        "--tripinfo-output.write-unfinished", "true"
+        "--tripinfo-output.write-unfinished", "true",
+        "--stop-output", stopinfo_path,
+        "--stop-output.write-unfinished", "true"
     ]
 
     try:
@@ -150,6 +160,8 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
         print(f"[!] Failed to execute SUMO binary: {e}")
         if os.path.exists(tripinfo_path):
             os.remove(tripinfo_path)
+        if os.path.exists(stopinfo_path):
+            os.remove(stopinfo_path)
         return False
 
     stderr_lines = res.stderr.splitlines()
@@ -199,31 +211,114 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
     unfinished_beyond_cutoff = [vid for vid in unfinished_trips if vid not in expected_arrived]
     unexpected_trips = [vid for vid in tripinfo_counts if vid not in expected_entities]
 
+    # Parse stopinfo XML for revenue stop arrivals and final stabling verification
+    stops_by_id = collections.defaultdict(list)
+    if os.path.exists(stopinfo_path):
+        try:
+            stop_tree = ET.parse(stopinfo_path)
+            for stp in stop_tree.getroot().findall("stopinfo"):
+                stops_by_id[stp.attrib.get("id", "")].append(stp)
+        except Exception as e:
+            print(f"[!] Warning: failed to parse stopinfo XML: {e}")
+
     # 3. Schedule adherence and punctuality
     punctuality_results = []
     excessive_delays = []
+    stabling_violations = []
+
+    rou_vehicles = {v.attrib["id"]: v for v in compiled_vehicle_elements} if compiled_vehicle_elements else {}
+
     for vid, t in arrived_trips.items():
         if vid in expected_entities:
             ent = expected_entities[vid]
             sched_arr = float(ent["arrival_sec"])
-            sim_arr = float(t.attrib["arrival"])
-            diff = sim_arr - sched_arr
             time_loss = float(t.attrib.get("timeLoss", 0.0))
             depart_delay = float(t.attrib.get("departDelay", 0.0))
-            punctuality_results.append({
-                "id": vid,
-                "corridor": ent.get("corridor", "N/A"),
-                "sched_arr": sched_arr,
-                "sim_arr": sim_arr,
-                "diff": diff,
-                "time_loss": time_loss,
-                "depart_delay": depart_delay
-            })
-            if diff > delay_tolerance_sec:
-                excessive_delays.append(punctuality_results[-1])
+
+            if active_mode == "rakes":
+                dest_ts = ent.get("dest_train_stop_id")
+                dest_tr = ent.get("dest_track")
+                stab_tr = ent.get("stabling_track")
+
+                # Check punctuality against final revenue arrival separately
+                rev_stop = None
+                for stp in reversed(stops_by_id.get(vid, [])):
+                    if dest_ts and stp.attrib.get("busStop") == dest_ts:
+                        rev_stop = stp
+                        break
+                    elif not dest_ts and dest_tr and stp.attrib.get("lane", "").startswith(dest_tr):
+                        rev_stop = stp
+                        break
+                    elif not dest_ts and dest_tr and dest_tr in stp.attrib.get("lane", ""):
+                        rev_stop = stp
+                        break
+
+                sim_rev_arr = float(rev_stop.attrib.get("started")) if rev_stop is not None else float(t.attrib["arrival"])
+                rev_diff = sim_rev_arr - sched_arr
+
+                # Derive and validate expected yard arrival from exported route
+                yard_transit_dwell = 0.0
+                if stab_tr and vid in rou_vehicles:
+                    v_rou = rou_vehicles[vid]
+                    v_stops = v_rou.findall("stop")
+                    last_stop_elem = v_stops[-1] if v_stops else None
+                    stab_dwell = float(last_stop_elem.attrib.get("duration", 60.0)) if last_stop_elem is not None else 60.0
+                    if stab_tr != dest_tr:
+                        yard_transit_dwell = 900.0
+                    else:
+                        yard_transit_dwell = stab_dwell
+
+                expected_yard_arr = sched_arr + yard_transit_dwell
+                sim_yard_arr = float(t.attrib["arrival"])
+                yard_diff = sim_yard_arr - expected_yard_arr
+
+                # Validate exporter's 60-second final stabling stop
+                if stab_tr:
+                    expected_lane = f"{stab_tr}_0"
+                    sim_stops = stops_by_id.get(vid, [])
+                    last_sim_stop = sim_stops[-1] if sim_stops else None
+                    if last_sim_stop is None or last_sim_stop.attrib.get("lane") != expected_lane:
+                        stabling_violations.append((vid, f"missing stabling stop on {expected_lane}"))
+                    else:
+                        st_dwell = float(last_sim_stop.attrib.get("ended", 0)) - float(last_sim_stop.attrib.get("started", 0))
+                        if round(st_dwell, 1) < 60.0:
+                            stabling_violations.append((vid, f"final stabling stop duration {st_dwell:.1f}s < 60s"))
+
+                eff_diff = yard_diff if stab_tr else rev_diff
+                punctuality_results.append({
+                    "id": vid,
+                    "corridor": ent.get("corridor", "N/A"),
+                    "sched_arr": sched_arr,
+                    "sim_arr": sim_rev_arr,
+                    "diff": rev_diff,
+                    "expected_yard_arr": expected_yard_arr,
+                    "sim_yard_arr": sim_yard_arr,
+                    "yard_diff": yard_diff,
+                    "time_loss": time_loss,
+                    "depart_delay": depart_delay
+                })
+
+                if eff_diff > delay_tolerance_sec:
+                    excessive_delays.append(punctuality_results[-1])
+            else:
+                sim_arr = float(t.attrib["arrival"])
+                diff = sim_arr - sched_arr
+                punctuality_results.append({
+                    "id": vid,
+                    "corridor": ent.get("corridor", "N/A"),
+                    "sched_arr": sched_arr,
+                    "sim_arr": sim_arr,
+                    "diff": diff,
+                    "time_loss": time_loss,
+                    "depart_delay": depart_delay
+                })
+                if diff > delay_tolerance_sec:
+                    excessive_delays.append(punctuality_results[-1])
 
     if os.path.exists(tripinfo_path):
         os.remove(tripinfo_path)
+    if os.path.exists(stopinfo_path):
+        os.remove(stopinfo_path)
 
     # ------------------ PRINT AUDIT REPORT ------------------
     print("\n1. RAILWAY SAFETY & INCIDENT AUDIT:")
@@ -324,6 +419,17 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 print(f"    - {ed['id']}: delayed by {ed['diff']:+.1f}s (sim: {ed['sim_arr']:.1f}s vs sched: {ed['sched_arr']:.1f}s)")
         else:
             print(f"  [PASS] All {total_p} completed runs adhered to timetable within <= {delay_tolerance_sec:.1f}s delay tolerance.")
+
+        if active_mode == "rakes":
+            yard_diffs = [p["yard_diff"] for p in punctuality_results if "yard_diff" in p]
+            if yard_diffs:
+                print(f"  Yard Arrival Offset (mean): {sum(yard_diffs) / len(yard_diffs):+.1f}s (max: {max(yard_diffs):+.1f}s)")
+            if stabling_violations:
+                print(f"  [FAIL] {len(stabling_violations)} rake(s) violated final stabling stop requirements:")
+                for sv in stabling_violations[:5]:
+                    print(f"    - {sv[0]}: {sv[1]}")
+            else:
+                print("  [PASS] All continuous rakes preserved the exporter's 60-second final stabling stop.")
     else:
         print("  [INFO] No completed full runs in this simulation window to audit punctuality.")
 
@@ -341,6 +447,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
         and len(missing_arrived) == 0
         and len(unfinished_expected) == 0
         and len(excessive_delays) == 0
+        and len(stabling_violations) == 0
     )
 
     if success:
@@ -462,11 +569,11 @@ if __name__ == "__main__":
             except Exception as e:
                 print(f"[!] Warning: failed to recompile composite schedule: {e}")
         else:
-            if args.mode != "auto":
-                try:
-                    compile_sumo_files(mode=args.mode, day="all")
-                except Exception as e:
-                    print(f"[!] Warning: failed to recompile schedule: {e}")
+            comp_mode = args.mode if args.mode != "auto" else "rakes"
+            try:
+                compile_sumo_files(mode=comp_mode, day="all")
+            except Exception as e:
+                print(f"[!] Warning: failed to recompile schedule: {e}")
             success = run_verification(
                 max_steps=args.steps,
                 day=args.day,
