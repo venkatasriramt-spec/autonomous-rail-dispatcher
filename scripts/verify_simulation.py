@@ -154,6 +154,20 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
             for s in target_timetable
         }
 
+    expected_services = {
+        f"train_{s['train_number']}_{s['service_class']}": {
+            "id": f"train_{s['train_number']}_{s['service_class']}",
+            "train_no": s["train_number"],
+            "class": s["service_class"],
+            "corridor": s.get("corridor", "N/A"),
+            "departure_sec": s["stops"][0].get("departure_sec", s.get("departure_sec", 0)),
+            "arrival_sec": s["stops"][-1].get("arrival_sec", s.get("arrival_sec", 0)),
+            "dest_train_stop_id": s["stops"][-1].get("train_stop_id"),
+            "dest_track": s["dest_track"]
+        }
+        for s in target_timetable
+    }
+
     compiled_counts = collections.Counter(compiled_vehicle_ids)
     duplicate_compiled = [vid for vid, count in compiled_counts.items() if count > 1]
 
@@ -244,13 +258,17 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
     unfinished_beyond_cutoff = [vid for vid in unfinished_trips if vid not in expected_arrived]
     unexpected_trips = [vid for vid in tripinfo_counts if vid not in expected_entities]
 
-    # Parse stopinfo XML for revenue stop arrivals and final stabling verification
+    # Parse stopinfo XML for service stop arrivals and final stabling verification
     stops_by_id = collections.defaultdict(list)
+    stops_by_tripid = collections.defaultdict(list)
     if os.path.exists(stopinfo_path):
         try:
             stop_tree = ET.parse(stopinfo_path)
             for stp in stop_tree.getroot().findall("stopinfo"):
                 stops_by_id[stp.attrib.get("id", "")].append(stp)
+                t_id = stp.attrib.get("tripId")
+                if t_id:
+                    stops_by_tripid[t_id].append(stp)
         except Exception as e:
             print(f"[!] Warning: failed to parse stopinfo XML: {e}")
 
@@ -258,58 +276,80 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
     punctuality_results = []
     excessive_delays = []
     stabling_violations = []
+    yard_results = []
 
     rou_vehicles = {v.attrib["id"]: v for v in compiled_vehicle_elements} if compiled_vehicle_elements else {}
 
-    for vid, t in arrived_trips.items():
-        if vid in expected_entities:
-            ent = expected_entities[vid]
-            sched_arr = float(ent["arrival_sec"])
-            time_loss = float(t.attrib.get("timeLoss", 0.0))
-            depart_delay = float(t.attrib.get("departDelay", 0.0))
+    if active_mode == "rakes":
+        # 3a. Commercial Service Schedule Adherence (evaluates each service independently)
+        for s_id, s_ent in expected_services.items():
+            if s_ent["departure_sec"] >= max_steps:
+                continue
+            if s_ent["arrival_sec"] > max_steps:
+                continue
 
-            if active_mode == "rakes":
-                dest_ts = ent.get("dest_train_stop_id")
-                dest_tr = ent.get("dest_track")
-                stab_tr = ent.get("stabling_track")
+            sched_arr = float(s_ent["arrival_sec"])
+            dest_ts = s_ent.get("dest_train_stop_id")
+            dest_tr = s_ent.get("dest_track")
 
-                # Check punctuality against final revenue arrival separately
-                rev_stop = None
-                for stp in reversed(stops_by_id.get(vid, [])):
+            svc_stops = stops_by_tripid.get(s_id, [])
+            dest_stop = None
+            if svc_stops:
+                for stp in reversed(svc_stops):
                     if dest_ts and stp.attrib.get("busStop") == dest_ts:
-                        rev_stop = stp
+                        dest_stop = stp
                         break
-                    elif not dest_ts and dest_tr and stp.attrib.get("lane", "").startswith(dest_tr):
-                        rev_stop = stp
+                    elif not dest_ts and dest_tr and (stp.attrib.get("lane", "").startswith(dest_tr) or dest_tr in stp.attrib.get("lane", "")):
+                        dest_stop = stp
                         break
-                    elif not dest_ts and dest_tr and dest_tr in stp.attrib.get("lane", ""):
-                        rev_stop = stp
-                        break
+                if dest_stop is None:
+                    dest_stop = svc_stops[-1]
 
-                sim_rev_arr = float(rev_stop.attrib.get("started")) if rev_stop is not None else float(t.attrib["arrival"])
-                rev_diff = sim_rev_arr - sched_arr
+            if dest_stop is not None:
+                sim_arr = float(dest_stop.attrib.get("started"))
+                diff = sim_arr - sched_arr
+                p_entry = {
+                    "id": s_id,
+                    "train_no": s_ent["train_no"],
+                    "class": s_ent["class"],
+                    "corridor": s_ent.get("corridor", "N/A"),
+                    "rake_id": dest_stop.attrib.get("id"),
+                    "sched_arr": sched_arr,
+                    "sim_arr": sim_arr,
+                    "diff": diff,
+                    "stop_target": dest_stop.attrib.get("busStop") or dest_stop.attrib.get("lane")
+                }
+                punctuality_results.append(p_entry)
+                if diff > delay_tolerance_sec:
+                    excessive_delays.append(p_entry)
+            else:
+                p_entry = {
+                    "id": s_id,
+                    "train_no": s_ent["train_no"],
+                    "class": s_ent["class"],
+                    "corridor": s_ent.get("corridor", "N/A"),
+                    "rake_id": "missing",
+                    "sched_arr": sched_arr,
+                    "sim_arr": -1.0,
+                    "diff": 999999.0,
+                    "stop_target": dest_ts or dest_tr or "N/A"
+                }
+                excessive_delays.append(p_entry)
 
-                # Derive and validate expected yard arrival from exported route
-                yard_transit_dwell = 0.0
-                if stab_tr and vid in rou_vehicles:
-                    v_rou = rou_vehicles[vid]
-                    v_stops = v_rou.findall("stop")
-                    last_stop_elem = v_stops[-1] if v_stops else None
-                    stab_dwell = float(last_stop_elem.attrib.get("duration", 60.0)) if last_stop_elem is not None else 60.0
-                    if stab_tr != dest_tr:
-                        yard_transit_dwell = 900.0
-                    else:
-                        yard_transit_dwell = stab_dwell
+        # 3b. Final Stabling & Fleet Recovery Audit (separate, independent test on continuous rakes)
+        for vid, t in arrived_trips.items():
+            if vid in expected_entities:
+                ent = expected_entities[vid]
+                stab_tr = ent.get("stabling_track")
+                dest_tr = ent.get("dest_track")
+                sched_arr = float(ent["arrival_sec"])
 
-                expected_yard_arr = ent.get("stabling_completion_sec", sched_arr + yard_transit_dwell)
-                sim_yard_arr = float(t.attrib["arrival"])
-                yard_diff = sim_yard_arr - expected_yard_arr
-
-                # Validate exporter's 60-second final stabling stop
                 if stab_tr:
                     expected_lane = f"{stab_tr}_0"
                     sim_stops = stops_by_id.get(vid, [])
                     last_sim_stop = sim_stops[-1] if sim_stops else None
+
+                    # Check 1: Exporter's 60-second final stabling stop exists and duration >= 60s
                     if last_sim_stop is None or last_sim_stop.attrib.get("lane") != expected_lane:
                         stabling_violations.append((vid, f"missing stabling stop on {expected_lane}"))
                     else:
@@ -317,36 +357,42 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                         if round(st_dwell, 1) < 60.0:
                             stabling_violations.append((vid, f"final stabling stop duration {st_dwell:.1f}s < 60s"))
 
-                eff_diff = yard_diff if stab_tr else rev_diff
-                punctuality_results.append({
-                    "id": vid,
-                    "corridor": ent.get("corridor", "N/A"),
-                    "sched_arr": sched_arr,
-                    "sim_arr": sim_rev_arr,
-                    "diff": rev_diff,
-                    "expected_yard_arr": expected_yard_arr,
-                    "sim_yard_arr": sim_yard_arr,
-                    "yard_diff": yard_diff,
-                    "time_loss": time_loss,
-                    "depart_delay": depart_delay
-                })
+                    # Check 2: Yard arrival adherence (independent of commercial service punctuality)
+                    yard_transit_dwell = 0.0
+                    if vid in rou_vehicles:
+                        v_rou = rou_vehicles[vid]
+                        v_stops = v_rou.findall("stop")
+                        last_stop_elem = v_stops[-1] if v_stops else None
+                        stab_dwell = float(last_stop_elem.attrib.get("duration", 60.0)) if last_stop_elem is not None else 60.0
+                        if stab_tr != dest_tr:
+                            yard_transit_dwell = 900.0
+                        else:
+                            yard_transit_dwell = stab_dwell
 
-                if eff_diff > delay_tolerance_sec:
-                    if stab_tr:
-                        delay_entry = dict(punctuality_results[-1])
-                        delay_entry.update({
-                            "diff": yard_diff,
-                            "sim_arr": sim_yard_arr,
-                            "sched_arr": expected_yard_arr
-                        })
-                        excessive_delays.append(delay_entry)
-                    else:
-                        excessive_delays.append(punctuality_results[-1])
-            else:
+                    expected_yard_arr = ent.get("stabling_completion_sec", sched_arr + yard_transit_dwell)
+                    sim_yard_arr = float(t.attrib["arrival"])
+                    yard_diff = sim_yard_arr - expected_yard_arr
+                    yard_results.append({
+                        "id": vid,
+                        "sched_yard": expected_yard_arr,
+                        "sim_yard": sim_yard_arr,
+                        "yard_diff": yard_diff
+                    })
+                    if yard_diff > delay_tolerance_sec:
+                        stabling_violations.append((vid, f"yard arrival delay {yard_diff:+.1f}s > {delay_tolerance_sec:.1f}s (sim: {sim_yard_arr:.1f}s vs expected: {expected_yard_arr:.1f}s)"))
+    else:
+        for vid, t in arrived_trips.items():
+            if vid in expected_entities:
+                ent = expected_entities[vid]
+                sched_arr = float(ent["arrival_sec"])
                 sim_arr = float(t.attrib["arrival"])
                 diff = sim_arr - sched_arr
+                time_loss = float(t.attrib.get("timeLoss", 0.0))
+                depart_delay = float(t.attrib.get("departDelay", 0.0))
                 punctuality_results.append({
                     "id": vid,
+                    "train_no": ent["train_no"],
+                    "class": ent["class"],
                     "corridor": ent.get("corridor", "N/A"),
                     "sched_arr": sched_arr,
                     "sim_arr": sim_arr,
@@ -437,18 +483,20 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
 
     print("\n3. TIMETABLE SCHEDULE ADHERENCE & PUNCTUALITY:")
     if punctuality_results:
-        diffs = [p["diff"] for p in punctuality_results]
-        max_delay = max(diffs)
-        max_advance = min(diffs)
-        avg_diff = sum(diffs) / len(diffs)
+        diffs = [p["diff"] for p in punctuality_results if p["diff"] < 900000.0]
+        max_delay = max(diffs) if diffs else 0.0
+        max_advance = min(diffs) if diffs else 0.0
+        avg_diff = sum(diffs) / len(diffs) if diffs else 0.0
         on_time_60s = sum(1 for d in diffs if abs(d) <= 60.0)
         on_time_180s = sum(1 for d in diffs if abs(d) <= 180.0)
         total_p = len(punctuality_results)
 
         worst_delay = max(punctuality_results, key=lambda p: p["diff"])
-        worst_advance = min(punctuality_results, key=lambda p: p["diff"])
+        valid_p = [p for p in punctuality_results if p["diff"] < 900000.0]
+        worst_advance = min(valid_p, key=lambda p: p["diff"]) if valid_p else worst_delay
 
-        print(f"  Audited Completed Runs: {total_p}")
+        entity_label = "Services" if active_mode == "rakes" else "Runs"
+        print(f"  Audited Completed {entity_label}: {total_p}")
         print(f"  On-time (within ±60s):   {on_time_60s} / {total_p} ({on_time_60s / total_p * 100:.1f}%)")
         print(f"  On-time (within ±180s):  {on_time_180s} / {total_p} ({on_time_180s / total_p * 100:.1f}%)")
         print(f"  Mean Arrival Offset:     {avg_diff:+.1f}s")
@@ -456,22 +504,24 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
         print(f"  Max Arrival Advance:     {max_advance:+.1f}s ({worst_advance['id']}, Corridor {worst_advance['corridor']})")
 
         if excessive_delays:
-            print(f"  [FAIL] {len(excessive_delays)} run(s) exceeded punctuality delay tolerance of {delay_tolerance_sec:.1f}s:")
+            print(f"  [FAIL] {len(excessive_delays)} {entity_label.lower()} exceeded punctuality delay tolerance of {delay_tolerance_sec:.1f}s:")
             for ed in excessive_delays[:5]:
                 print(f"    - {ed['id']}: delayed by {ed['diff']:+.1f}s (sim: {ed['sim_arr']:.1f}s vs sched: {ed['sched_arr']:.1f}s)")
         else:
-            print(f"  [PASS] All {total_p} completed runs adhered to timetable within <= {delay_tolerance_sec:.1f}s delay tolerance.")
+            print(f"  [PASS] All {total_p} completed {entity_label.lower()} adhered to timetable within <= {delay_tolerance_sec:.1f}s delay tolerance.")
 
         if active_mode == "rakes":
-            yard_diffs = [p["yard_diff"] for p in punctuality_results if "yard_diff" in p]
-            if yard_diffs:
+            print("\n4. FINAL YARD STABLING & FLEET RECOVERY AUDIT:")
+            if yard_results:
+                yard_diffs = [y["yard_diff"] for y in yard_results]
+                print(f"  Audited Completed Rakes: {len(yard_results)}")
                 print(f"  Yard Arrival Offset (mean): {sum(yard_diffs) / len(yard_diffs):+.1f}s (max: {max(yard_diffs):+.1f}s)")
             if stabling_violations:
-                print(f"  [FAIL] {len(stabling_violations)} rake(s) violated final stabling stop requirements:")
+                print(f"  [FAIL] {len(stabling_violations)} rake(s) violated final stabling requirements:")
                 for sv in stabling_violations[:5]:
                     print(f"    - {sv[0]}: {sv[1]}")
             else:
-                print("  [PASS] All continuous rakes preserved the exporter's 60-second final stabling stop.")
+                print(f"  [PASS] All {len(expected_entities)} physical rakes preserved final stabling stop and yard arrival requirements.")
     else:
         print("  [INFO] No completed full runs in this simulation window to audit punctuality.")
 
