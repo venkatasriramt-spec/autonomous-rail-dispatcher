@@ -36,7 +36,6 @@ def find_network_data_dir():
         os.path.join(os.path.dirname(TRAINS_DIR), "tracks", "network_data"),
         os.path.join(TRAINS_DIR, "tracks", "network_data"),
         os.path.join(TRAINS_DIR, "..", "tracks", "network_data"),
-        "/home/venkatasriramt/Desktop/tracks/network_data",
     ]
     for c in candidates:
         if os.path.isdir(c) and os.path.exists(os.path.join(c, "dense_network.net.xml")):
@@ -419,17 +418,23 @@ def compile_sumo_files(mode="rakes", day="all", max_limit=None):
         if not services_res:
             return False
 
-    # Set default trains.rou.xml and trains.trips.xml based on mode
+    # Set default trains.rou.xml, trains.rou.alt.xml, and trains.trips.xml based on mode
     if mode == "services":
         src_rou = os.path.join(SUMO_CONFIG_DIR, "trains_services.rou.xml")
+        src_rou_alt = os.path.join(SUMO_CONFIG_DIR, "trains_services.rou.alt.xml")
         src_trips = os.path.join(SUMO_CONFIG_DIR, "trains_services.trips.xml")
     else:
         src_rou = os.path.join(SUMO_CONFIG_DIR, "trains_rakes.rou.xml")
+        src_rou_alt = os.path.join(SUMO_CONFIG_DIR, "trains_rakes.rou.alt.xml")
         src_trips = os.path.join(SUMO_CONFIG_DIR, "trains_rakes.trips.xml")
 
-    # Copy to master trains.rou.xml and trains.trips.xml
+    # Copy to master trains.rou.xml, trains.rou.alt.xml, and trains.trips.xml
     with open(src_rou, "r", encoding="utf-8") as f_src, open(ROU_FILE, "w", encoding="utf-8") as f_dst:
         f_dst.write(f_src.read())
+    rou_alt_file = os.path.join(SUMO_CONFIG_DIR, "trains.rou.alt.xml")
+    if os.path.exists(src_rou_alt):
+        with open(src_rou_alt, "r", encoding="utf-8") as f_src, open(rou_alt_file, "w", encoding="utf-8") as f_dst:
+            f_dst.write(f_src.read())
     with open(src_trips, "r", encoding="utf-8") as f_src, open(TRIPS_FILE, "w", encoding="utf-8") as f_dst:
         f_dst.write(f_src.read())
 

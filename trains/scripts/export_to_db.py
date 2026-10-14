@@ -50,6 +50,7 @@ def convert_to_sqlite():
         max_speed_ms REAL NOT NULL,
         acceleration_ms2 REAL NOT NULL,
         deceleration_ms2 REAL NOT NULL,
+        emergency_decel_ms2 REAL NOT NULL,
         total_length_m REAL NOT NULL,
         carriages_count INTEGER NOT NULL,
         gross_weight_tons REAL NOT NULL,
@@ -150,11 +151,11 @@ def convert_to_sqlite():
     # Populate rolling_stock_types
     for t_id, r in rs_types.items():
         cur.execute("""
-        INSERT INTO rolling_stock_types VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO rolling_stock_types VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             r["type_id"], r["name"], r["service_class"], r["sumo_vclass"],
             r["power_supply"], r["track_gauge_mm"], r["max_speed_kmh"], r["max_speed_ms"],
-            r["acceleration_ms2"], r["deceleration_ms2"], r["total_length_m"],
+            r["acceleration_ms2"], r["deceleration_ms2"], r["emergency_decel_ms2"], r["total_length_m"],
             r["carriages_count"], r["gross_weight_tons"], r["passenger_capacity"],
             r["gui_shape"], r["gui_color"]
         ))

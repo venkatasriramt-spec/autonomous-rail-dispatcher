@@ -887,15 +887,15 @@ def generate_sumo_network():
     # Compile network with netconvert
     cmd = [
         "netconvert",
-        "--node-files", get_path("dense_network.nod.xml"),
-        "--edge-files", get_path("dense_network.edg.xml"),
-        "--connection-files", get_path("dense_network.con.xml"),
-        "--output-file", get_path("dense_network.net.xml"),
+        "--node-files", "dense_network.nod.xml",
+        "--edge-files", "dense_network.edg.xml",
+        "--connection-files", "dense_network.con.xml",
+        "--output-file", "dense_network.net.xml",
         "--junctions.join", "true",
         "--no-turnarounds", "true",
-        "--railway.topology.output", get_path("railway_topology.xml")
+        "--railway.topology.output", "railway_topology.xml"
     ]
-    subprocess.run(cmd, check=True)
+    subprocess.run(cmd, cwd=OUTPUT_DIR, check=True)
     print("Done! Railway network compiled cleanly into dense_network.net.xml")
 
 if __name__ == "__main__":

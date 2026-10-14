@@ -2127,7 +2127,6 @@ def apply_infrastructure_calibration(timetable, rakes):
         os.path.join(os.path.dirname(TRAINS_DIR), "tracks", "network_data"),
         os.path.join(TRAINS_DIR, "tracks", "network_data"),
         os.path.join(TRAINS_DIR, "..", "tracks", "network_data"),
-        "/home/venkatasriramt/Desktop/tracks/network_data",
     ]
     net_path = None
     for cand in tracks_candidates:

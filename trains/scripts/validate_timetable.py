@@ -41,7 +41,6 @@ def find_net_file():
         os.path.join(os.path.dirname(TRAINS_DIR), "tracks", "network_data", "dense_network.net.xml"),
         os.path.join(TRAINS_DIR, "tracks", "network_data", "dense_network.net.xml"),
         os.path.join(TRAINS_DIR, "..", "tracks", "network_data", "dense_network.net.xml"),
-        "/home/venkatasriramt/Desktop/tracks/network_data/dense_network.net.xml",
     ]
     for c in candidates:
         if os.path.exists(c):
