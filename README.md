@@ -22,10 +22,15 @@ The project separates commercial timetabling and physical vehicle logistics into
 │   ├── validate_timetable.py        # Validates timetable against physical network (T_min, distances)
 │   └── verify_simulation.py         # Headless SUMO simulation validator (0 errors/collisions)
 ├── sumo_config/
-│   ├── trains_rakes.rou.xml      # 31 continuous physical rakes with full daily lifecycles
-│   ├── trains_services.rou.xml   # 242 discrete service trips for slot validation
-│   ├── trains.trips.xml          # Active train trips with platform stops and dwell times
-│   ├── trains.rou.xml            # Active compiled microscopic route paths (default: rakes)
+│   ├── trains.trips.xml          # Scheduled train trips with platform stops and dwell times (default export)
+│   ├── trains.rou.xml            # Compiled microscopic edge-by-edge route paths (default 242 services)
+│   ├── trains.rou.alt.xml        # Alternative compiled route paths
+│   ├── trains_rakes.trips.xml    # Continuous physical rakes trips (31 rakes full daily lifecycle)
+│   ├── trains_rakes.rou.xml      # Compiled continuous rake routes
+│   ├── trains_rakes.rou.alt.xml  # Alternative compiled rake routes
+│   ├── trains_services.trips.xml # Discrete service trips XML for slot validation
+│   ├── trains_services.rou.xml   # Compiled discrete service routes
+│   ├── trains_services.rou.alt.xml # Alternative compiled service routes
 │   ├── viewsettings.xml         # Dark railway theme for sumo-gui visualizer
 │   └── train_simulation.sumocfg  # Master SUMO simulation configuration
 └── README.md                     # Comprehensive architecture and operation guide
