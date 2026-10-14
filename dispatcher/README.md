@@ -122,20 +122,34 @@ The trained AI dispatcher was audited against three classical dispatching strate
 
 ---
 
-## 5. Quick-Start & Operational Commands
+## 5. Model Training Plan & Milestone Tracking
 
-### 1. Run Baseline & Model Benchmarking
+For an in-depth, rigorous breakdown of how rolling stock physical constraints, track electrification, 340m platform barriers, and calendar-day operational waves are enforced and progressively trained, see:
+👉 **[`dispatcher/MODEL_TRAINING_PLAN.md`](MODEL_TRAINING_PLAN.md)**
+
+---
+
+## 6. Quick-Start & Operational Commands
+
+### 1. Launch Curriculum Wave Training (Multi-Worker CPU)
+```bash
+# Train on the Morning Commuter Peak (07:00 - 09:30):
+python3 dispatcher/training/train.py --wave morning_peak --timesteps 25000 --workers 6
+
+# Train on Nocturnal Freight Wave (21:30 - 02:30):
+python3 dispatcher/training/train.py --wave nocturnal_freight --timesteps 25000 --workers 6
+
+# Scaled multi-worker training on 32-core VM:
+python3 dispatcher/training/train.py --wave full_day --timesteps 100000 --workers 24
+```
+
+### 2. Run Baseline & Model Benchmarking
 ```bash
 python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay --start-time 21600 --horizon 1800
 ```
 
-### 2. Generate Publication-Quality Visual Charts
+### 3. Generate Publication-Quality Visual Charts
 ```bash
 python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/benchmark_results.json --output-dir dispatcher/logs
 ```
 
-### 3. Launch Training Run (Single or Multi-Worker)
-```bash
-# Fast training rollouts on CPU (8 cores):
-python3 dispatcher/training/train.py --timesteps 10000 --workers 4 --start-time 21600 --horizon 3600
-```

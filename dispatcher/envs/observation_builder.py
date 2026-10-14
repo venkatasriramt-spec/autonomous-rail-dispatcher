@@ -7,6 +7,32 @@ Extracts ego train metrics, traffic lookahead, bottleneck density, and station p
 import numpy as np
 from typing import Dict, Any, List, Optional, Tuple
 
+# Complete rolling stock specifications
+ROLLING_STOCK_SPECS = {
+    "high_speed_emu_300": {"length": 400.0, "weight": 880.0, "vclass": "rail_electric", "max_speed": 83.33, "pax": 1050, "is_freight": False, "accel": 1.0, "decel": 1.2},
+    "high_speed_emu_single": {"length": 200.0, "weight": 440.0, "vclass": "rail_electric", "max_speed": 83.33, "pax": 520, "is_freight": False, "accel": 1.1, "decel": 1.2},
+    "regional_emu_120": {"length": 160.0, "weight": 240.0, "vclass": "rail_electric", "max_speed": 33.33, "pax": 380, "is_freight": False, "accel": 0.85, "decel": 1.0},
+    "regional_dmu_120": {"length": 120.0, "weight": 180.0, "vclass": "rail", "max_speed": 33.33, "pax": 240, "is_freight": False, "accel": 0.75, "decel": 0.95},
+    "heavy_freight_cargo": {"length": 420.0, "weight": 3800.0, "vclass": "rail", "max_speed": 22.22, "pax": 0, "is_freight": True, "accel": 0.35, "decel": 0.5},
+    "intermodal_container_freight": {"length": 380.0, "weight": 2600.0, "vclass": "rail", "max_speed": 22.22, "pax": 0, "is_freight": True, "accel": 0.4, "decel": 0.55},
+    "electric_trunk_freight": {"length": 400.0, "weight": 2400.0, "vclass": "rail_electric", "max_speed": 27.78, "pax": 0, "is_freight": True, "accel": 0.45, "decel": 0.6},
+}
+
+# Platform clear lengths (meters)
+PLATFORM_LENGTHS = {
+    "City_1": 740.0,
+    "City_2": 840.0,
+    "City_3_EW": 840.0,
+    "City_3_NS": 840.0,
+    "City_4": 740.0,
+    "City_5": 740.0,
+    "City_6": 740.0,
+    "Town_1": 340.0, "Town_2": 340.0, "Town_3": 340.0,
+    "Town_4": 340.0, "Town_5": 340.0, "Town_6": 340.0,
+    "Town_7": 340.0, "Town_8": 340.0, "Town_9": 340.0,
+    "Town_10": 340.0, "Town_11": 340.0, "Town_12": 340.0
+}
+
 # Mapping of stations to their available platform tracks (forward and backward)
 STATION_PLATFORMS = {
     "City_1": {
@@ -38,6 +64,14 @@ STATION_PLATFORMS = {
         "bw": [f"City_6_plat_{i}_bw" for i in range(1, 6)]
     }
 }
+# Add intermediate town platforms (all 340m, 2 loops each)
+for t_id in range(1, 13):
+    t_name = f"Town_{t_id}"
+    STATION_PLATFORMS[t_name] = {
+        "fw": [f"{t_name}_plat_1_fw", f"{t_name}_plat_2_fw"],
+        "bw": [f"{t_name}_plat_1_bw", f"{t_name}_plat_2_bw"]
+    }
+
 
 
 class ObservationBuilder:
@@ -113,6 +147,16 @@ class ObservationBuilder:
             except Exception:
                 pass
 
+        specs = ROLLING_STOCK_SPECS.get(vtype, {
+            "length": 200.0, "weight": 400.0, "vclass": "rail_electric", "max_speed": 40.0,
+            "pax": 300, "is_freight": False, "accel": 0.8, "decel": 1.0
+        })
+        train_length = specs["length"]
+        train_weight = specs["weight"]
+        vclass = specs["vclass"]
+        is_freight = specs["is_freight"]
+        is_electric = (vclass == "rail_electric")
+
         return {
             "veh_id": veh_id,
             "vtype": vtype,
@@ -130,7 +174,12 @@ class ObservationBuilder:
             "leader_id": leader_id,
             "leader_dist": leader_dist,
             "leader_speed": leader_speed,
-            "leader_priority": leader_priority
+            "leader_priority": leader_priority,
+            "train_length": train_length,
+            "train_weight": train_weight,
+            "vclass": vclass,
+            "is_freight": is_freight,
+            "is_electric": is_electric
         }
 
     def build_observation(

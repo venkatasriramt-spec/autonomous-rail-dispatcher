@@ -114,3 +114,43 @@ The trained PPO dispatcher policy (`dispatcher/models/best_model.zip`) was audit
   - `benchmark_punctuality_knockon.png` (Punctuality and knock-on mitigation)
   - `benchmark_delay_timeline.png` (Minute-by-minute fleet delay recovery dynamics)
 
+---
+
+### 14 October 2026 — Physical & Operational Constraint Codification & Multi-Wave Training Architecture
+
+#### Milestone Objective
+Transparently audit and enforce all microscopic train and track physical parameters within the `dispatcher/` subsystem, incorporate operational timetable waves and weekly calendar variations, and establish a formal, multi-stage curriculum training plan prior to scaling cloud VM compute.
+
+---
+
+#### 1. Parameter Enforcement & Hard Constraint Guardrails
+1. **Platform Length Masking ($L_{\text{platform}} \ge L_{\text{train}}$):**
+   - Encoded platform standing lengths across all 19 stations (`City_1..6`: 740m–840m; `Town_1..12`: strictly 340m) and consist lengths (`high_speed_emu_300`: 400m, `heavy_freight_cargo`: 420m, `regional_emu_120`: 160m, `regional_dmu_120`: 120m).
+   - In `action_handler.py`, any attempt to assign a train to a platform shorter than the train is actively intercepted and rejected, preventing switch throat overhangs and gridlock.
+2. **Freight & Passenger Operational Segregation:**
+   - Freight trains (`passenger_capacity == 0`) are strictly masked from occupying passenger platforms.
+   - Slower bulk freight trains climbing the Alpine grade (+11.8‰) take siding in the 1,200m passing loop; high-speed passenger expresses are barred from taking freight sidings.
+3. **Traction & Electrification Compatibility:**
+   - 166 edges marked `allow="rail_electric"` (Corridor 1 mainline blocks and High-Speed Bypass) are strictly guarded against diesel consists (`vClass="rail"`).
+   - Diesel trains are barred from the 300 km/h electrified bypass chord between `City_2` and `City_5`.
+4. **Kinematic Deceleration & Inertia Dynamics:**
+   - Heavy bulk freight (3,800t, service decel 0.5 m/s², stopping distance > 1,500m) is penalized in the reward engine for unnecessary stops, reflecting real-world kinetic recovery costs.
+
+---
+
+#### 2. Curriculum Wave Support & Formal Training Plan
+1. **Timetable Operational Waves:**
+   - Supported 6 distinct time-of-day operational waves in `dispatcher/training/train.py`:
+     - Early Morning Feeder (05:00–07:00)
+     - Morning Commuter Peak (07:00–09:30, 18–23 runs/hr)
+     - Midday Base Clockface (09:30–15:30, 10–14 runs/hr)
+     - Evening Commuter Peak (16:00–18:45, 16–22 runs/hr)
+     - Evening Base Cadence (19:00–21:30, 5–12 runs/hr)
+     - Nocturnal Freight Wave (21:30–05:00, 1–3 freight runs/hr)
+2. **Comprehensive Training Roadmap (`dispatcher/MODEL_TRAINING_PLAN.md`):**
+   - Created a standalone tracking document specifying:
+     - All 7 consist models and physical track constraints.
+     - Weekly calendar day distribution (Mon: 232, Tue: 233, Wed: 229, Thu: 235, Fri: 231, Sat: 145, Sun: 141, Composite: 242).
+     - 4-Phase Curriculum Training Roadmap with milestone tracking checkboxes.
+     - Hardware scaling architecture (utilizing 24–28 parallel SUMO workers on a 32-core / 256GB RAM VM via `SubprocVecEnv`).
+
