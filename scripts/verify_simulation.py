@@ -31,17 +31,19 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from export_to_sumo import compile_sumo_files, service_runs_on_day, normalize_day, SUPPORTED_DAYS
 
 
-def detect_mode_from_routes(rou_file=ROU_FILE):
+def detect_mode_from_routes(rou_file=ROU_FILE, fallback="rakes"):
     if not os.path.exists(rou_file):
-        return "rakes"
+        return fallback
     try:
         rou_tree = ET.parse(rou_file)
         compiled_vehicle_elements = rou_tree.getroot().findall("vehicle")
         compiled_vehicle_ids = [v.attrib["id"] for v in compiled_vehicle_elements]
+        if not compiled_vehicle_ids:
+            return fallback
         is_rake_mode = any(vid.startswith(("HS-Rake", "REG-", "ALP-", "FRT-")) for vid in compiled_vehicle_ids)
         return "rakes" if is_rake_mode else "services"
     except Exception:
-        return "rakes"
+        return fallback
 
 
 def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_sec=300.0, verbose=False):
@@ -85,11 +87,11 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
     rou_vehicles = {v.attrib["id"]: v for v in compiled_vehicle_elements} if compiled_vehicle_elements else {}
 
     # Auto-detect mode if needed
-    is_rake_mode = any(vid.startswith(("HS-Rake", "REG-", "ALP-", "FRT-")) for vid in compiled_vehicle_ids)
-    if mode == "rakes" or (mode == "auto" and is_rake_mode):
-        active_mode = "rakes"
+    if compiled_vehicle_ids:
+        is_rake_mode = any(vid.startswith(("HS-Rake", "REG-", "ALP-", "FRT-")) for vid in compiled_vehicle_ids)
+        active_mode = "rakes" if (mode == "rakes" or (mode == "auto" and is_rake_mode)) else "services"
     else:
-        active_mode = "services"
+        active_mode = "rakes" if mode in ("rakes", "auto") else "services"
 
     tt_by_id = {s["train_number"]: s for s in full_timetable}
 
@@ -517,16 +519,19 @@ def verify_day(day, max_steps=86400, mode="auto", delay_tolerance_sec=300.0, ver
 def verify_all_days(max_steps=86400, mode="auto", delay_tolerance_sec=300.0, verbose=False):
     days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "all"]
     results = {}
+    selected_mode = mode if mode != "auto" else detect_mode_from_routes(ROU_FILE, fallback="rakes")
     print("=" * 75)
     print("RUNNING FULL MULTI-DAY OPERATING SCHEDULE VERIFICATION")
     print("=" * 75)
     for d in days:
         print(f"\n==================== Verifying {d.upper()} ====================")
-        success = verify_day(d, max_steps=max_steps, mode=mode, delay_tolerance_sec=delay_tolerance_sec, verbose=verbose)
+        success = verify_day(d, max_steps=max_steps, mode=selected_mode, delay_tolerance_sec=delay_tolerance_sec, verbose=verbose)
         results[d] = success
+        if mode == "auto":
+            selected_mode = detect_mode_from_routes(ROU_FILE, fallback=selected_mode)
 
     try:
-        compile_sumo_files(mode=mode if mode != "auto" else detect_mode_from_routes(ROU_FILE), day="all")
+        compile_sumo_files(mode=selected_mode, day="all")
     except Exception as e:
         print(f"[!] Warning: failed to recompile composite schedule: {e}")
 
