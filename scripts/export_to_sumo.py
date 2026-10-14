@@ -216,8 +216,14 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
                     stops_xml.append(("trainStop", next_orig_ts, None, str(next_s["departure_sec"]), None, next_svc_id))
                 else:
                     next_lane = f"{next_s['origin_track']}_0"
-                    if stops_xml and stops_xml[-1][0] == "lane" and stops_xml[-1][1] == next_lane:
-                        stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(next_s["departure_sec"]), None, next_svc_id)
+                    prev = stops_xml[-1] if stops_xml else None
+                    # Merge only if the previous stop is a lane stop at the same lane AND
+                    # has no tripId (staging/yard stop) or already carries next service's tripId.
+                    # If it carries the arriving service's tripId (with arrival data), emit
+                    # a separate stop to preserve the arrival record for that service.
+                    if (prev and prev[0] == "lane" and prev[1] == next_lane
+                            and (prev[5] is None or prev[5] == next_svc_id)):
+                        stops_xml[-1] = (prev[0], prev[1], prev[2], str(next_s["departure_sec"]), prev[4], next_svc_id)
                     else:
                         stops_xml.append(("lane", next_lane, "60", str(next_s["departure_sec"]), None, next_svc_id))
             else:

@@ -305,8 +305,13 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 if dest_stop is None:
                     dest_stop = svc_stops[-1]
 
-            if dest_stop is not None:
-                sim_arr = float(dest_stop.attrib.get("started"))
+            # Extract started time; treat missing or negative as invalid
+            # (SUMO may produce -1 for aborted/teleported stops)
+            started_raw = dest_stop.attrib.get("started") if dest_stop is not None else None
+            has_valid_arrival = (started_raw is not None and float(started_raw) >= 0) if started_raw is not None else False
+
+            if dest_stop is not None and has_valid_arrival:
+                sim_arr = float(started_raw)
                 diff = sim_arr - sched_arr
                 p_entry = {
                     "id": s_id,
