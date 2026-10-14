@@ -361,7 +361,7 @@
     "departure_sec": 18000,
     "arrival_time": "05:11:00",
     "arrival_sec": 18660,
-    "total_distance_km": 6.04,
+    "total_distance_km": 6.01,
     "stops": [
       {
         "station": "City_5",
@@ -18792,7 +18792,7 @@
     "departure_sec": 82800,
     "arrival_time": "23:11:00",
     "arrival_sec": 83460,
-    "total_distance_km": 6.04,
+    "total_distance_km": 6.01,
     "stops": [
       {
         "station": "City_5",
