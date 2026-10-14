@@ -150,13 +150,13 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
         if stabling_track and stabling_track != first_s["origin_track"]:
             orig_ts = first_s["stops"][0].get("train_stop_id")
             if orig_ts:
-                stops_xml.append(("trainStop", orig_ts, None, str(first_s["departure_sec"])))
+                stops_xml.append(("trainStop", orig_ts, None, str(first_s["departure_sec"]), None))
             else:
                 orig_lane = f"{first_s['origin_track']}_0"
                 if stops_xml and stops_xml[-1][0] == "lane" and stops_xml[-1][1] == orig_lane:
-                    stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(first_s["departure_sec"]))
+                    stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(first_s["departure_sec"]), None)
                 else:
-                    stops_xml.append(("lane", orig_lane, "60", str(first_s["departure_sec"])))
+                    stops_xml.append(("lane", orig_lane, "60", str(first_s["departure_sec"]), None))
 
         for idx, sid in enumerate(services):
             s = tt_by_id[sid]
@@ -164,15 +164,19 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
             for stp in s.get("stops", [])[1:-1]:
                 ts = stp.get("train_stop_id")
                 dwell = stp.get("dwell_sec", 60)
+                arr_sec = stp.get("arrival_sec")
+                dep_sec_stop = stp.get("departure_sec")
+                arr_str = f"{float(arr_sec):.2f}" if arr_sec is not None else None
+                dep_str = f"{float(dep_sec_stop):.2f}" if dep_sec_stop is not None else None
                 if ts:
-                    stops_xml.append(("trainStop", ts, str(int(dwell)), None))
+                    stops_xml.append(("trainStop", ts, str(int(dwell)), dep_str, arr_str))
                 elif "Passing_Loop" in stp.get("station", ""):
-                    stops_xml.append(("lane", "c3_Town_8_Town_9_loop_siding_fw_0", str(int(dwell)), None))
+                    stops_xml.append(("lane", "c3_Town_8_Town_9_loop_siding_fw_0", str(int(dwell)), dep_str, arr_str))
 
             # Destination platform alighting stop
             dest_ts = s["stops"][-1].get("train_stop_id")
             if dest_ts:
-                stops_xml.append(("trainStop", dest_ts, "60", None))
+                stops_xml.append(("trainStop", dest_ts, "60", None, None))
 
             # Turnaround or mid-day yard layover
             pjd = s.get("post_journey_disposition", {})
@@ -197,24 +201,24 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
                     target_until = max(curr_arr, target_until)
                     if s["dest_track"].startswith("City_1_plat") and effective_staging.startswith("City_1_yard"):
                         p_idx = 1 if "HS" in rake_id else (2 if "REG-C1" in rake_id else 3)
-                        stops_xml.append(("lane", f"City_1_pocket_{p_idx}_fw_0", "1", None))
-                    stops_xml.append(("lane", f"{effective_staging}_0", "60", str(target_until)))
+                        stops_xml.append(("lane", f"City_1_pocket_{p_idx}_fw_0", "1", None, None))
+                    stops_xml.append(("lane", f"{effective_staging}_0", "60", str(target_until), None))
                 next_orig_ts = next_s["stops"][0].get("train_stop_id")
                 if next_orig_ts:
-                    stops_xml.append(("trainStop", next_orig_ts, None, str(next_s["departure_sec"])))
+                    stops_xml.append(("trainStop", next_orig_ts, None, str(next_s["departure_sec"]), None))
                 else:
                     next_lane = f"{next_s['origin_track']}_0"
                     if stops_xml and stops_xml[-1][0] == "lane" and stops_xml[-1][1] == next_lane:
-                        stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(next_s["departure_sec"]))
+                        stops_xml[-1] = (stops_xml[-1][0], stops_xml[-1][1], stops_xml[-1][2], str(next_s["departure_sec"]), None)
                     else:
-                        stops_xml.append(("lane", next_lane, "60", str(next_s["departure_sec"])))
+                        stops_xml.append(("lane", next_lane, "60", str(next_s["departure_sec"]), None))
             else:
                 # End-of-day stabling
                 if stabling_track:
                     if s["dest_track"].startswith("City_1_plat") and stabling_track.startswith("City_1_yard"):
                         p_idx = 1 if "HS" in rake_id else (2 if "REG-C1" in rake_id else 3)
-                        stops_xml.append(("lane", f"City_1_pocket_{p_idx}_fw_0", "1", None))
-                    stops_xml.append(("lane", f"{stabling_track}_0", "60", None))
+                        stops_xml.append(("lane", f"City_1_pocket_{p_idx}_fw_0", "1", None, None))
+                    stops_xml.append(("lane", f"{stabling_track}_0", "60", None, None))
 
         rake_entries.append((start_dep, rake_id, rs_type, start_from, end_to, stops_xml))
 
@@ -230,7 +234,7 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
             "to": end_to,
             "depart": f"{start_dep:.1f}"
         })
-        for stop_type, target, duration, until in stops_xml:
+        for stop_type, target, duration, until, arrival in stops_xml:
             attrs = {}
             if stop_type == "trainStop":
                 attrs["trainStop"] = target
@@ -240,6 +244,8 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
                 attrs["duration"] = duration
             if until:
                 attrs["until"] = until
+            if arrival:
+                attrs["arrival"] = arrival
             ET.SubElement(trip_elem, "stop", **attrs)
 
     rakes_trips_path = os.path.join(SUMO_CONFIG_DIR, "trains_rakes.trips.xml")
@@ -279,16 +285,20 @@ def export_services_mode(timetable, rs_types, norm_day, max_services=None):
         if len(stops) > 2:
             for stp in stops[1:-1]:
                 dwell = stp.get("dwell_sec", 60)
+                arr_sec = stp.get("arrival_sec")
+                dep_sec_stop = stp.get("departure_sec")
+                attrs = {"duration": str(int(dwell))}
+                if arr_sec is not None:
+                    attrs["arrival"] = f"{float(arr_sec):.2f}"
+                if dep_sec_stop is not None:
+                    attrs["until"] = f"{float(dep_sec_stop):.2f}"
+
                 if stp.get("train_stop_id"):
-                    ET.SubElement(trip_elem, "stop", **{
-                        "trainStop": stp["train_stop_id"],
-                        "duration": str(int(dwell))
-                    })
+                    attrs["trainStop"] = stp["train_stop_id"]
+                    ET.SubElement(trip_elem, "stop", **attrs)
                 elif "Passing_Loop" in stp.get("station", ""):
-                    ET.SubElement(trip_elem, "stop", **{
-                        "lane": "c3_Town_8_Town_9_loop_siding_fw_0",
-                        "duration": str(int(dwell))
-                    })
+                    attrs["lane"] = "c3_Town_8_Town_9_loop_siding_fw_0"
+                    ET.SubElement(trip_elem, "stop", **attrs)
 
     services_trips_path = os.path.join(SUMO_CONFIG_DIR, "trains_services.trips.xml")
     services_rou_path = os.path.join(SUMO_CONFIG_DIR, "trains_services.rou.xml")
