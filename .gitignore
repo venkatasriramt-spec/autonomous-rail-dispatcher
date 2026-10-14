@@ -70,7 +70,15 @@ dist/
 build/
 *.egg-info/
 
+# Reinforcement Learning & Dispatcher AI artifacts
+dispatcher/logs/
+dispatcher/tensorboard/
+dispatcher/models/*.zip
+!dispatcher/models/best_model.zip
+*.tfevents.*
+
 # NOTE ON XML FILES:
 # DO NOT ignore *.xml files!
 # Network data (tracks/network_data/*.xml) and compiled routes (trains/sumo_config/*.xml)
 # are essential deliverables of this monorepo.
+

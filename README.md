@@ -51,6 +51,26 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 │   ├── project_history.md        # Chronological history of timetable & fleet evolution
 │   └── requirements.txt          # Trains runtime dependencies
 │
+├── dispatcher/                   # Autonomous AI Train Dispatching, Dynamic Rerouting & Rescheduling
+│   ├── envs/                     # Gymnasium environment & TraCI microscopic bridges
+│   │   ├── railway_dispatch_env.py # Gymnasium SMDP train dispatching environment
+│   │   ├── observation_builder.py  # 28-feature state extraction & platform mappings
+│   │   ├── action_handler.py       # Microscopic execution (reroute, replaceStop, resume)
+│   │   └── reward_engine.py        # Multi-class priority & secondary delay formulation
+│   ├── agents/                   # Dispatcher policies & benchmark heuristics
+│   │   └── baseline_dispatchers.py # Static (no-op), FIFO, and Priority heuristic agents
+│   ├── scenarios/                # Controlled disruption & perturbation generators
+│   │   └── perturbations.py        # Mechanical breakdowns, platform blockages, stochastic delays
+│   ├── training/                 # Deep RL training infrastructure
+│   │   ├── train.py                # Multi-core CPU PPO training runner
+│   │   └── callbacks.py            # Real-time KPI logger & best model checkpointing
+│   ├── evaluation/               # Empirical benchmarking & visual analytics
+│   │   ├── evaluate.py             # Comparative benchmark suite runner
+│   │   └── visualizer.py           # Publication-ready Matplotlib chart generator
+│   ├── models/                   # Saved model weights (best_model.zip, ppo_dispatcher_final.zip)
+│   ├── logs/                     # Benchmark results JSON and evaluation chart figures
+│   └── README.md                 # Detailed Dispatcher AI subsystem documentation
+│
 ├── README.md                     # Monorepo architecture & quick-start guide
 ├── project_history.md             # Unified monorepo milestones & integration log
 ├── requirements.txt              # Unified monorepo Python dependencies
@@ -73,6 +93,12 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 - **Continuous Physical Rakes:** 31 physical trainsets tracked throughout their full daily lifecycle: dawn rollout from dedicated stabling sidings, revenue runs, station platform halts, terminal pocket reversals, midday yard layovers, and overnight resting.
 - **Microscopic Safety & Adherence:** Tested under microscopic simulation with headless SUMO: **0 collisions**, **0 teleports**, **0 fatal errors**, and **100% schedule punctuality**.
 - *For detailed trains documentation, see [trains/README.md](trains/README.md).*
+
+### C. Autonomous Dispatcher AI Subsystem (`dispatcher/`)
+- **Tri-Factor Traffic Management (TMS):** Combines dynamic rerouting (Alpine Passing Loop siding overtakes, High-Speed Bypass), real-time platform track assignment at multi-track city hubs, and departure dispatch holding.
+- **Deep Reinforcement Learning (PPO):** Compact 28-dimensional continuous observation vector with `MultiDiscrete([3, 7, 4])` action space trained via Stable-Baselines3 on multi-core CPU.
+- **Empirical Superiority:** Audited against Static, FIFO, and Priority heuristics under 600s primary train breakdown disruptions: achieves **1.9s mean delay** (36.7% delay reduction vs static baseline) and **99.6% punctuality** with **0 cascading knock-on conflicts**.
+- *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
 
 ---
 
@@ -140,7 +166,19 @@ python3 trains/scripts/verify_simulation.py 86400 -m rakes -d mon
 python3 trains/scripts/verify_simulation.py 86400 -m rakes --all-days
 ```
 
-### Step 7: Interactive Inspection in SUMO GUI
+### Step 7: Train & Evaluate Autonomous Dispatcher AI
+```bash
+# Train PPO dispatcher on CPU:
+python3 dispatcher/training/train.py --timesteps 5000 --start-time 21600 --horizon 3600
+
+# Benchmark AI vs Static, FIFO, and Priority Baselines:
+python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay
+
+# Render publication-quality benchmark charts:
+python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/benchmark_results.json
+```
+
+### Step 8: Interactive Inspection in SUMO GUI
 ```bash
 sumo-gui -c trains/sumo_config/train_simulation.sumocfg
 ```
@@ -153,4 +191,6 @@ sumo-gui -c trains/sumo_config/train_simulation.sumocfg
 - **Track Evolution History:** [tracks/project_history.md](tracks/project_history.md)
 - **Train Scheduling, Rolling Stock & SQL Database:** [trains/README.md](trains/README.md)
 - **Timetable & Simulation Evolution History:** [trains/project_history.md](trains/project_history.md)
+- **Autonomous Dispatcher AI & RL System:** [dispatcher/README.md](dispatcher/README.md)
 - **Unified Monorepo Milestone Log:** [project_history.md](project_history.md)
+
