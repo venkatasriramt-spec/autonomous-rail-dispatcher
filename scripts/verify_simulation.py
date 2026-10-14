@@ -31,6 +31,19 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from export_to_sumo import compile_sumo_files, service_runs_on_day, normalize_day, SUPPORTED_DAYS
 
 
+def detect_mode_from_routes(rou_file=ROU_FILE):
+    if not os.path.exists(rou_file):
+        return "rakes"
+    try:
+        rou_tree = ET.parse(rou_file)
+        compiled_vehicle_elements = rou_tree.getroot().findall("vehicle")
+        compiled_vehicle_ids = [v.attrib["id"] for v in compiled_vehicle_elements]
+        is_rake_mode = any(vid.startswith(("HS-Rake", "REG-", "ALP-", "FRT-")) for vid in compiled_vehicle_ids)
+        return "rakes" if is_rake_mode else "services"
+    except Exception:
+        return "rakes"
+
+
 def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_sec=300.0, verbose=False):
     if not os.path.exists(SUMOCFG):
         print(f"[!] Error: SUMO configuration file not found at {SUMOCFG}")
@@ -69,6 +82,8 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
         print(f"[!] Error parsing routes file {ROU_FILE}: {e}")
         return False
 
+    rou_vehicles = {v.attrib["id"]: v for v in compiled_vehicle_elements} if compiled_vehicle_elements else {}
+
     # Auto-detect mode if needed
     is_rake_mode = any(vid.startswith(("HS-Rake", "REG-", "ALP-", "FRT-")) for vid in compiled_vehicle_ids)
     if mode == "rakes" or (mode == "auto" and is_rake_mode):
@@ -94,12 +109,27 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 stabling_track = r.get("overnight_stabling_track")
                 dep_sec = max(0.0, first_s["departure_sec"] - 600.0) if (stabling_track and stabling_track != first_s["origin_track"]) else first_s["departure_sec"]
                 arr_sec = last_s["arrival_sec"]
+                yard_transit_dwell = 0.0
+                if stabling_track:
+                    if stabling_track != last_s["dest_track"]:
+                        yard_transit_dwell = 900.0
+                    else:
+                        rou_v = rou_vehicles.get(rid)
+                        if rou_v is not None:
+                            v_stops = rou_v.findall("stop")
+                            last_stop_elem = v_stops[-1] if v_stops else None
+                            stab_dwell = float(last_stop_elem.attrib.get("duration", 60.0)) if last_stop_elem is not None else 60.0
+                        else:
+                            stab_dwell = 60.0
+                        yard_transit_dwell = stab_dwell
+                stabling_completion_sec = arr_sec + yard_transit_dwell
                 expected_entities[rid] = {
                     "id": rid,
                     "type": r["rolling_stock_type"],
                     "corridor": first_s.get("corridor", "Fleet"),
                     "departure_sec": dep_sec,
                     "arrival_sec": arr_sec,
+                    "stabling_completion_sec": stabling_completion_sec,
                     "services_count": len(sorted_svcs),
                     "dest_train_stop_id": last_s["stops"][-1].get("train_stop_id"),
                     "dest_track": last_s["dest_track"],
@@ -114,6 +144,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 "corridor": s.get("corridor", "N/A"),
                 "departure_sec": s["stops"][0].get("departure_sec", s.get("departure_sec", 0)),
                 "arrival_sec": s["stops"][-1].get("arrival_sec", s.get("arrival_sec", 0)),
+                "stabling_completion_sec": s["stops"][-1].get("arrival_sec", s.get("arrival_sec", 0)),
                 "dest_train_stop_id": s["stops"][-1].get("train_stop_id"),
                 "dest_track": s["dest_track"],
                 "stabling_track": None
@@ -201,7 +232,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
     }
     expected_arrived = {
         vid: ent for vid, ent in expected_entities.items()
-        if ent["arrival_sec"] <= max_steps
+        if ent.get("stabling_completion_sec", ent["arrival_sec"]) <= max_steps
     }
 
     uninserted_entities = [vid for vid in expected_in_window if vid not in tripinfo_counts]
@@ -268,7 +299,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                     else:
                         yard_transit_dwell = stab_dwell
 
-                expected_yard_arr = sched_arr + yard_transit_dwell
+                expected_yard_arr = ent.get("stabling_completion_sec", sched_arr + yard_transit_dwell)
                 sim_yard_arr = float(t.attrib["arrival"])
                 yard_diff = sim_yard_arr - expected_yard_arr
 
@@ -299,7 +330,16 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 })
 
                 if eff_diff > delay_tolerance_sec:
-                    excessive_delays.append(punctuality_results[-1])
+                    if stab_tr:
+                        delay_entry = dict(punctuality_results[-1])
+                        delay_entry.update({
+                            "diff": yard_diff,
+                            "sim_arr": sim_yard_arr,
+                            "sched_arr": expected_yard_arr
+                        })
+                        excessive_delays.append(delay_entry)
+                    else:
+                        excessive_delays.append(punctuality_results[-1])
             else:
                 sim_arr = float(t.attrib["arrival"])
                 diff = sim_arr - sched_arr
@@ -459,9 +499,10 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
 
 
 def verify_day(day, max_steps=86400, mode="auto", delay_tolerance_sec=300.0, verbose=False):
-    print(f"\n>>> Compiling SUMO files for: {day} (mode: {mode}) <<<")
+    target_mode = mode if mode != "auto" else detect_mode_from_routes(ROU_FILE)
+    print(f"\n>>> Compiling SUMO files for: {day} (mode: {target_mode}) <<<")
     try:
-        ok = compile_sumo_files(mode=mode if mode != "auto" else "rakes", day=day)
+        ok = compile_sumo_files(mode=target_mode, day=day)
     except Exception as e:
         print(f"[!] Route compilation failed with exception: {e}")
         return False
@@ -470,7 +511,7 @@ def verify_day(day, max_steps=86400, mode="auto", delay_tolerance_sec=300.0, ver
         print(f"[!] Route compilation failed for day '{day}'. Stopping verification before running SUMO.")
         return False
 
-    return run_verification(max_steps=max_steps, day=day, mode=mode, delay_tolerance_sec=delay_tolerance_sec, verbose=verbose)
+    return run_verification(max_steps=max_steps, day=day, mode=target_mode, delay_tolerance_sec=delay_tolerance_sec, verbose=verbose)
 
 
 def verify_all_days(max_steps=86400, mode="auto", delay_tolerance_sec=300.0, verbose=False):
@@ -485,7 +526,7 @@ def verify_all_days(max_steps=86400, mode="auto", delay_tolerance_sec=300.0, ver
         results[d] = success
 
     try:
-        compile_sumo_files(mode=mode if mode != "auto" else "rakes", day="all")
+        compile_sumo_files(mode=mode if mode != "auto" else detect_mode_from_routes(ROU_FILE), day="all")
     except Exception as e:
         print(f"[!] Warning: failed to recompile composite schedule: {e}")
 
@@ -565,11 +606,11 @@ if __name__ == "__main__":
                 verbose=args.verbose
             )
             try:
-                compile_sumo_files(mode=args.mode if args.mode != "auto" else "rakes", day="all")
+                compile_sumo_files(mode=args.mode if args.mode != "auto" else detect_mode_from_routes(ROU_FILE), day="all")
             except Exception as e:
                 print(f"[!] Warning: failed to recompile composite schedule: {e}")
         else:
-            comp_mode = args.mode if args.mode != "auto" else "rakes"
+            comp_mode = args.mode if args.mode != "auto" else detect_mode_from_routes(ROU_FILE)
             try:
                 compile_sumo_files(mode=comp_mode, day="all")
             except Exception as e:
@@ -577,7 +618,7 @@ if __name__ == "__main__":
             success = run_verification(
                 max_steps=args.steps,
                 day=args.day,
-                mode=args.mode,
+                mode=comp_mode,
                 delay_tolerance_sec=args.delay_tolerance,
                 verbose=args.verbose
             )
