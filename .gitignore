@@ -1,0 +1,76 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+pyenv/
+.venv2/
+
+# Environment variables & local secrets
+.env
+*.env
+*.env.*
+*.local
+
+# OS & Editor files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.claude/
+.gemini/
+.agents/
+.playwright/
+.playwright-mcp/
+
+# Temporary files & simulation dumps
+tmp/
+temp/
+scratch/
+*.tmp
+*.bak
+*.backup
+*.old
+*.dump
+*.out
+*.neteditcfg
+*.netc.cfg
+
+# Generated preview images & visual outputs
+# (Generated on demand via scripts in tracks/scripts/)
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.pdf
+
+# Testing & coverage
+.tox/
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+htmlcov/
+
+# Packaging
+dist/
+build/
+*.egg-info/
+
+# NOTE ON XML FILES:
+# DO NOT ignore *.xml files!
+# Network data (tracks/network_data/*.xml) and compiled routes (trains/sumo_config/*.xml)
+# are essential deliverables of this monorepo.

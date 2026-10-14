@@ -1,0 +1,14 @@
+# Unified Railway Simulation & Infrastructure Monorepo
+# Python 3.10+ Dependencies
+
+# Track Network Generation & Visualization (tracks/)
+matplotlib>=3.5.0
+numpy>=1.20.0
+
+# Optional TraCI / SUMO Python Automation (trains/)
+# eclipse-sumo
+# traci
+# sumolib
+
+# System Requirements:
+# - Eclipse SUMO (Simulation of Urban MObility) binaries: sumo, netconvert, duarouter
