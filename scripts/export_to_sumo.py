@@ -28,7 +28,22 @@ from xml.dom import minidom
 TRAINS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(TRAINS_DIR, "data")
 SUMO_CONFIG_DIR = os.path.join(TRAINS_DIR, "sumo_config")
-NETWORK_DATA_DIR = "/home/venkatasriramt/Desktop/tracks/network_data"
+
+def find_network_data_dir():
+    if "TRACKS_DIR" in os.environ and os.path.isdir(os.environ["TRACKS_DIR"]):
+        return os.environ["TRACKS_DIR"]
+    candidates = [
+        os.path.join(os.path.dirname(TRAINS_DIR), "tracks", "network_data"),
+        os.path.join(TRAINS_DIR, "tracks", "network_data"),
+        os.path.join(TRAINS_DIR, "..", "tracks", "network_data"),
+        "/home/venkatasriramt/Desktop/tracks/network_data",
+    ]
+    for c in candidates:
+        if os.path.isdir(c) and os.path.exists(os.path.join(c, "dense_network.net.xml")):
+            return c
+    return candidates[0]
+
+NETWORK_DATA_DIR = find_network_data_dir()
 
 os.makedirs(SUMO_CONFIG_DIR, exist_ok=True)
 
@@ -142,7 +157,13 @@ def export_rakes_mode(timetable, roster, rs_types, norm_day, max_rakes=None):
 
         stabling_track = r.get("overnight_stabling_track")
         start_from = stabling_track if stabling_track else first_s["origin_track"]
-        start_dep = max(0.0, first_s["departure_sec"] - 600.0) if (stabling_track and stabling_track != first_s["origin_track"]) else first_s["departure_sec"]
+        if stabling_track and stabling_track != first_s["origin_track"]:
+            stn_stab = stabling_track.split("_yard")[0].split("_plat")[0]
+            stn_orig = first_s.get("origin_station", "")
+            rollout_lead = 1800.0 if stn_stab != stn_orig else 600.0
+            start_dep = max(0.0, first_s["departure_sec"] - rollout_lead)
+        else:
+            start_dep = first_s["departure_sec"]
         end_to = stabling_track if stabling_track else last_s["dest_track"]
 
         stops_xml = []
@@ -331,9 +352,19 @@ def export_services_mode(timetable, rs_types, norm_day, max_services=None):
 def write_sumocfg(active_rou_file):
     cfg_root = ET.Element("configuration")
     input_elem = ET.SubElement(cfg_root, "input")
-    ET.SubElement(input_elem, "net-file", value=NET_FILE)
-    ET.SubElement(input_elem, "additional-files", value=ADD_FILE)
-    ET.SubElement(input_elem, "route-files", value=active_rou_file)
+
+    try:
+        net_val = os.path.relpath(NET_FILE, SUMO_CONFIG_DIR)
+        add_val = os.path.relpath(ADD_FILE, SUMO_CONFIG_DIR)
+        rou_val = os.path.relpath(active_rou_file, SUMO_CONFIG_DIR)
+    except ValueError:
+        net_val = NET_FILE
+        add_val = ADD_FILE
+        rou_val = active_rou_file
+
+    ET.SubElement(input_elem, "net-file", value=net_val)
+    ET.SubElement(input_elem, "additional-files", value=add_val)
+    ET.SubElement(input_elem, "route-files", value=rou_val)
 
     time_elem = ET.SubElement(cfg_root, "time")
     ET.SubElement(time_elem, "begin", value="0")

@@ -15,6 +15,7 @@
         <stop lane="City_6_yard_1_fw_0" duration="60" until="30300.0"/>
         <stop lane="City_6_pocket_1_bw_0" duration="60" until="30600" tripId="train_68302_Freight"/>
         <stop lane="Depot_2_yard_1_bw_0" duration="60" arrival="31470.00" tripId="train_68302_Freight"/>
+        <stop lane="City_6_yard_1_fw_0" duration="60" until="77100.0"/>
         <stop lane="Depot_2_yard_1_fw_0" duration="60" until="77400" tripId="train_68303_Freight"/>
         <stop lane="City_6_pocket_1_fw_0" duration="60" arrival="78270.00" tripId="train_68303_Freight"/>
         <stop lane="City_6_yard_1_fw_0" duration="60"/>
@@ -22,8 +23,7 @@
     <trip id="FRT-Rake-04" type="electric_trunk_freight" from="City_4_yard_3_fw" to="City_4_yard_3_fw" depart="4800.0">
         <stop trainStop="City_4_p2_bw" until="5400" tripId="train_68402_Freight"/>
         <stop trainStop="City_1_p2_bw" duration="60" arrival="6720.00" tripId="train_68402_Freight"/>
-        <stop lane="City_1_pocket_3_fw_0" duration="1"/>
-        <stop lane="City_1_yard_17_bw_0" duration="60" until="83400.0"/>
+        <stop lane="City_4_yard_3_fw_0" duration="60" until="83400.0"/>
         <stop trainStop="City_1_p2_fw" until="83700" tripId="train_68401_Freight"/>
         <stop trainStop="City_4_p2_fw" duration="60" arrival="85020.00" tripId="train_68401_Freight"/>
         <stop lane="City_4_yard_3_fw_0" duration="60"/>
@@ -38,7 +38,7 @@
         <stop lane="Depot_1_yard_1_fw_0" duration="60" until="39300.0"/>
         <stop lane="Depot_1_pocket_1_bw_0" duration="60" until="39600" tripId="train_68102_Freight"/>
         <stop lane="City_2_yard_1_fw_0" duration="60" arrival="40740.00" tripId="train_68102_Freight"/>
-        <stop lane="City_2_yard_3_bw_0" duration="60" until="80700.0"/>
+        <stop lane="Depot_1_yard_1_fw_0" duration="60" until="80700.0"/>
         <stop lane="City_2_yard_1_bw_0" duration="60" until="81000" tripId="train_68103_Freight"/>
         <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" duration="720" until="82320.00" arrival="81600.00" tripId="train_68103_Freight"/>
         <stop lane="Depot_1_pocket_1_fw_0" duration="60" arrival="82920.00" tripId="train_68103_Freight"/>
@@ -47,12 +47,14 @@
     <trip id="FRT-Rake-02" type="intermodal_container_freight" from="Depot_3_yard_1_fw" to="Depot_3_yard_1_fw" depart="8400.0">
         <stop lane="Depot_3_pocket_1_bw_0" duration="60" until="9000" tripId="train_68204_Freight"/>
         <stop lane="City_5_yard_1_fw_0" duration="60" arrival="9660.00" tripId="train_68204_Freight"/>
-        <stop lane="City_5_yard_7_bw_0" duration="60" until="18000" tripId="train_68201_Freight"/>
+        <stop lane="City_5_yard_7_bw_0" duration="60" until="17700.0"/>
+        <stop lane="City_5_yard_1_bw_0" duration="60" until="18000" tripId="train_68201_Freight"/>
         <stop lane="Depot_3_pocket_1_fw_0" duration="60" arrival="18660.00" tripId="train_68201_Freight"/>
         <stop lane="Depot_3_yard_1_fw_0" duration="60" until="50100.0"/>
         <stop lane="Depot_3_pocket_1_bw_0" duration="60" until="50400" tripId="train_68202_Freight"/>
         <stop lane="City_5_yard_1_fw_0" duration="60" arrival="51060.00" tripId="train_68202_Freight"/>
-        <stop lane="City_5_yard_7_bw_0" duration="60" until="82800" tripId="train_68203_Freight"/>
+        <stop lane="Depot_3_yard_1_fw_0" duration="60" until="82500.0"/>
+        <stop lane="City_5_yard_1_bw_0" duration="60" until="82800" tripId="train_68203_Freight"/>
         <stop lane="Depot_3_pocket_1_fw_0" duration="60" arrival="83460.00" tripId="train_68203_Freight"/>
         <stop lane="Depot_3_yard_1_fw_0" duration="60"/>
     </trip>
@@ -485,7 +487,7 @@
         <stop trainStop="City_4_p4_bw" until="25500" tripId="train_51009_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210" until="26125.00" arrival="25915.00" tripId="train_51009_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="26741.00" tripId="train_51009_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="27000.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="27000.0"/>
         <stop trainStop="City_6_p4_bw" until="27300" tripId="train_51010_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210" until="27998.00" arrival="27788.00" tripId="train_51010_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="28514.00" tripId="train_51010_Regional"/>
@@ -493,14 +495,14 @@
         <stop trainStop="City_4_p4_bw" until="36300" tripId="train_51017_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="36895.00" arrival="36715.00" tripId="train_51017_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="37511.00" tripId="train_51017_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="37800.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="37800.0"/>
         <stop trainStop="City_6_p4_bw" until="38100" tripId="train_51018_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="38768.00" arrival="38588.00" tripId="train_51018_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="39284.00" tripId="train_51018_Regional"/>
         <stop trainStop="City_4_p4_bw" until="39900" tripId="train_51005_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="40495.00" arrival="40315.00" tripId="train_51005_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="41111.00" tripId="train_51005_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="41400.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="41400.0"/>
         <stop trainStop="City_6_p4_bw" until="41700" tripId="train_51006_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="42368.00" arrival="42188.00" tripId="train_51006_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="42884.00" tripId="train_51006_Regional"/>
@@ -508,7 +510,7 @@
         <stop trainStop="City_4_p4_bw" until="54300" tripId="train_51021_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="54895.00" arrival="54715.00" tripId="train_51021_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="55511.00" tripId="train_51021_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="55800.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="55800.0"/>
         <stop trainStop="City_6_p4_bw" until="56100" tripId="train_51022_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="56768.00" arrival="56588.00" tripId="train_51022_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="57284.00" tripId="train_51022_Regional"/>
@@ -516,14 +518,14 @@
         <stop trainStop="City_4_p4_bw" until="61500" tripId="train_51007_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210" until="62125.00" arrival="61915.00" tripId="train_51007_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="62741.00" tripId="train_51007_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="63000.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="63000.0"/>
         <stop trainStop="City_6_p4_bw" until="63300" tripId="train_51008_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210" until="63998.00" arrival="63788.00" tripId="train_51008_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="64514.00" tripId="train_51008_Regional"/>
         <stop trainStop="City_4_p4_bw" until="65100" tripId="train_51015_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210" until="65725.00" arrival="65515.00" tripId="train_51015_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="66341.00" tripId="train_51015_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="66600.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="66600.0"/>
         <stop trainStop="City_6_p4_bw" until="66900" tripId="train_51016_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210" until="67598.00" arrival="67388.00" tripId="train_51016_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="68114.00" tripId="train_51016_Regional"/>
@@ -531,7 +533,7 @@
         <stop trainStop="City_4_p4_bw" until="72300" tripId="train_51025_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="72895.00" arrival="72715.00" tripId="train_51025_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="73511.00" tripId="train_51025_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="73800.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="73800.0"/>
         <stop trainStop="City_6_p4_bw" until="74100" tripId="train_51026_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="74768.00" arrival="74588.00" tripId="train_51026_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="75284.00" tripId="train_51026_Regional"/>
@@ -675,25 +677,25 @@
         <stop trainStop="Town_9_p1_bw" until="27675" tripId="train_12764_Regional"/>
         <stop trainStop="Town_8_p1_bw" duration="75" until="27971.00" arrival="27896.00" tripId="train_12764_Regional"/>
         <stop trainStop="City_2_p3_fw" duration="60" arrival="28210.00" tripId="train_12764_Regional"/>
-        <stop trainStop="City_2_p3_bw" until="40290" tripId="train_12775_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="40290" tripId="train_12775_Regional"/>
         <stop trainStop="Town_8_p1_fw" duration="75" until="40628.00" arrival="40553.00" tripId="train_12775_Regional"/>
         <stop trainStop="Town_9_p1_fw" duration="60" arrival="40825.00" tripId="train_12775_Regional"/>
         <stop trainStop="Town_9_p1_bw" until="42075" tripId="train_12776_Regional"/>
         <stop trainStop="Town_8_p1_bw" duration="75" until="42371.00" arrival="42296.00" tripId="train_12776_Regional"/>
         <stop trainStop="City_2_p3_fw" duration="60" arrival="42610.00" tripId="train_12776_Regional"/>
-        <stop trainStop="City_2_p3_bw" until="51090" tripId="train_12777_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="51090" tripId="train_12777_Regional"/>
         <stop trainStop="Town_8_p1_fw" duration="75" until="51428.00" arrival="51353.00" tripId="train_12777_Regional"/>
         <stop trainStop="Town_9_p1_fw" duration="60" arrival="51625.00" tripId="train_12777_Regional"/>
         <stop trainStop="Town_9_p1_bw" until="52875" tripId="train_12778_Regional"/>
         <stop trainStop="Town_8_p1_bw" duration="75" until="53171.00" arrival="53096.00" tripId="train_12778_Regional"/>
         <stop trainStop="City_2_p3_fw" duration="60" arrival="53410.00" tripId="train_12778_Regional"/>
-        <stop trainStop="City_2_p3_bw" until="58310" tripId="train_12767_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="58310" tripId="train_12767_Regional"/>
         <stop trainStop="Town_8_p1_fw" duration="75" until="58648.00" arrival="58573.00" tripId="train_12767_Regional"/>
         <stop trainStop="Town_9_p1_fw" duration="60" arrival="58845.00" tripId="train_12767_Regional"/>
         <stop trainStop="Town_9_p1_bw" until="60075" tripId="train_12768_Regional"/>
         <stop trainStop="Town_8_p1_bw" duration="75" until="60371.00" arrival="60296.00" tripId="train_12768_Regional"/>
         <stop trainStop="City_2_p3_fw" duration="60" arrival="60610.00" tripId="train_12768_Regional"/>
-        <stop trainStop="City_2_p3_bw" until="61910" tripId="train_12773_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="61910" tripId="train_12773_Regional"/>
         <stop trainStop="Town_8_p1_fw" duration="75" until="62248.00" arrival="62173.00" tripId="train_12773_Regional"/>
         <stop trainStop="Town_9_p1_fw" duration="60" arrival="62445.00" tripId="train_12773_Regional"/>
         <stop trainStop="Town_9_p1_bw" until="63555" tripId="train_12774_Regional"/>
@@ -755,7 +757,7 @@
         <stop lane="City_1_pocket_3_fw_0" duration="1"/>
         <stop lane="City_1_yard_12_bw_0" duration="60"/>
     </trip>
-    <trip id="HS-Rake-04" type="high_speed_emu_single" from="City_2_plat_5_bw" to="City_2_plat_5_bw" depart="26100.0">
+    <trip id="HS-Rake-04" type="high_speed_emu_single" from="City_2_plat_2_bw" to="City_2_plat_2_bw" depart="26100.0">
         <stop trainStop="City_2_p5_fw" until="26700" tripId="train_15007_HighSpeed"/>
         <stop trainStop="City_5_p2_bw" duration="60" arrival="27173.00" tripId="train_15007_HighSpeed"/>
         <stop trainStop="City_5_p2_fw" until="28500" tripId="train_15008_HighSpeed"/>
@@ -788,7 +790,7 @@
         <stop trainStop="City_5_p2_bw" duration="60" arrival="73973.00" tripId="train_15015_HighSpeed"/>
         <stop trainStop="City_5_p2_fw" until="75300" tripId="train_15016_HighSpeed"/>
         <stop trainStop="City_2_p5_bw" duration="60" arrival="75665.00" tripId="train_15016_HighSpeed"/>
-        <stop lane="City_2_plat_5_bw_0" duration="60"/>
+        <stop lane="City_2_plat_2_bw_0" duration="60"/>
     </trip>
     <trip id="HS-Rake-03" type="high_speed_emu_300" from="City_1_yard_3_bw" to="City_1_yard_3_bw" depart="26550.0">
         <stop trainStop="City_1_p1_fw" until="27150" tripId="train_12017_HighSpeed"/>
@@ -1022,14 +1024,14 @@
         <stop trainStop="City_4_p4_bw" until="29100" tripId="train_51001_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210" until="29725.00" arrival="29515.00" tripId="train_51001_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="30341.00" tripId="train_51001_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="30600.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="30600.0"/>
         <stop trainStop="City_6_p4_bw" until="30900" tripId="train_51002_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210" until="31598.00" arrival="31388.00" tripId="train_51002_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="32114.00" tripId="train_51002_Regional"/>
         <stop trainStop="City_4_p4_bw" until="32700" tripId="train_51011_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210" until="33325.00" arrival="33115.00" tripId="train_51011_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="33941.00" tripId="train_51011_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="34200.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="34200.0"/>
         <stop trainStop="City_6_p4_bw" until="34500" tripId="train_51012_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="35168.00" arrival="34988.00" tripId="train_51012_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="35684.00" tripId="train_51012_Regional"/>
@@ -1037,7 +1039,7 @@
         <stop trainStop="City_4_p4_bw" until="43500" tripId="train_51019_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="44095.00" arrival="43915.00" tripId="train_51019_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="44711.00" tripId="train_51019_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="45000.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="45000.0"/>
         <stop trainStop="City_6_p4_bw" until="45300" tripId="train_51020_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="45968.00" arrival="45788.00" tripId="train_51020_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="46484.00" tripId="train_51020_Regional"/>
@@ -1045,7 +1047,7 @@
         <stop trainStop="City_4_p4_bw" until="50700" tripId="train_51003_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="51295.00" arrival="51115.00" tripId="train_51003_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="51911.00" tripId="train_51003_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="52200.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="52200.0"/>
         <stop trainStop="City_6_p4_bw" until="52500" tripId="train_51004_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="53168.00" arrival="52988.00" tripId="train_51004_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="53684.00" tripId="train_51004_Regional"/>
@@ -1053,7 +1055,7 @@
         <stop trainStop="City_4_p4_bw" until="57900" tripId="train_51013_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="210" until="58525.00" arrival="58315.00" tripId="train_51013_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="59141.00" tripId="train_51013_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="59400.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="59400.0"/>
         <stop trainStop="City_6_p4_bw" until="59700" tripId="train_51014_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="210" until="60398.00" arrival="60188.00" tripId="train_51014_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="60914.00" tripId="train_51014_Regional"/>
@@ -1061,11 +1063,38 @@
         <stop trainStop="City_4_p4_bw" until="68700" tripId="train_51023_Regional"/>
         <stop trainStop="City_3_EW_p4_bw" duration="180" until="69295.00" arrival="69115.00" tripId="train_51023_Regional"/>
         <stop trainStop="City_6_p4_fw" duration="60" arrival="69911.00" tripId="train_51023_Regional"/>
-        <stop lane="City_6_yard_2_fw_0" duration="60" until="70200.0"/>
+        <stop lane="City_6_pocket_2_fw_0" duration="60" until="70200.0"/>
         <stop trainStop="City_6_p4_bw" until="70500" tripId="train_51024_Regional"/>
         <stop trainStop="City_3_NS_p4_bw" duration="180" until="71168.00" arrival="70988.00" tripId="train_51024_Regional"/>
         <stop trainStop="City_4_p4_fw" duration="60" arrival="71684.00" tripId="train_51024_Regional"/>
         <stop lane="City_4_yard_1_bw_0" duration="60"/>
+    </trip>
+    <trip id="ALP-Rake-02" type="regional_dmu_120" from="City_2_plat_4_bw" to="City_2_plat_4_bw" depart="28910.0">
+        <stop trainStop="City_2_p1_fw" until="29510" tripId="train_12771_Regional"/>
+        <stop trainStop="Town_8_p1_fw" duration="75" until="29848.00" arrival="29773.00" tripId="train_12771_Regional"/>
+        <stop trainStop="Town_9_p1_fw" duration="60" arrival="30045.00" tripId="train_12771_Regional"/>
+        <stop trainStop="Town_9_p1_bw" until="31155" tripId="train_12772_Regional"/>
+        <stop trainStop="Town_8_p1_bw" duration="75" until="31451.00" arrival="31376.00" tripId="train_12772_Regional"/>
+        <stop trainStop="City_2_p3_fw" duration="60" arrival="31690.00" tripId="train_12772_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="36690" tripId="train_12765_Regional"/>
+        <stop trainStop="Town_8_p1_fw" duration="75" until="37028.00" arrival="36953.00" tripId="train_12765_Regional"/>
+        <stop trainStop="Town_9_p1_fw" duration="60" arrival="37225.00" tripId="train_12765_Regional"/>
+        <stop trainStop="Town_9_p1_bw" until="38475" tripId="train_12766_Regional"/>
+        <stop trainStop="Town_8_p1_bw" duration="75" until="38771.00" arrival="38696.00" tripId="train_12766_Regional"/>
+        <stop trainStop="City_2_p3_fw" duration="60" arrival="39010.00" tripId="train_12766_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="47490" tripId="train_12769_Regional"/>
+        <stop trainStop="Town_8_p1_fw" duration="75" until="47828.00" arrival="47753.00" tripId="train_12769_Regional"/>
+        <stop trainStop="Town_9_p1_fw" duration="60" arrival="48025.00" tripId="train_12769_Regional"/>
+        <stop trainStop="Town_9_p1_bw" until="49275" tripId="train_12770_Regional"/>
+        <stop trainStop="Town_8_p1_bw" duration="75" until="49571.00" arrival="49496.00" tripId="train_12770_Regional"/>
+        <stop trainStop="City_2_p3_fw" duration="60" arrival="49810.00" tripId="train_12770_Regional"/>
+        <stop trainStop="City_2_p1_fw" until="65510" tripId="train_12779_Regional"/>
+        <stop trainStop="Town_8_p1_fw" duration="75" until="65848.00" arrival="65773.00" tripId="train_12779_Regional"/>
+        <stop trainStop="Town_9_p1_fw" duration="60" arrival="66045.00" tripId="train_12779_Regional"/>
+        <stop trainStop="Town_9_p1_bw" until="67155" tripId="train_12780_Regional"/>
+        <stop trainStop="Town_8_p1_bw" duration="75" until="67451.00" arrival="67376.00" tripId="train_12780_Regional"/>
+        <stop trainStop="City_2_p3_fw" duration="60" arrival="67690.00" tripId="train_12780_Regional"/>
+        <stop lane="City_2_plat_4_bw_0" duration="60"/>
     </trip>
     <trip id="REG-C1-02" type="regional_emu_120" from="City_1_yard_7_bw" to="City_1_yard_7_bw" depart="29210.0">
         <stop trainStop="City_1_p2_fw" until="29810" tripId="train_21003_Regional"/>
@@ -1116,32 +1145,6 @@
         <stop trainStop="City_1_p2_bw" duration="60" arrival="66407.00" tripId="train_21012_Regional"/>
         <stop lane="City_1_pocket_2_fw_0" duration="1"/>
         <stop lane="City_1_yard_7_bw_0" duration="60"/>
-    </trip>
-    <trip id="ALP-Rake-02" type="regional_dmu_120" from="City_2_plat_4_bw" to="City_2_plat_4_bw" depart="29510.0">
-        <stop trainStop="Town_8_p1_fw" duration="75" until="29848.00" arrival="29773.00" tripId="train_12771_Regional"/>
-        <stop trainStop="Town_9_p1_fw" duration="60" arrival="30045.00" tripId="train_12771_Regional"/>
-        <stop trainStop="Town_9_p1_bw" until="31155" tripId="train_12772_Regional"/>
-        <stop trainStop="Town_8_p1_bw" duration="75" until="31451.00" arrival="31376.00" tripId="train_12772_Regional"/>
-        <stop trainStop="City_2_p4_fw" duration="60" arrival="31690.00" tripId="train_12772_Regional"/>
-        <stop trainStop="City_2_p4_bw" until="36690" tripId="train_12765_Regional"/>
-        <stop trainStop="Town_8_p1_fw" duration="75" until="37028.00" arrival="36953.00" tripId="train_12765_Regional"/>
-        <stop trainStop="Town_9_p1_fw" duration="60" arrival="37225.00" tripId="train_12765_Regional"/>
-        <stop trainStop="Town_9_p1_bw" until="38475" tripId="train_12766_Regional"/>
-        <stop trainStop="Town_8_p1_bw" duration="75" until="38771.00" arrival="38696.00" tripId="train_12766_Regional"/>
-        <stop trainStop="City_2_p4_fw" duration="60" arrival="39010.00" tripId="train_12766_Regional"/>
-        <stop trainStop="City_2_p4_bw" until="47490" tripId="train_12769_Regional"/>
-        <stop trainStop="Town_8_p1_fw" duration="75" until="47828.00" arrival="47753.00" tripId="train_12769_Regional"/>
-        <stop trainStop="Town_9_p1_fw" duration="60" arrival="48025.00" tripId="train_12769_Regional"/>
-        <stop trainStop="Town_9_p1_bw" until="49275" tripId="train_12770_Regional"/>
-        <stop trainStop="Town_8_p1_bw" duration="75" until="49571.00" arrival="49496.00" tripId="train_12770_Regional"/>
-        <stop trainStop="City_2_p4_fw" duration="60" arrival="49810.00" tripId="train_12770_Regional"/>
-        <stop trainStop="City_2_p4_bw" until="65510" tripId="train_12779_Regional"/>
-        <stop trainStop="Town_8_p1_fw" duration="75" until="65848.00" arrival="65773.00" tripId="train_12779_Regional"/>
-        <stop trainStop="Town_9_p1_fw" duration="60" arrival="66045.00" tripId="train_12779_Regional"/>
-        <stop trainStop="Town_9_p1_bw" until="67155" tripId="train_12780_Regional"/>
-        <stop trainStop="Town_8_p1_bw" duration="75" until="67451.00" arrival="67376.00" tripId="train_12780_Regional"/>
-        <stop trainStop="City_2_p4_fw" duration="60" arrival="67690.00" tripId="train_12780_Regional"/>
-        <stop lane="City_2_plat_4_bw_0" duration="60"/>
     </trip>
     <trip id="REG-C4-03" type="regional_emu_120" from="City_1_yard_14_bw" to="City_1_yard_14_bw" depart="29510.0">
         <stop trainStop="City_1_p3_bw" until="30110" tripId="train_41009_Regional"/>

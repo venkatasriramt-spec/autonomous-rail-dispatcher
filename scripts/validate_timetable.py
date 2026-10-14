@@ -30,10 +30,25 @@ from export_to_sumo import service_runs_on_day, normalize_day, SUPPORTED_DAYS
 TRAINS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(TRAINS_DIR, "data")
 SUMO_CONFIG_DIR = os.path.join(TRAINS_DIR, "sumo_config")
-NET_FILE = os.environ.get(
-    "TRACKS_NET_FILE",
-    "/home/venkatasriramt/Desktop/tracks/network_data/dense_network.net.xml"
-)
+def find_net_file():
+    if "TRACKS_NET_FILE" in os.environ and os.path.exists(os.environ["TRACKS_NET_FILE"]):
+        return os.environ["TRACKS_NET_FILE"]
+    if "TRACKS_DIR" in os.environ:
+        cand = os.path.join(os.environ["TRACKS_DIR"], "dense_network.net.xml")
+        if os.path.exists(cand):
+            return cand
+    candidates = [
+        os.path.join(os.path.dirname(TRAINS_DIR), "tracks", "network_data", "dense_network.net.xml"),
+        os.path.join(TRAINS_DIR, "tracks", "network_data", "dense_network.net.xml"),
+        os.path.join(TRAINS_DIR, "..", "tracks", "network_data", "dense_network.net.xml"),
+        "/home/venkatasriramt/Desktop/tracks/network_data/dense_network.net.xml",
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return candidates[0]
+
+NET_FILE = find_net_file()
 ROU_FILE = os.path.join(SUMO_CONFIG_DIR, "trains.rou.xml")
 TIMETABLE_FILE = os.path.join(DATA_DIR, "timetable.json")
 ROSTER_FILE = os.path.join(DATA_DIR, "rakes_roster.json")

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2026-10-14 13:05:39 by Eclipse SUMO duarouter Version 1.12.0
+<!-- generated on 2026-10-14 14:15:28 by Eclipse SUMO duarouter Version 1.12.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/duarouterConfiguration.xsd">
 
     <input>
@@ -46,7 +46,7 @@
         <stop lane="c3_Town_8_Town_9_loop_siding_fw_0" arrival="16800.00" duration="720.00" until="17520.00" tripId="train_68101_Freight"/>
     </vehicle>
     <vehicle id="train_68201_Freight" type="intermodal_container_freight" depart="18000.00">
-        <route edges="City_5_yard_7_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 Depot_3_yard_3_fw Depot_3_pocket_1_fw"/>
+        <route edges="City_5_yard_1_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 Depot_3_yard_3_fw Depot_3_pocket_1_fw"/>
     </vehicle>
     <vType id="regional_emu_120" length="160.00" maxSpeed="33.33" vClass="rail_electric" guiShape="rail/railcar" color="38,140,255" accel="0.85" decel="1.0" emergencyDecel="2.0"/>
     <vehicle id="train_32025_Regional" type="regional_emu_120" depart="18690.00">
@@ -264,7 +264,7 @@
         <stop busStop="Town_7_p1_fw" arrival="30801.00" duration="55.00" until="30856.00" tripId="train_32003_Regional"/>
     </vehicle>
     <vehicle id="train_12771_Regional" type="regional_dmu_120" depart="29510.00">
-        <route edges="City_2_plat_4_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
+        <route edges="City_2_plat_3_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
         <stop busStop="Town_8_p1_fw" arrival="29773.00" duration="75.00" until="29848.00" tripId="train_12771_Regional"/>
     </vehicle>
     <vehicle id="train_21003_Regional" type="regional_emu_120" depart="29810.00">
@@ -324,7 +324,7 @@
         <stop busStop="City_2_p1_bw" arrival="31825.00" duration="150.00" until="31975.00" tripId="train_12006_HighSpeed"/>
     </vehicle>
     <vehicle id="train_12772_Regional" type="regional_dmu_120" depart="31155.00">
-        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_4_fw"/>
+        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_3_fw"/>
         <stop busStop="Town_8_p1_bw" arrival="31376.00" duration="75.00" until="31451.00" tripId="train_12772_Regional"/>
     </vehicle>
     <vehicle id="train_32033_Regional" type="regional_emu_120" depart="31310.00">
@@ -481,7 +481,7 @@
         <stop busStop="Town_7_p1_fw" arrival="37921.00" duration="45.00" until="37966.00" tripId="train_32039_Regional"/>
     </vehicle>
     <vehicle id="train_12765_Regional" type="regional_dmu_120" depart="36690.00">
-        <route edges="City_2_plat_4_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
+        <route edges="City_2_plat_3_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
         <stop busStop="Town_8_p1_fw" arrival="36953.00" duration="75.00" until="37028.00" tripId="train_12765_Regional"/>
     </vehicle>
     <vehicle id="train_21005_Regional" type="regional_emu_120" depart="36990.00">
@@ -511,7 +511,7 @@
         <stop busStop="City_2_p1_bw" arrival="38965.00" duration="120.00" until="39085.00" tripId="train_12008_HighSpeed"/>
     </vehicle>
     <vehicle id="train_12766_Regional" type="regional_dmu_120" depart="38475.00">
-        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_4_fw"/>
+        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_3_fw"/>
         <stop busStop="Town_8_p1_bw" arrival="38696.00" duration="75.00" until="38771.00" tripId="train_12766_Regional"/>
     </vehicle>
     <vehicle id="train_32040_Regional" type="regional_emu_120" depart="38790.00">
@@ -688,7 +688,7 @@
         <stop busStop="Town_7_p1_fw" arrival="48721.00" duration="45.00" until="48766.00" tripId="train_32009_Regional"/>
     </vehicle>
     <vehicle id="train_12769_Regional" type="regional_dmu_120" depart="47490.00">
-        <route edges="City_2_plat_4_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
+        <route edges="City_2_plat_3_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
         <stop busStop="Town_8_p1_fw" arrival="47753.00" duration="75.00" until="47828.00" tripId="train_12769_Regional"/>
     </vehicle>
     <vehicle id="train_21007_Regional" type="regional_emu_120" depart="47790.00">
@@ -714,7 +714,7 @@
         <stop busStop="City_2_p1_bw" arrival="49765.00" duration="120.00" until="49885.00" tripId="train_12036_HighSpeed"/>
     </vehicle>
     <vehicle id="train_12770_Regional" type="regional_dmu_120" depart="49275.00">
-        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_4_fw"/>
+        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_3_fw"/>
         <stop busStop="Town_8_p1_bw" arrival="49496.00" duration="75.00" until="49571.00" tripId="train_12770_Regional"/>
     </vehicle>
     <vehicle id="train_32010_Regional" type="regional_emu_120" depart="49590.00">
@@ -1133,7 +1133,7 @@
         <stop busStop="Town_7_p1_fw" arrival="66801.00" duration="55.00" until="66856.00" tripId="train_32023_Regional"/>
     </vehicle>
     <vehicle id="train_12779_Regional" type="regional_dmu_120" depart="65510.00">
-        <route edges="City_2_plat_4_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
+        <route edges="City_2_plat_3_bw c3_City_2_Town_8_fw_b0 c3_City_2_Town_8_fw_b1 c3_City_2_Town_8_fw_b2 c3_City_2_Town_8_fw_b3 c3_City_2_Town_8_fw_b4 Town_8_plat_1_fw c3_Town_8_Town_9_loop_T1_pre_fw_b0 c3_Town_8_Town_9_loop_T1_pre_fw_b1 c3_Town_8_Town_9_loop_T1_mid_fw c3_Town_8_Town_9_loop_T1_post_fw_b0 c3_Town_8_Town_9_loop_T1_post_fw_b1 Town_9_plat_1_fw"/>
         <stop busStop="Town_8_p1_fw" arrival="65773.00" duration="75.00" until="65848.00" tripId="train_12779_Regional"/>
     </vehicle>
     <vehicle id="train_21033_Regional" type="regional_emu_120" depart="65810.00">
@@ -1185,7 +1185,7 @@
         <stop busStop="City_2_p1_bw" arrival="67825.00" duration="150.00" until="67975.00" tripId="train_12016_HighSpeed"/>
     </vehicle>
     <vehicle id="train_12780_Regional" type="regional_dmu_120" depart="67155.00">
-        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_4_fw"/>
+        <route edges="Town_9_plat_1_bw c3_Town_8_Town_9_loop_T1_post_bw_b1 c3_Town_8_Town_9_loop_T1_post_bw_b0 c3_Town_8_Town_9_loop_T1_mid_bw c3_Town_8_Town_9_loop_T1_pre_bw_b1 c3_Town_8_Town_9_loop_T1_pre_bw_b0 Town_8_plat_1_bw c3_City_2_Town_8_bw_b0 c3_City_2_Town_8_bw_b1 c3_City_2_Town_8_bw_b2 c3_City_2_Town_8_bw_b3 c3_City_2_Town_8_bw_b4 City_2_plat_3_fw"/>
         <stop busStop="Town_8_p1_bw" arrival="67376.00" duration="75.00" until="67451.00" tripId="train_12780_Regional"/>
     </vehicle>
     <vehicle id="train_32024_Regional" type="regional_emu_120" depart="67610.00">
@@ -1431,7 +1431,7 @@
         <stop busStop="Town_4_p1_bw" arrival="83235.00" duration="45.00" until="83280.00" tripId="train_32044_Regional"/>
     </vehicle>
     <vehicle id="train_68203_Freight" type="intermodal_container_freight" depart="82800.00">
-        <route edges="City_5_yard_7_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 Depot_3_yard_3_fw Depot_3_pocket_1_fw"/>
+        <route edges="City_5_yard_1_bw spur_City_5_Depot_3_fw_b0 spur_City_5_Depot_3_fw_b1 spur_City_5_Depot_3_fw_b2 spur_City_5_Depot_3_fw_b3 spur_City_5_Depot_3_fw_b4 Depot_3_yard_3_fw Depot_3_pocket_1_fw"/>
     </vehicle>
     <vehicle id="train_68401_Freight" type="electric_trunk_freight" depart="83700.00">
         <route edges="City_1_plat_2_fw c1_City_1_Town_1_fw_b0 c1_City_1_Town_1_fw_b1 c1_City_1_Town_1_fw_b2 c1_City_1_Town_1_fw_b3 Town_1_thru_2_fw c1_Town_1_City_2_xov_T1_pre_fw_b0 c1_Town_1_City_2_xov_T1_pre_fw_b1 c1_Town_1_City_2_xov_xov1_fw c1_Town_1_City_2_xov_T2_mid_fw c1_Town_1_City_2_xov_T2_pre_fw_b0 c1_Town_1_City_2_xov_T2_pre_fw_b1 c1_Town_1_City_2_xov_T2_pre_fw_b2 City_2_plat_5_fw c1_City_2_Town_2_xov_T1_pre_fw_b0 c1_City_2_Town_2_xov_T1_pre_fw_b1 c1_City_2_Town_2_xov_xov1_fw c1_City_2_Town_2_xov_T2_mid_fw c1_City_2_Town_2_xov_T2_pre_fw_b0 c1_City_2_Town_2_xov_T2_pre_fw_b1 c1_City_2_Town_2_xov_T2_pre_fw_b2 Town_2_thru_2_fw c1_Town_2_City_3_EW_xov_T1_pre_fw_b0 c1_Town_2_City_3_EW_xov_T1_pre_fw_b1 c1_Town_2_City_3_EW_xov_T1_pre_fw_b2 c1_Town_2_City_3_EW_xov_xov1_fw c1_Town_2_City_3_EW_xov_T2_mid_fw c1_Town_2_City_3_EW_xov_T2_pre_fw_b0 c1_Town_2_City_3_EW_xov_T2_pre_fw_b1 c1_Town_2_City_3_EW_xov_T2_pre_fw_b2 City_3_EW_plat_4_fw c1_City_3_EW_Town_3_xov_T1_pre_fw_b0 c1_City_3_EW_Town_3_xov_T1_pre_fw_b1 c1_City_3_EW_Town_3_xov_xov1_fw c1_City_3_EW_Town_3_xov_T2_mid_fw c1_City_3_EW_Town_3_xov_T2_pre_fw_b0 c1_City_3_EW_Town_3_xov_T2_pre_fw_b1 c1_City_3_EW_Town_3_xov_T2_pre_fw_b2 Town_3_thru_1_fw c1_Town_3_City_4_fw_b0 c1_Town_3_City_4_fw_b1 c1_Town_3_City_4_fw_b2 c1_Town_3_City_4_fw_b3 City_4_plat_2_fw"/>

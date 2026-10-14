@@ -11,6 +11,7 @@ import math
 
 TRAINS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(TRAINS_DIR, "data")
+SUMO_CONFIG_DIR = os.path.join(TRAINS_DIR, "sumo_config")
 os.makedirs(DATA_DIR, exist_ok=True)
 
 # -----------------------------------------------------------------------------
@@ -1978,7 +1979,195 @@ def build_timetable():
     # Sort master timetable by departure time
     timetable.sort(key=lambda s: s["departure_sec"])
 
+    # Apply physical infrastructure calibration
+    apply_infrastructure_calibration(timetable, rakes)
+
     return ROLLING_STOCK_TYPES, timetable, rakes
+
+def apply_infrastructure_calibration(timetable, rakes):
+    # 1. Dedicated stabling sidings for all 31 rakes
+    rake_stabling = {
+        'HS-Rake-01': 'City_1_yard_1_bw',
+        'HS-Rake-02': 'City_1_yard_2_bw',
+        'HS-Rake-03': 'City_1_yard_3_bw',
+        'HS-Rake-05': 'City_1_yard_4_bw',
+        'HS-Rake-06': 'City_1_yard_5_bw',
+        'REG-C1-01': 'City_1_yard_6_bw',
+        'REG-C1-02': 'City_1_yard_7_bw',
+        'REG-C1-03': 'City_1_yard_8_bw',
+        'REG-C1-04': 'City_1_yard_9_bw',
+        'REG-C1-05': 'City_1_yard_10_bw',
+        'REG-C1-06': 'City_1_yard_11_bw',
+        'REG-C4-01': 'City_1_yard_12_bw',
+        'REG-C4-02': 'City_1_yard_13_bw',
+        'REG-C4-03': 'City_1_yard_14_bw',
+        'REG-C4-04': 'City_1_yard_15_bw',
+        'REG-C4-05': 'City_1_yard_16_bw',
+        'REG-C2-01': 'City_5_yard_1_bw',
+        'REG-C2-02': 'City_5_yard_2_bw',
+        'REG-C2-03': 'City_5_yard_3_bw',
+        'REG-C2-04': 'City_5_yard_4_bw',
+        'REG-C2-05': 'City_5_yard_5_bw',
+        'REG-C2-06': 'City_5_yard_6_bw',
+        'REG-XFER-01': 'City_4_yard_1_bw',
+        'REG-XFER-02': 'City_4_yard_2_bw',
+        'FRT-Rake-04': 'City_4_yard_3_fw',
+        'ALP-Rake-01': 'City_2_plat_3_bw',
+        'ALP-Rake-02': 'City_2_plat_4_bw',
+        'HS-Rake-04': 'City_2_plat_2_bw',
+        'FRT-Rake-01': 'Depot_1_yard_1_fw',
+        'FRT-Rake-02': 'Depot_3_yard_1_fw',
+        'FRT-Rake-03': 'City_6_yard_1_fw',
+    }
+
+    for rid, rk in rakes.items():
+        if rid in rake_stabling:
+            rk["overnight_stabling_track"] = rake_stabling[rid]
+
+    def get_staging(rid, s):
+        pjd = s.get('post_journey_disposition', {})
+        orig_stg = pjd.get('staging_track')
+        action = pjd.get('action')
+        dest = s['dest_station']
+
+        if dest == 'Town_9':
+            return None
+
+        if dest == 'City_1':
+            if rid == 'FRT-Rake-04':
+                return 'City_1_yard_17_bw'
+            if action == 'turnaround':
+                return None
+            return rake_stabling.get(rid, orig_stg)
+
+        elif dest == 'City_5':
+            if rid == 'HS-Rake-04':
+                return None
+            elif rid == 'FRT-Rake-02':
+                return 'City_5_yard_7_bw'
+            elif action == 'turnaround':
+                return None
+            elif rid in rake_stabling:
+                return rake_stabling[rid]
+            return orig_stg
+
+        elif dest == 'City_2':
+            if rid == 'FRT-Rake-01':
+                return 'City_2_yard_3_bw'
+            elif rid in ['HS-Rake-04', 'ALP-Rake-01', 'ALP-Rake-02']:
+                return None
+            elif action == 'turnaround':
+                return None
+            return rake_stabling.get(rid, orig_stg)
+
+        elif dest == 'City_4':
+            if action == 'turnaround':
+                return None
+            elif rid in ['REG-XFER-01', 'REG-XFER-02', 'FRT-Rake-04']:
+                return rake_stabling[rid]
+            return orig_stg
+
+        elif dest == 'City_6':
+            if rid.startswith('REG-C2'):
+                return 'City_6_pocket_1_fw'
+            elif rid.startswith('REG-C4'):
+                return 'City_6_pocket_2_fw'
+            elif rid.startswith('REG-XFER'):
+                return 'City_6_pocket_2_fw'
+            elif rid == 'FRT-Rake-03':
+                return 'City_6_yard_1_fw'
+            return orig_stg
+
+        elif dest == 'Depot_1':
+            return 'Depot_1_yard_1_fw'
+        elif dest == 'Depot_2':
+            return 'Depot_2_yard_1_fw'
+        elif dest == 'Depot_3':
+            return 'Depot_3_yard_1_fw'
+        return orig_stg
+
+    for s in timetable:
+        rid = s["assigned_rake"]
+        pjd = s.get("post_journey_disposition", {})
+        stg = get_staging(rid, s)
+        pjd["staging_track"] = stg
+        s["post_journey_disposition"] = pjd
+
+    # Synchronize end-of-day staging with roster overnight_stabling_track
+    for rid, rk in rakes.items():
+        ost = rk["overnight_stabling_track"]
+        last_sid = rk["assigned_services"][-1]
+        for s in timetable:
+            if s["train_number"] == last_sid:
+                s["post_journey_disposition"]["staging_track"] = ost
+
+    # Adjust freight services 68204, 68201, 68202, 68203 runtime to 660s
+    freight_adjustments = {
+        '68204': (9660, "02:41:00", 139.0),
+        '68201': (18660, "05:11:00", 529.0),
+        '68202': (51060, "14:11:00", 529.0),
+        '68203': (83460, "23:11:00", 199.0),
+    }
+
+    for s in timetable:
+        tno = s["train_number"]
+        if tno in freight_adjustments:
+            arr_sec, arr_time, dwell_min = freight_adjustments[tno]
+            s["arrival_sec"] = arr_sec
+            s["arrival_time"] = arr_time
+            s["stops"][-1]["arrival_sec"] = arr_sec
+            s["stops"][-1]["arrival_time"] = arr_time
+            s["stops"][-1]["departure_sec"] = arr_sec
+            s["stops"][-1]["departure_time"] = arr_time
+            s["post_journey_disposition"]["turnaround_dwell_min"] = dwell_min
+
+    # Route distance calibration
+    tracks_candidates = [
+        os.environ.get("TRACKS_DIR", ""),
+        os.path.join(os.path.dirname(TRAINS_DIR), "tracks", "network_data"),
+        os.path.join(TRAINS_DIR, "tracks", "network_data"),
+        os.path.join(TRAINS_DIR, "..", "tracks", "network_data"),
+        "/home/venkatasriramt/Desktop/tracks/network_data",
+    ]
+    net_path = None
+    for cand in tracks_candidates:
+        if cand:
+            p = os.path.join(cand, "dense_network.net.xml")
+            if os.path.exists(p):
+                net_path = p
+                break
+
+    rou_path = os.path.join(SUMO_CONFIG_DIR, "trains_services.rou.xml")
+    if net_path and os.path.exists(rou_path):
+        import xml.etree.ElementTree as ET
+        try:
+            tree = ET.parse(net_path)
+            edge_map = {}
+            for e in tree.getroot().findall('edge'):
+                eid = e.attrib['id']
+                if eid.startswith(':'):
+                    continue
+                lanes = e.findall('lane')
+                if lanes:
+                    length = float(lanes[0].attrib.get('length', 0.0))
+                    edge_map[eid] = length
+
+            rou_tree = ET.parse(rou_path)
+            veh_lens = {}
+            for v in rou_tree.getroot().findall('vehicle'):
+                vid = v.attrib['id']
+                route_elem = v.find('route')
+                if route_elem is not None and 'edges' in route_elem.attrib:
+                    edges = route_elem.attrib['edges'].split()
+                    route_len_m = sum(edge_map[e] for e in edges if e in edge_map)
+                    veh_lens[vid] = route_len_m / 1000.0
+
+            for s in timetable:
+                vid = f"train_{s['train_number']}_{s['service_class']}"
+                if vid in veh_lens:
+                    s['total_distance_km'] = round(veh_lens[vid], 2)
+        except Exception as ex:
+            print(f"Warning: route distance calibration encountered an error: {ex}")
 
 def main():
     rs_types, timetable, rakes = build_timetable()

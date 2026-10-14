@@ -1,0 +1,8 @@
+# Train Scheduling & Rolling Stock Management System
+# Core scripts utilize Python 3.10+ standard libraries (sqlite3, json, xml, subprocess, argparse).
+# External system requirement: Eclipse SUMO (Simulation of Urban MObility) binaries (sumo, duarouter, netconvert).
+
+# Optional Python bindings for SUMO / TraCI automation:
+# eclipse-sumo
+# traci
+# sumolib

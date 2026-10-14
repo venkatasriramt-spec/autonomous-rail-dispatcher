@@ -28,6 +28,10 @@ scratch/
 .idea/
 *.sublime-project
 *.sublime-workspace
+.claude/
+.gemini/
+.agents/
+.playwright/
 
 # Python
 .Python

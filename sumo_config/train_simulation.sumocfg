@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <configuration>
     <input>
-        <net-file value="/home/venkatasriramt/Desktop/tracks/network_data/dense_network.net.xml"/>
-        <additional-files value="/home/venkatasriramt/Desktop/tracks/network_data/dense_network.add.xml"/>
-        <route-files value="/home/venkatasriramt/Desktop/trains/sumo_config/trains.rou.xml"/>
+        <net-file value="../../tracks/network_data/dense_network.net.xml"/>
+        <additional-files value="../../tracks/network_data/dense_network.add.xml"/>
+        <route-files value="trains.rou.xml"/>
     </input>
     <time>
         <begin value="0"/>

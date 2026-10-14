@@ -109,12 +109,20 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                 first_s = tt_by_id[sorted_svcs[0]]
                 last_s = tt_by_id[sorted_svcs[-1]]
                 stabling_track = r.get("overnight_stabling_track")
-                dep_sec = max(0.0, first_s["departure_sec"] - 600.0) if (stabling_track and stabling_track != first_s["origin_track"]) else first_s["departure_sec"]
+                if stabling_track and stabling_track != first_s["origin_track"]:
+                    stn_stab = stabling_track.split("_yard")[0].split("_plat")[0]
+                    stn_orig = first_s.get("origin_station", "")
+                    rollout_lead = 1800.0 if stn_stab != stn_orig else 600.0
+                    dep_sec = max(0.0, first_s["departure_sec"] - rollout_lead)
+                else:
+                    dep_sec = first_s["departure_sec"]
                 arr_sec = last_s["arrival_sec"]
                 yard_transit_dwell = 0.0
                 if stabling_track:
                     if stabling_track != last_s["dest_track"]:
-                        yard_transit_dwell = 900.0
+                        stn_stab = stabling_track.split("_yard")[0].split("_plat")[0]
+                        stn_dest = last_s.get("dest_station", "")
+                        yard_transit_dwell = 3600.0 if stn_stab != stn_dest else 900.0
                     else:
                         rou_v = rou_vehicles.get(rid)
                         if rou_v is not None:
@@ -135,6 +143,7 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                     "services_count": len(sorted_svcs),
                     "dest_train_stop_id": last_s["stops"][-1].get("train_stop_id"),
                     "dest_track": last_s["dest_track"],
+                    "dest_station": last_s.get("dest_station", ""),
                     "stabling_track": stabling_track
                 }
     else:
@@ -370,12 +379,14 @@ def run_verification(max_steps=86400, day="all", mode="auto", delay_tolerance_se
                         last_stop_elem = v_stops[-1] if v_stops else None
                         stab_dwell = float(last_stop_elem.attrib.get("duration", 60.0)) if last_stop_elem is not None else 60.0
                         if stab_tr != dest_tr:
-                            yard_transit_dwell = 900.0
+                            stn_stab = stab_tr.split("_yard")[0].split("_plat")[0]
+                            stn_dest = ent.get("dest_station", "") or (dest_tr.split("_yard")[0].split("_plat")[0] if dest_tr else "")
+                            yard_transit_dwell = 3600.0 if stn_stab != stn_dest else 900.0
                         else:
                             yard_transit_dwell = stab_dwell
 
                     expected_yard_arr = ent.get("stabling_completion_sec", sched_arr + yard_transit_dwell)
-                    sim_yard_arr = float(t.attrib["arrival"])
+                    sim_yard_arr = float(last_sim_stop.attrib.get("started")) if (last_sim_stop is not None and float(last_sim_stop.attrib.get("started", -1)) >= 0) else float(t.attrib["arrival"])
                     yard_diff = sim_yard_arr - expected_yard_arr
                     yard_results.append({
                         "id": vid,
