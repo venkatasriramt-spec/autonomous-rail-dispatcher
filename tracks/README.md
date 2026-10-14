@@ -33,12 +33,18 @@ This network provides the foundational physical infrastructure for the railway s
 If you make any changes to the network layout in the generator script, you can rebuild the network by running:
 
 ```bash
+# From repository root:
+python3 tracks/scripts/generate_sumo_network.py
+
+# Or from within tracks/:
 python3 scripts/generate_sumo_network.py
 ```
 
 This will instantly output fresh XML files into the `network_data/` directory and compile the network with `netconvert`.
 
 ## Viewing the Network Visually
+
+> **Note:** All script commands below can be executed either from the monorepo root (prefixing paths with `tracks/`) or directly from within the `tracks/` directory.
 
 ### Interactive Inspection with Netedit
 To inspect and interact with the physical tracks, junctions, and block signals in SUMO's graphical network editor:

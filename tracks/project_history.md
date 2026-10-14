@@ -246,4 +246,8 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   2. *Dependency Specification:* Added `requirements.txt` for `matplotlib` and `numpy` visualization tooling and cleaned legacy virtual environments.
   3. *Zero-Data-Loss History Preservation:* Prepared repository tree for non-conflicting Git merge with the `trains` repository via `--allow-unrelated-histories`.
 
-
+#### Phase 17: Post-Merge Visualization Tooling & Script Robustness
+- **Visualization Script Corrections:**
+  - `scripts/plot_bilevel_hub.py`: Fixed station legend key lookups from non-existent `yard_5` tracks to `City_3_EW_yard_1_fw` and `City_3_NS_yard_1_fw`, resolving KeyError warnings during schematic generation.
+  - *Dynamic Path Resolution:* Upgraded all rendering and generation scripts (`plot_*.py`, `generate_sumo_network.py`) with dynamic root/sibling/subfolder path detection, ensuring they execute reliably from any working directory.
+  - *Environment Cleanup:* Removed broken legacy test virtual environment (`test_venv`).

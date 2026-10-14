@@ -147,9 +147,15 @@ Train services in `data/timetable.json` declare designated operational calendar 
 
 ## 4. How to Use & Execute
 
+> **Note:** All script commands below can be executed either from the monorepo root (prefixing paths with `trains/`, e.g., `python3 trains/scripts/...`) or directly from within the `trains/` directory.
+
 ### 1. Regenerate the Timetable & Roster
 To recompute the master timetable and rolling stock fleet:
 ```bash
+# From repository root:
+python3 trains/scripts/generate_master_timetable.py
+
+# Or from within trains/:
 python3 scripts/generate_master_timetable.py
 ```
 

@@ -618,6 +618,15 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
   4. *Dynamic Cross-Repository Path Discovery & Relative Portable Sumocfg:* Replaced hardcoded paths with environment-aware dynamic path resolution (TRACKS_DIR, relative siblings, monorepo paths) and generated portable relative .sumocfg configuration files.
 
 #### Phase 20: Unified Railway Monorepo Namespace Restructuring
-- **Subdirectory Namespace Isolation:** Relocated timetable datasets, Python compilation pipelines, SUMO configurations, and documentation into a dedicated trains/ subdirectory.
-- **Dependency Specification:** Created requirements.txt documenting Python dependencies and SUMO binary requirements.
-- **Git History Preservation:** Prepared repository tree for non-conflicting Git merge with tracks via --allow-unrelated-histories.
+- **Subdirectory Namespace Isolation:** Relocated timetable datasets, Python compilation pipelines, SUMO configurations, and documentation into a dedicated `trains/` subdirectory.
+- **Dependency Specification:** Created `requirements.txt` documenting Python dependencies and SUMO binary requirements.
+- **Git History Preservation:** Prepared repository tree for non-conflicting Git merge with `tracks` via `--allow-unrelated-histories`.
+
+#### Phase 21: Post-Merge Pipeline Hardening & Relational Schema Completeness
+- **Database Schema Completeness (`scripts/export_to_db.py`):**
+  - Added `overnight_stabling_track TEXT` and `assigned_services_count INTEGER` to the `physical_rakes` SQLite table schema and insert tuples, ensuring full alignment with `data/rakes_roster.json`.
+- **Operating Day Filtering in Services Mode (`scripts/export_to_sumo.py`):**
+  - Equipped `export_services_mode` with direct day-filtering routines (`expand_service_days` / `service_runs_on_day`), enabling independent `--day` and `--all-days` filtering for discrete services mode alongside continuous rakes mode.
+- **Path Portability:**
+  - Upgraded all scripts with dynamic directory resolution supporting both monorepo root and subsystem local executions.
+
