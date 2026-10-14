@@ -605,3 +605,19 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
      - **Sun** (27 rakes / 141 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
      - **All** (31 rakes / 242 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
 
+
+---
+
+### 14 October 2026 — Track Infrastructure Calibration & Unified Monorepo Architecture
+
+#### Phase 19: Microscopic Infrastructure Calibration & Physical Rake Verification
+- **Motivation:** In preparation for unifying the track infrastructure and train management systems, an audit of microscopic simulation adherence and timetable feasibility identified key edge-case dynamics:
+  1. *Trans-Hub Flyover Turnaround Geometry (City_6):* Replaced invalid staging_track: "City_6_yard_2_fw" with "City_6_pocket_2_fw" for 13 510xx services (REG-XFER-01/02). City_6_buf_2 is physically anchored to pocket track 2, eliminating an ~11-minute yard detour during tight 9.3-minute turnarounds.
+  2. *Freight Depot Rollout Lead Time & Inter-Station Transits:* Allocated 1800s rollout lead time in export_to_sumo.py for freight rakes originating outside their commercial departure stations, and updated verify_simulation.py to evaluate stabling arrival relative to actual final revenue completion.
+  3. *Master Timetable Generator Synchronization:* Directly embedded apply_infrastructure_calibration inside generate_master_timetable.py, ensuring deterministic regeneration of the 242-service timetable and 31-rake roster with 100% feasibility (T_planned >= T_min) and exact physical route distance calibration (<= 0.05 km).
+  4. *Dynamic Cross-Repository Path Discovery & Relative Portable Sumocfg:* Replaced hardcoded paths with environment-aware dynamic path resolution (TRACKS_DIR, relative siblings, monorepo paths) and generated portable relative .sumocfg configuration files.
+
+#### Phase 20: Unified Railway Monorepo Namespace Restructuring
+- **Subdirectory Namespace Isolation:** Relocated timetable datasets, Python compilation pipelines, SUMO configurations, and documentation into a dedicated trains/ subdirectory.
+- **Dependency Specification:** Created requirements.txt documenting Python dependencies and SUMO binary requirements.
+- **Git History Preservation:** Prepared repository tree for non-conflicting Git merge with tracks via --allow-unrelated-histories.
