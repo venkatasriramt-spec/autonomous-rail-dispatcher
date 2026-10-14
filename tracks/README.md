@@ -1,8 +1,8 @@
 # SUMO Dense Railway Network Generator
 
-This repository is dedicated solely to generating a dense, highly structured railway **track infrastructure** network using SUMO (Simulation of Urban MObility). It produces a fully routable track map with physical speed limits, bi-directional rails, bypassing junctions, and multi-platform stations.
+This module is dedicated to generating the dense, highly structured railway **track infrastructure** network using SUMO (Simulation of Urban MObility). It produces a fully routable track map with physical speed limits, bi-directional rails, bypassing junctions, and multi-platform stations.
 
-This network provides the foundational physical infrastructure for future downstream experiments. **Trains, rolling stock, traffic schedules, and routing live in a separate external repository** — this directory strictly maintains physical tracks, junctions, platforms, and signaling.
+This network provides the foundational physical infrastructure for the railway system. In the unified monorepo, **tracks** maintains physical tracks, junctions, platforms, and signaling, while **trains** manages rolling stock, schedules, timetables, and simulation runtime.
 
 ## Project Structure
 
