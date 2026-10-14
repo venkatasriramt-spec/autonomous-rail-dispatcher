@@ -28,11 +28,11 @@ for edge in root.findall('edge'):
         if 'City_3_EW_plat' in eid:
             ax1.plot(xs, ys, color='#38bdf8', linewidth=2.8, alpha=0.95, label='Lower Level Platforms (EW, Z=12m)' if eid == 'City_3_EW_plat_1_fw' else None)
         elif 'City_3_EW_yard' in eid:
-            ax1.plot(xs, ys, color='#0284c7', linewidth=1.8, alpha=0.9, label='Lower Level Yard Tracks (EW, Z=12m)' if eid == 'City_3_EW_yard_5_fw' else None)
+            ax1.plot(xs, ys, color='#0284c7', linewidth=1.8, alpha=0.9, label='Lower Level Yard Tracks (EW, Z=12m)' if eid == 'City_3_EW_yard_1_fw' else None)
         elif 'City_3_NS_plat' in eid:
             ax1.plot(xs, ys, color='#f43f5e', linewidth=2.8, alpha=0.95, label='Upper Viaduct Platforms (NS, Z=26m)' if eid == 'City_3_NS_plat_1_fw' else None)
         elif 'City_3_NS_yard' in eid:
-            ax1.plot(xs, ys, color='#e11d48', linewidth=1.8, alpha=0.9, label='Upper Viaduct Yard Track (NS, Z=26m)' if eid == 'City_3_NS_yard_5_fw' else None)
+            ax1.plot(xs, ys, color='#e11d48', linewidth=1.8, alpha=0.9, label='Upper Viaduct Yard Track (NS, Z=26m)' if eid == 'City_3_NS_yard_1_fw' else None)
         elif 'transfer_City_3_EW_NS' in eid:
             ax1.plot(xs, ys, color='#facc15', linewidth=2.2, linestyle='-', alpha=0.95, label='Flyover Connector Ramp (12m -> 26m)' if eid == 'transfer_City_3_EW_NS_fw' else None)
         elif 'c1_' in eid or 'spur_' in eid:

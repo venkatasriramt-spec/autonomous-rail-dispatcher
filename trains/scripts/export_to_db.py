@@ -65,6 +65,8 @@ def convert_to_sqlite():
         rake_id TEXT PRIMARY KEY,
         rolling_stock_type TEXT NOT NULL,
         home_depot TEXT NOT NULL,
+        overnight_stabling_track TEXT,
+        assigned_services_count INTEGER NOT NULL,
         FOREIGN KEY (rolling_stock_type) REFERENCES rolling_stock_types(type_id)
     );
     """)
@@ -160,8 +162,11 @@ def convert_to_sqlite():
     # Populate physical_rakes
     for rk in rakes:
         cur.execute("""
-        INSERT INTO physical_rakes VALUES (?, ?, ?)
-        """, (rk["rake_id"], rk["rolling_stock_type"], rk["home_depot"]))
+        INSERT INTO physical_rakes VALUES (?, ?, ?, ?, ?)
+        """, (
+            rk["rake_id"], rk["rolling_stock_type"], rk["home_depot"],
+            rk.get("overnight_stabling_track"), len(rk.get("assigned_services", []))
+        ))
 
     # Populate train_services, days, stops, bypasses, dispositions
     for s in timetable:

@@ -301,8 +301,13 @@ def export_services_mode(timetable, rs_types, norm_day, max_services=None):
     root = ET.Element("routes")
     add_vtypes(root, rs_types)
 
+    if norm_day != "all":
+        valid_timetable = [s for s in timetable if service_runs_on_day(s, norm_day)]
+    else:
+        valid_timetable = timetable
+
     timetable_sorted = sorted(
-        timetable,
+        valid_timetable,
         key=lambda s: s["stops"][0]["departure_sec"] if (s.get("stops") and "departure_sec" in s["stops"][0]) else s["departure_sec"]
     )
     if max_services:
