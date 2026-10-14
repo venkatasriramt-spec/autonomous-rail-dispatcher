@@ -121,19 +121,26 @@ The physical network consists of four major operational railway corridors, a hig
 
 ### 6. Grade-Separated Bi-Level Hub (`City_3`)
 At the grand crossing of Corridor 1 (East–West High-Speed Trunk) and Corridor 2 (North–South Spine), the network features a **Grade-Separated Bi-Level Station Hub**:
-- **Lower Level (`City_3_EW`):** Ground / sub-grade concourse at elevation $Z = 12.0\text{ m}$ (4 passenger platforms + 2 storage yards).
-- **Upper Level (`City_3_NS`):** Elevated viaduct structure at elevation $Z = 26.0\text{ m}$ (4 passenger platforms + 1 storage yard).
+- **Lower Level (`City_3_EW`):** Ground / sub-grade concourse at elevation $Z = 12.0\text{ m}$ (4 passenger platforms + 4 storage/staging yards, plus 2 high-speed turn-around pocket tracks with dead-end buffer stops).
+- **Upper Level (`City_3_NS`):** Elevated viaduct structure at elevation $Z = 26.0\text{ m}$ (4 passenger platforms + 4 storage/staging yards).
 - **Vertical Clearance:** $14.0\text{ m}$ of clear vertical headroom between tracks, completely eliminating flat at-grade crossings and train deadlock conflicts.
 - **Flyover Interchange Ramp (`transfer_City_3_EW_NS`):** A $789\text{ m}$ connecting track in the Northwest quadrant climbing at a gentle $1.77\%$ gradient ($R_{\text{min}} \ge 1,167\text{ m}$) enabling seamless bidirectional transfers between corridors.
 
 ### 7. Station Hierarchy & Capacities
-- **Cities (`City_1` through `City_6`):** Major hub terminals with 4–6 passenger platforms ($800\text{--}900\text{ m}$ length) and 1–2 yard storage sidings.
+- **Cities (`City_1` through `City_6`):** Major hub terminals with 4–6 passenger platforms ($800\text{--}900\text{ m}$ length) and 4–18 yard storage/layover sidings:
+  - **`City_1`:** 5 platforms, 18 stabling & freight layover yards ($800\text{ m}$), 3 parallel turnaround pocket tracks.
+  - **`City_2`:** 6 platforms, 4 stabling & freight layover yards ($900\text{ m}$).
+  - **`City_3_EW`:** 4 platforms, 4 stabling yards ($900\text{ m}$), 2 parallel turnaround pocket tracks.
+  - **`City_3_NS`:** 4 platforms, 4 stabling yards ($900\text{ m}$).
+  - **`City_4`:** 5 platforms, 6 stabling yards ($800\text{ m}$), 2 parallel turnaround pocket tracks.
+  - **`City_5`:** 5 platforms, 8 stabling & freight layover yards ($800\text{ m}$), 2 parallel turnaround pocket tracks.
+  - **`City_6`:** 5 platforms, 4 stabling yards ($800\text{ m}$), 2 parallel turnaround pocket tracks.
 - **Trunk Intermediate Towns (4-Track Layout):** 10 intermediate towns (`Town_1`, `Town_2`, `Town_3` on Corridor 1; `Town_4`, `Town_5`, `Town_6`, `Town_7` on Corridor 2; `Town_10`, `Town_11`, `Town_12` on Corridor 4) follow the real-world high-speed rail standard (e.g. Japanese Shinkansen, French LGV):
   - **2 Express Through-Tracks (`{stn}_thru_1`, `{stn}_thru_2`):** Running down the center alignment at full corridor line speed ($300\text{ km/h}$ / $83.33\text{ m/s}$ on Corridor 1; $120\text{ km/h}$ / $33.33\text{ m/s}$ on Corridors 2 and 4) with zero platform stops, allowing express services to bypass without deceleration.
   - **2 Flanking Platform Loops (`{stn}_plat_1`, `{stn}_plat_2`):** Diverging smoothly at station switch throats via long lead turnouts ($R \approx 8,000\text{ m}$) into $400\text{ m}$ passenger stopping loops speed-restricted to $50\text{ km/h}$ ($13.89\text{ m/s}$).
   - **1 Outer Yard Siding (`{stn}_yard_1`):** Siding track for maintenance and freight layovers ($20\text{ km/h}$).
-- **Secondary Towns (`Town_8`, `Town_9`):** Alpine branch line intermediate stops with 2 platform loops and 1 yard track.
-- **Depots (`Depot_1` through `Depot_4`):** Dedicated logistics, freight, and rolling stock maintenance yards with 3–4 siding tracks ($500\text{ m}$ length) and no passenger platforms.
+- **Secondary Towns (`Town_8`, `Town_9`):** Alpine branch line intermediate stops with 2 platform loops ($400\text{ m}$) and 1 yard track.
+- **Depots (`Depot_1` through `Depot_4`):** Dedicated logistics, freight, and rolling stock maintenance yards with 4 siding/pocket tracks ($500\text{ m}$ length) and no passenger platforms (`Depot_1`, `Depot_3`, `Depot_4` feature dead-end buffer stops; `Depot_2` is an inline through depot on Corridor 4).
 
 ### 8. Mid-Corridor High-Speed Universal Crossovers (*Überleitstellen*)
 Along long inter-station corridor segments, the network incorporates 8 **Paired Universal Crossovers** spaced every 5–8 km (reflecting French TGV *Points de Transition* / German ICE *Überleitstellen* practice):
@@ -167,9 +174,10 @@ Located midway along the steep mountain ascent between `Town_8` (El. $80\text{ m
 ### 10. Terminal Turn-Around Pocket Tracks & Buffer Stops (*Kopfmachen*)
 At major terminus stations and industrial depot boundaries (`City_1`, `City_3_EW`, `City_4`, `City_5`, `City_6`, `Depot_1`, `Depot_3`, `Depot_4`), the network incorporates dedicated parallel **Turn-Around Pocket Tracks** equipped with physical **Dead-End Buffer Stops** and **Interlocked Reversing Connections**:
 - **Terminus Locations & Allocations:**
-  - **`City_1` (Western High-Speed / Coastal Terminus):** 3 parallel tail tracks ($580\text{ m}$ nominal / $485\text{--}578\text{ m}$ clear standing length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $25\text{ kV}$, concrete slab) terminating at buffer stops `City_1_buf_1` through `_buf_3`, with 16 full-length ($800\text{ m}$) stabling yards providing dedicated overnight tracks for all 16 assigned rakes (5 HS, 6 REG-C1, 5 REG-C4).
+  - **`City_1` (Western High-Speed / Coastal Terminus):** 3 parallel tail tracks ($580\text{ m}$ nominal / $485\text{--}578\text{ m}$ clear standing length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $25\text{ kV}$, concrete slab) terminating at buffer stops `City_1_buf_1` through `_buf_3`, with 18 full-length ($800\text{ m}$) stabling yards providing dedicated overnight tracks for all 16 assigned passenger rakes (5 HS, 6 REG-C1, 5 REG-C4) plus 2 dedicated freight layover sidings.
+  - **`City_2` (Northwest Alpine & Bypass Gateway):** 4 full-length ($900\text{ m}$) dedicated layover sidings at this tri-directional junction (Corridor 1, Corridor 3, and the Bypass) providing freight staging and intermediate regional layover capacity.
   - **`City_4` (High-Speed Eastern Terminus):** 2 parallel tail tracks ($550\text{ m}$ nominal / $548\text{ m}$ clear standing length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $25\text{ kV}$, concrete slab) terminating at buffer stops `City_4_buf_1`, `City_4_buf_2`, with 6 stabling yard tracks.
-  - **`City_5` (Northern Regional / Bypass Terminus):** 2 parallel tail tracks ($580\text{ m}$ nominal / $485\text{ m}$ clear standing length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $15\text{ kV}$, ballast) terminating at buffer stops `City_5_buf_1`, `City_5_buf_2`, with 6 stabling yard tracks for the 6 assigned regional rakes (`REG-C2-01` to `06`).
+  - **`City_5` (Northern Regional / Bypass Terminus):** 2 parallel tail tracks ($580\text{ m}$ nominal / $485\text{ m}$ clear standing length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $15\text{ kV}$, ballast) terminating at buffer stops `City_5_buf_1`, `City_5_buf_2`, with 8 stabling yard tracks for the 6 assigned regional rakes (`REG-C2-01` to `06`) plus 2 dedicated freight layover sidings.
   - **`City_3_EW` (Central Bi-Level Hub):** 2 parallel high-speed tail tracks ($580\text{ m}$ nominal / $485\text{ m}$ clear standing length, electrified $25\text{ kV}$) terminating at buffer stops `City_3_EW_buf_1`, `City_3_EW_buf_2`, with 4 stabling yards at `City_3_EW` and 4 stabling yards at `City_3_NS`.
   - **`City_6` (Southern Regional Terminus):** 2 parallel tail tracks ($550\text{ m}$ nominal / $548\text{ m}$ clear standing length, speed $50\text{ km/h}$ / $13.89\text{ m/s}$, electrified $15\text{ kV}$, ballast) terminating at buffer stops `City_6_buf_1`, `City_6_buf_2`, with 4 stabling yard tracks.
   - **`Depot_1`, `Depot_3`, `Depot_4` (Electrified Logistics & Rolling Stock Depots):** 4 parallel storage pocket tracks each ($600\text{ m}$ nominal / $550\text{--}598\text{ m}$ clear standing length, speed $20\text{ km/h}$ / $5.55\text{ m/s}$, electrified $25\text{ kV}$, $12,000\text{ t}$ capacity) with dead-end buffer stops `Depot_*_buf_1` through `_buf_4`. Fully accommodates 400 m High-Speed EMUs and 420 m freight trains with zero throat switch overhang.
@@ -215,6 +223,7 @@ When defining train types in your downstream repository:
 - **Vehicle Class (`vClass`):** Must be set to either `rail_electric` (for high-speed EMUs) or `rail` (for regional or freight locomotives). Do **not** use `passenger` or default vehicle classes; non-rail vehicles are prohibited from entering these tracks.
 - **Train Length vs. Platform Fit:**
   - **High-Speed Cities (`City_1`–`City_6`):** Platforms are $800\text{--}900\text{ m}$ long. High-speed train length should be $\le 600\text{ m}$.
+  - **City Stabling & Layover Sidings (`City_1`–`City_6`):** Siding lengths are $800\text{--}900\text{ m}$.
   - **Regional Towns (`Town_1`–`Town_12`):** Platforms are $400\text{ m}$ long. Regional train length must be $\le 300\text{ m}$.
   - **Storage Yards (`Depot_1`–`Depot_4`):** Yard siding length is $500\text{ m}$.
   - *Note:* Trains longer than the platform will overhang switch throats and foul interlocking junctions.
@@ -236,7 +245,7 @@ Tracks are fully bi-directional (double-track mainlines) with consistent naming:
 - **Express Through-Tracks:** Non-stopping bypass tracks are designated `<Station>_thru_<N>_fw` / `<Station>_thru_<N>_bw` with metadata `<param key="is_through" value="true"/>`. Non-stopping express trains must be routed over these edges to prevent speed drops.
 - **Universal Crossover Tracks:** Turnout edges are designated `<Corridor>_xov_xov1_fw` / `<Corridor>_xov_xov1_bw` (Turnout 1) and `<Corridor>_xov_xov2_fw` / `<Corridor>_xov_xov2_bw` (Turnout 2) with metadata `<param key="is_crossover" value="true"/>`. Mainline through tracks within the crossover zone are `<Corridor>_xov_T1_mid_fw` and `<Corridor>_xov_T2_mid_fw`.
 - **Alpine Freight Passing Loop (*Überholgleis*):** On Corridor 3, the siding edges are designated `c3_Town_8_Town_9_loop_siding_fw` and `..._siding_bw` (speed $16.67\text{ m/s}$ / $60\text{ km/h}$) with metadata `<param key="is_passing_loop" value="true"/>`, accessed via lead turnouts `_lead_in_fw` and `_lead_out_fw`. Mainline through tracks are `_T1_mid_fw` / `_T1_mid_bw` ($33.33\text{ m/s}$).
-- **Terminal Turn-Around Pocket Tracks & Buffer Stops:** Reversal tail tracks at `City_4`, `City_6`, and `Depot_1/3/4` are designated `<Station>_pocket_<N>_fw` (inbound) and `<Station>_pocket_<N>_bw` (outbound) with metadata `<param key="buffer_stop" value="true"/>` and `<param key="is_tail_track" value="true"/>`. Trains terminate at buffer stop nodes `<Station>_buf_<N>` (`type="dead_end"`) before reversing direction.
+- **Terminal Turn-Around Pocket Tracks & Buffer Stops:** Reversal tail tracks at `City_1`, `City_3_EW`, `City_4`, `City_5`, `City_6`, and `Depot_1`, `Depot_3`, `Depot_4` are designated `<Station>_pocket_<N>_fw` (inbound) and `<Station>_pocket_<N>_bw` (outbound) with metadata `<param key="buffer_stop" value="true"/>` and `<param key="is_tail_track" value="true"/>`. Trains terminate at buffer stop nodes `<Station>_buf_<N>` (`type="dead_end"`) before reversing direction.
 - **Storage / Maintenance Yards:** Non-platform tracks are designated `<Station>_yard_<N>_fw` / `<Station>_yard_<N>_bw` with parameter `<param key="is_yard" value="true"/>`.
 
 ### 5. Embedded Infrastructure Telemetry (`<param>` Tags)

@@ -4,6 +4,7 @@ __pycache__/
 *$py.class
 *.pyo
 *.pyd
+.Python
 
 # C extensions
 *.so
@@ -24,6 +25,12 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.rar
+*.7z
 
 # Testing & code coverage
 .tox/
@@ -33,6 +40,7 @@ wheels/
 .cache
 nosetests.xml
 coverage.xml
+htmlcov/
 *.cover
 *.py,cover
 .hypothesis/
@@ -55,6 +63,8 @@ env/
 ENV/
 env.bak/
 venv.bak/
+pyenv/
+.venv2/
 
 # Environment variables & local secrets
 .env
@@ -62,14 +72,21 @@ venv.bak/
 .env.*
 *.local
 
-# Playwright & Browser automation / MCP
+# Playwright, Browser automation, MCP & AI Assistants
 .playwright-mcp/
 .playwright/
+.agents/
+.cursor/
+.gemini/
+.claude/
 
 # OS & Editor files
 .DS_Store
 Thumbs.db
+ehthumbs.db
+ehthumbs_vista.db
 desktop.ini
+.directory
 *.swp
 *.swo
 *~
@@ -78,16 +95,29 @@ desktop.ini
 *.sublime-project
 *.sublime-workspace
 
-# Logs and simulation dumps
+# Temporary & backup files
+*.bak
+*.backup
+*.old
+*.tmp
+tmp/
+temp/
+scratch/
+
+# Logs and simulation dumps / SUMO temporary configs
 *.log
 *.dump
 *.out
+*.neteditcfg
+*.netc.cfg
 
 # Generated preview images & visualizations
 # (Generated on demand via scripts/plot_*.py: plot_network, plot_bilevel_hub, plot_station_layout, plot_crossover, plot_passing_loop, plot_terminal_pockets)
 *.png
 *.jpg
 *.jpeg
+*.svg
+*.pdf
 
 # ==============================================================================
 # NOTE ON XML FILES:
@@ -95,3 +125,4 @@ desktop.ini
 # The primary deliverable of this repository is the compiled SUMO railway track
 # infrastructure (network_data/*.xml), which is explicitly version-controlled.
 # ==============================================================================
+

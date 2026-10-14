@@ -180,6 +180,10 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Implemented `scripts/plot_passing_loop.py` producing `scripts/alpine_passing_loop.png`, showcasing the 2D plan view of the siding and the +11.8‰ mountain grade profile.
   - Implemented `scripts/plot_terminal_pockets.py` producing `scripts/terminal_pocket_tracks.png`, showcasing 4-panel multi-terminal layouts for `City_4`, `City_6`, `Depot_1`, and `Depot_3`.
 
+---
+
+### 12 October 2026 — Fleet Lifecycle Operations & Buffer Stop Reversals
+
 #### Phase 13: Full Rolling Stock Lifecycle Track Infrastructure Overhaul
 - **Motivation:** To support realistic fleet lifecycle operations from morning depot rollout to evening stabling—preventing train consist overhangs, vehicle access restrictions, and dead-end trapping—seven fundamental track engineering changes were implemented:
   1. *Depot Pocket & Siding Expansion:* Increased pocket track lengths at `Depot_1`, `Depot_3`, and `Depot_4` from $300\text{ m}$ to **$500\text{ m}$**, accommodating full $400\text{ m}$ High-Speed EMUs (`high_speed_emu_300`) and $420\text{ m}$ freight consists (`heavy_freight_cargo`) without switch foul or throat overhang.
@@ -195,6 +199,10 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Evaluated `network_data/railway_topology.xml`: **0 error nodes**, **0 broken nodes**, **0 angle conflicts**, **0 disconnected lanes** across 294 nodes, 712 edges, 116 train stops, and 1,029 explicit connections.
   - All 21 buffer stop nodes validated cleanly as `railNodeType in="1" out="1"`.
   - Audited against `/home/venkatasriramt/Desktop/trains/scripts/export_to_sumo.py`: all 242 trips compiled with **100% verified routes** (242/242).
+
+---
+
+### 13 October 2026 — Interlocking Refinements & Dedicated Freight Layover Capacity
 
 #### Phase 14: Terminal Yard Ladder Expansion, Pocket Clearance & Interlocking Disambiguation
 - **Motivation:** Following an operational capacity audit against full-lifecycle fleet requirements (31 physical trainsets), severe bottlenecks, switch geometry penalties, and track clearance deficits were resolved:
@@ -216,3 +224,15 @@ A chronological log of how this abstract SUMO railway network evolved, from init
      - **Sharp Turnout Speed Reductions:** 1 warning across the entire network (reduced from 105 to 1, a 99% reduction).
      - **Topology Audit:** 0 error nodes, 0 broken nodes, 0 angle conflicts, 0 disconnected lanes across 296 nodes, 738 edges, 116 train stops.
      - **Downstream Routing:** Tested against `trains/scripts/export_to_sumo.py` with 100% verified route compilation across all continuous rakes.
+
+#### Phase 15: Strategic Freight Layover Capacity Expansion at City Hubs (`City_1`, `City_2`, `City_5`)
+- **Motivation:** In downstream operational simulations, heavy freight trains running across Corridor 1, Corridor 2, Corridor 3, and the High-Speed Diagonal Bypass required dedicated staging sidings at intermediate and terminus city junctions without blocking passenger platform tracks or passenger EMU overnight stabling berths:
+  1. *Western Terminus Freight Capacity (`City_1`):* Expanded stabling yard tracks from 16 to **18 dedicated full-length ($800\text{ m}$) electrified tracks**, providing 2 dedicated freight layover sidings alongside the 16 passenger EMU stabling berths (5 HS, 6 REG-C1, 5 REG-C4).
+  2. *Northern Terminus Freight Capacity (`City_5`):* Expanded stabling yard tracks from 6 to **8 dedicated full-length ($800\text{ m}$) tracks**, allocating 2 dedicated freight layover sidings alongside the 6 regional passenger rakes (`REG-C2-01` to `06`).
+  3. *Alpine & Bypass Junction Staging (`City_2`):* Expanded stabling yard tracks from 2 to **4 dedicated full-length ($900\text{ m}$) tracks**, doubling siding capacity at this critical tri-directional nodal junction where Corridor 1 (East-West Trunk), Corridor 3 (Alpine Mountain Line), and the High-Speed Diagonal Bypass (`bypass_City_2_City_5`) converge.
+- **Topological & Compilation Verification:**
+  - Recompiled cleanly via `netconvert` with zero fatal errors: **Exit code 0**.
+  - Evaluated `network_data/railway_topology.xml`: **0 error nodes**, **0 broken nodes**, **0 angle conflicts**, **0 disconnected lanes** across **291 nodes**, **776 plain edges**, **116 train stops**, and **1,614 explicit connections** in `dense_network.con.xml` (**3,932 compiled connections** in `dense_network.net.xml`).
+  - All 23 buffer stop dead-end nodes validated cleanly as `railNodeType in="1" out="1"`.
+  - All 34 switches (32 crossover switches + 2 passing loop switches) validated with 0 geometric defects.
+

@@ -15,9 +15,9 @@ axes = [ax1, ax2, ax3, ax4, ax5, ax6]
 for ax in axes: ax.set_facecolor('#090d16')
 
 terminals = [
-    ('City_1', ax1, 'City_1: Western High-Speed Terminus (3 Pockets [580m] & 16 Stabling Yards)', -13000, 1000, 800, True),
+    ('City_1', ax1, 'City_1: Western High-Speed Terminus (3 Pockets [580m] & 18 Stabling Yards)', -13000, 1000, 800, True),
     ('City_4', ax2, 'City_4: Eastern High-Speed Terminus (2 Pockets [550m] & 6 Stabling Yards)', 14200, 0, 800, False),
-    ('City_5', ax3, 'City_5: Northern Regional Terminus (2 Pockets [580m] & 6 Stabling Yards)', 4200, 12500, 800, True),
+    ('City_5', ax3, 'City_5: Northern Regional Terminus (2 Pockets [580m] & 8 Stabling Yards)', 4200, 12500, 800, True),
     ('City_6', ax4, 'City_6: Southern Regional Terminus (2 Pockets [550m] & 4 Stabling Yards)', 6500, -10000, 800, False),
     ('Depot_1', ax5, 'Depot_1: Mountain Alpine Freight Staging (4x 600m Pockets)', -13500, 11200, 700, False),
     ('Depot_4', ax6, 'Depot_4: Electrified High-Speed EMU Depot (4x 600m Pockets)', 6500, 1000, 700, False)
