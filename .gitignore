@@ -40,6 +40,8 @@ desktop.ini
 tmp/
 temp/
 scratch/
+trains/scratch/
+trains/sumo_config/days/
 *.tmp
 *.bak
 *.backup

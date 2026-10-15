@@ -166,3 +166,21 @@ python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.z
 python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/benchmark_results.json --output-dir dispatcher/logs
 ```
 
+### 4. Comprehensive Weekly Calendar Audit Scripts
+Three specialized audit pipelines are available for large-scale evaluation:
+
+- **`audit_cross_comparison_24h.py`**: Runs 28 parallel 24-hour simulations (7 days × 4 dispatchers) with full cross-comparison of Static, FIFO, Priority Greedy, and PPO policies.
+- **`audit_full_day_parallel.py`**: Runs 7 parallel 24-hour simulations comparing AI vs Static baseline across all 7 calendar days.
+- **`audit_weekly_calendar.py`**: Analyzes policy behavior differences between weekday commuter traffic and weekend clockface operations during morning peak hours.
+
+```bash
+# Run full weekly cross-comparison (7 days × 4 models = 28 runs)
+python3 dispatcher/evaluation/audit_cross_comparison_24h.py
+
+# Run AI vs Static baseline across all 7 days
+python3 dispatcher/evaluation/audit_full_day_parallel.py
+
+# Analyze weekend vs weekday intervention patterns
+python3 dispatcher/evaluation/audit_weekly_calendar.py
+```
+

@@ -88,6 +88,9 @@ def evaluate_single_run(
     }
 
 
+evaluate_dispatcher = evaluate_single_run
+
+
 def run_benchmark_suite(
     model_path: Optional[str] = None,
     disruption_mode: str = "train_delay",

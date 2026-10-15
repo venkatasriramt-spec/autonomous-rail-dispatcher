@@ -96,8 +96,19 @@ class ActionHandler:
                                 route_idx = traci_module.vehicle.getRouteIndex(focus_veh_id)
                                 remaining = curr_route[route_idx:] if 0 <= route_idx < len(curr_route) else curr_route
 
-                                # Only replace if scheduled platform is downstream on active route
-                                if curr_plat_edge in remaining:
+                                # Guardrail 1: The stop being modified MUST be an active passenger platform stop
+                                # (Never modify yard sidings, depots, or turnaround pocket reversal stops)
+                                stop_lane = getattr(curr_stop, "lane", "")
+                                is_actual_platform_stop = (
+                                    curr_plat_edge and 
+                                    (stop_lane.startswith(curr_plat_edge) or "_plat_" in stop_lane) and
+                                    "_pocket_" not in stop_lane and
+                                    "_yard_" not in stop_lane and
+                                    "_buf_" not in stop_lane
+                                )
+
+                                # Guardrail 2: The platform MUST be in the immediate approach (next 15 edges)
+                                if is_actual_platform_stop and curr_plat_edge in remaining[:15]:
                                     traci_module.vehicle.replaceStop(
                                         focus_veh_id,
                                         0,
@@ -105,7 +116,6 @@ class ActionHandler:
                                         pos=min(curr_stop.endPos, 500.0),
                                         duration=max(45.0, curr_stop.duration)
                                     )
-                                    traci_module.vehicle.rerouteTraveltime(focus_veh_id)
                                     action_summary["changes"].append({
                                         "type": "platform_reassigned",
                                         "from": curr_plat_edge,
@@ -113,6 +123,11 @@ class ActionHandler:
                                         "station": st_name,
                                         "train_len": train_len,
                                         "platform_len": st_plat_len
+                                    })
+                                else:
+                                    action_summary["changes"].append({
+                                        "type": "action_rejected",
+                                        "reason": f"Next stop for {focus_veh_id} is not an approachable passenger platform ({stop_lane})"
                                     })
                         except Exception:
                             pass
@@ -138,18 +153,22 @@ class ActionHandler:
                         route_idx = traci_module.vehicle.getRouteIndex(focus_veh_id)
                         remaining = curr_route[route_idx:] if 0 <= route_idx < len(curr_route) else curr_route
 
-                        # Only insert stop if siding track is physically downstream on remaining route
-                        if siding_edge in remaining:
+                        # Guardrail 3: Siding track must be physically in immediate downstream approach (next 8 edges)
+                        if siding_edge in remaining[:8]:
                             traci_module.vehicle.setStop(
                                 focus_veh_id,
                                 edgeID=siding_edge,
                                 pos=200.0,
                                 duration=180.0
                             )
-                            traci_module.vehicle.rerouteTraveltime(focus_veh_id)
                             action_summary["changes"].append({
                                 "type": "diverted_to_passing_loop",
                                 "siding": siding_edge
+                            })
+                        else:
+                            action_summary["changes"].append({
+                                "type": "action_rejected",
+                                "reason": f"Siding {siding_edge} not in immediate approach for {focus_veh_id}"
                             })
                     except Exception:
                         pass
