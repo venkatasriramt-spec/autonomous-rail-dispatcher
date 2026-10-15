@@ -153,6 +153,7 @@ class RailwayDispatchEnv(gym.Env):
         super().reset(seed=seed)
 
         self._close_traci()
+        self.instance_id = f"rail_env_{uuid.uuid4().hex[:8]}"
 
         binary = "sumo-gui" if self.gui else "sumo"
         cmd = [
@@ -240,9 +241,11 @@ class RailwayDispatchEnv(gym.Env):
         self.completed_trains.clear()
         step_knock_ons = 0
 
+        applied_veh_id = self.focus_veh_id
+
         # 1. Apply Dispatcher Decision to Focus Train
         self.action_handler.apply_action(
-            self.focus_veh_id,
+            applied_veh_id,
             action,
             self.train_states,
             self.sim_time,
@@ -288,12 +291,14 @@ class RailwayDispatchEnv(gym.Env):
             self.train_states.clear()
             self.focus_veh_id = None
 
-        # 4. Compute Reward
+        # 4. Compute Reward (including intervention penalty on applied_veh_id)
         reward = self.reward_engine.compute_reward(
             self.train_states,
             self.departed_ontime,
             self.completed_trains,
-            step_knock_ons
+            step_knock_ons,
+            focus_veh_id=applied_veh_id,
+            action=action
         )
 
         # 5. Check Termination Conditions
@@ -332,12 +337,14 @@ class RailwayDispatchEnv(gym.Env):
         }
 
     def _close_traci(self):
-        if self.is_connected:
-            try:
-                traci.close()
-            except Exception:
-                pass
-            self.is_connected = False
+        try:
+            if hasattr(traci, "_connections"):
+                traci._connections.pop(self.instance_id, None)
+                traci._connections.pop("default", None)
+            traci.close()
+        except Exception:
+            pass
+        self.is_connected = False
 
     def close(self):
         self._close_traci()

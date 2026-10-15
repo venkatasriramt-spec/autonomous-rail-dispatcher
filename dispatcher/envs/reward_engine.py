@@ -16,7 +16,8 @@ class RewardEngine:
         secondary_delay_weight: float = 0.1,
         ontime_bonus: float = 1.0,
         completion_bonus: float = 5.0,
-        unnecessary_stop_penalty: float = 0.5
+        unnecessary_stop_penalty: float = 0.5,
+        action_penalty_weight: float = 0.5
     ):
         self.delay_weight = delay_weight
         self.delay_delta_weight = delay_delta_weight
@@ -24,6 +25,7 @@ class RewardEngine:
         self.ontime_bonus = ontime_bonus
         self.completion_bonus = completion_bonus
         self.unnecessary_stop_penalty = unnecessary_stop_penalty
+        self.action_penalty_weight = action_penalty_weight
 
         # Priority weights based on passenger capacity and class importance
         self.priority_weights = {
@@ -57,7 +59,9 @@ class RewardEngine:
         train_states: Dict[str, Dict[str, Any]],
         departed_ontime: List[str],
         completed_trains: List[str],
-        knock_on_events: int
+        knock_on_events: int,
+        focus_veh_id: Any = None,
+        action: Any = None
     ) -> float:
         """
         Compute total reward for the step.
@@ -96,5 +100,35 @@ class RewardEngine:
         # 4. Service completion bonus
         for vid in completed_trains:
             total_reward += self.completion_bonus
+
+        # 5. Intervention Cost & "Do-Nothing" Bias
+        if focus_veh_id and action is not None and focus_veh_id in train_states:
+            focus_state = train_states[focus_veh_id]
+            route_act = int(action[0]) if len(action) > 0 else 0
+            plat_act = int(action[1]) if len(action) > 1 else 0
+            hold_act = int(action[2]) if len(action) > 2 else 0
+
+            leader_dist = focus_state.get("leader_dist", 3000.0)
+            leader_id = focus_state.get("leader_id", None)
+            has_close_leader = (leader_id is not None and leader_dist < 2000.0)
+            is_overtake_candidate = focus_state.get("is_overtake_candidate", False)
+            delay_sec = focus_state.get("delay_sec", 0.0)
+
+            # A. Penalty for holding when no train is within 2km ahead
+            if hold_act > 0:
+                if not has_close_leader:
+                    # Unnecessary hold: penalize proportionally to hold duration
+                    hold_penalty = 0.5 if hold_act == 1 else (1.0 if hold_act == 2 else 2.0)
+                    total_reward -= self.action_penalty_weight * hold_penalty
+
+            # B. Penalty for passing loop diversion when no train is overtaking from behind
+            if route_act == 1:
+                if not is_overtake_candidate:
+                    total_reward -= self.action_penalty_weight * 0.8
+
+            # C. Reward for "Do-Nothing" adherence when on schedule and conflict-free
+            if route_act == 0 and plat_act == 0 and hold_act == 0:
+                if delay_sec < 60.0 and not has_close_leader:
+                    total_reward += 0.05  # Small bonus for letting timetable run without disruption
 
         return float(total_reward)

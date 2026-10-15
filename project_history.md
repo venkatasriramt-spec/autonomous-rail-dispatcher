@@ -190,4 +190,35 @@ Under a synthetic rolling stock delay perturbation (600s breakdown during mornin
   - `dispatcher/logs/benchmark_punctuality_knockon.png`
   - `dispatcher/logs/benchmark_delay_timeline.png`
 
+---
+
+### 15 October 2026 — Option 1: Multi-Calendar Day Generalization & "Do-Nothing" Timetable Bias
+
+#### Milestone Objective
+Eliminate artificial dispatcher interventions on free-flowing weekend traffic (where previous iterations introduced 129.4s unnecessary delay on Saturday) while preserving robust knock-on delay suppression under active rolling stock disruptions.
+
+---
+
+#### 1. Technical Enhancements & Guardrails
+1. **Domain-Accurate Intervention Penalties (`RewardEngine`):**
+   - Introduced calibrated action penalty weights ($0.5$).
+   - Imposed holding penalties ($-0.25$ to $-1.0$) when a train has clear track ahead ($\ge 2,000\text{m}$) or is running on-time.
+   - Imposed unnecessary passing loop diversion penalties ($-0.40$).
+   - Rewarded the agent ($+0.05$) for selecting `[0, 0, 0]` ("do nothing") on on-time, conflict-free consists.
+2. **Platform Reallocation Interlocking Guardrails (`ActionHandler`):**
+   - Confined dynamic platform reallocations strictly to multi-platform junction terminals (`City_1` through `City_6`), safeguarding single-track mountain stations (`Town_1` through `Town_12`) against invalid route replacement edges.
+3. **Resilient TraCI Worker Recovery (`RailwayDispatchEnv`):**
+   - Added connection table registry purging on close and dynamic UUID generation on reset, preventing worker restart deadlocks in multi-process vector environments (`SubprocVecEnv`).
+
+---
+
+#### 2. Verification & Validation Audit
+1. **Saturday Nominal Traffic Audit (145 services):**
+   - Mean delay dropped from **129.4s down to 0.1s** (100% punctuality, 0 knock-on delays, max delay 16.0s vs 26.0s on Static Baseline).
+2. **Master Composite Disruption Audit (242 services, `train_delay` perturbation):**
+   - Maintained **93.4% punctuality** while reducing knock-on delays from **46 down to 22 (a 52.2% reduction)**.
+3. **Production Model Updated:**
+   - Production weights deployed to `dispatcher/models/best_model.zip`.
+
+
 

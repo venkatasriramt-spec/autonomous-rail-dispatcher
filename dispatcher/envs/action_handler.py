@@ -53,8 +53,8 @@ class ActionHandler:
             train_len = focus_state.get("train_length", 200.0)
             is_freight = focus_state.get("is_freight", False)
 
-            # Reallocate platform only when within approach zone (200m - 2500m)
-            if st_name and st_name in STATION_PLATFORMS and 200.0 < dist < 2500.0:
+            # Reallocate platform only when within approach zone (200m - 2500m) and strictly at multi-platform City hubs
+            if st_name and st_name in STATION_PLATFORMS and st_name.startswith("City_") and 200.0 < dist < 2500.0:
                 st_plat_len = PLATFORM_LENGTHS.get(st_name, 340.0)
 
                 # Physical Constraint 1: Platform Length Check
