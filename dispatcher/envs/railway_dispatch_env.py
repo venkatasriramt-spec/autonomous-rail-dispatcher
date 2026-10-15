@@ -22,6 +22,10 @@ elif os.path.exists("/usr/share/sumo/tools"):
         sys.path.append("/usr/share/sumo/tools")
 
 import traci
+try:
+    from sumolib.miscutils import getFreeSocketPort
+except ImportError:
+    getFreeSocketPort = None
 
 from .observation_builder import ObservationBuilder
 from .action_handler import ActionHandler
@@ -155,21 +159,33 @@ class RailwayDispatchEnv(gym.Env):
             binary,
             "-c", self.sumocfg_path,
             "--no-step-log", "true",
-            "--time-to-teleport", "-1",
-            "--collision.action", "warn",
+            "--time-to-teleport", "180",
+            "--collision.action", "teleport",
+            "--no-warnings", "true",
             "--duration-log.disable", "true",
             "--random", "true"
         ]
+        if self.start_time_sec > 0:
+            cmd.extend(["--begin", str(int(self.start_time_sec))])
+
+        port = None
+        if getFreeSocketPort is not None:
+            try:
+                port = getFreeSocketPort()
+            except Exception:
+                port = None
 
         try:
-            traci.start(cmd, label=self.instance_id)
+            if port is not None:
+                traci.start(cmd, port=port, label=self.instance_id)
+            else:
+                traci.start(cmd, label=self.instance_id)
             self.is_connected = True
-        except Exception as e:
-            # Fallback without label if needed
+        except Exception:
             traci.start(cmd)
             self.is_connected = True
 
-        self.sim_time = 0.0
+        self.sim_time = self.start_time_sec
         self.episode_step_count = 0
         self.total_knock_on_events = 0
         self.departed_ontime.clear()
@@ -178,11 +194,12 @@ class RailwayDispatchEnv(gym.Env):
         self.action_handler.reset()
         self.disruption_manager.reset()
 
-        # Fast-forward simulation to target start time (e.g. 21,600s / 06:00 AM)
-        if self.start_time_sec > 0:
-            while self.sim_time < self.start_time_sec:
-                traci.simulationStep()
-                self.sim_time = traci.simulation.getTime()
+        # Initial step to synchronize simulation time with begin
+        try:
+            traci.simulationStep()
+            self.sim_time = traci.simulation.getTime()
+        except Exception:
+            pass
 
         # Update initial fleet state
         self._refresh_train_states()
@@ -234,30 +251,42 @@ class RailwayDispatchEnv(gym.Env):
 
         # 2. Advance Microscopic Simulation by macro_step_sec (e.g. 15s)
         target_time = self.sim_time + self.macro_step_sec
+        sim_alive = True
         while self.sim_time < target_time and self.sim_time < self.end_time_sec:
             # Check for disruption triggers
             self.disruption_manager.step(self.sim_time, traci)
-            traci.simulationStep()
-            self.sim_time = traci.simulation.getTime()
+            try:
+                traci.simulationStep()
+                self.sim_time = traci.simulation.getTime()
+            except Exception:
+                sim_alive = False
+                break
 
             # Detect secondary knock-on decelerations
-            active_vehs = traci.vehicle.getIDList()
-            for vid in active_vehs:
-                try:
-                    leader_info = traci.vehicle.getLeader(vid, 1000.0)
-                    if leader_info:
-                        lead_id, dist = leader_info
-                        if dist < 250.0 and traci.vehicle.getSpeed(vid) < 5.0:
-                            # Train caught behind stopped/slow lead train
-                            step_knock_ons += 1
-                except Exception:
-                    pass
+            try:
+                active_vehs = traci.vehicle.getIDList()
+                for vid in active_vehs:
+                    try:
+                        leader_info = traci.vehicle.getLeader(vid, 1000.0)
+                        if leader_info:
+                            lead_id, dist = leader_info
+                            if dist < 250.0 and traci.vehicle.getSpeed(vid) < 5.0:
+                                # Train caught behind stopped/slow lead train
+                                step_knock_ons += 1
+                    except Exception:
+                        pass
+            except Exception:
+                pass
 
         self.total_knock_on_events += step_knock_ons
 
         # 3. Refresh Fleet State & Next Focus Vehicle
-        self._refresh_train_states()
-        self.focus_veh_id = self._select_focus_vehicle()
+        if sim_alive:
+            self._refresh_train_states()
+            self.focus_veh_id = self._select_focus_vehicle()
+        else:
+            self.train_states.clear()
+            self.focus_veh_id = None
 
         # 4. Compute Reward
         reward = self.reward_engine.compute_reward(
@@ -268,7 +297,7 @@ class RailwayDispatchEnv(gym.Env):
         )
 
         # 5. Check Termination Conditions
-        terminated = self.sim_time >= self.end_time_sec
+        terminated = (self.sim_time >= self.end_time_sec) or (not sim_alive)
         truncated = False
 
         obs = self.obs_builder.build_observation(

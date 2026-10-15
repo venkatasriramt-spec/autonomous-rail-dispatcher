@@ -87,9 +87,12 @@ def main():
     parser.add_argument("--lr", type=float, default=3e-4, help="Learning rate")
     parser.add_argument("--save-dir", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "models"))
     parser.add_argument("--log-dir", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "logs"))
-    parser.add_argument("--start-time", type=float, default=21600.0, help="Custom simulation start time in seconds")
-    parser.add_argument("--horizon", type=float, default=7200.0, help="Custom simulation horizon in seconds per episode")
+    parser.add_argument("--load-model", type=str, default=None, help="Path to pre-trained model checkpoint to resume from")
+    parser.add_argument("--model-name", type=str, default=None, help="Custom filename for the saved model")
     args = parser.parse_args()
+
+    # Cap main process threads to avoid CPU contention with parallel workers
+    torch.set_num_threads(min(8, torch.get_num_threads()))
 
     if args.wave != "custom":
         cfg = WAVE_CONFIGS[args.wave]
@@ -112,6 +115,8 @@ def main():
     print(f"Learning Rate:        {args.lr}")
     print(f"Simulation Window:    {args.start_time:.0f}s to {args.start_time + args.horizon:.0f}s ({(args.horizon)/3600:.1f} hours)")
     print(f"PyTorch Device:       {'cpu'} ({torch.get_num_threads()} threads)")
+    if args.load_model:
+        print(f"Resume Checkpoint:    {args.load_model}")
     print("-" * 70)
 
     # Initialize vectorized environment
@@ -131,27 +136,36 @@ def main():
     else:
         vec_env = SubprocVecEnv(env_fns)
 
-    # PPO Architecture: 2-layer MLP [128, 128] for CPU efficiency
-    policy_kwargs = dict(
-        net_arch=dict(pi=[128, 128], vf=[128, 128]),
-        activation_fn=torch.nn.Tanh
-    )
+    if args.load_model and os.path.exists(args.load_model):
+        print(f"[*] Loading pre-trained policy from: {args.load_model}")
+        model = PPO.load(
+            args.load_model,
+            env=vec_env,
+            learning_rate=args.lr,
+            tensorboard_log=args.log_dir
+        )
+    else:
+        # PPO Architecture: 2-layer MLP [128, 128] for CPU efficiency
+        policy_kwargs = dict(
+            net_arch=dict(pi=[128, 128], vf=[128, 128]),
+            activation_fn=torch.nn.Tanh
+        )
 
-    model = PPO(
-        policy="MlpPolicy",
-        env=vec_env,
-        learning_rate=args.lr,
-        n_steps=256,
-        batch_size=64,
-        n_epochs=10,
-        gamma=0.99,
-        gae_lambda=0.95,
-        clip_range=0.2,
-        ent_coef=0.01,
-        policy_kwargs=policy_kwargs,
-        tensorboard_log=args.log_dir,
-        verbose=1
-    )
+        model = PPO(
+            policy="MlpPolicy",
+            env=vec_env,
+            learning_rate=args.lr,
+            n_steps=256,
+            batch_size=64,
+            n_epochs=10,
+            gamma=0.99,
+            gae_lambda=0.95,
+            clip_range=0.2,
+            ent_coef=0.01,
+            policy_kwargs=policy_kwargs,
+            tensorboard_log=args.log_dir,
+            verbose=1
+        )
 
     callback = RailwayMetricsCallback(
         check_freq=100,
@@ -165,10 +179,17 @@ def main():
     except KeyboardInterrupt:
         print("[!] Training interrupted by user.")
     finally:
-        final_path = os.path.join(args.save_dir, "ppo_dispatcher_final.zip")
+        model_name = args.model_name or f"ppo_dispatcher_{args.wave}.zip"
+        if not model_name.endswith(".zip"):
+            model_name += ".zip"
+        final_path = os.path.join(args.save_dir, model_name)
         model.save(final_path)
-        print(f"[✓] Final model checkpoint saved to: {final_path}")
+        best_path = os.path.join(args.save_dir, "best_model.zip")
+        model.save(best_path)
+        print(f"[✓] Stage checkpoint saved to: {final_path}")
+        print(f"[✓] Active system model updated: {best_path}")
         vec_env.close()
+
 
 
 if __name__ == "__main__":

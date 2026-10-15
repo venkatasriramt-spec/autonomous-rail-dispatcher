@@ -74,30 +74,46 @@ class ActionHandler:
                     target_idx = (plat_act - 1) % len(available_plats)
                     target_plat_edge = available_plats[target_idx]
                     curr_plat_edge = focus_state.get("scheduled_platform_edge")
+                    dist_to_stop = focus_state.get("dist_to_next_stop", 9999.0)
+                    is_at_stop = focus_state.get("is_at_stop", False)
 
-                    if target_plat_edge != curr_plat_edge:
+                    if is_at_stop:
+                        action_summary["changes"].append({
+                            "type": "action_rejected",
+                            "reason": f"Train {focus_veh_id} is already berthed at {curr_plat_edge}; cannot reassign platform"
+                        })
+                    elif dist_to_stop < 400.0:
+                        action_summary["changes"].append({
+                            "type": "action_rejected",
+                            "reason": f"Approach locking: train {focus_veh_id} is within {dist_to_stop:.0f}m of {st_name} throat; interlocking locked"
+                        })
+                    elif target_plat_edge != curr_plat_edge:
                         try:
                             stops = traci_module.vehicle.getStops(focus_veh_id)
                             if stops:
                                 curr_stop = stops[0]
-                                # Replace next stop with target platform track
-                                traci_module.vehicle.replaceStop(
-                                    focus_veh_id,
-                                    0,
-                                    target_plat_edge,
-                                    pos=min(curr_stop.endPos, 500.0),
-                                    duration=max(45.0, curr_stop.duration)
-                                )
-                                # Update route to traverse the new platform throat switch
-                                traci_module.vehicle.rerouteTraveltime(focus_veh_id)
-                                action_summary["changes"].append({
-                                    "type": "platform_reassigned",
-                                    "from": curr_plat_edge,
-                                    "to": target_plat_edge,
-                                    "station": st_name,
-                                    "train_len": train_len,
-                                    "platform_len": st_plat_len
-                                })
+                                curr_route = traci_module.vehicle.getRoute(focus_veh_id)
+                                route_idx = traci_module.vehicle.getRouteIndex(focus_veh_id)
+                                remaining = curr_route[route_idx:] if 0 <= route_idx < len(curr_route) else curr_route
+
+                                # Only replace if scheduled platform is downstream on active route
+                                if curr_plat_edge in remaining:
+                                    traci_module.vehicle.replaceStop(
+                                        focus_veh_id,
+                                        0,
+                                        target_plat_edge,
+                                        pos=min(curr_stop.endPos, 500.0),
+                                        duration=max(45.0, curr_stop.duration)
+                                    )
+                                    traci_module.vehicle.rerouteTraveltime(focus_veh_id)
+                                    action_summary["changes"].append({
+                                        "type": "platform_reassigned",
+                                        "from": curr_plat_edge,
+                                        "to": target_plat_edge,
+                                        "station": st_name,
+                                        "train_len": train_len,
+                                        "platform_len": st_plat_len
+                                    })
                         except Exception:
                             pass
 
@@ -119,8 +135,11 @@ class ActionHandler:
                     siding_edge = f"c3_Town_8_Town_9_loop_siding_{direction}"
                     try:
                         curr_route = traci_module.vehicle.getRoute(focus_veh_id)
-                        # Only insert stop if siding or loop track is downstream on this route
-                        if siding_edge in curr_route or any("loop" in e for e in curr_route):
+                        route_idx = traci_module.vehicle.getRouteIndex(focus_veh_id)
+                        remaining = curr_route[route_idx:] if 0 <= route_idx < len(curr_route) else curr_route
+
+                        # Only insert stop if siding track is physically downstream on remaining route
+                        if siding_edge in remaining:
                             traci_module.vehicle.setStop(
                                 focus_veh_id,
                                 edgeID=siding_edge,
