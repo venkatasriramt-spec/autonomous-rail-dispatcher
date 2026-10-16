@@ -25,8 +25,13 @@ if ROOT_DIR not in sys.path:
 
 MODELS_DIR = os.path.join(ROOT_DIR, "dispatcher", "models")
 LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs")
+CALENDAR_DIR = os.path.join(LOGS_DIR, "evaluations", "calendar_audits")
+DISRUPTION_DIR = os.path.join(LOGS_DIR, "evaluations", "disruption_benchmarks")
+VIZ_DIR = os.path.join(LOGS_DIR, "visual_proofs")
 os.makedirs(MODELS_DIR, exist_ok=True)
-os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(CALENDAR_DIR, exist_ok=True)
+os.makedirs(DISRUPTION_DIR, exist_ok=True)
+os.makedirs(VIZ_DIR, exist_ok=True)
 
 PYTHON = sys.executable
 
@@ -105,7 +110,7 @@ def main():
     # -------------------------------------------------------------
     # 5. Audit Saturday Nominal Performance (Verify 0 unnecessary holds)
     # -------------------------------------------------------------
-    sat_audit_json = os.path.join(LOGS_DIR, "option1_saturday_eval.json")
+    sat_audit_json = os.path.join(CALENDAR_DIR, "option1_saturday_eval.json")
     run_step(
         [
             PYTHON, "dispatcher/evaluation/evaluate.py",
@@ -113,7 +118,7 @@ def main():
             "--disruption", "none",
             "--start-time", "25200",
             "--horizon", "3600",
-            "--output", sat_audit_json
+            "--output-json", sat_audit_json
         ],
         "Audit Saturday Performance (Verify Elimination of Artificial Delays)"
     )
@@ -129,7 +134,7 @@ def main():
     # -------------------------------------------------------------
     # 7. Audit Disruption Response on Composite Fleet
     # -------------------------------------------------------------
-    comp_audit_json = os.path.join(LOGS_DIR, "option1_disruption_eval.json")
+    comp_audit_json = os.path.join(DISRUPTION_DIR, "option1_disruption_eval.json")
     run_step(
         [
             PYTHON, "dispatcher/evaluation/evaluate.py",
@@ -137,7 +142,7 @@ def main():
             "--disruption", "train_delay",
             "--start-time", "25200",
             "--horizon", "3600",
-            "--output", comp_audit_json
+            "--output-json", comp_audit_json
         ],
         "Audit Disruption Response (Verify Knock-on Delay Mitigation)"
     )
@@ -149,7 +154,7 @@ def main():
         [
             PYTHON, "dispatcher/evaluation/visualizer.py",
             "--json", comp_audit_json,
-            "--output-dir", LOGS_DIR
+            "--output-dir", VIZ_DIR
         ],
         "Generate Visual Proof Charts for Option 1"
     )

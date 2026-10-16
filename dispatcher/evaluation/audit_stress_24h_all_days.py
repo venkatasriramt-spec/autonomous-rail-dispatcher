@@ -45,7 +45,7 @@ from dispatcher.evaluation.evaluate import ModelAgentWrapper
 from dispatcher.scenarios.perturbations import PerturbationConfig
 from trains.scripts.export_to_sumo import compile_sumo_files
 
-LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs")
+LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs", "evaluations", "stress_tests")
 MODEL_PATH = os.path.join(ROOT_DIR, "dispatcher", "models", "best_model.zip")
 DAYS_DIR = os.path.join(ROOT_DIR, "trains", "sumo_config", "days")
 

@@ -13,14 +13,19 @@ import numpy as np
 
 def plot_benchmark_charts(
     json_path: str,
-    output_dir: str = "dispatcher/logs"
+    output_dir: str = "dispatcher/logs/visual_proofs"
 ):
     """
     Plots comparative delay, punctuality, and timeline charts from benchmark JSON.
     """
     if not os.path.exists(json_path):
-        print(f"[!] Results JSON not found: {json_path}")
-        return
+        # Fallback resolution between legacy root and new structured path
+        fallback = os.path.join("dispatcher", "logs", "evaluations", "disruption_benchmarks", os.path.basename(json_path))
+        if os.path.exists(fallback):
+            json_path = fallback
+        else:
+            print(f"[!] Results JSON not found: {json_path}")
+            return
 
     with open(json_path, "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -131,8 +136,8 @@ def plot_benchmark_charts(
 
 def main():
     parser = argparse.ArgumentParser(description="Plot benchmark evaluation charts")
-    parser.add_argument("--json", type=str, default="dispatcher/logs/benchmark_results.json", help="Path to results JSON")
-    parser.add_argument("--output-dir", type=str, default="dispatcher/logs", help="Directory to save charts")
+    parser.add_argument("--json", type=str, default="dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json", help="Path to results JSON")
+    parser.add_argument("--output-dir", type=str, default="dispatcher/logs/visual_proofs", help="Directory to save charts")
     args = parser.parse_args()
 
     plot_benchmark_charts(args.json, args.output_dir)

@@ -175,7 +175,7 @@ python3 dispatcher/training/train.py --timesteps 5000 --start-time 21600 --horiz
 python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay
 
 # Render publication-quality benchmark charts:
-python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/benchmark_results.json
+python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json
 ```
 
 ### Step 8: Interactive Inspection in SUMO GUI

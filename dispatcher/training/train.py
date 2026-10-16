@@ -79,14 +79,16 @@ WAVE_CONFIGS = {
 
 def main():
     parser = argparse.ArgumentParser(description="Train PPO Railway Dispatcher Agent")
-    parser.add_argument("--timesteps", type=int, default=5000, help="Total training timesteps")
-    parser.add_argument("--workers", type=int, default=1, help="Number of parallel environment workers")
-    parser.add_argument("--wave", type=str, default="morning_peak", choices=list(WAVE_CONFIGS.keys()) + ["custom"],
+    parser.add_argument("--timesteps", type=int, default=500000, help="Total training timesteps")
+    parser.add_argument("--workers", type=int, default=8, help="Number of parallel environment workers")
+    parser.add_argument("--wave", type=str, default="full_day", choices=list(WAVE_CONFIGS.keys()) + ["custom"],
                         help="Operational timetable wave for curriculum training")
     parser.add_argument("--disruption", type=str, default="none", choices=["none", "train_delay", "platform_blockage", "stochastic"])
+    parser.add_argument("--n-steps", type=int, default=2048, help="PPO rollout buffer steps per worker")
+    parser.add_argument("--batch-size", type=int, default=256, help="PPO minibatch size")
     parser.add_argument("--lr", type=float, default=3e-4, help="Learning rate")
     parser.add_argument("--save-dir", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "models"))
-    parser.add_argument("--log-dir", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "logs"))
+    parser.add_argument("--log-dir", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "logs", "tensorboard"))
     parser.add_argument("--load-model", type=str, default=None, help="Path to pre-trained model checkpoint to resume from")
     parser.add_argument("--model-name", type=str, default=None, help="Custom filename for the saved model")
     args = parser.parse_args()
@@ -111,6 +113,8 @@ def main():
     print(f"Operational Wave:     {args.wave} ({wave_desc})")
     print(f"Target Timesteps:     {args.timesteps}")
     print(f"Parallel Workers:     {args.workers}")
+    print(f"Rollout n_steps:      {args.n_steps} (Total buffer: {args.n_steps * args.workers})")
+    print(f"Batch Size:           {args.batch_size}")
     print(f"Disruption Scenario:  {args.disruption}")
     print(f"Learning Rate:        {args.lr}")
     print(f"Simulation Window:    {args.start_time:.0f}s to {args.start_time + args.horizon:.0f}s ({(args.horizon)/3600:.1f} hours)")
@@ -142,6 +146,7 @@ def main():
             args.load_model,
             env=vec_env,
             learning_rate=args.lr,
+            custom_objects={"n_steps": args.n_steps, "batch_size": args.batch_size},
             tensorboard_log=args.log_dir
         )
     else:
@@ -155,8 +160,8 @@ def main():
             policy="MlpPolicy",
             env=vec_env,
             learning_rate=args.lr,
-            n_steps=256,
-            batch_size=64,
+            n_steps=args.n_steps,
+            batch_size=args.batch_size,
             n_epochs=10,
             gamma=0.99,
             gae_lambda=0.95,
@@ -168,7 +173,7 @@ def main():
         )
 
     callback = RailwayMetricsCallback(
-        check_freq=100,
+        check_freq=500,
         save_path=args.save_dir,
         verbose=1
     )

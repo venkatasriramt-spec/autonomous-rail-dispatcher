@@ -1,0 +1,1346 @@
+[
+  {
+    "phase": "B",
+    "day": "Mon",
+    "dispatcher": "Static_Baseline",
+    "services": 232,
+    "elapsed_sec": 367.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 204.86,
+    "max_delay_sec": 1071.4,
+    "punctuality_pct": 95.1,
+    "knock_on_events": 115054,
+    "collisions": 0,
+    "teleports": 28,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Mon",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 232,
+    "elapsed_sec": 364.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 76.23,
+    "max_delay_sec": 760.6,
+    "punctuality_pct": 97.9,
+    "knock_on_events": 80845,
+    "collisions": 0,
+    "teleports": 18,
+    "actions_taken": 592,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 592,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b1"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Mon",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 232,
+    "elapsed_sec": 374.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 66.98,
+    "max_delay_sec": 693.9,
+    "punctuality_pct": 98.1,
+    "knock_on_events": 77821,
+    "collisions": 0,
+    "teleports": 18,
+    "actions_taken": 641,
+    "action_breakdown": {
+      "route_diversions": 84,
+      "platform_switches": 587,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b1"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Mon",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 232,
+    "elapsed_sec": 366.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 39.54,
+    "max_delay_sec": 420.3,
+    "punctuality_pct": 99.0,
+    "knock_on_events": 59525,
+    "collisions": 0,
+    "teleports": 9,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3938,
+      "platform_switches": 5760,
+      "holds": 3554
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b1"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64837.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Tue",
+    "dispatcher": "Static_Baseline",
+    "services": 233,
+    "elapsed_sec": 366.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 224.97,
+    "max_delay_sec": 1796.7,
+    "punctuality_pct": 95.9,
+    "knock_on_events": 95418,
+    "collisions": 0,
+    "teleports": 21,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Tue",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 233,
+    "elapsed_sec": 366.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 71.86,
+    "max_delay_sec": 1170.9,
+    "punctuality_pct": 99.1,
+    "knock_on_events": 69726,
+    "collisions": 0,
+    "teleports": 2,
+    "actions_taken": 495,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 495,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Tue",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 233,
+    "elapsed_sec": 365.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 71.86,
+    "max_delay_sec": 1170.9,
+    "punctuality_pct": 99.1,
+    "knock_on_events": 69726,
+    "collisions": 0,
+    "teleports": 2,
+    "actions_taken": 531,
+    "action_breakdown": {
+      "route_diversions": 41,
+      "platform_switches": 493,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Tue",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 233,
+    "elapsed_sec": 363.3,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 4.01,
+    "max_delay_sec": 72.7,
+    "punctuality_pct": 99.4,
+    "knock_on_events": 45740,
+    "collisions": 0,
+    "teleports": 6,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3682,
+      "platform_switches": 5760,
+      "holds": 3109
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48616.0,
+        "duration": 600.0,
+        "edge": "c3_City_2_Town_8_bw_b4"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64800.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Wed",
+    "dispatcher": "Static_Baseline",
+    "services": 229,
+    "elapsed_sec": 365.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 187.19,
+    "max_delay_sec": 995.3,
+    "punctuality_pct": 96.7,
+    "knock_on_events": 100801,
+    "collisions": 0,
+    "teleports": 30,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Wed",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 229,
+    "elapsed_sec": 345.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 4.45,
+    "max_delay_sec": 64.4,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 44715,
+    "collisions": 0,
+    "teleports": 4,
+    "actions_taken": 469,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 469,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "HS-Rake-04",
+        "time": 48629.0,
+        "duration": 600.0,
+        "edge": "City_5_plat_2_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Wed",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 229,
+    "elapsed_sec": 345.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 4.44,
+    "max_delay_sec": 64.4,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 44758,
+    "collisions": 0,
+    "teleports": 2,
+    "actions_taken": 491,
+    "action_breakdown": {
+      "route_diversions": 29,
+      "platform_switches": 471,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "HS-Rake-04",
+        "time": 48629.0,
+        "duration": 600.0,
+        "edge": "City_5_plat_2_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Wed",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 229,
+    "elapsed_sec": 360.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 4.31,
+    "max_delay_sec": 72.7,
+    "punctuality_pct": 99.3,
+    "knock_on_events": 45048,
+    "collisions": 0,
+    "teleports": 5,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3791,
+      "platform_switches": 5760,
+      "holds": 3352
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48616.0,
+        "duration": 600.0,
+        "edge": "c3_City_2_Town_8_bw_b4"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64800.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Thu",
+    "dispatcher": "Static_Baseline",
+    "services": 235,
+    "elapsed_sec": 368.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 204.79,
+    "max_delay_sec": 1071.4,
+    "punctuality_pct": 95.1,
+    "knock_on_events": 114976,
+    "collisions": 0,
+    "teleports": 28,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Thu",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 235,
+    "elapsed_sec": 364.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 75.64,
+    "max_delay_sec": 760.6,
+    "punctuality_pct": 98.0,
+    "knock_on_events": 80615,
+    "collisions": 0,
+    "teleports": 18,
+    "actions_taken": 554,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 554,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b1"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Thu",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 235,
+    "elapsed_sec": 376.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 66.39,
+    "max_delay_sec": 693.9,
+    "punctuality_pct": 98.2,
+    "knock_on_events": 77591,
+    "collisions": 0,
+    "teleports": 18,
+    "actions_taken": 599,
+    "action_breakdown": {
+      "route_diversions": 74,
+      "platform_switches": 549,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b1"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Thu",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 235,
+    "elapsed_sec": 375.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 68.82,
+    "max_delay_sec": 431.0,
+    "punctuality_pct": 98.1,
+    "knock_on_events": 77115,
+    "collisions": 0,
+    "teleports": 11,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3819,
+      "platform_switches": 5760,
+      "holds": 3369
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64800.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Fri",
+    "dispatcher": "Static_Baseline",
+    "services": 231,
+    "elapsed_sec": 363.9,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 224.99,
+    "max_delay_sec": 1796.7,
+    "punctuality_pct": 95.9,
+    "knock_on_events": 95496,
+    "collisions": 0,
+    "teleports": 21,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Fri",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 231,
+    "elapsed_sec": 363.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 71.87,
+    "max_delay_sec": 1170.9,
+    "punctuality_pct": 99.1,
+    "knock_on_events": 69732,
+    "collisions": 0,
+    "teleports": 1,
+    "actions_taken": 475,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 475,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Fri",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 231,
+    "elapsed_sec": 363.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 71.87,
+    "max_delay_sec": 1170.9,
+    "punctuality_pct": 99.1,
+    "knock_on_events": 69732,
+    "collisions": 0,
+    "teleports": 1,
+    "actions_taken": 510,
+    "action_breakdown": {
+      "route_diversions": 45,
+      "platform_switches": 473,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Fri",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 231,
+    "elapsed_sec": 359.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 3.65,
+    "max_delay_sec": 72.7,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 45698,
+    "collisions": 0,
+    "teleports": 6,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3777,
+      "platform_switches": 5760,
+      "holds": 3339
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C1-03",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c1_Town_3_City_4_fw_b2"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48616.0,
+        "duration": 600.0,
+        "edge": "c3_City_2_Town_8_bw_b4"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64800.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sat",
+    "dispatcher": "Static_Baseline",
+    "services": 145,
+    "elapsed_sec": 249.3,
+    "steps_simulated": 5760,
+    "peak_active_trains": 21,
+    "mean_delay_sec": 309.38,
+    "max_delay_sec": 2825.8,
+    "punctuality_pct": 96.8,
+    "knock_on_events": 83390,
+    "collisions": 0,
+    "teleports": 11,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b6"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sat",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 145,
+    "elapsed_sec": 238.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 18.15,
+    "max_delay_sec": 831.1,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 42356,
+    "collisions": 0,
+    "teleports": 5,
+    "actions_taken": 826,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 826,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b6"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sat",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 145,
+    "elapsed_sec": 242.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 18.15,
+    "max_delay_sec": 831.1,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 42346,
+    "collisions": 0,
+    "teleports": 5,
+    "actions_taken": 829,
+    "action_breakdown": {
+      "route_diversions": 6,
+      "platform_switches": 827,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b6"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sat",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 145,
+    "elapsed_sec": 251.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 20.22,
+    "max_delay_sec": 805.1,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 41030,
+    "collisions": 0,
+    "teleports": 8,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3745,
+      "platform_switches": 5760,
+      "holds": 2689
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b5"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-01",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "City_2_plat_1_fw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64800.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sun",
+    "dispatcher": "Static_Baseline",
+    "services": 141,
+    "elapsed_sec": 229.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 236.55,
+    "max_delay_sec": 1847.4,
+    "punctuality_pct": 97.3,
+    "knock_on_events": 48990,
+    "collisions": 0,
+    "teleports": 9,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b6"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-02",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_9_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sun",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 141,
+    "elapsed_sec": 213.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 2.11,
+    "max_delay_sec": 45.6,
+    "punctuality_pct": 99.7,
+    "knock_on_events": 17363,
+    "collisions": 0,
+    "teleports": 1,
+    "actions_taken": 601,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 601,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b6"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-02",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "c3_City_2_Town_8_bw_b3"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sun",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 141,
+    "elapsed_sec": 219.9,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 1.96,
+    "max_delay_sec": 45.6,
+    "punctuality_pct": 99.8,
+    "knock_on_events": 17317,
+    "collisions": 0,
+    "teleports": 1,
+    "actions_taken": 625,
+    "action_breakdown": {
+      "route_diversions": 16,
+      "platform_switches": 609,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b6"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-02",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  },
+  {
+    "phase": "B",
+    "day": "Sun",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 141,
+    "elapsed_sec": 232.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 2.36,
+    "max_delay_sec": 47.4,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 19473,
+    "collisions": 0,
+    "teleports": 3,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 4120,
+      "platform_switches": 5760,
+      "holds": 3109
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "train_delay",
+        "name": "Morning Commuter Peak Rake Breakdown",
+        "train_id": "REG-C4-01",
+        "time": 27900.0,
+        "duration": 600.0,
+        "edge": "c4_Town_12_City_6_fw_b3"
+      },
+      {
+        "type": "train_delay",
+        "name": "Midday Freight Heavy Rake Stall",
+        "train_id": "ALP-Rake-02",
+        "time": 48600.0,
+        "duration": 600.0,
+        "edge": "Town_8_plat_1_bw"
+      },
+      {
+        "type": "train_delay",
+        "name": "Evening Commuter Return Rush Emergency Brake Lock",
+        "train_id": "REG-C1-02",
+        "time": 64804.0,
+        "duration": 600.0,
+        "edge": "Town_3_plat_2_bw"
+      }
+    ]
+  }
+]

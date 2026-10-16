@@ -182,7 +182,7 @@ def main():
     parser.add_argument("--disruption", type=str, default="train_delay", choices=["none", "train_delay", "platform_blockage"])
     parser.add_argument("--start-time", type=float, default=21600.0)
     parser.add_argument("--horizon", type=float, default=5400.0)
-    parser.add_argument("--output-json", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "logs", "benchmark_results.json"))
+    parser.add_argument("--output-json", type=str, default=os.path.join(ROOT_DIR, "dispatcher", "logs", "evaluations", "disruption_benchmarks", "benchmark_results.json"))
     args = parser.parse_args()
 
     results = run_benchmark_suite(

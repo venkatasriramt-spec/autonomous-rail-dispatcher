@@ -232,6 +232,13 @@ class RailwayDispatchEnv(gym.Env):
             if vid not in current_active:
                 self.completed_trains.append(vid)
 
+        # Detect trains that departed on time from a station stop or entered on schedule
+        for vid, state in current_active.items():
+            prev = self.train_states.get(vid)
+            just_departed = (prev and prev.get("is_at_stop", False) and not state.get("is_at_stop", False)) or (prev is None)
+            if just_departed and state.get("delay_sec", 0.0) <= 60.0:
+                self.departed_ontime.append(vid)
+
         self.train_states = current_active
 
     def step(
@@ -244,6 +251,13 @@ class RailwayDispatchEnv(gym.Env):
         step_knock_ons = 0
 
         applied_veh_id = self.focus_veh_id
+        route_act = int(action[0]) if len(action) > 0 else 0
+        plat_act = int(action[1]) if len(action) > 1 else 0
+        hold_act = int(action[2]) if len(action) > 2 else 0
+        self.last_action_is_nonzero = (route_act > 0 or plat_act > 0 or hold_act > 0)
+        self.last_plat_act = (plat_act > 0)
+        self.last_route_act = (route_act > 0)
+        self.last_hold_act = (hold_act > 0)
 
         # 1. Apply Dispatcher Decision to Focus Train
         self.action_handler.apply_action(
@@ -343,7 +357,11 @@ class RailwayDispatchEnv(gym.Env):
             "collisions": getattr(self, "total_collisions", 0),
             "teleports": getattr(self, "total_teleports", 0),
             "focus_vehicle": self.focus_veh_id,
-            "applied_actions_count": len(self.action_handler.action_history)
+            "applied_actions_count": len(self.action_handler.action_history),
+            "action_nonzero": getattr(self, "last_action_is_nonzero", False),
+            "action_plat": getattr(self, "last_plat_act", False),
+            "action_route": getattr(self, "last_route_act", False),
+            "action_hold": getattr(self, "last_hold_act", False)
         }
 
     def _close_traci(self):

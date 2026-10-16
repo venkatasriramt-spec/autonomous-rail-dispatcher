@@ -1,0 +1,170 @@
+[
+  {
+    "day": "Mon",
+    "services": 232,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 63,
+      "platform_switches": 240,
+      "holds": 110,
+      "do_nothing": 0,
+      "intervention_rate_pct": 172.1
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 29.32,
+      "max_delay_sec": 129.3,
+      "punctuality_pct": 93.4,
+      "knock_on_events": 22
+    },
+    "static_kpi": {
+      "mean_delay_sec": 3.16,
+      "max_delay_sec": 39.2,
+      "knock_on_events": 46
+    }
+  },
+  {
+    "day": "Tue",
+    "services": 233,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 77,
+      "platform_switches": 240,
+      "holds": 145,
+      "do_nothing": 0,
+      "intervention_rate_pct": 192.5
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 34.24,
+      "max_delay_sec": 141.8,
+      "punctuality_pct": 92.6,
+      "knock_on_events": 36
+    },
+    "static_kpi": {
+      "mean_delay_sec": 1.77,
+      "max_delay_sec": 24.8,
+      "knock_on_events": 64
+    }
+  },
+  {
+    "day": "Wed",
+    "services": 229,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 77,
+      "platform_switches": 240,
+      "holds": 145,
+      "do_nothing": 0,
+      "intervention_rate_pct": 192.5
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 34.24,
+      "max_delay_sec": 141.8,
+      "punctuality_pct": 92.6,
+      "knock_on_events": 36
+    },
+    "static_kpi": {
+      "mean_delay_sec": 1.77,
+      "max_delay_sec": 24.8,
+      "knock_on_events": 64
+    }
+  },
+  {
+    "day": "Thu",
+    "services": 235,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 63,
+      "platform_switches": 240,
+      "holds": 110,
+      "do_nothing": 0,
+      "intervention_rate_pct": 172.1
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 29.32,
+      "max_delay_sec": 129.3,
+      "punctuality_pct": 93.4,
+      "knock_on_events": 22
+    },
+    "static_kpi": {
+      "mean_delay_sec": 3.16,
+      "max_delay_sec": 39.2,
+      "knock_on_events": 46
+    }
+  },
+  {
+    "day": "Fri",
+    "services": 231,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 77,
+      "platform_switches": 240,
+      "holds": 145,
+      "do_nothing": 0,
+      "intervention_rate_pct": 192.5
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 34.24,
+      "max_delay_sec": 141.8,
+      "punctuality_pct": 92.6,
+      "knock_on_events": 36
+    },
+    "static_kpi": {
+      "mean_delay_sec": 1.77,
+      "max_delay_sec": 24.8,
+      "knock_on_events": 64
+    }
+  },
+  {
+    "day": "Sat",
+    "services": 145,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 115,
+      "platform_switches": 240,
+      "holds": 102,
+      "do_nothing": 0,
+      "intervention_rate_pct": 190.4
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 0.07,
+      "max_delay_sec": 16.0,
+      "punctuality_pct": 100.0,
+      "knock_on_events": 0
+    },
+    "static_kpi": {
+      "mean_delay_sec": 0.16,
+      "max_delay_sec": 26.0,
+      "knock_on_events": 0
+    }
+  },
+  {
+    "day": "Sun",
+    "services": 141,
+    "steps_simulated": 240,
+    "decisions": {
+      "total": 240,
+      "route_diversions": 92,
+      "platform_switches": 240,
+      "holds": 113,
+      "do_nothing": 0,
+      "intervention_rate_pct": 185.4
+    },
+    "ai_kpi": {
+      "mean_delay_sec": 38.79,
+      "max_delay_sec": 218.0,
+      "punctuality_pct": 89.0,
+      "knock_on_events": 0
+    },
+    "static_kpi": {
+      "mean_delay_sec": 0.36,
+      "max_delay_sec": 23.0,
+      "knock_on_events": 0
+    }
+  }
+]

@@ -105,6 +105,9 @@ class ObservationBuilder:
         scheduled_platform_edge = None
         is_at_stop = traci_module.vehicle.isStopped(veh_id)
 
+        scheduled_platform_occupied = False
+        has_free_platform = False
+
         if stops:
             next_stop = stops[0]
             lane_id = next_stop.lane
@@ -117,6 +120,28 @@ class ObservationBuilder:
                     upcoming_station = st_name
                     upcoming_direction = "bw" if "_bw" in lane_id else "fw"
                     break
+
+            # Check if scheduled platform edge is occupied by another train
+            if scheduled_platform_edge and upcoming_station:
+                try:
+                    plat_vehs = traci_module.lane.getLastStepVehicleIDs(f"{scheduled_platform_edge}_0")
+                    if plat_vehs and veh_id not in plat_vehs:
+                        scheduled_platform_occupied = True
+                except Exception:
+                    pass
+
+                # Check if there is at least one alternative platform free
+                if upcoming_station in STATION_PLATFORMS:
+                    plat_edges = STATION_PLATFORMS[upcoming_station].get(upcoming_direction, [])
+                    for p_edge in plat_edges:
+                        if p_edge != scheduled_platform_edge:
+                            try:
+                                p_vehs = traci_module.lane.getLastStepVehicleIDs(f"{p_edge}_0")
+                                if not p_vehs:
+                                    has_free_platform = True
+                                    break
+                            except Exception:
+                                pass
 
             # Calculate delay relative to scheduled arrival/departure
             if next_stop.intendedArrival > 0 and sim_time > next_stop.intendedArrival:
@@ -179,7 +204,9 @@ class ObservationBuilder:
             "train_weight": train_weight,
             "vclass": vclass,
             "is_freight": is_freight,
-            "is_electric": is_electric
+            "is_electric": is_electric,
+            "scheduled_platform_occupied": scheduled_platform_occupied,
+            "has_free_platform": has_free_platform
         }
 
     def build_observation(

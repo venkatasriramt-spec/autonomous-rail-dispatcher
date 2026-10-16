@@ -11,13 +11,13 @@ from typing import Dict, Any, List
 class RewardEngine:
     def __init__(
         self,
-        delay_weight: float = 0.01,
-        delay_delta_weight: float = 0.05,
-        secondary_delay_weight: float = 0.1,
+        delay_weight: float = 0.05,
+        delay_delta_weight: float = 0.08,
+        secondary_delay_weight: float = 0.15,
         ontime_bonus: float = 1.0,
         completion_bonus: float = 5.0,
         unnecessary_stop_penalty: float = 0.5,
-        action_penalty_weight: float = 0.5
+        action_penalty_weight: float = 0.4
     ):
         self.delay_weight = delay_weight
         self.delay_delta_weight = delay_delta_weight
@@ -101,7 +101,7 @@ class RewardEngine:
         for vid in completed_trains:
             total_reward += self.completion_bonus
 
-        # 5. Intervention Cost & "Do-Nothing" Bias
+        # 5. Intervention Cost & Dynamic Conflict Resolution
         if focus_veh_id and action is not None and focus_veh_id in train_states:
             focus_state = train_states[focus_veh_id]
             route_act = int(action[0]) if len(action) > 0 else 0
@@ -113,22 +113,48 @@ class RewardEngine:
             has_close_leader = (leader_id is not None and leader_dist < 2000.0)
             is_overtake_candidate = focus_state.get("is_overtake_candidate", False)
             delay_sec = focus_state.get("delay_sec", 0.0)
+            dist_to_stop = focus_state.get("dist_to_next_stop", 9999.0)
+            is_at_stop = focus_state.get("is_at_stop", False)
+            plat_occupied = focus_state.get("scheduled_platform_occupied", False)
+            approaching_station = (dist_to_stop < 2500.0 and dist_to_stop > 400.0 and not is_at_stop)
 
-            # A. Penalty for holding when no train is within 2km ahead
+            # Train is truly nominal: On-schedule, clear track ahead, scheduled platform is free
+            is_nominal = (delay_sec < 60.0 and not has_close_leader and not is_overtake_candidate and not plat_occupied)
+
+            # A. Platform Switch Evaluation:
+            if plat_act > 0:
+                if plat_occupied and approaching_station:
+                    # SMART INTERVENTION: Active conflict resolution!
+                    # Reassigning away from an occupied platform avoids a massive mainline blockage
+                    total_reward += 1.5
+                elif is_at_stop or dist_to_stop > 2500.0 or dist_to_stop < 400.0 or is_nominal:
+                    # Frivolous platform change
+                    total_reward -= self.action_penalty_weight * 1.0
+
+            # B. Route Divert Evaluation:
+            if route_act > 0:
+                if is_overtake_candidate:
+                    # Smart overtakes/sidings
+                    total_reward += 1.0
+                elif is_nominal or not has_close_leader:
+                    total_reward -= self.action_penalty_weight * 1.0
+
+            # C. Hold Action Evaluation:
             if hold_act > 0:
-                if not has_close_leader:
-                    # Unnecessary hold: penalize proportionally to hold duration
-                    hold_penalty = 0.5 if hold_act == 1 else (1.0 if hold_act == 2 else 2.0)
-                    total_reward -= self.action_penalty_weight * hold_penalty
+                if has_close_leader:
+                    # Regulating hold to allow spacing
+                    total_reward += 0.2
+                else:
+                    # Unnecessary delay insertion
+                    total_reward -= self.action_penalty_weight * (1.0 if hold_act == 1 else 2.0)
 
-            # B. Penalty for passing loop diversion when no train is overtaking from behind
-            if route_act == 1:
-                if not is_overtake_candidate:
-                    total_reward -= self.action_penalty_weight * 0.8
-
-            # C. Reward for "Do-Nothing" adherence when on schedule and conflict-free
+            # D. Timetable Adherence Bonus vs Conflict Neglect:
             if route_act == 0 and plat_act == 0 and hold_act == 0:
-                if delay_sec < 60.0 and not has_close_leader:
-                    total_reward += 0.05  # Small bonus for letting timetable run without disruption
+                if is_nominal:
+                    # Reward smooth timetable flow
+                    total_reward += 0.1
+                elif plat_occupied and approaching_station:
+                    # Neglect penalty: heading straight into an occupied platform without intervening!
+                    total_reward -= 0.5
 
         return float(total_reward)

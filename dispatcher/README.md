@@ -95,10 +95,14 @@ dispatcher/
 │   ├── best_model.zip             # Top-performing checkpoint based on lowest mean delay
 │   └── ppo_dispatcher_final.zip   # Final trained policy
 ├── logs/
-│   ├── benchmark_results.json     # Quantitative audit results
-│   ├── benchmark_delay_comparison.png
-│   ├── benchmark_punctuality_knockon.png
-│   └── benchmark_delay_timeline.png
+│   ├── tensorboard/               # TensorBoard real-time training telemetry (PPO_*)
+│   ├── evaluations/               # Structured benchmark & audit JSON reports
+│   │   ├── weekly_audits/         # Full 24-hour, 7-day cross-comparison audits
+│   │   ├── calendar_audits/       # Day-specific schedule audits (Mon, Sat, etc.)
+│   │   ├── disruption_benchmarks/ # Disruption stress benchmarks (delays, blockages)
+│   │   └── stress_tests/          # Severe stress testing (Phases A & B across all days)
+│   ├── visual_proofs/             # High-resolution PNG charts and visual comparisons
+│   └── LOGS_MAP.md                # Comprehensive architectural directory reference map
 └── README.md                      # Comprehensive subsystem documentation
 ```
 
@@ -128,10 +132,10 @@ Demonstrates active secondary delay suppression under rolling stock breakdown:
 | **Priority Greedy** | Rule-Based | 4.0s | 39.2s | 100.0% | 46 | 0.0% |
 | **Trained PPO Dispatcher (Option 1)** | **Deep RL (Ours)** | 29.3s | 129.3s | **93.4%** | **22** | **+52.2% Reduction** |
 
-### Visual Artifacts Generated
-- **`dispatcher/logs/benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
-- **`dispatcher/logs/benchmark_punctuality_knockon.png`:** Punctuality percentages and secondary delay mitigation (52.2% knock-on reduction).
-- **`dispatcher/logs/benchmark_delay_timeline.png`:** Minute-by-minute fleet delay recovery dynamics.
+### Visual Artifacts Generated (Stored in `dispatcher/logs/visual_proofs/`)
+- **`dispatcher/logs/visual_proofs/benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
+- **`dispatcher/logs/visual_proofs/benchmark_punctuality_knockon.png`:** Punctuality percentages and secondary delay mitigation (52.2% knock-on reduction).
+- **`dispatcher/logs/visual_proofs/benchmark_delay_timeline.png`:** Minute-by-minute fleet delay recovery dynamics.
 
 ---
 
@@ -163,7 +167,7 @@ python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.z
 
 ### 3. Generate Publication-Quality Visual Charts
 ```bash
-python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/benchmark_results.json --output-dir dispatcher/logs
+python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
 ```
 
 ### 4. Comprehensive Weekly Calendar Audit Scripts

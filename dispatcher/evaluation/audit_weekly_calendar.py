@@ -21,7 +21,7 @@ from dispatcher.envs.railway_dispatch_env import RailwayDispatchEnv
 from dispatcher.agents.baseline_dispatchers import StaticDispatcher
 from dispatcher.evaluation.evaluate import ModelAgentWrapper
 
-LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs")
+LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs", "evaluations", "calendar_audits")
 MODEL_PATH = os.path.join(ROOT_DIR, "dispatcher", "models", "best_model.zip")
 PYTHON = sys.executable
 

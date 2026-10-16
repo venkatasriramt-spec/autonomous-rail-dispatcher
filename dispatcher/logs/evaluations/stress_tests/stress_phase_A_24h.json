@@ -1,0 +1,1346 @@
+[
+  {
+    "phase": "A",
+    "day": "Mon",
+    "dispatcher": "Static_Baseline",
+    "services": 232,
+    "elapsed_sec": 371.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 174.31,
+    "max_delay_sec": 1277.3,
+    "punctuality_pct": 95.6,
+    "knock_on_events": 109677,
+    "collisions": 0,
+    "teleports": 62,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Mon",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 232,
+    "elapsed_sec": 369.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 33.77,
+    "max_delay_sec": 349.6,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 78880,
+    "collisions": 0,
+    "teleports": 55,
+    "actions_taken": 859,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 859,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Mon",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 232,
+    "elapsed_sec": 364.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 3.86,
+    "max_delay_sec": 62.2,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 52591,
+    "collisions": 0,
+    "teleports": 55,
+    "actions_taken": 850,
+    "action_breakdown": {
+      "route_diversions": 57,
+      "platform_switches": 808,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Mon",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 232,
+    "elapsed_sec": 378.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 44.81,
+    "max_delay_sec": 420.3,
+    "punctuality_pct": 98.6,
+    "knock_on_events": 74293,
+    "collisions": 0,
+    "teleports": 18,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3997,
+      "platform_switches": 5760,
+      "holds": 3552
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Tue",
+    "dispatcher": "Static_Baseline",
+    "services": 233,
+    "elapsed_sec": 367.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 97.15,
+    "max_delay_sec": 700.5,
+    "punctuality_pct": 98.1,
+    "knock_on_events": 71244,
+    "collisions": 0,
+    "teleports": 50,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Tue",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 233,
+    "elapsed_sec": 363.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 197.08,
+    "max_delay_sec": 1214.8,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69532,
+    "collisions": 0,
+    "teleports": 39,
+    "actions_taken": 655,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 655,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Tue",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 233,
+    "elapsed_sec": 370.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 197.07,
+    "max_delay_sec": 1214.8,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69504,
+    "collisions": 0,
+    "teleports": 39,
+    "actions_taken": 694,
+    "action_breakdown": {
+      "route_diversions": 36,
+      "platform_switches": 662,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Tue",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 233,
+    "elapsed_sec": 363.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 3.24,
+    "max_delay_sec": 72.7,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 46021,
+    "collisions": 0,
+    "teleports": 11,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3656,
+      "platform_switches": 5760,
+      "holds": 3063
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Wed",
+    "dispatcher": "Static_Baseline",
+    "services": 229,
+    "elapsed_sec": 368.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 134.41,
+    "max_delay_sec": 1277.3,
+    "punctuality_pct": 96.7,
+    "knock_on_events": 91746,
+    "collisions": 0,
+    "teleports": 57,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Wed",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 229,
+    "elapsed_sec": 346.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 3.4,
+    "max_delay_sec": 44.0,
+    "punctuality_pct": 99.7,
+    "knock_on_events": 44653,
+    "collisions": 0,
+    "teleports": 36,
+    "actions_taken": 823,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 823,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Wed",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 229,
+    "elapsed_sec": 349.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 3.48,
+    "max_delay_sec": 44.0,
+    "punctuality_pct": 99.7,
+    "knock_on_events": 44783,
+    "collisions": 0,
+    "teleports": 38,
+    "actions_taken": 840,
+    "action_breakdown": {
+      "route_diversions": 26,
+      "platform_switches": 823,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Wed",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 229,
+    "elapsed_sec": 358.7,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 3.56,
+    "max_delay_sec": 72.7,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 45918,
+    "collisions": 0,
+    "teleports": 10,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3685,
+      "platform_switches": 5760,
+      "holds": 3355
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Thu",
+    "dispatcher": "Static_Baseline",
+    "services": 235,
+    "elapsed_sec": 370.7,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 150.12,
+    "max_delay_sec": 1051.9,
+    "punctuality_pct": 96.5,
+    "knock_on_events": 105092,
+    "collisions": 0,
+    "teleports": 62,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Thu",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 235,
+    "elapsed_sec": 368.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 33.76,
+    "max_delay_sec": 349.6,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 78549,
+    "collisions": 0,
+    "teleports": 55,
+    "actions_taken": 818,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 818,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Thu",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 235,
+    "elapsed_sec": 365.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 3.82,
+    "max_delay_sec": 63.3,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 52409,
+    "collisions": 0,
+    "teleports": 55,
+    "actions_taken": 835,
+    "action_breakdown": {
+      "route_diversions": 51,
+      "platform_switches": 793,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Thu",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 235,
+    "elapsed_sec": 377.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 45.64,
+    "max_delay_sec": 420.3,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 75351,
+    "collisions": 0,
+    "teleports": 19,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3830,
+      "platform_switches": 5760,
+      "holds": 3305
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Fri",
+    "dispatcher": "Static_Baseline",
+    "services": 231,
+    "elapsed_sec": 365.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 121.3,
+    "max_delay_sec": 1277.3,
+    "punctuality_pct": 97.2,
+    "knock_on_events": 75829,
+    "collisions": 0,
+    "teleports": 50,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Fri",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 231,
+    "elapsed_sec": 367.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 196.99,
+    "max_delay_sec": 1214.8,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69530,
+    "collisions": 0,
+    "teleports": 39,
+    "actions_taken": 635,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 635,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Fri",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 231,
+    "elapsed_sec": 366.9,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 196.99,
+    "max_delay_sec": 1214.8,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69530,
+    "collisions": 0,
+    "teleports": 39,
+    "actions_taken": 668,
+    "action_breakdown": {
+      "route_diversions": 37,
+      "platform_switches": 636,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Fri",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 231,
+    "elapsed_sec": 362.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 3.25,
+    "max_delay_sec": 72.7,
+    "punctuality_pct": 99.6,
+    "knock_on_events": 46021,
+    "collisions": 0,
+    "teleports": 11,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 3750,
+      "platform_switches": 5760,
+      "holds": 3283
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sat",
+    "dispatcher": "Static_Baseline",
+    "services": 145,
+    "elapsed_sec": 255.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 21,
+    "mean_delay_sec": 368.28,
+    "max_delay_sec": 2722.3,
+    "punctuality_pct": 96.2,
+    "knock_on_events": 83459,
+    "collisions": 0,
+    "teleports": 38,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sat",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 145,
+    "elapsed_sec": 245.7,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 71.02,
+    "max_delay_sec": 775.1,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 42262,
+    "collisions": 0,
+    "teleports": 27,
+    "actions_taken": 652,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 652,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sat",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 145,
+    "elapsed_sec": 240.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 71.0,
+    "max_delay_sec": 775.1,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 42235,
+    "collisions": 0,
+    "teleports": 27,
+    "actions_taken": 642,
+    "action_breakdown": {
+      "route_diversions": 6,
+      "platform_switches": 640,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sat",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 145,
+    "elapsed_sec": 246.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 73.01,
+    "max_delay_sec": 790.9,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 40863,
+    "collisions": 0,
+    "teleports": 6,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 4111,
+      "platform_switches": 5760,
+      "holds": 2819
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sun",
+    "dispatcher": "Static_Baseline",
+    "services": 141,
+    "elapsed_sec": 228.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 164.22,
+    "max_delay_sec": 1222.1,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 39452,
+    "collisions": 0,
+    "teleports": 29,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sun",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 141,
+    "elapsed_sec": 233.3,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 103.53,
+    "max_delay_sec": 1105.6,
+    "punctuality_pct": 98.8,
+    "knock_on_events": 35734,
+    "collisions": 0,
+    "teleports": 26,
+    "actions_taken": 1205,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 1205,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sun",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 141,
+    "elapsed_sec": 232.9,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 103.53,
+    "max_delay_sec": 1105.6,
+    "punctuality_pct": 98.8,
+    "knock_on_events": 35725,
+    "collisions": 0,
+    "teleports": 26,
+    "actions_taken": 1226,
+    "action_breakdown": {
+      "route_diversions": 10,
+      "platform_switches": 1216,
+      "holds": 0
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  },
+  {
+    "phase": "A",
+    "day": "Sun",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 141,
+    "elapsed_sec": 231.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 2.76,
+    "max_delay_sec": 94.7,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 19251,
+    "collisions": 0,
+    "teleports": 8,
+    "actions_taken": 5760,
+    "action_breakdown": {
+      "route_diversions": 4088,
+      "platform_switches": 5760,
+      "holds": 3036
+    },
+    "applied_disruptions_count": 3,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "name": "Morning Peak Interchange Hub Closure",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 27000.0,
+        "duration": 2700.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Midday City 2 Platform Maintenance",
+        "lane_id": "City_2_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 46800.0,
+        "duration": 3600.0
+      },
+      {
+        "type": "platform_blockage",
+        "name": "Evening Peak Return Hub Closure",
+        "lane_id": "City_3_EW_plat_1_bw_0",
+        "orig_speed": 13.89,
+        "start_time": 63000.0,
+        "duration": 3600.0
+      }
+    ]
+  }
+]

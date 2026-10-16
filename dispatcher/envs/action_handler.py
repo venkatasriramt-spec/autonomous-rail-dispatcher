@@ -116,6 +116,10 @@ class ActionHandler:
                                         pos=min(curr_stop.endPos, 500.0),
                                         duration=max(45.0, curr_stop.duration)
                                     )
+                                    try:
+                                        traci_module.vehicle.rerouteTraveltime(focus_veh_id)
+                                    except Exception:
+                                        pass
                                     action_summary["changes"].append({
                                         "type": "platform_reassigned",
                                         "from": curr_plat_edge,

@@ -148,7 +148,7 @@ graph LR
 | **Priority Greedy Heuristic** | 4.0s | 39.2s | 100.0% | 46 | 13 | -218.4 |
 | **Trained PPO Dispatcher (RL)** | 33.9s | 166.7s | **95.2%** | **19** *(58.7% reduction!)* | 224 | -2,852.1 |
 
-  - [x] Generated publication-quality visual proof charts in `dispatcher/logs/`:
+  - [x] Generated publication-quality visual proof charts in `dispatcher/logs/visual_proofs/`:
     - `benchmark_delay_comparison.png` (Mean vs Max Delay comparison)
     - `benchmark_punctuality_knockon.png` (Punctuality vs Knock-On Delay mitigation)
     - `benchmark_delay_timeline.png` (Dynamic delay evolution across 1-hour disruption window)

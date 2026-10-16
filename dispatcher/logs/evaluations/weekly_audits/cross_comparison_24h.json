@@ -1,0 +1,506 @@
+[
+  {
+    "day": "Mon",
+    "dispatcher": "Static_Baseline",
+    "services": 232,
+    "elapsed_sec": 369.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 198.65,
+    "max_delay_sec": 1071.4,
+    "punctuality_pct": 95.3,
+    "knock_on_events": 113928,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Mon",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 232,
+    "elapsed_sec": 344.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 4.28,
+    "max_delay_sec": 64.4,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 44594,
+    "actions_taken": 476,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 476,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Mon",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 232,
+    "elapsed_sec": 377.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 66.1,
+    "max_delay_sec": 693.9,
+    "punctuality_pct": 98.2,
+    "knock_on_events": 78225,
+    "actions_taken": 613,
+    "action_breakdown": {
+      "route_diversions": 83,
+      "platform_switches": 560,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Mon",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 232,
+    "elapsed_sec": 377.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 198.65,
+    "max_delay_sec": 1071.4,
+    "punctuality_pct": 95.3,
+    "knock_on_events": 113928,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Tue",
+    "dispatcher": "Static_Baseline",
+    "services": 233,
+    "elapsed_sec": 362.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 229.29,
+    "max_delay_sec": 1864.8,
+    "punctuality_pct": 95.9,
+    "knock_on_events": 95650,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Tue",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 233,
+    "elapsed_sec": 366.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 195.38,
+    "max_delay_sec": 1216.6,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69590,
+    "actions_taken": 349,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 349,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Tue",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 233,
+    "elapsed_sec": 365.7,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 195.38,
+    "max_delay_sec": 1216.6,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69590,
+    "actions_taken": 385,
+    "action_breakdown": {
+      "route_diversions": 41,
+      "platform_switches": 347,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Tue",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 233,
+    "elapsed_sec": 374.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 229.29,
+    "max_delay_sec": 1864.8,
+    "punctuality_pct": 95.9,
+    "knock_on_events": 95650,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Wed",
+    "dispatcher": "Static_Baseline",
+    "services": 229,
+    "elapsed_sec": 366.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 184.72,
+    "max_delay_sec": 995.3,
+    "punctuality_pct": 96.9,
+    "knock_on_events": 99630,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Wed",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 229,
+    "elapsed_sec": 393.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 4.28,
+    "max_delay_sec": 64.4,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 44594,
+    "actions_taken": 476,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 476,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Wed",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 229,
+    "elapsed_sec": 344.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 26,
+    "mean_delay_sec": 4.27,
+    "max_delay_sec": 64.4,
+    "punctuality_pct": 99.5,
+    "knock_on_events": 44578,
+    "actions_taken": 499,
+    "action_breakdown": {
+      "route_diversions": 28,
+      "platform_switches": 480,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Wed",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 229,
+    "elapsed_sec": 372.6,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 184.72,
+    "max_delay_sec": 995.3,
+    "punctuality_pct": 96.9,
+    "knock_on_events": 99630,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Thu",
+    "dispatcher": "Static_Baseline",
+    "services": 235,
+    "elapsed_sec": 368.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 198.58,
+    "max_delay_sec": 1071.4,
+    "punctuality_pct": 95.3,
+    "knock_on_events": 113850,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Thu",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 235,
+    "elapsed_sec": 368.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 74.74,
+    "max_delay_sec": 760.6,
+    "punctuality_pct": 98.1,
+    "knock_on_events": 81062,
+    "actions_taken": 527,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 527,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Thu",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 235,
+    "elapsed_sec": 378.2,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 65.51,
+    "max_delay_sec": 693.9,
+    "punctuality_pct": 98.3,
+    "knock_on_events": 77995,
+    "actions_taken": 571,
+    "action_breakdown": {
+      "route_diversions": 73,
+      "platform_switches": 522,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Thu",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 235,
+    "elapsed_sec": 377.3,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 198.58,
+    "max_delay_sec": 1071.4,
+    "punctuality_pct": 95.3,
+    "knock_on_events": 113850,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Fri",
+    "dispatcher": "Static_Baseline",
+    "services": 231,
+    "elapsed_sec": 366.5,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 229.31,
+    "max_delay_sec": 1864.8,
+    "punctuality_pct": 95.9,
+    "knock_on_events": 95728,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Fri",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 231,
+    "elapsed_sec": 362.9,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 195.39,
+    "max_delay_sec": 1216.6,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69596,
+    "actions_taken": 329,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 329,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Fri",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 231,
+    "elapsed_sec": 362.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 195.39,
+    "max_delay_sec": 1216.6,
+    "punctuality_pct": 98.4,
+    "knock_on_events": 69596,
+    "actions_taken": 364,
+    "action_breakdown": {
+      "route_diversions": 45,
+      "platform_switches": 327,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Fri",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 231,
+    "elapsed_sec": 375.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 27,
+    "mean_delay_sec": 229.31,
+    "max_delay_sec": 1864.8,
+    "punctuality_pct": 95.9,
+    "knock_on_events": 95728,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sat",
+    "dispatcher": "Static_Baseline",
+    "services": 145,
+    "elapsed_sec": 249.7,
+    "steps_simulated": 5760,
+    "peak_active_trains": 21,
+    "mean_delay_sec": 354.88,
+    "max_delay_sec": 2704.3,
+    "punctuality_pct": 96.3,
+    "knock_on_events": 83137,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sat",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 145,
+    "elapsed_sec": 241.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 80.88,
+    "max_delay_sec": 768.7,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 42714,
+    "actions_taken": 497,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 497,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sat",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 145,
+    "elapsed_sec": 241.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 20,
+    "mean_delay_sec": 80.88,
+    "max_delay_sec": 768.7,
+    "punctuality_pct": 98.9,
+    "knock_on_events": 42704,
+    "actions_taken": 500,
+    "action_breakdown": {
+      "route_diversions": 6,
+      "platform_switches": 498,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sat",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 145,
+    "elapsed_sec": 266.4,
+    "steps_simulated": 5760,
+    "peak_active_trains": 21,
+    "mean_delay_sec": 354.88,
+    "max_delay_sec": 2704.3,
+    "punctuality_pct": 96.3,
+    "knock_on_events": 83137,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sun",
+    "dispatcher": "Static_Baseline",
+    "services": 141,
+    "elapsed_sec": 230.0,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 236.16,
+    "max_delay_sec": 1847.4,
+    "punctuality_pct": 97.5,
+    "knock_on_events": 48990,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sun",
+    "dispatcher": "FIFO_Heuristic",
+    "services": 141,
+    "elapsed_sec": 213.7,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 1.19,
+    "max_delay_sec": 42.1,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 17137,
+    "actions_taken": 580,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 580,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sun",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "services": 141,
+    "elapsed_sec": 216.8,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 1.21,
+    "max_delay_sec": 42.1,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 17355,
+    "actions_taken": 617,
+    "action_breakdown": {
+      "route_diversions": 9,
+      "platform_switches": 609,
+      "holds": 0
+    }
+  },
+  {
+    "day": "Sun",
+    "dispatcher": "Trained_PPO_Dispatcher",
+    "services": 141,
+    "elapsed_sec": 245.1,
+    "steps_simulated": 5760,
+    "peak_active_trains": 19,
+    "mean_delay_sec": 236.16,
+    "max_delay_sec": 1847.4,
+    "punctuality_pct": 97.5,
+    "knock_on_events": 48990,
+    "actions_taken": 0,
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  }
+]

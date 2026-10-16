@@ -73,11 +73,9 @@ build/
 *.egg-info/
 
 # Reinforcement Learning & Dispatcher AI artifacts
-dispatcher/logs/*
-!dispatcher/logs/benchmark_*.png
-!dispatcher/logs/benchmark_results.json
-!dispatcher/logs/*.png
-dispatcher/tensorboard/
+dispatcher/logs/tensorboard/
+dispatcher/logs/PPO_*
+!dispatcher/logs/visual_proofs/*.png
 dispatcher/models/*.zip
 !dispatcher/models/best_model.zip
 *.tfevents.*

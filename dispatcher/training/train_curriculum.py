@@ -21,8 +21,11 @@ if ROOT_DIR not in sys.path:
 
 MODELS_DIR = os.path.join(ROOT_DIR, "dispatcher", "models")
 LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs")
+EVAL_DIR = os.path.join(LOGS_DIR, "evaluations", "disruption_benchmarks")
+VIZ_DIR = os.path.join(LOGS_DIR, "visual_proofs")
 os.makedirs(MODELS_DIR, exist_ok=True)
-os.makedirs(LOGS_DIR, exist_ok=True)
+os.makedirs(EVAL_DIR, exist_ok=True)
+os.makedirs(VIZ_DIR, exist_ok=True)
 
 PYTHON = sys.executable
 
@@ -99,14 +102,14 @@ def main():
     # Phase 4: Disruption Stress Benchmark & Evaluation Proof
     # -------------------------------------------------------------
     best_model = os.path.join(MODELS_DIR, "best_model.zip")
-    eval_json = os.path.join(LOGS_DIR, "benchmark_results.json")
+    eval_json = os.path.join(EVAL_DIR, "benchmark_results.json")
     cmd_4_eval = [
         PYTHON, "dispatcher/evaluation/evaluate.py",
         "--model", best_model,
         "--disruption", "train_delay",
         "--start-time", "25200",
         "--horizon", "3600",
-        "--output", eval_json
+        "--output-json", eval_json
     ]
     run_command(cmd_4_eval, "Phase 4A: Disruption Benchmark Evaluation vs Heuristics")
 
@@ -114,7 +117,7 @@ def main():
     cmd_4_viz = [
         PYTHON, "dispatcher/evaluation/visualizer.py",
         "--json", eval_json,
-        "--output-dir", LOGS_DIR
+        "--output-dir", VIZ_DIR
     ]
     run_command(cmd_4_viz, "Phase 4B: Publication Visual Charts Generation")
 
@@ -123,7 +126,7 @@ def main():
     print(f"[★] ALL CURRICULUM PHASES COMPLETED SUCCESSFULLY IN {total_elapsed/60:.2f} MINUTES!")
     print(f"[★] Production Checkpoint: {best_model}")
     print(f"[★] Evaluation Report:     {eval_json}")
-    print(f"[★] Visual Charts:         {LOGS_DIR}/")
+    print(f"[★] Visual Charts:         {VIZ_DIR}/")
     print("=" * 75)
 
 if __name__ == "__main__":
