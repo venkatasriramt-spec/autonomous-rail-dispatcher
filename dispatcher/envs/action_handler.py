@@ -109,25 +109,41 @@ class ActionHandler:
 
                                 # Guardrail 2: The platform MUST be in the immediate approach (next 15 edges)
                                 if is_actual_platform_stop and curr_plat_edge in remaining[:15]:
-                                    traci_module.vehicle.replaceStop(
-                                        focus_veh_id,
-                                        0,
-                                        target_plat_edge,
-                                        pos=min(curr_stop.endPos, 500.0),
-                                        duration=max(45.0, curr_stop.duration)
-                                    )
+                                    # Guardrail 2B: Platform MUST be physically reachable from current road
+                                    curr_road = traci_module.vehicle.getRoadID(focus_veh_id)
+                                    vtype = focus_state.get("vtype", "")
+                                    route_valid = False
                                     try:
-                                        traci_module.vehicle.rerouteTraveltime(focus_veh_id)
+                                        test_stage = traci_module.simulation.findRoute(curr_road, target_plat_edge, vtype)
+                                        route_valid = (test_stage is not None and len(test_stage.edges) > 0)
                                     except Exception:
-                                        pass
-                                    action_summary["changes"].append({
-                                        "type": "platform_reassigned",
-                                        "from": curr_plat_edge,
-                                        "to": target_plat_edge,
-                                        "station": st_name,
-                                        "train_len": train_len,
-                                        "platform_len": st_plat_len
-                                    })
+                                        route_valid = False
+
+                                    if not route_valid:
+                                        action_summary["changes"].append({
+                                            "type": "action_rejected",
+                                            "reason": f"Platform {target_plat_edge} has no valid track connection from {curr_road}"
+                                        })
+                                    else:
+                                        traci_module.vehicle.replaceStop(
+                                            focus_veh_id,
+                                            0,
+                                            target_plat_edge,
+                                            pos=min(curr_stop.endPos, 500.0),
+                                            duration=max(45.0, curr_stop.duration)
+                                        )
+                                        try:
+                                            traci_module.vehicle.rerouteTraveltime(focus_veh_id)
+                                        except Exception:
+                                            pass
+                                        action_summary["changes"].append({
+                                            "type": "platform_reassigned",
+                                            "from": curr_plat_edge,
+                                            "to": target_plat_edge,
+                                            "station": st_name,
+                                            "train_len": train_len,
+                                            "platform_len": st_plat_len
+                                        })
                                 else:
                                     action_summary["changes"].append({
                                         "type": "action_rejected",

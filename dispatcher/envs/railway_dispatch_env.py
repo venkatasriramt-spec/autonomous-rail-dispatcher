@@ -271,6 +271,7 @@ class RailwayDispatchEnv(gym.Env):
         # 2. Advance Microscopic Simulation by macro_step_sec (e.g. 15s)
         target_time = self.sim_time + self.macro_step_sec
         sim_alive = True
+        knock_on_vehs_this_step = set()
         while self.sim_time < target_time and self.sim_time < self.end_time_sec:
             # Check for disruption triggers
             self.disruption_manager.step(self.sim_time, traci)
@@ -291,13 +292,20 @@ class RailwayDispatchEnv(gym.Env):
             try:
                 active_vehs = traci.vehicle.getIDList()
                 for vid in active_vehs:
+                    if vid in knock_on_vehs_this_step:
+                        continue
                     try:
-                        leader_info = traci.vehicle.getLeader(vid, 1000.0)
+                        # Exclude trains already stopped at scheduled station platforms
+                        if traci.vehicle.isAtStop(vid):
+                            continue
+                        leader_info = traci.vehicle.getLeader(vid, 500.0)
                         if leader_info:
                             lead_id, dist = leader_info
-                            if dist < 250.0 and traci.vehicle.getSpeed(vid) < 5.0:
-                                # Train caught behind stopped/slow lead train
-                                step_knock_ons += 1
+                            # Secondary delay: following train forced to crawl (<3 m/s, within 150m) behind non-berthed leader
+                            if dist < 150.0 and traci.vehicle.getSpeed(vid) < 3.0:
+                                if not traci.vehicle.isAtStop(lead_id):
+                                    knock_on_vehs_this_step.add(vid)
+                                    step_knock_ons += 1
                     except Exception:
                         pass
             except Exception:
