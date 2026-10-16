@@ -189,6 +189,8 @@ class RailwayDispatchEnv(gym.Env):
         self.sim_time = self.start_time_sec
         self.episode_step_count = 0
         self.total_knock_on_events = 0
+        self.total_collisions = 0
+        self.total_teleports = 0
         self.departed_ontime.clear()
         self.completed_trains.clear()
         self.reward_engine.reset()
@@ -265,7 +267,13 @@ class RailwayDispatchEnv(gym.Env):
                 sim_alive = False
                 break
 
-            # Detect secondary knock-on decelerations
+            # Detect secondary knock-on decelerations, collisions, and teleports
+            try:
+                self.total_collisions += traci.simulation.getCollidingVehiclesNumber()
+                self.total_teleports += traci.simulation.getStartingTeleportNumber()
+            except Exception:
+                pass
+
             try:
                 active_vehs = traci.vehicle.getIDList()
                 for vid in active_vehs:
@@ -332,6 +340,8 @@ class RailwayDispatchEnv(gym.Env):
             "max_delay_sec": max_delay,
             "punctuality_pct": punctuality,
             "knock_on_events": self.total_knock_on_events,
+            "collisions": getattr(self, "total_collisions", 0),
+            "teleports": getattr(self, "total_teleports", 0),
             "focus_vehicle": self.focus_veh_id,
             "applied_actions_count": len(self.action_handler.action_history)
         }

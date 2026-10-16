@@ -153,8 +153,8 @@ class ActionHandler:
                         route_idx = traci_module.vehicle.getRouteIndex(focus_veh_id)
                         remaining = curr_route[route_idx:] if 0 <= route_idx < len(curr_route) else curr_route
 
-                        # Guardrail 3: Siding track must be physically in immediate downstream approach (next 8 edges)
-                        if siding_edge in remaining[:8]:
+                        # Guardrail 3: Siding track must be physically in immediate downstream approach (edges 1 to 8)
+                        if siding_edge in remaining[1:8]:
                             traci_module.vehicle.setStop(
                                 focus_veh_id,
                                 edgeID=siding_edge,
