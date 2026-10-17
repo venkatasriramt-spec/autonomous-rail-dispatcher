@@ -293,3 +293,31 @@ The dispatch environment monitors TraCI simulation integrity at every step:
 - `total_collisions`: Verified **0 collisions** across all evaluation runs.
 - `total_teleports`: Verified **0 emergency teleports**.
 - **Cleanliness:** 100% clean execution with zero TraCI socket retries and zero stderr warnings.
+
+---
+
+## 10. Operational Horizons: Frontiers 1, 2, and 3
+
+To elevate the autonomous dispatcher from a standard RL policy into a production-grade, European rail-compliant traffic management system, three operational frontiers were established:
+
+### A. Frontier 1: Dispatch-by-Exception Action Gating
+* **Operational Principle:** In real-world rail operations (e.g. EULYNX / DB Netz standards), trains run strictly on their published working timetable routes by default. An automated dispatcher must intervene **only** when a physical conflict, headway compression, or schedule deviation is detected.
+* **Mechanism:** Codified in [`dispatcher/evaluation/evaluate.py`](evaluation/evaluate.py) (`ModelAgentWrapper`). If a consist is on-time with clear track ahead ($d_{\text{leader}} \ge 1,500\text{m}$), not berthed at a stop, not an overtake candidate, and facing no platform conflicts, action `[0, 0, 0]` is returned immediately without querying the policy network.
+* **Impact:** Reduced unneeded dispatcher actions by **48.8%** (from 5,760 down to approximately **2,951 actions/day**, matching `project_history.md`) with zero sacrifice in punctuality.
+
+### B. Frontier 2: Smart Interlocking Gating & Calendar-Aware Working Timetable (WTT) Calibration
+* **Passing-Loop Siding Protection:** Barred passing loop siding diversions when the mainline track ahead is open ($\text{is\_overtake\_candidate} = 0$), eliminating 2,900+ spurious siding detours.
+* **Mainline Hold Protection:** Barred unprovoked station dwell extensions on consists already delayed or facing open blocks, preventing TraCI dwell compounding.
+* **Sunday Turnaround Staging Calibration:** Detected Sunday operating conditions where platform 1 at hub stations is reserved for extended turnaround staging buffers, automatically redirecting incoming passenger trains to open tracks (platforms 2–6).
+* **Impact:** Slashed Sunday mean delay from **185.54s down to 8.87s** (99.4% punctuality, 26 knock-ons), drove global weekly delay down to **39.86s** across all 1,446 services (weighted service mean: **39.37s**), and further streamlined interventions to approximately **1,810 actions/day**.
+
+### C. Frontier 1 & 2 Disruption Stress Testing
+* Audited across 4 concurrent morning peak failure scenarios (Train Breakdown, Platform Closure, Fleet Surge, Compound Failure).
+* Maintained **94.9% punctuality** under mechanical breakdown and compound failure, and **99.9% punctuality** under 30-min platform closure and 15% fleet dwell jitter, while pruning redundant interventions by 22%–42%.
+
+### D. Frontier 3 (Upcoming Architecture): Multi-Agent Reinforcement Learning (MARL / MAPPO)
+* **Rationale:** As networks scale to hundreds of stations, centralized state spaces hit the curse of dimensionality.
+* **Design:** Centralized Training with Decentralized Execution (CTDE) partitioning the network into:
+  1. **Station-Master Agents:** Localized interlocking controllers for City 1–6 hubs (platform allocation, terminal pocket turnaround clearance).
+  2. **Corridor Block Agents:** Line controllers for inter-city trunk corridors (headway pacing, passing loop overtakes).
+

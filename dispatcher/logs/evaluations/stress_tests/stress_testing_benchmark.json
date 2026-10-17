@@ -3,7 +3,7 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 27.0,
+    "elapsed_sec": 27.7,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
@@ -30,7 +30,7 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 26.8,
+    "elapsed_sec": 27.6,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
@@ -57,7 +57,7 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 26.3,
+    "elapsed_sec": 27.7,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
@@ -84,14 +84,14 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 29.8,
+    "elapsed_sec": 30.0,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 26.09,
+    "mean_delay_sec": 26.15,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.9,
     "knock_on_events": 3,
-    "actions_taken": 164,
+    "actions_taken": 128,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -102,8 +102,8 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 102,
-      "platform_switches": 158,
+      "route_diversions": 0,
+      "platform_switches": 122,
       "holds": 6
     }
   },
@@ -111,7 +111,7 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 26.7,
+    "elapsed_sec": 27.1,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
@@ -139,7 +139,7 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 26.7,
+    "elapsed_sec": 27.7,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
@@ -167,7 +167,7 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 26.4,
+    "elapsed_sec": 27.8,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
@@ -195,14 +195,14 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 28.8,
+    "elapsed_sec": 29.5,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
     "knock_on_events": 3,
-    "actions_taken": 105,
+    "actions_taken": 61,
     "applied_disruptions": [
       {
         "type": "platform_blockage",
@@ -214,8 +214,8 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 30,
-      "platform_switches": 99,
+      "route_diversions": 0,
+      "platform_switches": 55,
       "holds": 6
     }
   },
@@ -223,7 +223,7 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 27.5,
+    "elapsed_sec": 28.1,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 4.12,
@@ -348,7 +348,7 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 27.5,
+    "elapsed_sec": 27.8,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 4.12,
@@ -473,7 +473,7 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 27.4,
+    "elapsed_sec": 28.1,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 4.12,
@@ -598,14 +598,14 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 29.0,
+    "elapsed_sec": 30.0,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 4.12,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
     "knock_on_events": 3,
-    "actions_taken": 108,
+    "actions_taken": 65,
     "applied_disruptions": [
       {
         "type": "stochastic_delay",
@@ -714,8 +714,8 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 30,
-      "platform_switches": 102,
+      "route_diversions": 0,
+      "platform_switches": 59,
       "holds": 6
     }
   },
@@ -723,7 +723,7 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 27.0,
+    "elapsed_sec": 27.8,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
@@ -758,7 +758,7 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 26.8,
+    "elapsed_sec": 27.5,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
@@ -793,7 +793,7 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 26.9,
+    "elapsed_sec": 27.6,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
@@ -828,14 +828,14 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 30.1,
+    "elapsed_sec": 30.0,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 26.09,
+    "mean_delay_sec": 26.15,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.9,
     "knock_on_events": 3,
-    "actions_taken": 164,
+    "actions_taken": 128,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -854,8 +854,8 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 102,
-      "platform_switches": 158,
+      "route_diversions": 0,
+      "platform_switches": 122,
       "holds": 6
     }
   }

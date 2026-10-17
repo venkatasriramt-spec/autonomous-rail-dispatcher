@@ -92,9 +92,11 @@ dispatcher/
 │   └── callbacks.py               # Real-time KPI logger & best model checkpointing
 ├── evaluation/
 │   ├── __init__.py
-│   ├── evaluate.py                # Comparative benchmark suite runner
-│   ├── visualizer.py              # Publication-ready Matplotlib chart generator
-│   ├── audit_cross_comparison_24h.py # 28-run weekly cross-comparison pipeline
+│   ├── evaluate.py                # Comparative benchmark suite runner (Frontier 1 & 2 ModelAgentWrapper)
+│   ├── visualizer.py              # Publication-ready Matplotlib chart generator (disruption benchmarks)
+│   ├── visualize_stress_test.py   # Publication-ready Matplotlib chart generator (stress tests)
+│   ├── visualize_weekly_audit.py  # Publication-ready Matplotlib chart generator (7-day 24h audits)
+│   ├── audit_cross_comparison_24h.py # 28-run weekly cross-comparison pipeline (all 7 days)
 │   ├── audit_full_day_parallel.py # 7-day continuous fleet evaluation
 │   ├── audit_weekly_calendar.py   # Weekday vs weekend morning peak audit
 │   ├── audit_stress_testing.py    # Multi-scenario stress benchmark (delays & blockages)
@@ -110,7 +112,7 @@ dispatcher/
 │   │   ├── calendar_audits/       # Day-specific schedule audits (Mon, Sat, etc.)
 │   │   ├── disruption_benchmarks/ # Disruption stress benchmarks (delays, blockages)
 │   │   └── stress_tests/          # Severe stress testing (Phases A & B across all days)
-│   ├── visual_proofs/             # High-resolution PNG charts and visual comparisons
+│   ├── visual_proofs/             # High-resolution PNG charts and visual comparisons (10 artifacts)
 │   └── LOGS_MAP.md                # Comprehensive architectural directory reference map
 └── README.md                      # Comprehensive subsystem documentation
 ```
@@ -119,7 +121,7 @@ dispatcher/
 
 ## 4. Empirical Verification & Benchmarks
 
-The trained AI dispatcher was audited against three classical dispatching strategies under a primary train disruption scenario (morning peak rolling stock breakdown):
+The trained AI dispatcher was audited against classical dispatching strategies across three empirical validation regimes:
 
 ### A. Multi-Calendar Day Generalization (Saturday Nominal Traffic, 145 Services)
 Demonstrates complete elimination of artificial dispatcher interventions in free-flowing traffic:
@@ -141,14 +143,44 @@ Demonstrates active secondary delay suppression under rolling stock breakdown:
 | **Priority Greedy** | Rule-Based | 2.8s | 33.7s | 99.9% | 3 | 24 | +36.5 |
 | **Trained PPO Dispatcher (Phase 3)** | **Deep RL (Ours)** | 44.0s | 211.3s | **88.5%** | **0** *(100% cascade elimination!)* | 360 | -1,155.9 |
 
-#### Key Empirical Findings:
-- **Zero Cascading Knock-ons:** The Trained PPO agent actively rerouted and rescheduled 360 dispatch decisions, reducing secondary knock-on events from **3 down to 0 (100% elimination)** across following services.
-- **Interlocking Adherence:** Reallocations are verified against physical reachability via `findRoute`, with invalid platforms cleanly rejected and zero simulator warnings.
+### C. Full 7-Day 24-Hour Continuous Microscopic Audit (Frontiers 1 & 2, All 1,446 Services)
+Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 daily) with Dispatch-by-Exception action gating and Smart Interlocking platform calibration:
+
+| Day | Services | Static Baseline | FIFO Heuristic | Priority Greedy | **Trained PPO (AI)** | PPO Punctuality | Interventions | PPO Gain vs Baselines |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Monday** | 232 | 198.65s | 40.16s | 40.16s | **57.06s** | 98.1% | 2,310 | **-71.3% vs Static** |
+| **Tuesday** | 233 | 229.29s | 91.12s | 91.12s | **10.85s** | **99.5%** | 1,239 | **DOMINATES ALL (-95.3% vs Static, -88.1% vs FIFO)** |
+| **Wednesday** | 229 | 184.72s | 197.65s | 197.65s | **53.83s** | 98.0% | 2,015 | **DOMINATES ALL (-70.9% vs Static, -72.8% vs FIFO)** |
+| **Thursday** | 235 | 198.58s | 40.11s | 40.11s | **57.01s** | 98.1% | 2,057 | **-71.3% vs Static** |
+| **Friday** | 231 | 229.31s | 91.06s | 91.06s | **10.86s** | **99.5%** | 1,427 | **DOMINATES ALL (-95.3% vs Static, -88.1% vs FIFO)** |
+| **Saturday** | 145 | 354.88s | 80.59s | 80.59s | **80.52s** | 98.9% | 1,855 | **DOMINATES ALL (-77.3% vs Static, Beats Heuristics)** |
+| **Sunday** | 141 | 236.16s | 148.45s | 148.45s | **8.87s** | **99.4%** | 1,770 | **DOMINATES ALL (-96.2% vs Static, -94.0% vs FIFO)** |
+| **Average of Daily Means** | — | **233.08s** | **98.45s** | **98.45s** | **39.86s** | **98.8%** | **~1,810/day** | **DOMINATES ALL (-82.9% vs Static, -59.5% vs FIFO)** |
+| **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **39.37s** | **98.8%** | **~1,810/day** | **DOMINATES ALL (-82.5% vs Static, -59.0% vs FIFO)** |
+
+* **Secondary Knock-On Delay Cascades:** Slashed from **11,944 events** (Static) down to **980 events** (**91.8% cascade elimination** across the entire week).
+
+### D. Peak Disruption Stress-Testing Benchmark (Frontiers 1 & 2)
+Evaluated across 4 simultaneous operational failure modes during the morning commuter peak (06:00 to 08:00 AM, 480 macro-steps):
+
+| Disruption Scenario | Static Baseline | FIFO Heuristic | Priority Greedy | **Trained PPO (AI)** | PPO Punctuality | Interventions (Actions) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Train Breakdown (10m)** | 25.68s | 25.68s | 25.68s | **26.15s** | **94.9% (+0.4%)** | 128 *(down from 164)* |
+| **Platform Closure (30m)** | 3.49s | 3.49s | 3.49s | **3.49s** | **99.9%** | 61 *(down from 105)* |
+| **Fleet Surge (15% Jitter)** | 4.12s | 4.12s | 4.12s | **4.12s** | **99.9%** | 65 *(down from 108)* |
+| **Compound Failure** | 25.68s | 25.68s | 25.68s | **26.15s** | **94.9% (+0.4%)** | 128 *(down from 164)* |
 
 ### Visual Artifacts Generated (Stored in `dispatcher/logs/visual_proofs/`)
-- **`dispatcher/logs/visual_proofs/benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
-- **`dispatcher/logs/visual_proofs/benchmark_punctuality_knockon.png`:** Punctuality percentages and secondary delay mitigation (100% knock-on elimination).
-- **`dispatcher/logs/visual_proofs/benchmark_delay_timeline.png`:** Minute-by-minute fleet delay recovery dynamics.
+1. **`benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
+2. **`benchmark_punctuality_knockon.png`:** Punctuality percentages and secondary delay mitigation (100% knock-on elimination).
+3. **`benchmark_delay_timeline.png`:** Minute-by-minute fleet delay recovery dynamics.
+4. **`stress_test_delay_comparison.png`:** Delay comparison across 4 peak disruption stress scenarios.
+5. **`stress_test_knockon_cascades.png`:** Comparison of secondary knock-on event counts across disruption scenarios.
+6. **`stress_test_punctuality.png`:** Punctuality retention curves under active disruption.
+7. **`weekly_7day_delay_comparison.png`:** Day-by-day weekly comparison (Monday through Sunday across 1,446 runs).
+8. **`weekly_7day_knockon_cascades.png`:** Weekly secondary knock-on events by calendar day.
+9. **`weekly_7day_punctuality.png`:** Weekly schedule punctuality rate retention by calendar day.
+10. **`weekly_24h_diurnal_timeline.png`:** 24-hour continuous timeline tracking network delay curves from dawn to midnight.
 
 ---
 
@@ -183,7 +215,14 @@ python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.z
 
 ### 3. Generate Publication-Quality Visual Charts
 ```bash
+# Render disruption benchmark charts (3 charts):
 python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
+
+# Render peak morning disruption stress-test charts (3 charts):
+python3 dispatcher/evaluation/visualize_stress_test.py --json dispatcher/logs/evaluations/stress_tests/stress_testing_benchmark.json --output-dir dispatcher/logs/visual_proofs
+
+# Render full 7-day 24-hour diurnal audit charts (4 charts):
+python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs
 ```
 
 ### 4. Comprehensive Weekly Calendar & Stress Audit Pipelines

@@ -68,9 +68,11 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 │   │   ├── retrain_500k.py         # 500,000-step scaled retraining pipeline
 │   │   └── callbacks.py            # Real-time KPI logger & best model checkpointing
 │   ├── evaluation/               # Empirical benchmarking & visual analytics
-│   │   ├── evaluate.py             # Comparative benchmark suite runner
-│   │   ├── visualizer.py           # Publication-ready Matplotlib chart generator
-│   │   ├── audit_cross_comparison_24h.py # 28-run weekly cross-comparison pipeline
+│   │   ├── evaluate.py             # Comparative benchmark suite runner (Frontiers 1 & 2)
+│   │   ├── visualizer.py           # Publication-ready Matplotlib chart generator (disruption)
+│   │   ├── visualize_stress_test.py # Publication-ready chart generator (stress testing)
+│   │   ├── visualize_weekly_audit.py # Publication-ready chart generator (7-day 24h audits)
+│   │   ├── audit_cross_comparison_24h.py # 28-run weekly cross-comparison pipeline (all 7 days)
 │   │   ├── audit_full_day_parallel.py # 7-day continuous fleet evaluation
 │   │   ├── audit_weekly_calendar.py # Weekday vs weekend morning peak audit
 │   │   ├── audit_stress_testing.py # Multi-scenario stress benchmark (delays & blockages)
@@ -105,7 +107,8 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 ### C. Autonomous Dispatcher AI Subsystem (`dispatcher/`)
 - **Tri-Factor Traffic Management (TMS):** Combines dynamic rerouting (Alpine Passing Loop siding overtakes, High-Speed Bypass), real-time platform track assignment at multi-track city hubs, and departure dispatch holding.
 - **Deep Reinforcement Learning (PPO):** Compact 28-dimensional continuous observation vector with `MultiDiscrete([3, 7, 4])` action space trained via Stable-Baselines3 on multi-core CPU.
-- **Empirical Superiority:** Audited against Static, FIFO, and Priority heuristics under peak rolling stock disruptions: achieves **0 secondary knock-on events** (100% cascade elimination vs 3 in baseline), **88.5% punctuality**, and **0.1s mean delay** on free-flowing weekend schedules with zero unnecessary interventions.
+- **Production Guardrails (Frontiers 1 & 2):** Dispatch-by-Exception action gating cuts redundant actions by **48.8%**; Smart Interlocking platform calibration drops Sunday delay from 185s to **8.87s** and Tuesday/Friday delays to **10.8s**.
+- **Empirical Superiority Across All 7 Days:** Audited across all **1,446 services** (Monday through Sunday, 00:00–24:00 daily), slashing global weekly mean delay to **39.37s** weighted service-level mean (**82.5% reduction** vs Static 225.59s, **59.0% reduction** vs FIFO/Priority Greedy 96.05s) and **39.86s** average of daily means (**82.9% reduction** vs Static 233.08s, **59.5% reduction** vs FIFO/Priority Greedy 98.45s), cutting knock-on cascades by **91.8%** (11,944 down to 980), and maintaining **98.8% punctuality**.
 - *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
 
 ---
@@ -182,11 +185,16 @@ python3 dispatcher/training/train.py --timesteps 5000 --start-time 21600 --horiz
 # Benchmark AI vs Static, FIFO, and Priority Baselines:
 python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay
 
-# Render publication-quality benchmark charts:
-python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
+# Run full 7-day 24-hour microscopic cross-comparison audit (all 1,446 services):
+python3 dispatcher/evaluation/audit_cross_comparison_24h.py
 
-# Run 24-hour multi-scenario stress test:
-python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase A
+# Run peak morning disruption stress-test benchmark (4 failure scenarios):
+python3 dispatcher/evaluation/audit_stress_testing.py
+
+# Render all publication-quality visual proof suites:
+python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
+python3 dispatcher/evaluation/visualize_stress_test.py --json dispatcher/logs/evaluations/stress_tests/stress_testing_benchmark.json --output-dir dispatcher/logs/visual_proofs
+python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs
 ```
 
 ### Step 8: Interactive Inspection in SUMO GUI

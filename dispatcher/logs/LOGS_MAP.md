@@ -80,12 +80,30 @@ dispatcher/logs/
 
 ### 6. Visual Proofs & Charts (`dispatcher/logs/visual_proofs/`)
 
+This directory contains 10 publication-ready, high-resolution (150 DPI) visualization artifacts tracking network performance across disruption benchmarks, stress testing, and 7-day 24-hour diurnal timelines.
+
+#### Group A: Disruption Benchmark Visual Proofs
 * **Generating Script:** [`dispatcher/evaluation/visualizer.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualizer.py)
-* **CLI Command:**
-  ```bash
-  python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
-  ```
+* **Command:** `python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs`
 * **Artifacts:**
-  * **`benchmark_delay_comparison.png`**: High-resolution bar chart comparing Mean and Max Delays across all 4 dispatchers.
-  * **`benchmark_delay_timeline.png`**: Minute-by-minute delay recovery timeline showing delay propagation vs. mitigation curves.
-  * **`benchmark_punctuality_knockon.png`**: Multi-panel visualization of Punctuality % and Knock-on Event counts.
+  * **`benchmark_delay_comparison.png`**: High-resolution bar chart comparing Mean Delay and Max Delay across Static, FIFO, Priority Greedy, and Trained PPO Dispatchers.
+  * **`benchmark_delay_timeline.png`**: Minute-by-minute delay recovery timeline illustrating secondary delay propagation curves vs. active RL suppression.
+  * **`benchmark_punctuality_knockon.png`**: Multi-panel visualization comparing Schedule Punctuality (<3m delay) and Secondary Knock-On delay event suppression (100% elimination).
+
+#### Group B: Peak Morning Disruption Stress-Testing Visual Proofs
+* **Generating Script:** [`dispatcher/evaluation/visualize_stress_test.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_stress_test.py)
+* **Command:** `python3 dispatcher/evaluation/visualize_stress_test.py --json dispatcher/logs/evaluations/stress_tests/stress_testing_benchmark.json --output-dir dispatcher/logs/visual_proofs`
+* **Artifacts:**
+  * **`stress_test_delay_comparison.png`**: Comparative bar chart evaluating Mean Delay across the 4 stress scenarios (10-min Train Breakdown, 30-min Hub Platform Closure, 15% Fleet Dwell Jitter, and Compound Failure).
+  * **`stress_test_knockon_cascades.png`**: Comparison of secondary knock-on event counts across disruption scenarios.
+  * **`stress_test_punctuality.png`**: Schedule punctuality retention rates (%) under simultaneous rolling-stock and platform failures.
+
+#### Group C: Full 7-Day 24-Hour Diurnal & Calendar Visual Proofs
+* **Generating Script:** [`dispatcher/evaluation/visualize_weekly_audit.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_weekly_audit.py)
+* **Command:** `python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs`
+* **Artifacts:**
+  * **`weekly_7day_delay_comparison.png`**: Day-by-day (Monday through Sunday) delay comparison bar chart across all 1,446 services, illustrating PPO's dominance (39.86s global weekly delay vs 98.45s FIFO and 233.08s Static).
+  * **`weekly_7day_knockon_cascades.png`**: Day-by-day secondary knock-on conflict counts showing 91.8% cascade reduction (11,944 -> 980 events).
+  * **`weekly_7day_punctuality.png`**: Day-by-day schedule punctuality rates across all 7 calendar days (98.0% - 99.5%).
+  * **`weekly_24h_diurnal_timeline.png`**: 24-hour continuous timeline (00:00 to 24:00) tracking network-wide delay curves through early morning feeder, morning peak, midday base, evening peak, and nocturnal freight waves.
+
