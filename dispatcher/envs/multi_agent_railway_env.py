@@ -54,10 +54,9 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
             macro_step_sec=macro_step_sec,
             perturbation_config=perturbation_config,
             gui=gui,
-            seed=seed,
+            seed=None,
             port=port
         )
-
 
         self.agents = list(MARL_AGENT_IDS)
         self.cooperation_factor = cooperation_factor
@@ -72,6 +71,9 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
         # Track focus trains per agent for decision attribution
         self.agent_focus_trains: Dict[str, Optional[str]] = {aid: None for aid in self.agents}
 
+        if seed is not None:
+            self.reset(seed=seed)
+
     def reset(
         self,
         seed: Optional[int] = None,
@@ -81,6 +83,9 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
         Resets the multi-agent environment and returns observations for all 7 agents.
         """
         _, global_info = super().reset(seed=seed, options=options)
+
+        if not hasattr(self, "marl_obs_builder"):
+            return {}, global_info
 
         # Build initial multi-agent observations
         obs_dict, focus_dict = self.marl_obs_builder.build_multi_agent_observations(

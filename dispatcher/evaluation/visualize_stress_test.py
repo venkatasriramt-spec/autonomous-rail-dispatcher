@@ -24,19 +24,24 @@ DISPATCHERS = [
     "Static_Baseline",
     "FIFO_Heuristic",
     "Priority_Greedy_Heuristic",
-    "Trained_PPO_Dispatcher"
+    "Centralized_PPO",
+    "Decentralized_MAPPO"
 ]
 DISPLAY_NAMES = {
     "Static_Baseline": "Static (Default)",
     "FIFO_Heuristic": "FIFO Heuristic",
     "Priority_Greedy_Heuristic": "Priority Greedy",
-    "Trained_PPO_Dispatcher": "Trained PPO (AI)"
+    "Centralized_PPO": "Centralized PPO (AI)",
+    "Trained_PPO_Dispatcher": "Centralized PPO (AI)",
+    "Decentralized_MAPPO": "Decentralized MAPPO (7 Agents)"
 }
 COLORS = {
     "Static_Baseline": "#e74c3c",           # Crimson
     "FIFO_Heuristic": "#f39c12",            # Amber
     "Priority_Greedy_Heuristic": "#3498db", # Sky Blue
-    "Trained_PPO_Dispatcher": "#2ecc71"     # Emerald Green
+    "Centralized_PPO": "#2980b9",           # Royal Blue
+    "Trained_PPO_Dispatcher": "#2980b9",
+    "Decentralized_MAPPO": "#2ecc71"         # Emerald Green
 }
 
 
@@ -54,24 +59,31 @@ def plot_stress_charts(json_path: str, output_dir: str):
     scen_map = {s: {} for s in SCENARIO_ORDER}
     for item in data:
         s_id = item.get("scenario_id")
+        disp_key = item["dispatcher"]
+        if disp_key == "Trained_PPO_Dispatcher":
+            disp_key = "Centralized_PPO"
         if s_id in scen_map:
-            scen_map[s_id][item["dispatcher"]] = item
+            scen_map[s_id][disp_key] = item
+
+    active_dispatchers = [d for d in DISPATCHERS if any(d in scen_map[s] for s in SCENARIO_ORDER)]
+    if not active_dispatchers:
+        active_dispatchers = DISPATCHERS
 
     x = np.arange(len(SCENARIO_ORDER))
-    width = 0.20
-    n_bars = len(DISPATCHERS)
+    n_bars = len(active_dispatchers)
+    width = 0.82 / max(1, n_bars)
 
     # -------------------------------------------------------------
     # 1. Mean Delay Comparison Across Disruption Scenarios
     # -------------------------------------------------------------
-    fig, ax = plt.subplots(figsize=(11, 5.5), dpi=150)
-    for i, disp in enumerate(DISPATCHERS):
+    fig, ax = plt.subplots(figsize=(12, 5.5), dpi=150)
+    for i, disp in enumerate(active_dispatchers):
         offsets = x + (i - (n_bars - 1) / 2) * width
         delays = [scen_map[s].get(disp, {}).get("mean_delay_sec", 0.0) for s in SCENARIO_ORDER]
         rects = ax.bar(
             offsets, delays, width,
-            label=DISPLAY_NAMES[disp],
-            color=COLORS[disp],
+            label=DISPLAY_NAMES.get(disp, disp),
+            color=COLORS.get(disp, "#7f8c8d"),
             alpha=0.9,
             edgecolor="black",
             linewidth=0.5
@@ -81,13 +93,13 @@ def plot_stress_charts(json_path: str, output_dir: str):
             ax.annotate(f"{h:.1f}s",
                         xy=(rect.get_x() + rect.get_width() / 2, h),
                         xytext=(0, 2), textcoords="offset points",
-                        ha='center', va='bottom', fontsize=8, fontweight='bold')
+                        ha='center', va='bottom', fontsize=7.5, fontweight='bold')
 
     ax.set_ylabel("Mean Delay per Consist (seconds)", fontsize=11, fontweight="bold")
     ax.set_title("Stress-Testing Benchmark: Delay Under Extreme Disruption Scenarios", fontsize=12, fontweight="bold", pad=15)
     ax.set_xticks(x)
     ax.set_xticklabels([SCENARIO_NAMES[s] for s in SCENARIO_ORDER], fontsize=10, fontweight="semibold")
-    ax.legend(loc="upper left", frameon=True, fontsize=10)
+    ax.legend(loc="upper left", frameon=True, fontsize=9.5)
     ax.grid(axis="y", linestyle="--", alpha=0.5)
 
     plt.tight_layout()
@@ -99,14 +111,14 @@ def plot_stress_charts(json_path: str, output_dir: str):
     # -------------------------------------------------------------
     # 2. Knock-On Delay Cascades Suppressed
     # -------------------------------------------------------------
-    fig, ax = plt.subplots(figsize=(11, 5.5), dpi=150)
-    for i, disp in enumerate(DISPATCHERS):
+    fig, ax = plt.subplots(figsize=(12, 5.5), dpi=150)
+    for i, disp in enumerate(active_dispatchers):
         offsets = x + (i - (n_bars - 1) / 2) * width
         knockons = [scen_map[s].get(disp, {}).get("knock_on_events", 0) for s in SCENARIO_ORDER]
         rects = ax.bar(
             offsets, knockons, width,
-            label=DISPLAY_NAMES[disp],
-            color=COLORS[disp],
+            label=DISPLAY_NAMES.get(disp, disp),
+            color=COLORS.get(disp, "#7f8c8d"),
             alpha=0.9,
             edgecolor="black",
             linewidth=0.5
@@ -116,13 +128,13 @@ def plot_stress_charts(json_path: str, output_dir: str):
             ax.annotate(f"{int(h)}",
                         xy=(rect.get_x() + rect.get_width() / 2, h),
                         xytext=(0, 2), textcoords="offset points",
-                        ha='center', va='bottom', fontsize=8, fontweight='bold')
+                        ha='center', va='bottom', fontsize=7.5, fontweight='bold')
 
     ax.set_ylabel("Secondary Knock-On Conflicts", fontsize=11, fontweight="bold")
     ax.set_title("Cascading Secondary Conflicts Under Disruption Scenarios", fontsize=12, fontweight="bold", pad=15)
     ax.set_xticks(x)
     ax.set_xticklabels([SCENARIO_NAMES[s] for s in SCENARIO_ORDER], fontsize=10, fontweight="semibold")
-    ax.legend(loc="upper right", frameon=True, fontsize=10)
+    ax.legend(loc="upper right", frameon=True, fontsize=9.5)
     ax.grid(axis="y", linestyle="--", alpha=0.5)
 
     plt.tight_layout()
@@ -134,14 +146,14 @@ def plot_stress_charts(json_path: str, output_dir: str):
     # -------------------------------------------------------------
     # 3. Schedule Punctuality Retention (%)
     # -------------------------------------------------------------
-    fig, ax = plt.subplots(figsize=(11, 5.5), dpi=150)
-    for i, disp in enumerate(DISPATCHERS):
+    fig, ax = plt.subplots(figsize=(12, 5.5), dpi=150)
+    for i, disp in enumerate(active_dispatchers):
         offsets = x + (i - (n_bars - 1) / 2) * width
         puncs = [scen_map[s].get(disp, {}).get("punctuality_pct", 100.0) for s in SCENARIO_ORDER]
         rects = ax.bar(
             offsets, puncs, width,
-            label=DISPLAY_NAMES[disp],
-            color=COLORS[disp],
+            label=DISPLAY_NAMES.get(disp, disp),
+            color=COLORS.get(disp, "#7f8c8d"),
             alpha=0.9,
             edgecolor="black",
             linewidth=0.5
@@ -151,14 +163,14 @@ def plot_stress_charts(json_path: str, output_dir: str):
             ax.annotate(f"{h:.1f}%",
                         xy=(rect.get_x() + rect.get_width() / 2, h),
                         xytext=(0, 2), textcoords="offset points",
-                        ha='center', va='bottom', fontsize=8, fontweight='bold')
+                        ha='center', va='bottom', fontsize=7.5, fontweight='bold')
 
     ax.set_ylabel("Punctuality Rate (<3 min delay) %", fontsize=11, fontweight="bold")
     ax.set_title("Punctuality Retention Under Active Disruption", fontsize=12, fontweight="bold", pad=15)
     ax.set_xticks(x)
     ax.set_xticklabels([SCENARIO_NAMES[s] for s in SCENARIO_ORDER], fontsize=10, fontweight="semibold")
     ax.set_ylim(85, 103)
-    ax.legend(loc="lower left", frameon=True, fontsize=10)
+    ax.legend(loc="lower left", frameon=True, fontsize=9.5)
     ax.grid(axis="y", linestyle="--", alpha=0.5)
 
     plt.tight_layout()

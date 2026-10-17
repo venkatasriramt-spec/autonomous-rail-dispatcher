@@ -49,6 +49,16 @@ DEFAULT_MODEL_DIR = os.path.join(ROOT_DIR, "dispatcher", "models")
 DEFAULT_CHECKPOINT = os.path.join(DEFAULT_MODEL_DIR, "mappo_interlocking.pt")
 DEFAULT_BEST_MODEL = os.path.join(DEFAULT_MODEL_DIR, "mappo_best.pt")
 
+WAVE_CONFIGS = {
+    "morning_peak": {"start_time": 25200.0, "horizon": 9000.0, "desc": "07:00-09:30 Morning Commuter Rush (18-23 runs/hr)"},
+    "evening_peak": {"start_time": 57600.0, "horizon": 9900.0, "desc": "16:00-18:45 Evening Commuter Rush (16-22 runs/hr)"},
+    "midday_base": {"start_time": 34200.0, "horizon": 14400.0, "desc": "09:30-13:30 Midday Clockface Cadence (10-14 runs/hr)"},
+    "nocturnal_freight": {"start_time": 77400.0, "horizon": 18000.0, "desc": "21:30-02:30 Nocturnal Freight & Logistics Wave"},
+    "sunday_staging": {"start_time": 28800.0, "horizon": 14400.0, "desc": "08:00-12:00 Sunday Platform Staging Wave", "day": "Sun"},
+    "early_morning": {"start_time": 18000.0, "horizon": 7200.0, "desc": "05:00-07:00 Early Morning Feeder & Awakening"},
+    "full_day": {"start_time": 18000.0, "horizon": 64800.0, "desc": "05:00-23:00 Full Continuous Fleet (242 runs)"},
+}
+
 
 # ==============================================================================
 # 1. Parallel Environment Worker (Process-Level TraCI Encapsulation)
@@ -56,15 +66,16 @@ DEFAULT_BEST_MODEL = os.path.join(DEFAULT_MODEL_DIR, "mappo_best.pt")
 
 import traceback
 
-def env_worker_loop(remote, worker_id: int, start_time: float, horizon: float, seed: int):
+def env_worker_loop(remote, worker_id: int, sumocfg_path: Optional[str], start_time: float, horizon: float, seed: int):
     """
     Independent worker process managing a single headless SUMO multi-agent environment.
     Communicates with the central trainer via a bidirectional Pipe.
     """
     worker_port = 12500 + worker_id * 10
+    cfg = sumocfg_path if (sumocfg_path and os.path.exists(sumocfg_path)) else SUMOCFG_PATH
     try:
         env = MultiAgentRailwayEnv(
-            sumocfg_path=SUMOCFG_PATH,
+            sumocfg_path=cfg,
             start_time_sec=start_time,
             sim_horizon_sec=horizon,
             macro_step_sec=15.0,
@@ -108,7 +119,7 @@ def env_worker_loop(remote, worker_id: int, start_time: float, horizon: float, s
 
 class ParallelMultiAgentEnv:
     """Manages a pool of parallel worker processes running MultiAgentRailwayEnv instances."""
-    def __init__(self, num_workers: int, start_time: float, horizon: float, base_seed: int = 42):
+    def __init__(self, num_workers: int, start_time: float, horizon: float, sumocfg_path: Optional[str] = None, base_seed: int = 42):
         self.num_workers = num_workers
         self.remotes, self.work_remotes = zip(*[mp.Pipe() for _ in range(num_workers)])
         self.processes = []
@@ -116,7 +127,7 @@ class ParallelMultiAgentEnv:
         for w_idx in range(num_workers):
             p = mp.Process(
                 target=env_worker_loop,
-                args=(self.work_remotes[w_idx], w_idx, start_time, horizon, base_seed),
+                args=(self.work_remotes[w_idx], w_idx, sumocfg_path, start_time, horizon, base_seed),
                 daemon=True
             )
             p.start()
@@ -342,6 +353,8 @@ def train_mappo(
     rollout_steps: int = 64,
     start_time: float = 21600.0,
     horizon: float = 7200.0,
+    sumocfg_path: Optional[str] = None,
+    wave_name: Optional[str] = None,
     save_path: str = DEFAULT_CHECKPOINT,
     best_model_path: str = DEFAULT_BEST_MODEL,
     load_checkpoint: Optional[str] = None
@@ -350,7 +363,10 @@ def train_mappo(
     print("AUTONOMOUS RAILWAY DISPATCHER: MULTI-AGENT PPO (MAPPO) CTDE TRAINING")
     print(f"Workers: {num_workers} parallel CPU processes | Rollout Steps/Worker: {rollout_steps}")
     print(f"Total Target Timesteps: {total_timesteps} | Batch Concurrency: {num_workers * rollout_steps} steps/iter")
-    print(f"Operational Horizon: {start_time/3600:.1f}h to {(start_time+horizon)/3600:.1f}h (Morning Commuter Peak)")
+    wave_info = f"Wave: {wave_name} | " if wave_name else ""
+    print(f"{wave_info}Operational Horizon: {start_time/3600:.1f}h to {(start_time+horizon)/3600:.1f}h")
+    if sumocfg_path:
+        print(f"SUMO Config: {sumocfg_path}")
     if load_checkpoint:
         print(f"Resuming weights from checkpoint: {load_checkpoint}")
     print("=" * 115)
@@ -361,12 +377,12 @@ def train_mappo(
     dispatcher = MAPPODispatcher(checkpoint_path=load_checkpoint, exception_gating=False, smart_interlocking=False)
     trainer = MAPPOTrainer(dispatcher=dispatcher, lr_actor=3e-4, lr_critic=1e-3)
 
-
     print(f"[*] Initializing {num_workers} parallel environment workers...")
     env_pool = ParallelMultiAgentEnv(
         num_workers=num_workers,
         start_time=start_time,
         horizon=horizon,
+        sumocfg_path=sumocfg_path,
         base_seed=42
     )
 
@@ -508,6 +524,11 @@ def main():
     parser.add_argument("--timesteps", type=int, default=15000, help="Total training timesteps across all workers")
     parser.add_argument("--workers", type=int, default=8, help="Number of parallel SUMO workers (utilizing 32 CPU cores)")
     parser.add_argument("--rollout-steps", type=int, default=64, help="Rollout steps per worker per iteration")
+    parser.add_argument("--wave", type=str, default=None, choices=list(WAVE_CONFIGS.keys()) + ["custom"],
+                        help="Operational wave preset for curriculum training")
+    parser.add_argument("--day", type=str, default=None, choices=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                        help="Calendar day to simulate (Mon..Sun)")
+    parser.add_argument("--sumocfg-path", type=str, default=None, help="Custom SUMO configuration path")
     parser.add_argument("--start-time", type=float, default=21600.0, help="Simulation start time (default: 06:00 AM)")
     parser.add_argument("--horizon", type=float, default=7200.0, help="Simulation horizon in seconds (default: 2 hours)")
     parser.add_argument("--save-path", type=str, default=DEFAULT_CHECKPOINT, help="Output path for model checkpoint")
@@ -515,17 +536,36 @@ def main():
     parser.add_argument("--load-checkpoint", type=str, default=None, help="Resume training from an existing checkpoint")
     args = parser.parse_args()
 
+    start_time = args.start_time
+    horizon = args.horizon
+    day = args.day
+    wave_name = args.wave
+
+    if args.wave and args.wave != "custom":
+        cfg = WAVE_CONFIGS[args.wave]
+        start_time = cfg["start_time"]
+        horizon = cfg["horizon"]
+        if "day" in cfg and not day:
+            day = cfg["day"]
+
+    cfg_path = args.sumocfg_path
+    if not cfg_path and day:
+        candidate_cfg = os.path.join(ROOT_DIR, "trains", "sumo_config", "days", day, "train_simulation.sumocfg")
+        if os.path.exists(candidate_cfg):
+            cfg_path = candidate_cfg
+
     train_mappo(
         total_timesteps=args.timesteps,
         num_workers=args.workers,
         rollout_steps=args.rollout_steps,
-        start_time=args.start_time,
-        horizon=args.horizon,
+        start_time=start_time,
+        horizon=horizon,
+        sumocfg_path=cfg_path,
+        wave_name=wave_name,
         save_path=args.save_path,
         best_model_path=args.best_path,
         load_checkpoint=args.load_checkpoint
     )
-
 
 
 if __name__ == "__main__":

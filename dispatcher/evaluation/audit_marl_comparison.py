@@ -9,8 +9,7 @@ Empirical performance comparison between:
 
 Evaluated over the morning commuter peak hour (06:00 to 07:00 AM, 240 steps at 15.0s resolution).
 Measures:
-- Mean and Max Delay (excluding zero-train steps)
-- Punctuality Percentage (< 3 min)
+- Mean Delay and Punctuality Percentage (< 3 min) (excluding zero-train steps); Max Delay includes all steps
 - Secondary Knock-On Delays
 - Control Actions Executed
 - Telemetry Transmission Overhead (KB)
@@ -20,6 +19,7 @@ import os
 import sys
 import json
 import time
+import logging
 import numpy as np
 from typing import Dict, Any, List, Optional
 
@@ -44,7 +44,7 @@ MACRO_STEP_SEC = 15.0      # 240 steps
 
 
 def evaluate_single_agent(agent_type: str) -> Dict[str, Any]:
-    """Runs single-agent evaluation (PPO, FIFO, or Static)."""
+    """Runs single-agent evaluation (PPO, FIFO, or Static). Only mean delay and punctuality exclude zero-train steps; max delay includes all steps."""
     t0 = time.time()
     if agent_type == "Centralized_PPO":
         agent = ModelAgentWrapper(MODEL_PATH, exception_gating=True, smart_interlocking=True)
@@ -108,7 +108,7 @@ def evaluate_single_agent(agent_type: str) -> Dict[str, Any]:
 
 
 def evaluate_multi_agent_mappo(checkpoint_path: Optional[str] = MAPPO_CHECKPOINT_PATH) -> Dict[str, Any]:
-    """Runs decentralized MAPPO multi-agent evaluation."""
+    """Runs decentralized MAPPO multi-agent evaluation. Only mean delay and punctuality exclude zero-train steps; max delay includes all steps."""
     t0 = time.time()
     env = MultiAgentRailwayEnv(
         sumocfg_path=SUMOCFG_PATH,
@@ -124,6 +124,7 @@ def evaluate_multi_agent_mappo(checkpoint_path: Optional[str] = MAPPO_CHECKPOINT
         paradigm = "Multi-Agent CTDE (7 Interlocking Agents)"
     else:
         # Untrained baseline
+        logging.warning("MAPPO checkpoint missing at '%s'; audit will use an untrained policy.", checkpoint_path)
         dispatcher = MAPPODispatcher(checkpoint_path=None, exception_gating=True, smart_interlocking=True)
         model_name = "Decentralized_MAPPO_Untrained"
         paradigm = "Multi-Agent CTDE (7 Interlocking Agents, Untrained)"
@@ -144,17 +145,15 @@ def evaluate_multi_agent_mappo(checkpoint_path: Optional[str] = MAPPO_CHECKPOINT
         actions_dict = dispatcher.predict(obs_dict, info=info)
 
         # Count actions and calculate decentralized bandwidth:
-        # Station agent transmits local 24 float32 (96 bytes)
-        # Corridor agent transmits local 14 float32 (56 bytes)
         for aid, act in actions_dict.items():
             if aid.startswith("station_"):
                 if int(act[0]) > 0 or int(act[1]) > 0:
                     actions_count += 1
-                total_bytes_transmitted += 24 * 4
             else:
                 if int(act) > 0:
                     actions_count += 1
-                total_bytes_transmitted += 14 * 4
+            obs_elems = int(np.prod(obs_dict[aid].shape)) if aid in obs_dict else 0
+            total_bytes_transmitted += obs_elems * 4
 
         obs_dict, rewards, terminated, truncated, info = env.step(actions_dict)
         active = info.get("active_trains", 0)
