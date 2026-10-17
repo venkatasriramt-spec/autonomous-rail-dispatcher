@@ -16,6 +16,7 @@ import sys
 import json
 import time
 import shutil
+import argparse
 import xml.etree.ElementTree as ET
 import multiprocessing as mp
 import numpy as np
@@ -32,6 +33,7 @@ from dispatcher.agents.baseline_dispatchers import (
     PriorityGreedyDispatcher
 )
 from dispatcher.evaluation.evaluate import ModelAgentWrapper
+from dispatcher.scenarios.perturbations import PerturbationConfig
 from trains.scripts.export_to_sumo import compile_sumo_files
 
 LOGS_DIR = os.path.join(ROOT_DIR, "dispatcher", "logs", "evaluations", "weekly_audits")
@@ -89,12 +91,12 @@ def prepare_day_config(day: str):
     tree.write(cfg_file)
 
 
-def run_cross_eval_worker(task: Tuple[str, str]) -> Dict[str, Any]:
+def run_cross_eval_worker(task: Tuple[str, str, str]) -> Dict[str, Any]:
     """
     Worker process running a single dispatcher on a single day for the full 24 hours.
-    task: (day, dispatcher_name)
+    task: (day, dispatcher_name, disruption_mode)
     """
-    day, disp_name = task
+    day, disp_name, disruption_mode = task
     day_cfg = os.path.join(DAYS_DIR, day, "train_simulation.sumocfg")
     t0 = time.time()
 
@@ -110,11 +112,31 @@ def run_cross_eval_worker(task: Tuple[str, str]) -> Dict[str, Any]:
     else:
         raise ValueError(f"Unknown dispatcher: {disp_name}")
 
+    p_cfg = None
+    if disruption_mode == "train_delay":
+        p_cfg = PerturbationConfig(
+            name="train_delay",
+            mode="train_delay",
+            trigger_time_sec=27000.0,      # 07:30 AM Morning Peak
+            delay_duration_sec=600.0,       # 10 minutes
+            seed=42
+        )
+    elif disruption_mode == "platform_blockage":
+        p_cfg = PerturbationConfig(
+            name="platform_blockage",
+            mode="platform_blockage",
+            blocked_lane_id="City_3_EW_plat_1_fw_0",
+            trigger_time_sec=27000.0,
+            blockage_duration_sec=1800.0,
+            seed=42
+        )
+
     env = RailwayDispatchEnv(
         sumocfg_path=day_cfg,
         start_time_sec=0.0,
         sim_horizon_sec=SIM_HORIZON_SEC,
         macro_step_sec=MACRO_STEP_SEC,
+        perturbation_config=p_cfg,
         gui=False
     )
 
@@ -158,11 +180,22 @@ def run_cross_eval_worker(task: Tuple[str, str]) -> Dict[str, Any]:
     knock_on_events = info.get("knock_on_events", 0)
     peak_active = max(active_history) if active_history else 0
 
+    steps_per_hour = int(3600.0 / MACRO_STEP_SEC)  # 240 steps/hour
+    hourly_delays = []
+    for h in range(24):
+        h_start = h * steps_per_hour
+        h_end = min((h + 1) * steps_per_hour, len(delays_history))
+        if h_start < len(delays_history):
+            hourly_delays.append(round(float(np.mean(delays_history[h_start:h_end])), 2))
+        else:
+            hourly_delays.append(0.0)
+
     print(f"[{day} | {disp_name:<25}] 24h Done in {elapsed/60:.2f}m | Delay: {mean_delay:>6.2f}s | Punc: {punctuality:>5.1f}% | Knock-ons: {knock_on_events:>6}")
 
     return {
         "day": day,
         "dispatcher": disp_name,
+        "disruption": disruption_mode,
         "services": DAY_SERVICE_COUNTS.get(day, 0),
         "elapsed_sec": round(elapsed, 1),
         "steps_simulated": step,
@@ -176,16 +209,25 @@ def run_cross_eval_worker(task: Tuple[str, str]) -> Dict[str, Any]:
             "route_diversions": route_diverts,
             "platform_switches": plat_switches,
             "holds": holds_applied
-        }
+        },
+        "hourly_delays": hourly_delays
     }
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Full 24-Hour 4-Model Weekly Cross-Comparison Benchmark")
+    parser.add_argument("--disruption", type=str, default="none", choices=["none", "train_delay", "platform_blockage"],
+                        help="Peak-hour disruption scenario to inject")
+    parser.add_argument("--workers", type=int, default=28, help="Number of parallel worker processes")
+    parser.add_argument("--output-json", type=str, default=None, help="Custom output JSON path")
+    args = parser.parse_args()
+
     print("=" * 95)
     print("AUTONOMOUS TRAIN DISPATCHER: FULL 24-HOUR 4-MODEL CROSS-COMPARISON BENCHMARK")
     print(f"Operational Horizon: 00:00 to 24:00 (86,400s) | Cadence: {MACRO_STEP_SEC}s (5,760 steps/day)")
     print(f"Models Audited: Static_Baseline, FIFO_Heuristic, Priority_Greedy, Trained_PPO_Dispatcher")
-    print(f"Execution: 28 Parallel Tasks across 32 vCPUs on VM Host")
+    print(f"Disruption Mode: {args.disruption.upper()}")
+    print(f"Execution: 28 Parallel Tasks across {args.workers} workers on VM Host")
     print("=" * 95)
 
     if not os.path.exists(MODEL_PATH):
@@ -207,17 +249,17 @@ def main():
     tasks = []
     for day in DAYS:
         for disp in DISPATCHER_TYPES:
-            tasks.append((day, disp))
+            tasks.append((day, disp, args.disruption))
 
-    print(f"\n[*] Launching 28 parallel 24-hour simulation runs in worker pool...")
-    with mp.Pool(processes=28) as pool:
+    print(f"\n[*] Launching 28 parallel 24-hour simulation runs in worker pool (pool size: {args.workers})...")
+    with mp.Pool(processes=args.workers) as pool:
         results = pool.map(run_cross_eval_worker, tasks)
 
     total_time = time.time() - t0
 
     # Step 3: Save full JSON report
     os.makedirs(LOGS_DIR, exist_ok=True)
-    out_json = os.path.join(LOGS_DIR, "cross_comparison_24h.json")
+    out_json = args.output_json or os.path.join(LOGS_DIR, "cross_comparison_24h.json")
     with open(out_json, "w") as f:
         json.dump(results, f, indent=2)
 

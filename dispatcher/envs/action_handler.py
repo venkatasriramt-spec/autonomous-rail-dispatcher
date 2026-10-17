@@ -13,9 +13,11 @@ from .observation_builder import STATION_PLATFORMS, PLATFORM_LENGTHS, ROLLING_ST
 class ActionHandler:
     def __init__(self):
         self.action_history: List[Dict[str, Any]] = []
+        self.train_hold_seconds: Dict[str, float] = {}
 
     def reset(self):
         self.action_history.clear()
+        self.train_hold_seconds.clear()
 
     def apply_action(
         self,
@@ -190,6 +192,11 @@ class ActionHandler:
                     "type": "action_rejected",
                     "reason": f"High-speed express {focus_veh_id} cannot divert into freight passing loop siding"
                 })
+            elif focus_state.get("leader_dist", 3000.0) >= 1500.0 and focus_state.get("delay_sec", 0.0) <= 60.0:
+                action_summary["changes"].append({
+                    "type": "action_rejected",
+                    "reason": f"Mainline clear ahead ({focus_state.get('leader_dist', 0):.0f}m >= 1500m); passing loop diversion unnecessary"
+                })
             else:
                 road_id = focus_state.get("road_id", "")
                 if "c3_Town_8_Town_9" in road_id or "Town_8" in road_id:
@@ -244,40 +251,62 @@ class ActionHandler:
         # -------------------------------------------------------------
         # 3. Timetable Departure Dispatch & Holding Action (hold_act)
         # -------------------------------------------------------------
+        if not focus_state.get("is_at_stop", False):
+            self.train_hold_seconds[focus_veh_id] = 0.0
+
         if hold_act > 0 and focus_state.get("is_at_stop", False):
-            # Hold train to resolve downstream junction conflict
-            hold_seconds = 30.0 if hold_act == 1 else (60.0 if hold_act == 2 else 120.0)
-            road_id = focus_state.get("road_id", "")
-            # Avoid placing stops on internal junction lanes
-            if road_id and not road_id.startswith(":"):
-                try:
-                    stops = traci_module.vehicle.getStops(focus_veh_id)
-                    if stops:
-                        curr_stop = stops[0]
-                        traci_module.vehicle.setStop(
-                            focus_veh_id,
-                            edgeID=road_id,
-                            pos=curr_stop.endPos,
-                            duration=hold_seconds
-                        )
-                    else:
-                        lane_id = f"{road_id}_0"
-                        lane_len = traci_module.lane.getLength(lane_id)
-                        curr_pos = focus_state.get("lane_pos", 10.0)
-                        safe_pos = min(max(curr_pos + 10.0, 5.0), max(5.0, lane_len - 5.0))
-                        traci_module.vehicle.setStop(
-                            focus_veh_id,
-                            edgeID=road_id,
-                            pos=safe_pos,
-                            duration=hold_seconds
-                        )
-                    action_summary["changes"].append({
-                        "type": "departure_held",
-                        "duration_sec": hold_seconds
-                    })
-                except Exception:
-                    pass
+            accumulated_hold = self.train_hold_seconds.get(focus_veh_id, 0.0)
+            curr_delay = focus_state.get("delay_sec", 0.0)
+
+            # Guardrail: Never hold a train that is already running significantly late (>120s delay)
+            if curr_delay > 120.0:
+                action_summary["changes"].append({
+                    "type": "action_rejected",
+                    "reason": f"Train {focus_veh_id} is already delayed by {curr_delay:.1f}s (>120s); further holding prohibited"
+                })
+            # Guardrail: Maximum cumulative holding ceiling per dwell (120s max total hold)
+            elif accumulated_hold >= 120.0:
+                action_summary["changes"].append({
+                    "type": "action_rejected",
+                    "reason": f"Train {focus_veh_id} reached max hold ceiling ({accumulated_hold:.0f}s >= 120s); forced departure"
+                })
+            else:
+                hold_seconds = 30.0 if hold_act == 1 else (60.0 if hold_act == 2 else 120.0)
+                allowed_hold = min(hold_seconds, 120.0 - accumulated_hold)
+                road_id = focus_state.get("road_id", "")
+                # Avoid placing stops on internal junction lanes
+                if road_id and not road_id.startswith(":"):
+                    try:
+                        stops = traci_module.vehicle.getStops(focus_veh_id)
+                        if stops:
+                            curr_stop = stops[0]
+                            traci_module.vehicle.setStop(
+                                focus_veh_id,
+                                edgeID=road_id,
+                                pos=curr_stop.endPos,
+                                duration=allowed_hold
+                            )
+                        else:
+                            lane_id = f"{road_id}_0"
+                            lane_len = traci_module.lane.getLength(lane_id)
+                            curr_pos = focus_state.get("lane_pos", 10.0)
+                            safe_pos = min(max(curr_pos + 10.0, 5.0), max(5.0, lane_len - 5.0))
+                            traci_module.vehicle.setStop(
+                                focus_veh_id,
+                                edgeID=road_id,
+                                pos=safe_pos,
+                                duration=allowed_hold
+                            )
+                        self.train_hold_seconds[focus_veh_id] = accumulated_hold + allowed_hold
+                        action_summary["changes"].append({
+                            "type": "departure_held",
+                            "duration_sec": allowed_hold,
+                            "total_hold_sec": self.train_hold_seconds[focus_veh_id]
+                        })
+                    except Exception:
+                        pass
         elif hold_act == 0 and focus_state.get("is_at_stop", False):
+            self.train_hold_seconds[focus_veh_id] = 0.0
             # Authorize immediate departure / resume if dwell has finished
             try:
                 traci_module.vehicle.resume(focus_veh_id)
