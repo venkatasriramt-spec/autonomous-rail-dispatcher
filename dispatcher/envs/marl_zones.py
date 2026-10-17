@@ -63,6 +63,10 @@ STATION_OBS_DIM = 24
 # Corridor Agent: 14 features (line density, time of day, train priority, delay, speed, leader dist, overtake candidate, loop/bypass status)
 CORRIDOR_OBS_DIM = 14
 
+# Total centralized observation dimension for CTDE Critic
+TOTAL_JOINT_OBS_DIM = 6 * STATION_OBS_DIM + CORRIDOR_OBS_DIM
+
+
 
 def get_agent_for_vehicle(
     veh_id: str,

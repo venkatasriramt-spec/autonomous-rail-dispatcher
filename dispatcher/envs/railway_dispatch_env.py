@@ -44,9 +44,12 @@ class RailwayDispatchEnv(gym.Env):
         macro_step_sec: float = 15.0,       # 15s macroscopic decision interval
         perturbation_config: Optional[PerturbationConfig] = None,
         gui: bool = False,
-        seed: Optional[int] = None
+        seed: Optional[int] = None,
+        port: Optional[int] = None
     ):
         super().__init__()
+        self.port = port
+
 
         # Paths
         base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -175,8 +178,8 @@ class RailwayDispatchEnv(gym.Env):
         if self.start_time_sec > 0:
             cmd.extend(["--begin", str(int(self.start_time_sec))])
 
-        port = None
-        if getFreeSocketPort is not None:
+        port = getattr(self, "port", None)
+        if port is None and getFreeSocketPort is not None:
             try:
                 port = getFreeSocketPort()
             except Exception:
@@ -191,6 +194,8 @@ class RailwayDispatchEnv(gym.Env):
         except Exception:
             traci.start(cmd)
             self.is_connected = True
+
+
 
         self.sim_time = self.start_time_sec
         self.episode_step_count = 0

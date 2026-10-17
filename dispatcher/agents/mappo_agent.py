@@ -55,6 +55,32 @@ class StationActor(nn.Module):
                 h_act = torch.distributions.Categorical(logits=h_logits).sample().item()
         return np.array([p_act, h_act], dtype=np.int64)
 
+    def get_action_and_log_prob(self, obs: torch.Tensor, deterministic: bool = False) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Samples action and computes log probability for training rollouts."""
+        p_logits, h_logits = self.forward(obs)
+        p_dist = torch.distributions.Categorical(logits=p_logits)
+        h_dist = torch.distributions.Categorical(logits=h_logits)
+        if deterministic:
+            p_act = torch.argmax(p_logits, dim=-1)
+            h_act = torch.argmax(h_logits, dim=-1)
+        else:
+            p_act = p_dist.sample()
+            h_act = h_dist.sample()
+        actions = torch.stack([p_act, h_act], dim=-1)
+        log_prob = p_dist.log_prob(p_act) + h_dist.log_prob(h_act)
+        return actions, log_prob
+
+    def evaluate_actions(self, obs: torch.Tensor, actions: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Evaluates log probabilities and entropy of given actions for PPO updates."""
+        p_logits, h_logits = self.forward(obs)
+        p_dist = torch.distributions.Categorical(logits=p_logits)
+        h_dist = torch.distributions.Categorical(logits=h_logits)
+        p_log_prob = p_dist.log_prob(actions[:, 0])
+        h_log_prob = h_dist.log_prob(actions[:, 1])
+        log_prob = p_log_prob + h_log_prob
+        entropy = p_dist.entropy() + h_dist.entropy()
+        return log_prob, entropy
+
 
 class CorridorActor(nn.Module):
     """Decentralized actor policy for the Corridor Block Agent."""
@@ -81,6 +107,25 @@ class CorridorActor(nn.Module):
                 route_act = torch.distributions.Categorical(logits=logits).sample().item()
         return int(route_act)
 
+    def get_action_and_log_prob(self, obs: torch.Tensor, deterministic: bool = False) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Samples route action and computes log probability for training rollouts."""
+        logits = self.forward(obs)
+        dist = torch.distributions.Categorical(logits=logits)
+        if deterministic:
+            route_act = torch.argmax(logits, dim=-1)
+        else:
+            route_act = dist.sample()
+        log_prob = dist.log_prob(route_act)
+        return route_act, log_prob
+
+    def evaluate_actions(self, obs: torch.Tensor, actions: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """Evaluates log probabilities and entropy of given route actions for PPO updates."""
+        logits = self.forward(obs)
+        dist = torch.distributions.Categorical(logits=logits)
+        log_prob = dist.log_prob(actions)
+        entropy = dist.entropy()
+        return log_prob, entropy
+
 
 class CentralizedCritic(nn.Module):
     """Centralized Critic evaluating joint state value V(S_joint) during CTDE training."""
@@ -96,6 +141,11 @@ class CentralizedCritic(nn.Module):
 
     def forward(self, joint_obs: torch.Tensor) -> torch.Tensor:
         return self.net(joint_obs)
+
+    def evaluate_state(self, joint_obs: torch.Tensor) -> torch.Tensor:
+        """Evaluates scalar value V(S_joint) across batch."""
+        return self.forward(joint_obs).squeeze(-1)
+
 
 
 class MAPPODispatcher:

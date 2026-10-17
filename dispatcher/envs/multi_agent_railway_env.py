@@ -44,7 +44,8 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
         perturbation_config: Optional[PerturbationConfig] = None,
         gui: bool = False,
         seed: Optional[int] = None,
-        cooperation_factor: float = 0.5  # Weight of shared global reward vs local zone reward
+        cooperation_factor: float = 0.5,  # Weight of shared global reward vs local zone reward
+        port: Optional[int] = None
     ):
         super().__init__(
             sumocfg_path=sumocfg_path,
@@ -53,8 +54,10 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
             macro_step_sec=macro_step_sec,
             perturbation_config=perturbation_config,
             gui=gui,
-            seed=seed
+            seed=seed,
+            port=port
         )
+
 
         self.agents = list(MARL_AGENT_IDS)
         self.cooperation_factor = cooperation_factor
