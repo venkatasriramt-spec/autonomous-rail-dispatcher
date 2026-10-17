@@ -47,7 +47,7 @@ def compare_and_report():
     print("=" * 105)
 
     if not os.path.exists(POST_FIX_JSON):
-        print(f"[!] Warning: {POST_FIX_JSON} not found.")
+        print(f"[!] Error: {POST_FIX_JSON} not found. Comparison aborted.")
         return
 
     with open(POST_FIX_JSON, "r") as f:
@@ -124,6 +124,15 @@ def main():
     ]
     t2 = run_stage(cmd_ppo, "Stage 2: Centralized PPO Morning Peak Fine-Tuning")
 
+    # Invalidate any pre-existing post-fix results so a stale file cannot satisfy the check
+    if os.path.exists(POST_FIX_JSON):
+        try:
+            os.remove(POST_FIX_JSON)
+            print(f"[*] Cleared previous {os.path.basename(POST_FIX_JSON)} to ensure fresh evaluation results.")
+        except OSError as e:
+            print(f"\n[!] Error: Failed to remove pre-existing {POST_FIX_JSON}: {e}. Stopping pipeline to prevent stale results.")
+            sys.exit(1)
+
     # Stage 3: Full 7-Day 24-Hour Benchmark
     cmd_bench = [
         PYTHON, "dispatcher/evaluation/audit_cross_comparison_24h.py",
@@ -131,8 +140,12 @@ def main():
     ]
     t3 = run_stage(cmd_bench, "Stage 3: Full 24-Hour 7-Day 5-Model Cross-Comparison Benchmark")
 
-    # Stage 4: Comparative Report
-    compare_and_report()
+    # Stage 4: Comparative Report (proceed only if Stage 3 successfully produced POST_FIX_JSON in current run)
+    if os.path.exists(POST_FIX_JSON):
+        compare_and_report()
+    else:
+        print(f"\n[!] Error: Stage 3 completed but {POST_FIX_JSON} was not generated during this run.")
+        sys.exit(1)
 
     total_elapsed = time.time() - total_t0
     print(f"\n[✓] ALL STAGES COMPLETED SUCCESSFULLY IN {total_elapsed/60:.2f} MINUTES ({total_elapsed:.1f}s)!")

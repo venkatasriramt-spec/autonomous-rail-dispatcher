@@ -79,9 +79,12 @@ build/
 # Reinforcement Learning & Dispatcher AI artifacts
 dispatcher/logs/tensorboard/
 dispatcher/logs/PPO_*
+dispatcher/logs/MAPPO_*
 !dispatcher/logs/visual_proofs/*.png
 dispatcher/models/*.zip
 !dispatcher/models/best_model.zip
+dispatcher/models/*.pt
+!dispatcher/models/mappo_*.pt
 *.tfevents.*
 
 # NOTE ON XML FILES:

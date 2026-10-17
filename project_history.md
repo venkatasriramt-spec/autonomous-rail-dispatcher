@@ -666,4 +666,52 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
      - [`stress_test_knockon_cascades.png`](dispatcher/logs/visual_proofs/stress_test_knockon_cascades.png)
      - [`stress_test_punctuality.png`](dispatcher/logs/visual_proofs/stress_test_punctuality.png)
 
+---
+
+### 17 October 2026 — Platform Reallocation Centralization, Operational Dwell Correction, and 42-Run 6-Model Weekly Audit
+
+#### Milestone Objective
+Consolidate redundant heuristic platform scheduling and alternative track resolution into centralized helper functions, correct operational station dwell time calculation to prevent early-arrival dwell truncations, resolve conflict false positives for platform queues, dynamically track scheduled platforms for exception gating, harden the automated retraining/benchmark pipeline (`train_and_benchmark_all.py`), and execute the authoritative 42-run 6-model 24-hour weekly cross-comparison benchmark.
+
+---
+
+#### 1. Technical Enhancements & Architecture Refactoring
+1. **Centralized Platform Reallocation Helpers (`dispatcher/agents/baseline_dispatchers.py`):**
+   - Extracted standalone helper functions:
+     - `resolve_heuristic_platform`: Determines target platform assignment based on arrival time, route compatibility, and current track occupancy.
+     - `find_free_alternative_platform`: Identifies alternative vacant platforms when a train's scheduled track is blocked, verifying length and directional connectivity.
+   - Centralized platform assignment across `FIFODispatcher`, `PriorityGreedyDispatcher`, and `MAPPODispatcher`, eliminating code duplication and standardizing platform routing behavior across all dispatchers.
+2. **Accurate Operational Dwell Time Formulation (`MultiAgentObservationBuilder`, `ObservationBuilder`):**
+   - Updated remaining dwell time calculation: $\text{dwell}_{\text{rem}} = \max(\text{scheduled\_departure} - t, \text{stop\_min\_duration})$.
+   - Prevents underestimating dwell times for early-arriving consists that must adhere to mandatory passenger boarding/alighting durations.
+3. **Queueing Conflict Signal Decoupling (`MultiAgentRailwayEnv`):**
+   - Refined conflict detection in the reward engine: trains queueing behind a leader actively occupying and dwelling at a station platform are recognized as normal operational headway and are not penalized with artificial conflict penalties.
+4. **Dynamic Scheduled Platform Tracking & Exception Gating (`MAPPODispatcher`, `MultiAgentRailwayEnv`):**
+   - Dynamically tracks actual scheduled platform indices from TraCI route stops (rather than assuming Platform 1 as default).
+   - Passed via step `info` dictionary, enabling precise exception gating where platform switching actions only trigger when the actual scheduled platform is blocked or severely delayed.
+   - Reduced unnecessary action penalties in `marl_reward.py` from $-0.5$ to $-0.05$ to allow adaptive tactical routing during severe congestion.
+5. **Automated End-to-End Retraining & Benchmarking Pipeline (`dispatcher/training/train_and_benchmark_all.py`):**
+   - Implemented a unified script executing the multi-stage training curriculum followed immediately by the 42-run 6-model weekly cross-comparison.
+   - Enforces pre-run invalidation of stale output files to ensure that any failed stage immediately halts execution with a non-zero exit code rather than reporting outdated benchmark logs.
+
+---
+
+#### 2. Comprehensive 42-Run 6-Model 24-Hour Benchmark Verification
+Audited 42 parallel 24-hour simulations (7 calendar days × 6 dispatcher models = 1,446 train runs evaluated 6 times) recorded in [`dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json`](dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json):
+
+| Dispatcher Paradigm | Weekly Mean Delay (Unweighted / Weighted) | Weekly Punctuality | Total Knock-on Cascades | Weekly Interventions | Workload vs Trained PPO |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Trained PPO Dispatcher** | **39.86s** / **39.37s** | **98.79%** | 980 | 12,673 | Baseline (High Workload) |
+| **Priority Greedy Heuristic** | 46.89s / 49.14s | 96.73% | 913 | 6,004 | -52.6% |
+| **Centralized PPO (Regularized)** | 48.34s / 50.75s | 96.34% | 918 | 4,897 | **-61.4%** |
+| **FIFO Heuristic** | 50.07s / 51.31s | 96.34% | 901 | 5,792 | -54.3% |
+| **Decentralized MAPPO (CTDE)** | 182.50s / 180.97s | 94.54% | 5,645 | **407** | **-96.8%** (~58 actions/day) |
+| **Static Baseline** | 236.20s / 237.73s | 93.44% | 10,878 | **0** | No Interventions |
+
+- **Key Findings:**
+  - `Trained_PPO_Dispatcher` achieves the highest fleet punctuality (98.79%) and lowest mean delay (39.86s), but requires heavy intervention (12,673 actions).
+  - `Centralized_PPO` delivers near-optimal delay reduction (48.34s mean delay, 96.34% punctuality) while cutting dispatcher actions by 61.4% (4,897 actions).
+  - `Decentralized_MAPPO` operates with unmatched dispatch-by-exception discipline (only 407 actions across the entire week, ~58 actions/day), reducing operator workload by 96.8% compared to Trained PPO while keeping weekly punctuality at 94.54% and cutting Static baseline delays.
+  - Previous pre-fix benchmark run archived to [`dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h_pre_fix.json`](dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h_pre_fix.json) for historical auditability.
+
 

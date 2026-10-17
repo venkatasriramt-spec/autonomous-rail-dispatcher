@@ -74,12 +74,16 @@ dispatcher/
 ├── envs/
 │   ├── __init__.py
 │   ├── railway_dispatch_env.py    # Gymnasium environment wrapping SUMO via TraCI
+│   ├── multi_agent_railway_env.py # Decentralized multi-agent environment (CTDE)
 │   ├── observation_builder.py     # 28-feature state extraction & platform mappings
+│   ├── multi_agent_builder.py     # Localized station (24-dim) & corridor (14-dim) observations
+│   ├── marl_zones.py              # Station interlocking and corridor zone partitioning
 │   ├── action_handler.py          # Microscopic execution (reroute, replaceStop, resume)
 │   └── reward_engine.py           # Multi-class priority & secondary delay formulation
 ├── agents/
 │   ├── __init__.py
-│   └── baseline_dispatchers.py    # Static (no-op), FIFO, and Priority heuristic agents
+│   ├── baseline_dispatchers.py    # Static (no-op), FIFO, and Priority heuristic agents
+│   └── mappo_agent.py             # Multi-Agent PPO actor-critic architectures (PyTorch)
 ├── scenarios/
 │   ├── __init__.py
 │   └── perturbations.py           # Disruption injector (breakdowns, platform blockages)
@@ -88,15 +92,20 @@ dispatcher/
 │   ├── train.py                   # Multi-core CPU PPO training runner
 │   ├── train_curriculum.py        # Automated progressive wave curriculum runner
 │   ├── train_multiday_option1.py  # Multi-calendar day generalization runner
+│   ├── train_mappo.py             # Multi-agent PPO training pipeline
+│   ├── train_mappo_curriculum.py  # 4-wave diurnal MAPPO curriculum trainer
+│   ├── train_and_benchmark_all.py # End-to-end multi-stage training & benchmarking pipeline
 │   ├── retrain_500k.py            # 500,000-step scaled retraining pipeline
 │   └── callbacks.py               # Real-time KPI logger & best model checkpointing
 ├── evaluation/
 │   ├── __init__.py
 │   ├── evaluate.py                # Comparative benchmark suite runner (Frontier 1 & 2 ModelAgentWrapper)
+│   ├── audit_marl_comparison.py   # Multi-agent MARL vs Centralized PPO empirical benchmark
 │   ├── visualizer.py              # Publication-ready Matplotlib chart generator (disruption benchmarks)
 │   ├── visualize_stress_test.py   # Publication-ready Matplotlib chart generator (stress tests)
 │   ├── visualize_weekly_audit.py  # Publication-ready Matplotlib chart generator (7-day 24h audits)
-│   ├── audit_cross_comparison_24h.py # 28-run weekly cross-comparison pipeline (all 7 days)
+│   ├── visualize_marl.py          # 4-panel MARL vs Centralized comparative visualizer
+│   ├── audit_cross_comparison_24h.py # 42-run weekly cross-comparison pipeline (all 7 days × 6 models)
 │   ├── audit_full_day_parallel.py # 7-day continuous fleet evaluation
 │   ├── audit_weekly_calendar.py   # Weekday vs weekend morning peak audit
 │   ├── audit_stress_testing.py    # Multi-scenario stress benchmark (delays & blockages)
@@ -104,15 +113,19 @@ dispatcher/
 ├── models/
 │   ├── best_model.zip             # Top-performing checkpoint based on lowest mean delay
 │   ├── ppo_stage3_full_day.zip    # Full-day continuous fleet trained policy
-│   └── ppo_dispatcher_final.zip   # Final production policy
+│   ├── ppo_dispatcher_final.zip   # Final production policy
+│   ├── mappo_best.pt              # Best MAPPO actor-critic checkpoint
+│   ├── mappo_interlocking.pt      # Master MAPPO interlocking model weights
+│   └── mappo_best_*.pt            # Wave-specific MAPPO curriculum checkpoints
 ├── logs/
 │   ├── tensorboard/               # TensorBoard real-time training telemetry (PPO_*)
 │   ├── evaluations/               # Structured benchmark & audit JSON reports
 │   │   ├── weekly_audits/         # Full 24-hour, 7-day cross-comparison audits
 │   │   ├── calendar_audits/       # Day-specific schedule audits (Mon, Sat, etc.)
 │   │   ├── disruption_benchmarks/ # Disruption stress benchmarks (delays, blockages)
+│   │   ├── marl_audits/           # Multi-agent MARL vs Centralized benchmark audits
 │   │   └── stress_tests/          # Severe stress testing (Phases A & B across all days)
-│   ├── visual_proofs/             # High-resolution PNG charts and visual comparisons (10 artifacts)
+│   ├── visual_proofs/             # High-resolution PNG charts and visual comparisons (11 artifacts)
 │   └── LOGS_MAP.md                # Comprehensive architectural directory reference map
 └── README.md                      # Comprehensive subsystem documentation
 ```
@@ -143,22 +156,25 @@ Demonstrates active secondary delay suppression under rolling stock breakdown:
 | **Priority Greedy** | Rule-Based | 2.8s | 33.7s | 99.9% | 3 | 24 | +36.5 |
 | **Trained PPO Dispatcher (Phase 3)** | **Deep RL (Ours)** | 44.0s | 211.3s | **88.5%** | **0** *(100% cascade elimination!)* | 360 | -1,155.9 |
 
-### C. Full 7-Day 24-Hour Continuous Microscopic Audit (5-Model Comparison, All 1,446 Services)
-Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 daily, 5,760 steps/day) across all five dispatcher paradigms:
+### C. Full 7-Day 24-Hour Continuous Microscopic Audit (6-Model Comparison, All 1,446 Services)
+Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 daily, 5,760 steps/day) across all six dispatcher paradigms ([`cross_comparison_24h.json`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json)):
 
-| Day | Services | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | Decentralized MAPPO | Peak Central / MAPPO Punctuality | Interventions (Central / MAPPO) | Performance Leadership |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Monday** | 232 | 198.65s | 40.16s | 40.16s | **71.41s** | 165.04s | 96.2% / 94.9% | 871 / 405 | **Central PPO -64.1% delay vs Static; MAPPO cuts knock-ons by 85%** |
-| **Tuesday** | 233 | 229.29s | 91.12s | 91.12s | **34.99s** | 263.52s | **96.2%** / 93.5% | 861 / 406 | **Central PPO Leads (-84.7% vs Static, -61.6% vs FIFO)** |
-| **Wednesday** | 229 | 184.72s | 197.65s | 197.65s | **31.50s** | 258.46s | **96.8%** / 94.1% | 827 / 396 | **Central PPO Leads (-82.9% vs Static, -84.1% vs FIFO)** |
-| **Thursday** | 235 | 198.58s | 40.11s | 40.11s | **75.77s** | 171.78s | 95.4% / 94.1% | 929 / 409 | **Central PPO -61.8% delay vs Static** |
-| **Friday** | 231 | 229.31s | 91.06s | 91.06s | **31.48s** | 258.45s | **96.8%** / 94.1% | 820 / 390 | **Central PPO Leads (-86.3% vs Static, -65.4% vs FIFO)** |
-| **Saturday** | 145 | 354.88s | 80.59s | 80.59s | **28.03s** | 289.97s | 96.5% / 93.5% | 881 / 225 | **Central PPO Leads (-92.1% vs Static, -65.2% vs FIFO)** |
-| **Sunday** | 141 | 236.16s | 148.45s | 148.45s | **32.14s** | 127.38s | 97.0% / 94.2% | 1,144 / 200 | **Central PPO Leads (-86.4% vs Static); MAPPO low workload (200 actions)** |
-| **Average of Daily Means** | — | **233.08s** | **98.45s** | **98.45s** | **43.62s** | **219.23s** | **96.4%** / 94.1% | **905** / 347 | **Central PPO Leads (-81.3% vs Static, 6,333 weekly actions; MAPPO cuts delay by 84%)** |
-| **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **46.88s** | **217.14s** | **96.4%** / 94.1% | **905** / 347 | **Central PPO -79.2% delay vs Static; Workload halved vs previous 12.6k baseline** |
+| Day | Services | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | Decentralized MAPPO | Trained PPO Dispatcher | Performance Leadership |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **Mon** | 232 | 224.56s *(92.8%)* | 83.49s *(96.2%)* | 83.49s *(96.2%)* | 88.19s *(95.9%)* | 151.38s *(95.0%)* | **57.06s** *(98.1%)* | **Trained PPO -74.6% delay vs Static; MAPPO 58 actions** |
+| **Tue** | 233 | 278.61s *(93.4%)* | 35.03s *(96.2%)* | 35.03s *(96.2%)* | 35.03s *(96.2%)* | 263.23s *(93.7%)* | **10.85s** *(99.5%)* | **Trained PPO Leads (-96.1% vs Static, 99.5% punc)** |
+| **Wed** | 229 | 194.73s *(94.4%)* | 31.54s *(96.8%)* | 31.54s *(96.8%)* | 31.54s *(96.8%)* | **48.61s** *(96.2%)* | 53.83s *(98.0%)* | **Central PPO & Heuristics Lead; MAPPO 48.61s (79 actions)** |
+| **Thu** | 235 | 229.83s *(92.0%)* | 87.59s *(95.4%)* | 87.59s *(95.4%)* | 92.46s *(95.2%)* | 158.23s *(94.2%)* | **57.01s** *(98.1%)* | **Trained PPO -75.2% delay vs Static; MAPPO 56 actions** |
+| **Fri** | 231 | 273.54s *(94.0%)* | 31.53s *(96.8%)* | 31.53s *(96.8%)* | 31.53s *(96.8%)* | 258.16s *(94.3%)* | **10.86s** *(99.5%)* | **Trained PPO Leads (-96.0% vs Static, 99.5% punc)** |
+| **Sat** | 145 | 300.25s *(93.5%)* | 28.07s *(96.5%)* | 28.07s *(96.5%)* | **28.07s** *(96.5%)* | 292.69s *(93.6%)* | 80.52s *(98.9%)* | **Central PPO & Heuristics Lead (-90.6% vs Static)** |
+| **Sun** | 141 | 151.86s *(94.0%)* | 53.23s *(96.5%)* | 30.97s *(99.2%)* | 31.59s *(97.0%)* | 105.21s *(94.8%)* | **8.87s** *(99.4%)* | **Trained PPO Leads (-94.2% vs Static, 99.4% punc)** |
+| **Average of Daily Means** | — | **236.20s** | **50.07s** | **46.89s** | **48.34s** | **182.50s** | **39.86s** | **Trained PPO Leads (-83.1% vs Static); Central PPO cuts actions by 61.4%** |
+| **Weighted Service Mean** | **1,446** | **237.73s** | **51.31s** | **49.14s** | **50.75s** | **180.97s** | **39.37s** | **Trained PPO Leads (-83.4% vs Static); MAPPO cuts workload to 407 actions** |
 
-* **Secondary Knock-On Delay Cascades:** Slashed from **11,944 events** (Static) down to **321 events** under Centralized PPO (**97.3% cascade elimination** across the entire week, lowest among all models). Decentralized MAPPO achieved **20,884 events** (a 73.3% reduction from the previous 78k unguided run) while requiring only **347 actions/day** (~2,431 actions/week).
+* **Weekly Secondary Cascades & Operator Workload:**
+  * **Trained PPO Dispatcher:** Achieves highest global punctuality (**98.79%**), lowest mean delay (**39.86s**), and eliminates 91.0% of knock-on events (980 vs 10,878 Static) across 12,673 actions.
+  * **Centralized PPO (Regularized):** Reduces weekly actions to **4,897** (a **61.4% workload reduction** vs Trained PPO) while matching heuristic delays (**48.34s**, 96.34% punctuality, 918 knock-ons).
+  * **Decentralized MAPPO:** Operates with surgical economy at **407 total weekly actions** (~58 actions/day, **96.8% lower operator workload** than Trained PPO), maintaining **94.54% punctuality** and cutting knock-on cascades by 48.1% vs Static (5,645 vs 10,878).
 
 ### D. Peak Disruption Stress-Testing Benchmark (5-Model Comparison)
 Evaluated across four separate operational scenarios during the morning commuter peak (06:00 to 08:00 AM, 480 macro-steps, 20 parallel runs):
@@ -187,10 +203,10 @@ Evaluated during peak morning commuter operations (06:00 to 07:00 AM, 240 steps)
 
 
 - **Decentralized Spatial Decomposition:**
-  - [`dispatcher/envs/marl_zones.py`](envs/marl_zones.py): Defines physical boundaries for 6 station interlockings (`station_city_1` to `station_city_6`) and the trunk line controller (`corridor_trunk`).
-  - [`dispatcher/envs/multi_agent_builder.py`](envs/multi_agent_builder.py): Extracts 24-dim localized station observations and 14-dim localized corridor observations.
-  - [`dispatcher/envs/multi_agent_railway_env.py`](envs/multi_agent_railway_env.py): Multi-agent gym environment implementing cooperative reward blending ($R_i = 0.5 R_{\text{local}, i} + 0.5 R_{\text{global}}$).
-  - [`dispatcher/agents/mappo_agent.py`](agents/mappo_agent.py): PyTorch MAPPO implementation with decentralized `StationActor` and `CorridorActor` MLPs and a centralized critic $V(\mathbf{S}_{\text{joint}})$.
+  - [`dispatcher/envs/marl_zones.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/envs/marl_zones.py): Defines physical boundaries for 6 station interlockings (`station_city_1` to `station_city_6`) and the trunk line controller (`corridor_trunk`).
+  - [`dispatcher/envs/multi_agent_builder.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/envs/multi_agent_builder.py): Extracts 24-dim localized station observations and 14-dim localized corridor observations.
+  - [`dispatcher/envs/multi_agent_railway_env.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/envs/multi_agent_railway_env.py): Multi-agent gym environment implementing cooperative reward blending ($R_i = 0.5 R_{\text{local}, i} + 0.5 R_{\text{global}}$).
+  - [`dispatcher/agents/mappo_agent.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/agents/mappo_agent.py): PyTorch MAPPO implementation with decentralized `StationActor` and `CorridorActor` MLPs and a centralized critic $V(\mathbf{S}_{\text{joint}})$.
 
 ### Visual Artifacts Generated (Stored in `dispatcher/logs/visual_proofs/`)
 1. **`benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
@@ -232,6 +248,12 @@ python3 dispatcher/training/train_curriculum.py
 
 # Frontier 3: Multi-Agent MAPPO training (8 parallel SUMO workers on multi-core CPU):
 python3 dispatcher/training/train_mappo.py --timesteps 10240 --workers 8
+
+# Frontier 3: Multi-Agent MAPPO 4-wave diurnal curriculum training:
+python3 dispatcher/training/train_mappo_curriculum.py
+
+# End-to-End multi-stage training & benchmark pipeline:
+python3 dispatcher/training/train_and_benchmark_all.py
 ```
 
 ### 2. Run Baseline & Model Benchmarking
@@ -261,13 +283,13 @@ python3 dispatcher/evaluation/visualize_marl.py
 ### 4. Comprehensive Weekly Calendar & Stress Audit Pipelines
 Specialized audit pipelines are available for large-scale evaluation:
 
-- **`audit_cross_comparison_24h.py`**: Runs 28 parallel 24-hour simulations (7 days × 4 dispatchers) with full cross-comparison of Static, FIFO, Priority Greedy, and PPO policies.
+- **`audit_cross_comparison_24h.py`**: Runs 42 parallel 24-hour simulations (7 days × 6 dispatchers) with full cross-comparison of Static, FIFO, Priority Greedy, Centralized PPO, Decentralized MAPPO, and Trained PPO policies.
 - **`audit_full_day_parallel.py`**: Runs 7 parallel 24-hour simulations comparing AI vs Static baseline across all 7 calendar days.
 - **`audit_weekly_calendar.py`**: Analyzes policy behavior differences between weekday commuter traffic and weekend clockface operations during morning peak hours.
 - **`audit_stress_24h_all_days.py`**: Runs 24-hour simulations across all 7 days with severe disruption injections (Phase A: peak primary delays; Phase B: platform blockages).
 
 ```bash
-# Run full weekly cross-comparison (7 days × 4 models = 28 runs)
+# Run full weekly cross-comparison (7 days × 6 models = 42 runs)
 python3 dispatcher/evaluation/audit_cross_comparison_24h.py
 
 # Run AI vs Static baseline across all 7 days
