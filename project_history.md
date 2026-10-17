@@ -539,7 +539,67 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
    - Zero collisions, zero emergency teleports, zero broken nodes.
    - All evaluation logs, JSON datasets, and 10 publication-quality PNG charts organized and documented.
 3. **Transition to Frontier 3:**
-   - This marks the clean architectural baseline before beginning **Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO)** for decentralized station-master and corridor-block dispatching.
+   - Pre-Frontier 3 repository state committed cleanly at commit `e3fa093`.
+
+---
+
+#### 11. Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO) for Decentralized Interlocking Dispatching
+
+1. **Architectural Motivation (Frontier 3):**
+   - **The Centralized Single-Agent Bottleneck:** In a monolithic dispatcher, a single central policy must evaluate global network state and issue one macro-action per decision epoch. In a large railway network, this creates an action bottleneck: only one train can receive a platform reallocation or route diversion per step, while stations hundreds of kilometers apart are forced to wait for sequential dispatching slots.
+   - **Decentralized Interlocking Paradigm:** In European rail practice (e.g., EULYNX, ESTW electronic interlockings), control is physically partitioned into station interlocking domains and mainline block sections. Each station interlocking operates autonomously within its home signal boundaries, coordinating with neighboring interlockings across line blocks.
+   - **Centralized Training with Decentralized Execution (CTDE):** We implement Multi-Agent PPO (MAPPO) using CTDE. During execution, each station master and line controller observes only its localized sub-network and executes concurrent actions. The centralized critic evaluates the joint state to align distributed incentives and prevent selfish routing traps.
+
+2. **Spatial Decomposition & Agent Partitioning ([`dispatcher/envs/marl_zones.py`](dispatcher/envs/marl_zones.py)):**
+   - Partitioned the 6-city dense corridor network into **7 autonomous control agents**:
+     - **6 Station-Master Interlocking Agents (`station_city_1` through `station_city_6`):**
+       - Mapped station throat boundaries, approach distance thresholds (200m–2,500m), and 6-track platform occupancy blocks.
+       - Action space: `MultiDiscrete([7, 4])` for direct local platform selection (0..6) and departure dispatch hold duration (0..3).
+     - **1 Corridor Line Controller Agent (`corridor_trunk`):**
+       - Oversees inter-city trunk lines, Alpine mountain gradient block sections, and overtaking sidings.
+       - Action space: `Discrete(3)` for mainline transit, Alpine passing loop siding diversion, and high-speed bypass routing.
+
+3. **Decentralized Observation Builder ([`dispatcher/envs/multi_agent_builder.py`](dispatcher/envs/multi_agent_builder.py)):**
+   - **Station Agent Observation (24 dimensions):**
+     - Local station train density and queue lengths.
+     - Approaching train distance, current delay, and priority tier.
+     - Dwell progress and scheduled departure delta.
+     - 6-track platform occupancy vector, leader headway, and station approach flag.
+   - **Corridor Agent Observation (14 dimensions):**
+     - Trunk block train density and speed variance.
+     - Alpine grade occupancy and freight-behind-passenger headway compression.
+     - Overtake candidate detection flag.
+        - **Telemetry Footprint:** Centralized PPO transmits a 28-float vector (112 bytes/step, totalling 26.2 KB over 240 steps). Under decentralized execution, each station agent consumes 96 bytes and the corridor controller consumes 56 bytes, totalling 632 bytes per step across all 7 agents (148.1 KB over 240 steps).
+
+4. **Multi-Agent Environment & Reward Blending ([`dispatcher/envs/multi_agent_railway_env.py`](dispatcher/envs/multi_agent_railway_env.py)):**
+   - Implements standard multi-agent gym interface: `{agent_id: action}` $\rightarrow$ `{agent_id: obs}`, `{agent_id: reward}`.
+   - **Blended CTDE Cooperative Reward:**
+     $$R_i = (1 - \alpha) \cdot R_{\text{local}, i} + \alpha \cdot R_{\text{global}}$$
+     where $\alpha = 0.5$, penalizing local station delays and platform conflicts while ensuring all agents cooperate to maintain global network punctuality and eliminate secondary cascades.
+
+5. **Multi-Agent PPO Policy Architecture ([`dispatcher/agents/mappo_agent.py`](dispatcher/agents/mappo_agent.py)):**
+   - **Decentralized Actor Networks:** Lightweight PyTorch MLPs (`StationActor` and `CorridorActor`, `[64, 64]` hidden layers with default PyTorch weight initialization and Tanh activations).
+   - **Centralized Critic Network:** `[128, 64]` MLP evaluating global state value $V(\mathbf{S}_{\text{joint}})$ (158-dimensional joint observation space).
+   - **Embedded Frontier 1 & 2 Safeguards:** Integrates Dispatch-by-Exception action gating and Smart Interlocking platform turnaround rules directly within local actor decision loops.
+
+6. **Empirical Benchmark: MAPPO vs Centralized PPO vs Baselines ([`dispatcher/evaluation/audit_marl_comparison.py`](dispatcher/evaluation/audit_marl_comparison.py)):**
+   - Evaluated during the peak morning commuter window (06:00 to 07:00 AM, 240 steps at 15.0s macro-step resolution), comparing the decentralized architecture using untrained actors paired with rule-based gating against single-agent baselines:
+
+| Dispatcher Architecture | Paradigm | Mean Delay | Max Delay | Punctuality (<3m) | Actions Executed | Telemetry Bandwidth |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Static Baseline** | Centralized Single-Agent | 0.88s | 104.0s | 100.0% | 0 | 26.2 KB |
+| **FIFO Heuristic** | Centralized Single-Agent | 0.88s | 104.0s | 100.0% | 14 | 26.2 KB |
+| **Centralized PPO** | Centralized Single-Agent | 0.88s | 104.0s | 100.0% | 25 | 26.2 KB |
+| **Decentralized MAPPO (Untrained)** | **Multi-Agent CTDE (7 Agents, Untrained)** | **0.08s** | **31.0s** | **100.0%** | **195** | **148.1 KB** |
+
+7. **Empirical Findings (Frontier 3 Architectural Baseline):**
+   - **Action Concurrency & Local Control:** The decentralized multi-agent environment safely executed **195 decentralized interventions** across 7 concurrent interlockings without the single-agent global action bottleneck.
+   - **Gated Interlocking Delay Suppression:** With rule-based gating, the decentralized interlockings maintained low mean delays (0.08s vs 0.88s) and individual max delay (31.0s vs 104.0s) during the 1-hour rush hour window with untrained actors.
+   - **Full Multi-Agent Training Roadmap:** Pending end-to-end multi-agent PPO curriculum policy optimization to replace default initial actor weights with trained network policies.
+   - **Publication-Quality Visual Proof Generated:**
+     - [`marl_vs_centralized_comparison.png`](dispatcher/logs/visual_proofs/marl_vs_centralized_comparison.png) - 4-panel comparison of Mean Delay, Max Delay, Action Concurrency, and Telemetry Bandwidth.
+
+
 
 
 

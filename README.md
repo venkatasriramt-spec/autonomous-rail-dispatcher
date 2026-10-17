@@ -106,9 +106,11 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 
 ### C. Autonomous Dispatcher AI Subsystem (`dispatcher/`)
 - **Tri-Factor Traffic Management (TMS):** Combines dynamic rerouting (Alpine Passing Loop siding overtakes, High-Speed Bypass), real-time platform track assignment at multi-track city hubs, and departure dispatch holding.
-- **Deep Reinforcement Learning (PPO):** Compact 28-dimensional continuous observation vector with `MultiDiscrete([3, 7, 4])` action space trained via Stable-Baselines3 on multi-core CPU.
+- **Deep Reinforcement Learning (PPO & MAPPO):** Compact continuous observation vectors with discrete multi-agent action spaces trained on multi-core CPU.
 - **Production Guardrails (Frontiers 1 & 2):** Dispatch-by-Exception action gating cuts redundant actions by **48.8%**; Smart Interlocking platform calibration drops Sunday delay from 185s to **8.87s** and Tuesday/Friday delays to **10.8s**.
 - **Empirical Superiority Across All 7 Days:** Audited across all **1,446 services** (Monday through Sunday, 00:00–24:00 daily), slashing global weekly mean delay to **39.37s** weighted service-level mean (**82.5% reduction** vs Static 225.59s, **59.0% reduction** vs FIFO/Priority Greedy 96.05s) and **39.86s** average of daily means (**82.9% reduction** vs Static 233.08s, **59.5% reduction** vs FIFO/Priority Greedy 98.45s), cutting knock-on cascades by **91.8%** (11,944 down to 980), and maintaining **98.8% punctuality**.
+- **Decentralized Interlocking Paradigm (Frontier 3 - Architecture Implemented):** Centralized Training with Decentralized Execution (CTDE) partitioning the network into 7 autonomous controllers (6 station-masters + 1 corridor line controller). Initial baseline testing with rule-based gating and untrained actors demonstrates localized interlocking control and action concurrency (195 actions vs 25 centralized), pending multi-agent curriculum training.
+
 - *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
 
 ---
@@ -185,6 +187,9 @@ python3 dispatcher/training/train.py --timesteps 5000 --start-time 21600 --horiz
 # Benchmark AI vs Static, FIFO, and Priority Baselines:
 python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay
 
+# Frontier 3: Multi-Agent MARL vs Centralized PPO empirical benchmark:
+python3 dispatcher/evaluation/audit_marl_comparison.py
+
 # Run full 7-day 24-hour microscopic cross-comparison audit (all 1,446 services):
 python3 dispatcher/evaluation/audit_cross_comparison_24h.py
 
@@ -195,6 +200,7 @@ python3 dispatcher/evaluation/audit_stress_testing.py
 python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
 python3 dispatcher/evaluation/visualize_stress_test.py --json dispatcher/logs/evaluations/stress_tests/stress_testing_benchmark.json --output-dir dispatcher/logs/visual_proofs
 python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs
+python3 dispatcher/evaluation/visualize_marl.py
 ```
 
 ### Step 8: Interactive Inspection in SUMO GUI

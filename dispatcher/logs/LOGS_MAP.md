@@ -78,9 +78,17 @@ dispatcher/logs/
 
 ---
 
-### 6. Visual Proofs & Charts (`dispatcher/logs/visual_proofs/`)
+### 6. Multi-Agent Audits (`dispatcher/logs/evaluations/marl_audits/`)
 
-This directory contains 10 publication-ready, high-resolution (150 DPI) visualization artifacts tracking network performance across disruption benchmarks, stress testing, and 7-day 24-hour diurnal timelines.
+| File Name | Generating Script | CLI Command | Description |
+| :--- | :--- | :--- | :--- |
+| **`marl_vs_centralized_benchmark.json`** | [`dispatcher/evaluation/audit_marl_comparison.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_marl_comparison.py) | `python3 dispatcher/evaluation/audit_marl_comparison.py` | Peak morning commuter comparison benchmarking Decentralized MAPPO (7 agents) vs Centralized PPO vs FIFO vs Static baseline across delays, action counts, and telemetry bandwidth. |
+
+---
+
+### 7. Visual Proofs & Charts (`dispatcher/logs/visual_proofs/`)
+
+This directory contains 11 publication-ready, high-resolution (150-200 DPI) visualization artifacts tracking network performance across disruption benchmarks, stress testing, 7-day 24-hour diurnal timelines, and multi-agent comparisons.
 
 #### Group A: Disruption Benchmark Visual Proofs
 * **Generating Script:** [`dispatcher/evaluation/visualizer.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualizer.py)
@@ -106,4 +114,11 @@ This directory contains 10 publication-ready, high-resolution (150 DPI) visualiz
   * **`weekly_7day_knockon_cascades.png`**: Day-by-day secondary knock-on conflict counts showing 91.8% cascade reduction (11,944 -> 980 events).
   * **`weekly_7day_punctuality.png`**: Day-by-day schedule punctuality rates across all 7 calendar days (98.0% - 99.5%).
   * **`weekly_24h_diurnal_timeline.png`**: 24-hour continuous timeline (00:00 to 24:00) tracking network-wide delay curves through early morning feeder, morning peak, midday base, evening peak, and nocturnal freight waves.
+
+#### Group D: Multi-Agent MARL vs Centralized PPO Visual Proofs
+* **Generating Script:** [`dispatcher/evaluation/visualize_marl.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_marl.py)
+* **Command:** `python3 dispatcher/evaluation/visualize_marl.py`
+* **Artifacts:**
+  * **`marl_vs_centralized_comparison.png`**: 4-panel publication-grade comparison of Mean Delay, Max Peak Delay, Control Action Interventions (Concurrency), and Telemetry Transmission Bandwidth.
+
 

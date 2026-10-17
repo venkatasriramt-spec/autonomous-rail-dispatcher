@@ -7,10 +7,13 @@ from .baseline_dispatchers import (
     FIFODispatcher,
     PriorityGreedyDispatcher
 )
+from .mappo_agent import MAPPODispatcher
 
 __all__ = [
     "BaseDispatcher",
     "StaticDispatcher",
     "FIFODispatcher",
-    "PriorityGreedyDispatcher"
+    "PriorityGreedyDispatcher",
+    "MAPPODispatcher"
 ]
+

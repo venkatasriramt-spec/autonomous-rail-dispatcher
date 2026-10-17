@@ -315,9 +315,18 @@ To elevate the autonomous dispatcher from a standard RL policy into a production
 * Audited across 4 concurrent morning peak failure scenarios (Train Breakdown, Platform Closure, Fleet Surge, Compound Failure).
 * Maintained **94.9% punctuality** under mechanical breakdown and compound failure, and **99.9% punctuality** under 30-min platform closure and 15% fleet dwell jitter, while pruning redundant interventions by 22%–42%.
 
-### D. Frontier 3 (Upcoming Architecture): Multi-Agent Reinforcement Learning (MARL / MAPPO)
-* **Rationale:** As networks scale to hundreds of stations, centralized state spaces hit the curse of dimensionality.
-* **Design:** Centralized Training with Decentralized Execution (CTDE) partitioning the network into:
-  1. **Station-Master Agents:** Localized interlocking controllers for City 1–6 hubs (platform allocation, terminal pocket turnaround clearance).
-  2. **Corridor Block Agents:** Line controllers for inter-city trunk corridors (headway pacing, passing loop overtakes).
+### D. Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO) - Architecture Implemented, Untrained
+* **Rationale:** In large-scale regional networks, monolithic centralized agents suffer from the curse of dimensionality and an action bottleneck (only one intervention per decision epoch across the entire network).
+* **Decentralized Architecture (CTDE):** Implemented Centralized Training with Decentralized Execution via Multi-Agent PPO:
+  1. **6 Station-Master Interlocking Agents (`station_city_1` to `station_city_6`):** Observe 24 localized features (track occupancy, approach train headway, dwell countdown) and manage 6-track platform routing and departure holds (`MultiDiscrete([7, 4])`).
+  2. **1 Corridor Line Controller Agent (`corridor_trunk`):** Observes 14 localized trunk metrics (density, Alpine gradient status, overtake flag) and controls mainline overtakes, Alpine passing loop siding diversions, and high-speed bypass switches (`Discrete(3)`).
+* **Blended Cooperative Reward:** $R_i = (1 - \alpha) R_{\text{local}, i} + \alpha R_{\text{global}}$ ($\alpha = 0.5$), aligning distributed interlocking incentives with system-wide punctuality and knock-on suppression.
+* **Current Status & Empirical Baseline (Peak Morning Commuter Window, 240 Steps):**
+  - **Status:** Architecture implemented with decentralized environments and rule-based gating; actors are currently untrained (evaluated with initial weights prior to full multi-agent curriculum training).
+  - **Mean Delay:** 0.08s per train with rule-based gating (vs 0.88s Centralized PPO, 0.88s FIFO, and 0.88s Static Baseline).
+  - **Max Delay:** 31.0s peak individual train delay (vs 104.0s for Centralized PPO, FIFO, and Static baselines; earlier preliminary runs measured maximum per-step mean delay at 10.3s vs 20.8s).
+  - **Action Concurrency:** Safely executed **195 decentralized interventions** across 7 concurrent interlockings without single-agent bottlenecking.
+  - **Telemetry Consumption:** MAPPO transmits 632 bytes per step across all 7 agents, consuming **148.1 KB** over 240 steps (compared to **26.2 KB** at 112 bytes per step for centralized PPO).
+
+
 

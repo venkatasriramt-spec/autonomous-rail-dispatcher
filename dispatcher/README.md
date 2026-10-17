@@ -170,6 +170,25 @@ Evaluated across 4 simultaneous operational failure modes during the morning com
 | **Fleet Surge (15% Jitter)** | 4.12s | 4.12s | 4.12s | **4.12s** | **99.9%** | 65 *(down from 108)* |
 | **Compound Failure** | 25.68s | 25.68s | 25.68s | **26.15s** | **94.9% (+0.4%)** | 128 *(down from 164)* |
 
+### E. Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO) Benchmark
+Evaluated during peak morning commuter operations (06:00 to 07:00 AM, 240 steps) under Centralized Training with Decentralized Execution (CTDE) partitioning the corridor into **7 autonomous control agents** (6 Station-Master Interlocking Controllers + 1 Corridor Line Controller):
+
+| Dispatcher Architecture | Paradigm | Mean Delay | Max Delay | Punctuality (<3m) | Actions Executed | Telemetry Bandwidth |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: |
+| **Static Baseline** | Centralized Single-Agent | 0.88s | 104.0s | 100.0% | 0 | 26.2 KB |
+| **FIFO Heuristic** | Centralized Single-Agent | 0.88s | 104.0s | 100.0% | 14 | 26.2 KB |
+| **Centralized PPO** | Centralized Single-Agent | 0.88s | 104.0s | 100.0% | 25 | 26.2 KB |
+| **Decentralized MAPPO (Untrained)** | **Multi-Agent CTDE (7 Agents, Untrained)** | **0.08s** | **31.0s** | **100.0%** | **195** | **148.1 KB** |
+
+*(Note: Evaluates the decentralized environment and interlocking architecture using untrained actors paired with rule-based gating prior to multi-agent curriculum training. Max Delay measures the peak individual train delay; earlier preliminary runs measured maximum per-step mean delay at 10.3s vs 20.8s).*
+
+
+- **Decentralized Spatial Decomposition:**
+  - [`dispatcher/envs/marl_zones.py`](envs/marl_zones.py): Defines physical boundaries for 6 station interlockings (`station_city_1` to `station_city_6`) and the trunk line controller (`corridor_trunk`).
+  - [`dispatcher/envs/multi_agent_builder.py`](envs/multi_agent_builder.py): Extracts 24-dim localized station observations and 14-dim localized corridor observations.
+  - [`dispatcher/envs/multi_agent_railway_env.py`](envs/multi_agent_railway_env.py): Multi-agent gym environment implementing cooperative reward blending ($R_i = 0.5 R_{\text{local}, i} + 0.5 R_{\text{global}}$).
+  - [`dispatcher/agents/mappo_agent.py`](agents/mappo_agent.py): PyTorch MAPPO implementation with decentralized `StationActor` and `CorridorActor` MLPs and a centralized critic $V(\mathbf{S}_{\text{joint}})$.
+
 ### Visual Artifacts Generated (Stored in `dispatcher/logs/visual_proofs/`)
 1. **`benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
 2. **`benchmark_punctuality_knockon.png`:** Punctuality percentages and secondary delay mitigation (100% knock-on elimination).
@@ -181,6 +200,7 @@ Evaluated across 4 simultaneous operational failure modes during the morning com
 8. **`weekly_7day_knockon_cascades.png`:** Weekly secondary knock-on events by calendar day.
 9. **`weekly_7day_punctuality.png`:** Weekly schedule punctuality rate retention by calendar day.
 10. **`weekly_24h_diurnal_timeline.png`:** 24-hour continuous timeline tracking network delay curves from dawn to midnight.
+11. **`marl_vs_centralized_comparison.png`:** 4-panel comparison of Frontier 3 Decentralized MAPPO vs Centralized PPO & Baselines (Mean Delay, Max Delay, Actions, Bandwidth).
 
 ---
 
@@ -210,7 +230,11 @@ python3 dispatcher/training/train_curriculum.py
 
 ### 2. Run Baseline & Model Benchmarking
 ```bash
+# Centralized single-agent disruption benchmark:
 python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay --start-time 21600 --horizon 1800
+
+# Frontier 3: Multi-Agent MARL vs Centralized PPO empirical benchmark:
+python3 dispatcher/evaluation/audit_marl_comparison.py
 ```
 
 ### 3. Generate Publication-Quality Visual Charts
@@ -223,6 +247,9 @@ python3 dispatcher/evaluation/visualize_stress_test.py --json dispatcher/logs/ev
 
 # Render full 7-day 24-hour diurnal audit charts (4 charts):
 python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs
+
+# Render Frontier 3 Multi-Agent MARL comparison chart:
+python3 dispatcher/evaluation/visualize_marl.py
 ```
 
 ### 4. Comprehensive Weekly Calendar & Stress Audit Pipelines
@@ -249,3 +276,4 @@ python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase A
 # Run 24-hour stress audit under station platform blockages (Phase B)
 python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase B
 ```
+

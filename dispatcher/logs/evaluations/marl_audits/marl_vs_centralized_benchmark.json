@@ -1,0 +1,50 @@
+[
+  {
+    "model": "Centralized_PPO",
+    "paradigm": "Centralized Single-Agent",
+    "elapsed_sec": 7.3,
+    "steps": 240,
+    "mean_delay_sec": 0.88,
+    "max_delay_sec": 104.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 0,
+    "actions_taken": 25,
+    "telemetry_kb": 26.25
+  },
+  {
+    "model": "Decentralized_MAPPO_Untrained",
+    "paradigm": "Multi-Agent CTDE (7 Interlocking Agents, Untrained)",
+    "elapsed_sec": 9.5,
+    "steps": 240,
+    "mean_delay_sec": 0.08,
+    "max_delay_sec": 31.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 0,
+    "actions_taken": 195,
+    "telemetry_kb": 148.12
+  },
+  {
+    "model": "Static_Baseline",
+    "paradigm": "Centralized Single-Agent",
+    "elapsed_sec": 6.7,
+    "steps": 240,
+    "mean_delay_sec": 0.88,
+    "max_delay_sec": 104.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 0,
+    "actions_taken": 0,
+    "telemetry_kb": 26.25
+  },
+  {
+    "model": "FIFO_Heuristic",
+    "paradigm": "Centralized Single-Agent",
+    "elapsed_sec": 6.3,
+    "steps": 240,
+    "mean_delay_sec": 0.88,
+    "max_delay_sec": 104.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 0,
+    "actions_taken": 14,
+    "telemetry_kb": 26.25
+  }
+]
