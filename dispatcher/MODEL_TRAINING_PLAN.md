@@ -340,7 +340,7 @@ To test true generalizability across all real-world operational regimes, the MAP
    - **Phase 1 (Nocturnal Freight Wave, 21:30–02:30):** 10,240 timesteps on 16 parallel workers. Critic loss: 0.0416 $\rightarrow$ 0.0058.
    - **Phase 2 (Evening Commuter Peak, 16:00–18:45):** 10,240 timesteps. Critic loss: 0.0058 $\rightarrow$ 0.0017.
    - **Phase 3 (Sunday Platform Staging & Turnaround Calibration, 08:00–12:00, Sun):** 10,240 timesteps. Critic loss: 0.0002 $\rightarrow$ 0.0001.
-   - **Phase 4 (Full 24-Hour Continuous Fleet Synthesis, 05:00–23:00):** 15,360 timesteps across 242 runs / 31 continuous rakes.
+   - **Phase 4 (Full 24-Hour Continuous Fleet Synthesis, 05:00–09:00):** 15,360 timesteps across 16 workers (covering 960 macro-steps per worker, or 14,400 seconds from 05:00 to 09:00) across 242 runs / 31 continuous rakes.
    - Total training completed in **633.5s (10.56 min)** across 16 parallel workers.
 
 2. **Full 24-Hour 7-Day 5-Model Microscopic Evaluation ([`dispatcher/evaluation/audit_cross_comparison_24h.py`](evaluation/audit_cross_comparison_24h.py)):**

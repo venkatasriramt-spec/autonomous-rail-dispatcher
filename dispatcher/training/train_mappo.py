@@ -72,7 +72,9 @@ def env_worker_loop(remote, worker_id: int, sumocfg_path: Optional[str], start_t
     Communicates with the central trainer via a bidirectional Pipe.
     """
     worker_port = 12500 + worker_id * 10
-    cfg = sumocfg_path if (sumocfg_path and os.path.exists(sumocfg_path)) else SUMOCFG_PATH
+    cfg = sumocfg_path if sumocfg_path else SUMOCFG_PATH
+    if not os.path.exists(cfg):
+        raise FileNotFoundError(f"Worker {worker_id}: SUMO configuration not found at {cfg}")
     try:
         env = MultiAgentRailwayEnv(
             sumocfg_path=cfg,
@@ -373,6 +375,11 @@ def train_mappo(
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
+    # Validate SUMO configuration before spawning workers
+    cfg_to_use = sumocfg_path if sumocfg_path else SUMOCFG_PATH
+    if not os.path.exists(cfg_to_use):
+        raise FileNotFoundError(f"SUMO configuration not found at: {cfg_to_use}")
+
     # Initialize MAPPODispatcher
     dispatcher = MAPPODispatcher(checkpoint_path=load_checkpoint, exception_gating=False, smart_interlocking=False)
     trainer = MAPPOTrainer(dispatcher=dispatcher, lr_actor=3e-4, lr_critic=1e-3)
@@ -382,7 +389,7 @@ def train_mappo(
         num_workers=num_workers,
         start_time=start_time,
         horizon=horizon,
-        sumocfg_path=sumocfg_path,
+        sumocfg_path=cfg_to_use,
         base_seed=42
     )
 
@@ -553,6 +560,8 @@ def main():
         candidate_cfg = os.path.join(ROOT_DIR, "trains", "sumo_config", "days", day, "train_simulation.sumocfg")
         if os.path.exists(candidate_cfg):
             cfg_path = candidate_cfg
+        else:
+            raise FileNotFoundError(f"Day-specific SUMO configuration for '{day}' not found at: {candidate_cfg}")
 
     train_mappo(
         total_timesteps=args.timesteps,

@@ -155,8 +155,8 @@ Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 dail
 | **Friday** | 231 | 229.31s | 91.06s | 91.06s | **10.86s** | 2194.33s | **99.5%** / 74.0% | 1,427 / 10,254 | **Centralized Dominates (-95.3% vs Static, -88.1% vs FIFO)** |
 | **Saturday** | 145 | 354.88s | 80.59s | 80.59s | 80.52s | **0.26s** | 98.9% / **99.9%** | 1,855 / 7,919 | **MAPPO Dominates (-99.9% vs Static, -99.7% vs Heuristics)** |
 | **Sunday** | 141 | 236.16s | 148.45s | 148.45s | 8.87s | **0.12s** | 99.4% / **100.0%** | 1,770 / 8,285 | **MAPPO Dominates (-99.9% vs Static, -98.6% vs Centralized)** |
-| **Average of Daily Means** | — | **233.08s** | **98.45s** | **98.45s** | **39.86s** | **1348.66s** | **98.8%** / 85.3% | **~1,810** / 9,427 | **Central PPO Leads Weekdays (-82.9%); MAPPO Dominates Weekends** |
-| **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **39.37s** | **1398.11s** | **98.8%** / 84.7% | **~1,810** / 9,427 | **Central PPO -82.5% vs Static; MAPPO 0.12s-0.26s on Weekend Roster** |
+| **Average of Daily Means** | — | **233.08s** | **98.45s** | **98.45s** | **39.86s** | **1348.66s** | **98.8%** / 85.3% | **~1,810** / 9,846 | **Central PPO Leads Weekdays (-82.9%); MAPPO Dominates Weekends** |
+| **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **39.37s** | **1513.14s** | **98.8%** / 83.5% | **~1,810** / 9,846 | **Central PPO -82.5% vs Static; MAPPO 0.12s-0.26s on Weekend Roster** |
 
 * **Secondary Knock-On Delay Cascades:** Slashed from **11,944 events** (Static) down to **980 events** (**91.8% cascade elimination** across the entire week). MAPPO excels in localized station zones and weekend traffic (53-58 knock-ons) but accumulates secondary holding cascades during dense weekday commutes.
 

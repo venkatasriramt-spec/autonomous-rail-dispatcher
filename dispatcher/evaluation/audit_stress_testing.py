@@ -256,6 +256,10 @@ def main():
         print(f"[!] Error: Model checkpoint not found at {MODEL_PATH}")
         sys.exit(1)
 
+    if "Decentralized_MAPPO" in DISPATCHER_TYPES and not os.path.exists(MAPPO_MODEL_PATH):
+        print(f"[!] Error: MAPPO model checkpoint not found at {MAPPO_MODEL_PATH}")
+        sys.exit(1)
+
     # Ensure master schedule is compiled
     compile_sumo_files(mode="rakes", day="all")
 

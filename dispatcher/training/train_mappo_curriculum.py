@@ -69,7 +69,7 @@ def main():
             "--timesteps", str(args.steps_per_phase),
             "--workers", str(args.workers),
             "--save-path", BASE_MODEL,
-            "--best-path", BEST_MODEL
+            "--best-path", os.path.join(MODELS_DIR, "mappo_best_nocturnal_freight.pt")
         ]
         if os.path.exists(BASE_MODEL):
             cmd_p1.extend(["--load-checkpoint", BASE_MODEL])
@@ -86,7 +86,7 @@ def main():
             "--workers", str(args.workers),
             "--load-checkpoint", BASE_MODEL,
             "--save-path", BASE_MODEL,
-            "--best-path", BEST_MODEL
+            "--best-path", os.path.join(MODELS_DIR, "mappo_best_evening_peak.pt")
         ]
         run_phase(cmd_p2, "Phase 2: Evening Commuter Peak Wave (16:00-18:45, High-Density Reverse Commute)")
 
@@ -102,7 +102,7 @@ def main():
             "--workers", str(args.workers),
             "--load-checkpoint", BASE_MODEL,
             "--save-path", BASE_MODEL,
-            "--best-path", BEST_MODEL
+            "--best-path", os.path.join(MODELS_DIR, "mappo_best_sunday_staging.pt")
         ]
         run_phase(cmd_p3, "Phase 3: Sunday Platform Staging & Turnaround Calibration (08:00-12:00, Platform 1 Buffer)")
 
@@ -117,7 +117,7 @@ def main():
             "--workers", str(args.workers),
             "--load-checkpoint", BASE_MODEL,
             "--save-path", BASE_MODEL,
-            "--best-path", BEST_MODEL
+            "--best-path", os.path.join(MODELS_DIR, "mappo_best_full_day.pt")
         ]
         run_phase(cmd_p4, "Phase 4: Full 24-Hour Continuous Fleet Synthesis (05:00-23:00, 242 Runs / 31 Rakes)")
 

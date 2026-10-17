@@ -277,6 +277,10 @@ def main():
         print(f"[!] Error: Main model checkpoint not found at {MODEL_PATH}")
         sys.exit(1)
 
+    if "Decentralized_MAPPO" in selected_dispatchers and not os.path.exists(MAPPO_MODEL_PATH):
+        print(f"[!] Error: MAPPO model checkpoint not found at {MAPPO_MODEL_PATH}")
+        sys.exit(1)
+
     t0 = time.time()
 
     # Step 1: Ensure all day configs are ready
