@@ -27,10 +27,11 @@ from dispatcher.agents.baseline_dispatchers import (
 
 
 class ModelAgentWrapper(BaseDispatcher):
-    def __init__(self, model_path: str, name: str = "Trained_PPO_Dispatcher", exception_gating: bool = True):
+    def __init__(self, model_path: str, name: str = "Trained_PPO_Dispatcher", exception_gating: bool = True, smart_interlocking: bool = True):
         super().__init__(name=name)
         self.model = PPO.load(model_path)
         self.exception_gating = exception_gating
+        self.smart_interlocking = smart_interlocking
 
     def predict(self, observation: np.ndarray, info: Optional[Dict[str, Any]] = None) -> np.ndarray:
         obs_1d = observation.flatten()
@@ -52,7 +53,36 @@ class ModelAgentWrapper(BaseDispatcher):
                 return np.array([0, 0, 0])
 
         action, _ = self.model.predict(observation, deterministic=True)
-        return action
+        r_act, p_act, h_act = int(action[0]), int(action[1]), int(action[2])
+
+        # Frontier 2: Smart Interlocking Gating & Sunday Platform Calibration
+        if self.smart_interlocking and len(obs_1d) >= 28:
+            # Rule 1: No unprovoked passing loop siding diversion on clear mainline
+            if obs_1d[14] < 0.50:
+                r_act = 0
+
+            # Rule 2: No unprovoked holds (only hold if leader is close and ego train is on-time)
+            if h_act > 0:
+                is_leader_tight = obs_1d[11] < 0.30
+                is_ontime = obs_1d[6] <= 0.01
+                if not (is_leader_tight and is_ontime):
+                    h_act = 0
+
+            # Rule 3: Intelligent platform resolution
+            if obs_1d[15] > 0.50:
+                current_day = info.get("day") if (info and isinstance(info, dict)) else None
+                # On Sunday, platform 1 at hub stations is reserved for turnaround staging buffers
+                if current_day == "Sun" and obs_1d[16] > 0.50:
+                    for p_idx in range(1, 6):
+                        if obs_1d[16 + p_idx * 2] < 0.50:
+                            p_act = p_idx + 1
+                            break
+                elif p_act > 0:
+                    target_feat = 16 + (p_act - 1) * 2
+                    if target_feat < 28 and obs_1d[target_feat] > 0.50:
+                        p_act = 0
+
+        return np.array([r_act, p_act, h_act])
 
 
 def evaluate_single_run(

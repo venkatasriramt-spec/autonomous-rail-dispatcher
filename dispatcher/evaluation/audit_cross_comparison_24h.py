@@ -218,16 +218,20 @@ def main():
     parser = argparse.ArgumentParser(description="Full 24-Hour 4-Model Weekly Cross-Comparison Benchmark")
     parser.add_argument("--disruption", type=str, default="none", choices=["none", "train_delay", "platform_blockage"],
                         help="Peak-hour disruption scenario to inject")
+    parser.add_argument("--dispatchers", type=str, default=None,
+                        help="Comma-separated dispatchers to audit (default: all 4)")
     parser.add_argument("--workers", type=int, default=28, help="Number of parallel worker processes")
     parser.add_argument("--output-json", type=str, default=None, help="Custom output JSON path")
     args = parser.parse_args()
 
+    selected_dispatchers = [d.strip() for d in args.dispatchers.split(",")] if args.dispatchers else DISPATCHER_TYPES
+
     print("=" * 95)
     print("AUTONOMOUS TRAIN DISPATCHER: FULL 24-HOUR 4-MODEL CROSS-COMPARISON BENCHMARK")
     print(f"Operational Horizon: 00:00 to 24:00 (86,400s) | Cadence: {MACRO_STEP_SEC}s (5,760 steps/day)")
-    print(f"Models Audited: Static_Baseline, FIFO_Heuristic, Priority_Greedy, Trained_PPO_Dispatcher")
+    print(f"Models Audited: {', '.join(selected_dispatchers)}")
     print(f"Disruption Mode: {args.disruption.upper()}")
-    print(f"Execution: 28 Parallel Tasks across {args.workers} workers on VM Host")
+    print(f"Execution: {len(DAYS) * len(selected_dispatchers)} Parallel Tasks across {args.workers} workers on VM Host")
     print("=" * 95)
 
     if not os.path.exists(MODEL_PATH):
@@ -245,32 +249,46 @@ def main():
     print("[*] Restoring root master composite schedule (-d all)...")
     compile_sumo_files(mode="rakes", day="all")
 
-    # Step 2: Build task matrix (7 days x 4 dispatchers = 28 runs)
+    # Step 2: Build task matrix
     tasks = []
     for day in DAYS:
-        for disp in DISPATCHER_TYPES:
+        for disp in selected_dispatchers:
             tasks.append((day, disp, args.disruption))
 
-    print(f"\n[*] Launching 28 parallel 24-hour simulation runs in worker pool (pool size: {args.workers})...")
-    with mp.Pool(processes=args.workers) as pool:
+    worker_count = min(len(tasks), args.workers)
+    print(f"\n[*] Launching {len(tasks)} parallel 24-hour simulation runs in worker pool (pool size: {worker_count})...")
+    with mp.Pool(processes=worker_count) as pool:
         results = pool.map(run_cross_eval_worker, tasks)
 
     total_time = time.time() - t0
 
-    # Step 3: Save full JSON report
+    # Step 3: Save full JSON report (merging with existing baseline data if present)
     os.makedirs(LOGS_DIR, exist_ok=True)
     out_json = args.output_json or os.path.join(LOGS_DIR, "cross_comparison_24h.json")
+    existing_results = []
+    if os.path.exists(out_json):
+        try:
+            with open(out_json, "r") as f:
+                existing_results = json.load(f)
+        except Exception:
+            pass
+
+    merged_map = {(r["day"], r["dispatcher"]): r for r in existing_results}
+    for r in results:
+        merged_map[(r["day"], r["dispatcher"])] = r
+    final_results = list(merged_map.values())
+
     with open(out_json, "w") as f:
-        json.dump(results, f, indent=2)
+        json.dump(final_results, f, indent=2)
 
     print("\n" + "=" * 95)
-    print(f"ALL 28 RUNS COMPLETED IN {total_time/60:.2f} MINUTES ({total_time:.1f}s)!")
+    print(f"RUNS COMPLETED IN {total_time/60:.2f} MINUTES ({total_time:.1f}s)!")
     print(f"Detailed results saved to: {out_json}")
     print("=" * 95)
 
     # Organize results by Day
     day_map = {d: {} for d in DAYS}
-    for r in results:
+    for r in final_results:
         day_map[r["day"]][r["dispatcher"]] = r
 
     # Step 4: Print Full Weekly Cross-Comparison Table

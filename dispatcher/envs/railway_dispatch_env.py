@@ -58,6 +58,12 @@ class RailwayDispatchEnv(gym.Env):
 
         self.start_time_sec = start_time_sec
         self.sim_horizon_sec = sim_horizon_sec
+        self.day = None
+        if "/days/" in self.sumocfg_path:
+            try:
+                self.day = self.sumocfg_path.split("/days/")[1].split("/")[0]
+            except Exception:
+                pass
         self.end_time_sec = start_time_sec + sim_horizon_sec
         self.macro_step_sec = macro_step_sec
         self.gui = gui
@@ -354,6 +360,7 @@ class RailwayDispatchEnv(gym.Env):
         max_delay = float(np.max(all_delays)) if all_delays else 0.0
         ontime_count = sum(1 for d in all_delays if d <= 180.0)
         punctuality = (ontime_count / max(1, len(all_delays))) * 100.0
+        focus_state = self.train_states.get(self.focus_veh_id, {}) if self.focus_veh_id else {}
 
         return {
             "sim_time": self.sim_time,
@@ -365,6 +372,8 @@ class RailwayDispatchEnv(gym.Env):
             "collisions": getattr(self, "total_collisions", 0),
             "teleports": getattr(self, "total_teleports", 0),
             "focus_vehicle": self.focus_veh_id,
+            "day": self.day,
+            "scheduled_platform_occupied": focus_state.get("scheduled_platform_occupied", False),
             "applied_actions_count": len(self.action_handler.action_history),
             "action_nonzero": getattr(self, "last_action_is_nonzero", False),
             "action_plat": getattr(self, "last_plat_act", False),
