@@ -110,7 +110,7 @@ class RewardEngine:
 
             leader_dist = focus_state.get("leader_dist", 3000.0)
             leader_id = focus_state.get("leader_id", None)
-            has_close_leader = (leader_id is not None and leader_dist < 2000.0)
+            has_close_leader = (leader_id is not None and leader_dist < 800.0)
             is_overtake_candidate = focus_state.get("is_overtake_candidate", False)
             delay_sec = focus_state.get("delay_sec", 0.0)
             dist_to_stop = focus_state.get("dist_to_next_stop", 9999.0)
@@ -126,35 +126,42 @@ class RewardEngine:
                 if plat_occupied and approaching_station:
                     # SMART INTERVENTION: Active conflict resolution!
                     # Reassigning away from an occupied platform avoids a massive mainline blockage
-                    total_reward += 1.5
-                elif is_at_stop or dist_to_stop > 2500.0 or dist_to_stop < 400.0 or is_nominal:
-                    # Frivolous platform change
-                    total_reward -= self.action_penalty_weight * 1.0
+                    total_reward += 2.0
+                else:
+                    # Frivolous platform change (unneeded, too close to switch, or already nominal)
+                    total_reward -= 1.5
 
             # B. Route Divert Evaluation:
             if route_act > 0:
                 if is_overtake_candidate:
                     # Smart overtakes/sidings
-                    total_reward += 1.0
-                elif is_nominal or not has_close_leader:
-                    total_reward -= self.action_penalty_weight * 1.0
+                    total_reward += 1.5
+                else:
+                    # Unnecessary route diversion
+                    total_reward -= 1.5
 
             # C. Hold Action Evaluation:
             if hold_act > 0:
-                if has_close_leader:
-                    # Regulating hold to allow spacing
-                    total_reward += 0.2
+                # Regulating hold is ONLY justified when dwelling at a platform to let an express pass
+                if is_at_stop and has_close_leader and focus_state.get("priority", 0.5) < 0.8:
+                    total_reward += 0.5
+                elif is_at_stop and plat_occupied:
+                    total_reward += 0.5
                 else:
-                    # Unnecessary delay insertion
-                    total_reward -= self.action_penalty_weight * (1.0 if hold_act == 1 else 2.0)
+                    # Severe penalty for stopping trains on open mainline track!
+                    hold_penalty = 2.0 if is_at_stop else 5.0
+                    total_reward -= hold_penalty * (1.0 if hold_act == 1 else (1.5 if hold_act == 2 else 2.5))
 
             # D. Timetable Adherence Bonus vs Conflict Neglect:
             if route_act == 0 and plat_act == 0 and hold_act == 0:
                 if is_nominal:
-                    # Reward smooth timetable flow
-                    total_reward += 0.1
+                    # Reward smooth timetable flow: do nothing when everything is on schedule!
+                    total_reward += 0.5
                 elif plat_occupied and approaching_station:
                     # Neglect penalty: heading straight into an occupied platform without intervening!
+                    total_reward -= 1.0
+                elif has_close_leader and leader_dist < 300.0:
+                    # Neglect penalty: closing in dangerously on leader without holding
                     total_reward -= 0.5
 
         return float(total_reward)

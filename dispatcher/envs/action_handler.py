@@ -107,17 +107,38 @@ class ActionHandler:
                                     "_buf_" not in stop_lane
                                 )
 
-                                # Guardrail 2: The platform MUST be in the immediate approach (next 15 edges)
-                                if is_actual_platform_stop and curr_plat_edge in remaining[:15]:
+                                # Guardrail 2: The platform MUST be in the approaching zone (edges 2 to 15, not already entering throat or dwelling)
+                                is_dwelling = focus_state.get("is_at_stop", False)
+                                in_safe_approach = (curr_plat_edge in remaining[2:15]) if len(remaining) > 2 else False
+
+                                if is_actual_platform_stop and not is_dwelling and in_safe_approach:
                                     # Guardrail 2B: Platform MUST be physically reachable from current road
                                     curr_road = traci_module.vehicle.getRoadID(focus_veh_id)
+                                    is_invalid_divert_edge = (
+                                        curr_road.startswith(":") or 
+                                        "_yard_" in curr_road or 
+                                        "_pocket_" in curr_road or 
+                                        "_depot_" in curr_road.lower() or 
+                                        "_buf_" in curr_road or
+                                        "_plat_" in curr_road
+                                    )
                                     vtype = focus_state.get("vtype", "")
                                     route_valid = False
-                                    try:
-                                        test_stage = traci_module.simulation.findRoute(curr_road, target_plat_edge, vtype)
-                                        route_valid = (test_stage is not None and len(test_stage.edges) > 0)
-                                    except Exception:
-                                        route_valid = False
+                                    if not is_invalid_divert_edge:
+                                        try:
+                                            test_stage = traci_module.simulation.findRoute(curr_road, target_plat_edge, vtype)
+                                            route_valid = (test_stage is not None and len(test_stage.edges) > 0)
+
+                                            # Guardrail 2C: Target platform MUST also connect to downstream stop if scheduled
+                                            if route_valid and len(stops) > 1:
+                                                next_stop_lane = getattr(stops[1], "lane", "")
+                                                next_stop_edge = next_stop_lane.rsplit("_", 1)[0] if "_" in next_stop_lane else next_stop_lane
+                                                if next_stop_edge and not next_stop_edge.startswith(":"):
+                                                    out_stage = traci_module.simulation.findRoute(target_plat_edge, next_stop_edge, vtype)
+                                                    if out_stage is None or len(out_stage.edges) == 0:
+                                                        route_valid = False
+                                        except Exception:
+                                            route_valid = False
 
                                     if not route_valid:
                                         action_summary["changes"].append({
@@ -125,29 +146,35 @@ class ActionHandler:
                                             "reason": f"Platform {target_plat_edge} has no valid track connection from {curr_road}"
                                         })
                                     else:
-                                        traci_module.vehicle.replaceStop(
-                                            focus_veh_id,
-                                            0,
-                                            target_plat_edge,
-                                            pos=min(curr_stop.endPos, 500.0),
-                                            duration=max(45.0, curr_stop.duration)
-                                        )
                                         try:
-                                            traci_module.vehicle.rerouteTraveltime(focus_veh_id)
-                                        except Exception:
-                                            pass
-                                        action_summary["changes"].append({
-                                            "type": "platform_reassigned",
-                                            "from": curr_plat_edge,
-                                            "to": target_plat_edge,
-                                            "station": st_name,
-                                            "train_len": train_len,
-                                            "platform_len": st_plat_len
-                                        })
+                                            traci_module.vehicle.replaceStop(
+                                                focus_veh_id,
+                                                0,
+                                                target_plat_edge,
+                                                pos=min(curr_stop.endPos, 500.0),
+                                                duration=max(45.0, curr_stop.duration)
+                                            )
+                                            try:
+                                                traci_module.vehicle.rerouteTraveltime(focus_veh_id)
+                                            except Exception:
+                                                pass
+                                            action_summary["changes"].append({
+                                                "type": "platform_reassigned",
+                                                "from": curr_plat_edge,
+                                                "to": target_plat_edge,
+                                                "station": st_name,
+                                                "train_len": train_len,
+                                                "platform_len": st_plat_len
+                                            })
+                                        except Exception as stop_err:
+                                            action_summary["changes"].append({
+                                                "type": "action_rejected",
+                                                "reason": f"Stop replacement rejected by simulator: {stop_err}"
+                                            })
                                 else:
                                     action_summary["changes"].append({
                                         "type": "action_rejected",
-                                        "reason": f"Next stop for {focus_veh_id} is not an approachable passenger platform ({stop_lane})"
+                                        "reason": f"Train {focus_veh_id} is not in safe platform approach zone ({stop_lane}, dwelling={is_dwelling})"
                                     })
                         except Exception:
                             pass
@@ -224,16 +251,26 @@ class ActionHandler:
             # Avoid placing stops on internal junction lanes
             if road_id and not road_id.startswith(":"):
                 try:
-                    lane_id = f"{road_id}_0"
-                    lane_len = traci_module.lane.getLength(lane_id)
-                    curr_pos = focus_state.get("lane_pos", 10.0)
-                    safe_pos = min(max(curr_pos + 1.0, 5.0), max(5.0, lane_len - 5.0))
-                    traci_module.vehicle.setStop(
-                        focus_veh_id,
-                        edgeID=road_id,
-                        pos=safe_pos,
-                        duration=hold_seconds
-                    )
+                    stops = traci_module.vehicle.getStops(focus_veh_id)
+                    if stops:
+                        curr_stop = stops[0]
+                        traci_module.vehicle.setStop(
+                            focus_veh_id,
+                            edgeID=road_id,
+                            pos=curr_stop.endPos,
+                            duration=hold_seconds
+                        )
+                    else:
+                        lane_id = f"{road_id}_0"
+                        lane_len = traci_module.lane.getLength(lane_id)
+                        curr_pos = focus_state.get("lane_pos", 10.0)
+                        safe_pos = min(max(curr_pos + 10.0, 5.0), max(5.0, lane_len - 5.0))
+                        traci_module.vehicle.setStop(
+                            focus_veh_id,
+                            edgeID=road_id,
+                            pos=safe_pos,
+                            duration=hold_seconds
+                        )
                     action_summary["changes"].append({
                         "type": "departure_held",
                         "duration_sec": hold_seconds

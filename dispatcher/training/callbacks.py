@@ -61,7 +61,7 @@ class RailwayMetricsCallback(BaseCallback):
                 recent_slice = -self.check_freq * len(infos) if infos else -self.check_freq
                 avg_delay = float(np.mean(self.episode_delays[recent_slice:]))
                 avg_punc = float(np.mean(self.episode_punctualities[recent_slice:]))
-                tot_knock_on = int(np.sum(self.episode_knock_ons[recent_slice:]))
+                tot_knock_on = int(np.mean(self.episode_knock_ons[recent_slice:])) if self.episode_knock_ons else 0
 
                 interv_pct = float(np.mean(self.episode_nonzeros[recent_slice:])) * 100.0 if self.episode_nonzeros else 0.0
                 tot_plat = int(np.sum(self.episode_plat_acts[recent_slice:])) if self.episode_plat_acts else 0
@@ -79,7 +79,7 @@ class RailwayMetricsCallback(BaseCallback):
                         f"Step {self.n_calls:6d} | "
                         f"Delay: {avg_delay:6.1f}s | "
                         f"Punc: {avg_punc:5.1f}% | "
-                        f"Knock-ons: {tot_knock_on:6d} | "
+                        f"Knock-ons: {tot_knock_on:4d} | "
                         f"Interv: {interv_pct:4.1f}% (Plat: {tot_plat:3d}, Route: {tot_route:2d}, Hold: {tot_hold:2d})"
                     )
 
@@ -97,10 +97,10 @@ class RailwayMetricsCallback(BaseCallback):
                     if interv_pct == 0.0:
                         self.consecutive_stagnations += 1
                         print(f"[!] WATCHDOG: Policy collapsed to 0% interventions ({self.consecutive_stagnations}/3)")
-                    # Check 2: Severe Gridlock Degradation (Delay > 200s in peak window)
-                    elif avg_delay > 200.0:
+                    # Check 2: Severe Gridlock Degradation (Delay > 350s or Punctuality < 70%)
+                    elif avg_delay > 350.0 or avg_punc < 70.0:
                         self.consecutive_stagnations += 1
-                        print(f"[!] WATCHDOG: Severe delay degradation ({avg_delay:.1f}s > 200s, {self.consecutive_stagnations}/3)")
+                        print(f"[!] WATCHDOG: Severe gridlock degradation (Delay: {avg_delay:.1f}s, Punc: {avg_punc:.1f}%, {self.consecutive_stagnations}/3)")
                     else:
                         self.consecutive_stagnations = 0
 
