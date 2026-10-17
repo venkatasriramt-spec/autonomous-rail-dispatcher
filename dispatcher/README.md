@@ -165,12 +165,12 @@ Evaluated across 4 simultaneous operational failure modes during the morning com
 
 | Disruption Scenario | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | **Decentralized MAPPO** | MAPPO Punctuality | MAPPO Actions | Leadership |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Train Breakdown (10m)** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.49s** *(max 141s)* | **100.0%** | **0** | **MAPPO -98.1% delay; 141s peak; 0 unneeded actions** |
-| **Platform Closure (30m)** | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | **0.28s** *(max 111s)* | **100.0%** | **0** | **MAPPO -92.0% delay; 111s peak; 0 unneeded actions** |
-| **Fleet Surge (15% Jitter)** | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | **0.34s** *(max 126s)* | **100.0%** | **0** | **MAPPO -91.7% delay; 126s peak; 0 unneeded actions** |
-| **Compound Failure** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.49s** *(max 141s)* | **100.0%** | **0** | **MAPPO -98.1% delay; 141s peak; 0 unneeded actions** |
+| **Train Breakdown (10m)** | 50.11s *(max 691s)* | 49.17s *(max 691s)* | 49.17s *(max 691s)* | 36.93s *(max 594s)* | **49.17s** *(max 691s)* | **90.2%** | **24** | **Central PPO leads delay (36.93s); MAPPO matches heuristics with 70% fewer actions (24 vs 80)** |
+| **Platform Closure (30m)** | 6.60s *(max 216s)* | 6.60s *(max 216s)* | 6.60s *(max 216s)* | 6.56s *(max 216s)* | **6.56s** *(max 216s)* | **99.9%** | **23** | **MAPPO & Central PPO achieve lowest delay (6.56s); MAPPO cuts actions to 23 vs 51–69** |
+| **Fleet Surge (15% Jitter)** | 6.79s *(max 231s)* | 6.79s *(max 231s)* | 6.79s *(max 231s)* | 6.75s *(max 231s)* | **6.75s** *(max 231s)* | **99.9%** | **26** | **MAPPO & Central PPO achieve lowest delay (6.75s); MAPPO cuts actions to 26 vs 50–70** |
+| **Compound Failure** | 50.11s *(max 691s)* | 49.17s *(max 691s)* | 49.17s *(max 691s)* | 36.93s *(max 594s)* | **49.17s** *(max 691s)* | **90.2%** | **24** | **Central PPO leads delay (36.93s); MAPPO matches heuristics with 70% fewer actions (24 vs 80)** |
 
-*(Note: In localized morning disruptions, Decentralized MAPPO's independent station actors instantly divert traffic through local throat crossovers without waiting for sequential central commands, keeping peak delay below 111-141s with 100.0% punctuality and zero unneeded actions).*
+*(Note: In localized morning disruptions, dispatchers received the same disruptions within each scenario. In the train breakdown and compound failure scenarios, Decentralized MAPPO matched heuristic delay (49.17s) while reducing operator workload by 70% (24 vs 80 platform switches), while under platform closure (23 vs 51 actions) and fleet surge (26 vs 50 actions) it also achieved minimal intervention workload compared to heuristics. Centralized PPO achieved the lowest peak delay at the cost of 152 actions).*
 
 ### E. Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO) Benchmark
 Evaluated during peak morning commuter operations (06:00 to 07:00 AM, 240 steps) under Centralized Training with Decentralized Execution (CTDE) partitioning the corridor into **7 autonomous control agents** (6 Station-Master Interlocking Controllers + 1 Corridor Line Controller) trained across 8 parallel SUMO workers on multi-core CPU:

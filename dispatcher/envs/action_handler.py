@@ -306,15 +306,16 @@ class ActionHandler:
                     except Exception:
                         pass
         elif hold_act == 0 and focus_state.get("is_at_stop", False):
-            self.train_hold_seconds[focus_veh_id] = 0.0
-            # Authorize immediate departure / resume if dwell has finished
-            try:
-                traci_module.vehicle.resume(focus_veh_id)
-                action_summary["changes"].append({
-                    "type": "departure_cleared"
-                })
-            except Exception:
-                pass
+            if self.train_hold_seconds.get(focus_veh_id, 0.0) > 0:
+                self.train_hold_seconds[focus_veh_id] = 0.0
+                # Authorize immediate departure / resume if train was held by dispatcher
+                try:
+                    traci_module.vehicle.resume(focus_veh_id)
+                    action_summary["changes"].append({
+                        "type": "departure_cleared"
+                    })
+                except Exception:
+                    pass
 
         if action_summary["changes"]:
             self.action_history.append(action_summary)

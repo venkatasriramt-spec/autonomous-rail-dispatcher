@@ -214,20 +214,20 @@ class MAPPODispatcher:
         day: Optional[str],
         deterministic: bool
     ) -> Tuple[int, int]:
-        """Station Agent decision logic with local Frontier 1 & 2 guardrails."""
+        DELAY_THRESHOLD = 0.05
+        is_critical_approach = (0.05 < obs[6] < 0.60)
+
         # Frontier 1: Dispatch-by-Exception Gating
         # In real-world rail operations, trains run on scheduled nominal routes by default.
         # The AI dispatcher intervenes only when an active physical exception is detected.
         if self.exception_gating:
             has_train = obs[3] > 0.0          # priority > 0 indicates active train
-            has_delay = obs[4] > 0.05         # delay > 30s
+            has_delay = obs[4] > DELAY_THRESHOLD  # delay > 30s
             is_at_stop = obs[7] > 0.5
-            dist_to_stop = obs[6]
-            is_critical_approach = (0.05 < dist_to_stop < 0.60)
             is_leader_tight = (obs[10] < 0.25 and obs[10] > 0.0)
 
             # Check if station throat has tight leader or active platform conflict
-            has_throat_conflict = is_leader_tight or (is_critical_approach and np.all(obs[12:15] > 0.5))
+            has_throat_conflict = is_leader_tight or (is_critical_approach and obs[12] > 0.5)
 
             # If the consist is on-time with clear track ahead and no conflict, leave on nominal schedule
             if not has_train or (not has_delay and not is_at_stop and not has_throat_conflict):
@@ -245,17 +245,23 @@ class MAPPODispatcher:
 
             # Rule 2: Bar holds on trains that are already delayed or without tight leader
             # Never hold a train that is already running late!
-            is_ontime = obs[4] <= 0.01
+            is_ontime = obs[4] <= DELAY_THRESHOLD
             is_leader_tight = (obs[10] < 0.25 and obs[10] > 0.0)
             if hold_act > 0 and (not is_ontime or not is_leader_tight):
                 hold_act = 0
 
-            # Rule 3: Sunday platform 1 turnaround reallocation
-            if day == "Sun" and obs[12] > 0.5:  # Platform 1 occupied by turnaround staging
+            # Rule 3: Dynamic open platform resolution when Platform 1 is blocked/staging
+            assigned_is_blocked = (plat_act <= 1) or (plat_act > 1 and obs[12 + plat_act - 1] > 0.5)
+            if (day == "Sun" or (is_critical_approach and assigned_is_blocked)) and obs[12] > 0.5:
+                # Platform 1 is blocked or turnaround staged; route to first open platform
+                found_open = False
                 for p_idx in range(1, 6):
                     if obs[12 + p_idx] < 0.5:
                         plat_act = p_idx + 1
+                        found_open = True
                         break
+                if not found_open:
+                    plat_act = 0
             elif plat_act > 0:
                 # Don't route to an already-occupied platform
                 target_plat_idx = plat_act - 1

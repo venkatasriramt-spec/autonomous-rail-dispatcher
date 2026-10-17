@@ -129,6 +129,7 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
 
         # 1. Apply decentralized actions to each agent's active focus consist
         agent_actions_summary = {}
+        applied_agents = set()
 
         for aid, action in action_dict.items():
             focus_vid = self.agent_focus_trains.get(aid)
@@ -140,10 +141,12 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
                 plat_act = int(action[0]) if hasattr(action, "__len__") and len(action) > 0 else 0
                 hold_act = int(action[1]) if hasattr(action, "__len__") and len(action) > 1 else 0
                 full_act = [0, plat_act, hold_act]
+                is_active = (plat_act > 0 or hold_act > 0)
             else:
                 # Corridor Controller action: route_act
                 route_act = int(action) if not hasattr(action, "__len__") else int(action[0])
                 full_act = [route_act, 0, 0]
+                is_active = (route_act > 0)
 
             res = self.action_handler.apply_action(
                 focus_vid,
@@ -153,6 +156,9 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
                 traci
             )
             agent_actions_summary[aid] = res
+
+            if is_active and any(c.get("type") in ("platform_reassigned", "diverted_to_passing_loop", "high_speed_bypass_reroute", "departure_held") for c in res.get("changes", [])):
+                applied_agents.add(aid)
 
         # 2. Advance Microscopic SUMO Simulation by macro_step_sec (15s)
         target_time = self.sim_time + self.macro_step_sec
@@ -254,23 +260,12 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
 
             # Blended CTDE Reward: (1 - α) * Local + α * Global
             blended_reward = (1.0 - self.cooperation_factor) * local_reward + self.cooperation_factor * global_reward
+
+            # Action Workload Penalty (Pareto Regularization): applied only to agents whose actions were actually applied
+            if aid in applied_agents:
+                blended_reward -= 0.10  # Baseline intervention cost
+
             reward_dict[aid] = float(np.clip(blended_reward, -10.0, 5.0))
-
-        # Action Workload Penalty (Pareto Regularization)
-        # Penalizes frivolous interventions to incentivize minimal-action policies
-        for aid, act in action_dict.items():
-            if aid in reward_dict:
-                is_active_action = False
-                if aid.startswith("station_"):
-                    p_act = int(act[0]) if hasattr(act, "__len__") and len(act) > 0 else 0
-                    h_act = int(act[1]) if hasattr(act, "__len__") and len(act) > 1 else 0
-                    is_active_action = (p_act > 0 or h_act > 0)
-                else:
-                    r_act = int(act) if not hasattr(act, "__len__") else int(act[0])
-                    is_active_action = (r_act > 0)
-
-                if is_active_action:
-                    reward_dict[aid] -= 0.10  # Baseline intervention cost
 
         # PettingZoo / Multi-Agent termination flags
         terminated_dict = {aid: terminated_flag for aid in self.agents}

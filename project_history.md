@@ -633,6 +633,8 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 | **Sat** | 145 | 354.88s (max 21985s) | 80.59s (max 14723s) | 80.59s (max 14723s) | 80.52s (max 14723s) | **0.13s** (max 166s)    | 98.9% / **100.0%** | 1,855 / 7 |
 | **Sun** | 141 | 236.16s (max 21969s) | 148.45s (max 17964s) | 148.45s (max 17964s) | 8.87s (max 2793s)   | **0.22s** (max 249s)    | 99.4% / **100.0%** | 1,770 / 175 |
 
+*(Note on Wed/Fri: Despite differing service counts (229 on Wednesday vs. 231 on Friday), under MAPPO's regularized low-intervention policy the shared line bottleneck was encountered identically, producing matching mean delays of 1,749.34s, max delays of 25,608s, and 12,822 knock-ons with 135 actions on Wednesday and 126 actions on Friday, verified against `cross_comparison_24h.json`).*
+
 | Dispatcher Paradigm | Weekly Avg Mean Delay | Weekly Punctuality | Total Knock-on Events | Delay Reduction vs Static | Weekly Interventions |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Static Baseline** | 233.08s | 96.2% | 11,944 | Baseline | 0 |
@@ -646,15 +648,15 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 
 | Disruption Scenario | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | **Decentralized MAPPO** | MAPPO Punc | MAPPO Actions |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Train Breakdown (10m)** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.49s** *(max 141s)* | **100.0%** | **0** |
-| **Platform Closure (30m)** | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | **0.28s** *(max 111s)* | **100.0%** | **0** |
-| **Fleet Surge (15% Jitter)** | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | **0.34s** *(max 126s)* | **100.0%** | **0** |
-| **Compound Failure** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.49s** *(max 141s)* | **100.0%** | **0** |
+| **Train Breakdown (10m)** | 50.11s *(max 691s)* | 49.17s *(max 691s)* | 49.17s *(max 691s)* | 36.93s *(max 594s)* | **49.17s** *(max 691s)* | **90.2%** | **24** |
+| **Platform Closure (30m)** | 6.60s *(max 216s)* | 6.60s *(max 216s)* | 6.60s *(max 216s)* | 6.56s *(max 216s)* | **6.56s** *(max 216s)* | **99.9%** | **23** |
+| **Fleet Surge (15% Jitter)** | 6.79s *(max 231s)* | 6.79s *(max 231s)* | 6.79s *(max 231s)* | 6.75s *(max 231s)* | **6.75s** *(max 231s)* | **99.9%** | **26** |
+| **Compound Failure** | 50.11s *(max 691s)* | 49.17s *(max 691s)* | 49.17s *(max 691s)* | 36.93s *(max 594s)* | **49.17s** *(max 691s)* | **90.2%** | **24** |
 
 4. **Architectural Insights & Pareto Frontier Dynamics:**
    - **The Delay vs. Punctuality vs. Intervention Workload Trade-off:** The empirical comparison reveals the fundamental three-way trade-off in automated railway dispatching:
      - **Centralized PPO** prioritizes delay minimization across the entire corridor, driving weekly delay down to 39.86s (+82.9% reduction) and punctuality to 98.8%, but incurs a high intervention rate (1,239 to 2,310 actions/day, totalling 12,673 actions/week).
-     - **Decentralized MAPPO** with action workload regularization operates with exceptional economy (813 actions/week, averaging ~116 actions/day), achieving near-zero delay on weekends (0.13s–0.22s, 100% punctuality) and completely dominating real-world peak disruptions (0.28s–0.49s, 100% punctuality, 0 unneeded interventions).
+     - **Decentralized MAPPO** with action workload regularization operates with exceptional economy (813 actions/week, averaging ~116 actions/day). On weekends, it achieves near-zero delay (0.13s–0.22s, 100% punctuality, 7–175 actions). However, its conservative gating leads to weekday regression on complex mixed-traffic queues (1,749s–2,251s mean delay, 77.0%–82.6% punctuality, 78,143 knock-ons). Under acute morning disruptions where localized track blockages occur, MAPPO's station-master agents execute surgical platform switches to bypass the incident track: in the train breakdown and compound failure scenarios, MAPPO matches heuristic delay (49.17s) while reducing operator workload by 70% (24 vs 80 actions), while under platform closure (23 vs 51 actions, 6.56s delay) and fleet surge (26 vs 50 actions, 6.75s delay) it likewise maintains minimal intervention rates compared to heuristics.
    - **Updated Visual Proofs Generated in [`dispatcher/logs/visual_proofs/`](dispatcher/logs/visual_proofs/):**
      - [`weekly_7day_delay_comparison.png`](dispatcher/logs/visual_proofs/weekly_7day_delay_comparison.png)
      - [`weekly_7day_knockon_cascades.png`](dispatcher/logs/visual_proofs/weekly_7day_knockon_cascades.png)

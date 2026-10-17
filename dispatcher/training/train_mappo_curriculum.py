@@ -12,6 +12,7 @@ Executes multi-wave diurnal curriculum phases sequentially across high-core CPU 
 import os
 import sys
 import time
+import shutil
 import subprocess
 import argparse
 
@@ -50,6 +51,15 @@ def main():
     parser.add_argument("--start-phase", type=int, default=1, choices=[1, 2, 3, 4], help="Starting curriculum phase (1..4)")
     parser.add_argument("--fresh", action="store_true", help="Start fresh training without loading existing weights in Phase 1")
     args = parser.parse_args()
+
+    if args.fresh and args.start_phase > 1:
+        parser.error("--fresh cannot be used when --start-phase > 1 (must start from Phase 1 for fresh training)")
+
+    # Protect existing base model with a backup when starting fresh from Phase 1
+    if args.fresh and args.start_phase == 1 and os.path.exists(BASE_MODEL):
+        backup_path = f"{BASE_MODEL}.bak"
+        shutil.copy2(BASE_MODEL, backup_path)
+        print(f"[*] Backed up existing base model to: {os.path.basename(backup_path)}")
 
     total_t0 = time.time()
     print("=" * 90)

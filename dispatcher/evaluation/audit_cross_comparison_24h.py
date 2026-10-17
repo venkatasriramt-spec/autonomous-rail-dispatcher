@@ -268,6 +268,10 @@ def main():
     selected_dispatchers = [d.strip() for d in args.dispatchers.split(",")] if args.dispatchers else DISPATCHER_TYPES
     selected_days = [d.strip() for d in args.days.split(",")] if args.days else DAYS
 
+    invalid_days = [d for d in selected_days if d not in DAYS]
+    if invalid_days:
+        parser.error(f"Invalid days specified: {invalid_days}. Must be a subset of {DAYS}")
+
     print("=" * 95)
     print("AUTONOMOUS TRAIN DISPATCHER: FULL 24-HOUR 5-MODEL CROSS-COMPARISON BENCHMARK")
     print(f"Operational Horizon: 00:00 to 24:00 (86,400s) | Cadence: {MACRO_STEP_SEC}s (5,760 steps/day)")
