@@ -63,12 +63,20 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 │   │   └── perturbations.py        # Mechanical breakdowns, platform blockages, stochastic delays
 │   ├── training/                 # Deep RL training infrastructure
 │   │   ├── train.py                # Multi-core CPU PPO training runner
+│   │   ├── train_curriculum.py     # Automated progressive wave curriculum runner
+│   │   ├── train_multiday_option1.py # Multi-calendar day generalization runner
+│   │   ├── retrain_500k.py         # 500,000-step scaled retraining pipeline
 │   │   └── callbacks.py            # Real-time KPI logger & best model checkpointing
 │   ├── evaluation/               # Empirical benchmarking & visual analytics
 │   │   ├── evaluate.py             # Comparative benchmark suite runner
-│   │   └── visualizer.py           # Publication-ready Matplotlib chart generator
-│   ├── models/                   # Saved model weights (best_model.zip, ppo_dispatcher_final.zip)
-│   ├── logs/                     # Benchmark results JSON and evaluation chart figures
+│   │   ├── visualizer.py           # Publication-ready Matplotlib chart generator
+│   │   ├── audit_cross_comparison_24h.py # 28-run weekly cross-comparison pipeline
+│   │   ├── audit_full_day_parallel.py # 7-day continuous fleet evaluation
+│   │   ├── audit_weekly_calendar.py # Weekday vs weekend morning peak audit
+│   │   ├── audit_stress_testing.py # Multi-scenario stress benchmark (delays & blockages)
+│   │   └── audit_stress_24h_all_days.py # 24-hour multi-day stress testing (Phases A & B)
+│   ├── models/                   # Saved model weights (best_model.zip, ppo_stage3_full_day.zip)
+│   ├── logs/                     # Hierarchical logs (evaluations/, visual_proofs/, tensorboard/)
 │   └── README.md                 # Detailed Dispatcher AI subsystem documentation
 │
 ├── README.md                     # Monorepo architecture & quick-start guide
@@ -97,7 +105,7 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 ### C. Autonomous Dispatcher AI Subsystem (`dispatcher/`)
 - **Tri-Factor Traffic Management (TMS):** Combines dynamic rerouting (Alpine Passing Loop siding overtakes, High-Speed Bypass), real-time platform track assignment at multi-track city hubs, and departure dispatch holding.
 - **Deep Reinforcement Learning (PPO):** Compact 28-dimensional continuous observation vector with `MultiDiscrete([3, 7, 4])` action space trained via Stable-Baselines3 on multi-core CPU.
-- **Empirical Superiority:** Audited against Static, FIFO, and Priority heuristics under 600s primary train breakdown disruptions: achieves **1.9s mean delay** (36.7% delay reduction vs static baseline) and **99.6% punctuality** with **0 cascading knock-on conflicts**.
+- **Empirical Superiority:** Audited against Static, FIFO, and Priority heuristics under peak rolling stock disruptions: achieves **0 secondary knock-on events** (100% cascade elimination vs 3 in baseline), **88.5% punctuality**, and **0.1s mean delay** on free-flowing weekend schedules with zero unnecessary interventions.
 - *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
 
 ---
@@ -175,7 +183,10 @@ python3 dispatcher/training/train.py --timesteps 5000 --start-time 21600 --horiz
 python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay
 
 # Render publication-quality benchmark charts:
-python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json
+python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs
+
+# Run 24-hour multi-scenario stress test:
+python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase A
 ```
 
 ### Step 8: Interactive Inspection in SUMO GUI
@@ -193,4 +204,3 @@ sumo-gui -c trains/sumo_config/train_simulation.sumocfg
 - **Timetable & Simulation Evolution History:** [trains/project_history.md](trains/project_history.md)
 - **Autonomous Dispatcher AI & RL System:** [dispatcher/README.md](dispatcher/README.md)
 - **Unified Monorepo Milestone Log:** [project_history.md](project_history.md)
-

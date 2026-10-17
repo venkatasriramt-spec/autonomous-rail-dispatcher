@@ -18,6 +18,19 @@ pyenv/
 *.env.*
 *.local
 
+# IDE & Editor directory-scoped artifacts
+.vscode/
+.idea/
+.cursor/
+.claude/
+.gemini/
+.agents/
+.antigravity/
+.playwright/
+.playwright-mcp/
+*.sublime-project
+*.sublime-workspace
+
 # OS & Editor files
 .DS_Store
 Thumbs.db
@@ -26,15 +39,6 @@ desktop.ini
 *.swp
 *.swo
 *~
-.vscode/
-.idea/
-*.sublime-project
-*.sublime-workspace
-.claude/
-.gemini/
-.agents/
-.playwright/
-.playwright-mcp/
 
 # Temporary files & simulation dumps
 tmp/
@@ -84,4 +88,3 @@ dispatcher/models/*.zip
 # DO NOT ignore *.xml files!
 # Network data (tracks/network_data/*.xml) and compiled routes (trains/sumo_config/*.xml)
 # are essential deliverables of this monorepo.
-

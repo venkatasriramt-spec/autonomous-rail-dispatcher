@@ -14,7 +14,7 @@ A chronological log of how this abstract SUMO railway network evolved, from init
 - Initially wrote a basic `NetworkX` script (`network_builder.py`) to map out a Hub-and-Spoke model with 7 stations in pure Python.
 
 #### Phase 2: Pivoting to SUMO
-- Based on external suggestions, we pivoted from a custom `NetworkX` simulator to **SUMO (Simulation of Urban MObility)**. 
+- Based on external suggestions, we pivoted from a custom `NetworkX` simulator to **SUMO (Simulation of Urban MObility)**.
 - SUMO natively handles train kinematics (acceleration, braking), multiple platforms, track speed limits, block signaling, and provides the `TraCI` interface, which is the industry standard for Reinforcement Learning in transit.
 - Decided to use a **Procedural Generation (Python)** approach instead of drawing tracks manually in Netedit, allowing us to instantly spin up massive, mathematically perfect rail networks.
 - Installed `sumo`, `sumo-tools`, and `sumo-doc` on the virtual machine via `apt-get`.
@@ -251,3 +251,9 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - `scripts/plot_bilevel_hub.py`: Fixed station legend key lookups from non-existent `yard_5` tracks to `City_3_EW_yard_1_fw` and `City_3_NS_yard_1_fw`, resolving KeyError warnings during schematic generation.
   - *Dynamic Path Resolution:* Upgraded all rendering and generation scripts (`plot_*.py`, `generate_sumo_network.py`) with dynamic root/sibling/subfolder path detection, ensuring they execute reliably from any working directory.
   - *Environment Cleanup:* Removed broken legacy test virtual environment (`test_venv`).
+
+#### Phase 18: Full-System Monorepo Integration & Dynamic Dispatcher Interlocking Validation
+- **Dynamic Interlocking Verification:**
+  - Validated physical track connectivity and reachability (`findRoute`) against all 19 stations, 8 universal crossovers, the Alpine passing loop, and terminal pockets under dynamic AI dispatcher platform swaps.
+  - Confirmed 0 topology errors, 0 switch angle conflicts, 0 collisions, and 0 emergency teleports across continuous 24-hour multi-day simulation stress testing.
+  - Preserved standalone track compilation pipelines (`generate_sumo_network.py`, `netconvert`) while seamlessly feeding compiled network XMLs into downstream `trains/` and `dispatcher/` subsystems.
