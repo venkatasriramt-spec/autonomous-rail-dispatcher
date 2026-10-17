@@ -240,9 +240,22 @@ class MAPPODispatcher:
         sched_plat_occupied: Optional[bool] = None
     ) -> Tuple[int, int]:
         DELAY_THRESHOLD = 0.05
-        is_critical_approach = (0.05 < obs[6] < 0.60)
+        # Interlocking approach zone: 400m to 1500m (obs[6] is dist / 2500m; 400/2500 = 0.16)
+        # Prevents triggering platform switch inside the locked throat zone (<400m)
+        is_critical_approach = (0.16 <= obs[6] <= 0.60)
         sched_feat = 12 + sched_plat_idx if (0 <= sched_plat_idx < 6) else 12
         sched_is_occupied = (obs[sched_feat] > 0.5) if sched_plat_occupied is None else sched_plat_occupied
+
+        # Station physical platform capacities (avoids phantom platform wrap-around via modulo)
+        station_capacities = {
+            "station_city_1": 5,
+            "station_city_2": 6,
+            "station_city_3": 4,
+            "station_city_4": 5,
+            "station_city_5": 6,
+            "station_city_6": 6
+        }
+        max_plats = station_capacities.get(aid, 6)
 
         # Frontier 1: Dispatch-by-Exception Gating
         # In real-world rail operations, trains run on scheduled nominal routes by default.
@@ -266,8 +279,8 @@ class MAPPODispatcher:
 
         # Frontier 2: Smart Interlocking Guardrails
         if self.smart_interlocking:
-            # Rule 1: Platform reallocation is only physically valid when approaching a station
-            if plat_act > 0 and not (0.05 < obs[6] < 0.65):
+            # Rule 1: Platform reallocation is only physically valid when approaching a station before approach locking
+            if plat_act > 0 and not (0.16 <= obs[6] <= 0.65):
                 plat_act = 0
 
             # Rule 2: Bar holds on trains that are already delayed or without tight leader
@@ -278,11 +291,11 @@ class MAPPODispatcher:
                 hold_act = 0
 
             # Rule 3: Dynamic open platform resolution when scheduled platform is blocked or Sunday turnaround buffer
-            assigned_is_blocked = (plat_act <= 0) or (plat_act > 0 and obs[12 + plat_act - 1] > 0.5)
+            assigned_is_blocked = (plat_act <= 0) or (plat_act > 0 and (plat_act - 1 >= max_plats or obs[12 + plat_act - 1] > 0.5))
             if is_critical_approach and ((day == "Sun" and sched_plat_idx == 0 and obs[12] > 0.5) or (assigned_is_blocked and sched_is_occupied)):
-                # Scheduled platform is blocked or turnaround staged; route to first open platform
+                # Scheduled platform is blocked or turnaround staged; route to first open platform within capacity
                 found_open = False
-                for p_idx in range(6):
+                for p_idx in range(max_plats):
                     if p_idx != sched_plat_idx and obs[12 + p_idx] < 0.5:
                         plat_act = p_idx + 1
                         found_open = True
@@ -293,11 +306,11 @@ class MAPPODispatcher:
                 # Nominal scheduled platform is clear; preserve action 0
                 plat_act = 0
             elif plat_act > 0:
-                # Scheduled platform is occupied and reallocation requested: ensure target platform is clear
+                # Scheduled platform is occupied and reallocation requested: ensure target platform is clear and physically exists
                 target_plat_idx = plat_act - 1
-                if target_plat_idx == sched_plat_idx or (target_plat_idx < 6 and obs[12 + target_plat_idx] > 0.5):
+                if target_plat_idx >= max_plats or target_plat_idx == sched_plat_idx or obs[12 + target_plat_idx] > 0.5:
                     plat_act = 0
-                    for p_idx in range(6):
+                    for p_idx in range(max_plats):
                         if p_idx != sched_plat_idx and obs[12 + p_idx] < 0.5:
                             plat_act = p_idx + 1
                             break

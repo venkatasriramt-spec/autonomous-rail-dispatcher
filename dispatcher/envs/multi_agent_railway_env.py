@@ -194,8 +194,15 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
                     leader_info = traci.vehicle.getLeader(vid, 150.0)
                     is_stopped = traci.vehicle.isStopped(vid)
                     if (not is_stopped) and speed < 3.0 and leader_info is not None and leader_info[1] < 150.0:
-                        step_knock_ons += 1
-                        knock_on_vehs_this_step.add(vid)
+                        lead_id = leader_info[0]
+                        lead_stopped = False
+                        try:
+                            lead_stopped = traci.vehicle.isStopped(lead_id)
+                        except Exception:
+                            lead_stopped = False
+                        if not lead_stopped:
+                            step_knock_ons += 1
+                            knock_on_vehs_this_step.add(vid)
             except Exception:
                 pass
 

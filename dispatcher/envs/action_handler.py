@@ -149,12 +149,17 @@ class ActionHandler:
                                         })
                                     else:
                                         try:
+                                            replace_kwargs = {
+                                                "pos": min(curr_stop.endPos, 500.0),
+                                                "duration": max(45.0, curr_stop.duration)
+                                            }
+                                            if getattr(curr_stop, "until", -1) > 0:
+                                                replace_kwargs["until"] = curr_stop.until
                                             traci_module.vehicle.replaceStop(
                                                 focus_veh_id,
                                                 0,
                                                 target_plat_edge,
-                                                pos=min(curr_stop.endPos, 500.0),
-                                                duration=max(45.0, curr_stop.duration)
+                                                **replace_kwargs
                                             )
                                             try:
                                                 traci_module.vehicle.rerouteTraveltime(focus_veh_id)

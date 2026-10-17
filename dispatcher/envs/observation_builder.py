@@ -188,7 +188,11 @@ class ObservationBuilder:
         train_weight = specs["weight"]
         vclass = specs["vclass"]
         is_freight = specs["is_freight"]
-        is_electric = (vclass == "rail_electric")
+        is_overtake_candidate = bool(
+            leader_id
+            and priority > leader_priority
+            and leader_speed < max_speed * 0.7
+        )
 
         return {
             "veh_id": veh_id,
@@ -208,6 +212,7 @@ class ObservationBuilder:
             "leader_dist": leader_dist,
             "leader_speed": leader_speed,
             "leader_priority": leader_priority,
+            "is_overtake_candidate": is_overtake_candidate,
             "train_length": train_length,
             "train_weight": train_weight,
             "vclass": vclass,

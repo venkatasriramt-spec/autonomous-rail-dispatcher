@@ -50,15 +50,29 @@ class FIFODispatcher(BaseDispatcher):
         # Check if approaching station (obs[15] == 1.0)
         approaching_station = observation[15] > 0.5
         if approaching_station:
-            # Check if default platform (index 0) is occupied
-            default_plat_occupied = observation[16] > 0.5
-            if default_plat_occupied:
-                # Find first free platform among 1..5
-                for p_idx in range(1, 6):
-                    feat_idx = 16 + (p_idx * 2)
-                    if observation[feat_idx] < 0.5:
-                        plat_act = p_idx + 1  # 1-indexed alternate
-                        break
+            sched_idx = 0
+            if info and isinstance(info, dict) and "scheduled_platform_idx" in info:
+                sched_idx = int(info["scheduled_platform_idx"])
+            sched_feat = 16 + sched_idx * 2 if (0 <= sched_idx < 6) else 16
+
+            sched_edge = info.get("scheduled_platform_edge", "") if (info and isinstance(info, dict)) else ""
+            max_plats = 6
+            if "City_3" in str(sched_edge):
+                max_plats = 4
+            elif any(c in str(sched_edge) for c in ("City_1", "City_4")):
+                max_plats = 5
+
+            sched_plat_occupied = (observation[sched_feat] > 0.5) if sched_feat < 28 else False
+            if info and isinstance(info, dict) and info.get("scheduled_platform_occupied"):
+                sched_plat_occupied = True
+
+            if sched_plat_occupied:
+                for p_idx in range(max_plats):
+                    if p_idx != sched_idx:
+                        feat_idx = 16 + (p_idx * 2)
+                        if feat_idx < 28 and observation[feat_idx] < 0.5:
+                            plat_act = p_idx + 1
+                            break
 
         return np.array([route_act, plat_act, hold_act], dtype=np.int64)
 
@@ -92,16 +106,31 @@ class PriorityGreedyDispatcher(BaseDispatcher):
             else:
                 route_act = 1  # Divert to Passing Loop siding
 
-        # 2. Platform allocation: if upcoming default platform is busy
+        # 2. Platform allocation: if upcoming scheduled platform is busy
         if approaching_st > 0.5:
-            default_occupied = observation[16] > 0.5
-            if default_occupied:
-                # Find best open platform
-                for p_idx in range(1, 6):
-                    feat_idx = 16 + (p_idx * 2)
-                    if observation[feat_idx] < 0.5:
-                        plat_act = p_idx + 1
-                        break
+            sched_idx = 0
+            if info and isinstance(info, dict) and "scheduled_platform_idx" in info:
+                sched_idx = int(info["scheduled_platform_idx"])
+            sched_feat = 16 + sched_idx * 2 if (0 <= sched_idx < 6) else 16
+
+            sched_edge = info.get("scheduled_platform_edge", "") if (info and isinstance(info, dict)) else ""
+            max_plats = 6
+            if "City_3" in str(sched_edge):
+                max_plats = 4
+            elif any(c in str(sched_edge) for c in ("City_1", "City_4")):
+                max_plats = 5
+
+            sched_plat_occupied = (observation[sched_feat] > 0.5) if sched_feat < 28 else False
+            if info and isinstance(info, dict) and info.get("scheduled_platform_occupied"):
+                sched_plat_occupied = True
+
+            if sched_plat_occupied:
+                for p_idx in range(max_plats):
+                    if p_idx != sched_idx:
+                        feat_idx = 16 + (p_idx * 2)
+                        if feat_idx < 28 and observation[feat_idx] < 0.5:
+                            plat_act = p_idx + 1
+                            break
 
         # 3. Departure Hold: If low-priority freight train is stopped and high-priority train is close ahead/behind
         is_stopped = observation[9] > 0.5

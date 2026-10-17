@@ -92,6 +92,15 @@ class MultiAgentObservationBuilder:
         for aid in MARL_AGENT_IDS:
             if aid.startswith("station_"):
                 city_name = city_reverse_map.get(aid, "City_1")
+                # Dynamic deck resolution for City 3 bi-level hub based on focus consist
+                if aid == "station_city_3":
+                    fvid = focus_train_dict.get(aid)
+                    if fvid and fvid in train_states:
+                        up_st = str(train_states[fvid].get("upcoming_station", ""))
+                        if "City_3_NS" in up_st:
+                            city_name = "City_3_NS"
+                        elif "City_3_EW" in up_st:
+                            city_name = "City_3_EW"
                 obs = self._build_station_obs(
                     city_name=city_name,
                     focus_veh_id=focus_train_dict[aid],
@@ -99,7 +108,8 @@ class MultiAgentObservationBuilder:
                     time_norm=time_norm,
                     zone_trains_count=len(agent_trains[aid]),
                     total_trains_count=max(active_trains, 1),
-                    traci_module=traci_module
+                    traci_module=traci_module,
+                    sim_time=sim_time
                 )
                 obs_dict[aid] = obs
             else:
@@ -124,7 +134,8 @@ class MultiAgentObservationBuilder:
         time_norm: float,
         zone_trains_count: int,
         total_trains_count: int,
-        traci_module: Any
+        traci_module: Any,
+        sim_time: float = 0.0
     ) -> np.ndarray:
         """Constructs 24-dimensional observation vector for a Station-Master Agent."""
         obs = np.zeros(STATION_OBS_DIM, dtype=np.float32)
@@ -168,7 +179,12 @@ class MultiAgentObservationBuilder:
                     if v_speed < 0.1:
                         stops = traci_module.vehicle.getStops(v_on_plat)
                         if stops:
-                            dwell_ratio = min(stops[0].duration / 180.0, 1.0)
+                            curr_st = stops[0]
+                            if getattr(curr_st, "until", -1) > 0 and sim_time > 0:
+                                rem_dwell = max(0.0, curr_st.until - sim_time)
+                                dwell_ratio = min(rem_dwell / 180.0, 1.0)
+                            else:
+                                dwell_ratio = min(max(curr_st.duration, 0.0) / 180.0, 1.0)
             except Exception:
                 pass
             obs[12 + p_idx] = float(is_occ)
@@ -206,7 +222,7 @@ class MultiAgentObservationBuilder:
             obs[7] = float(min(st.get("leader_dist", 3000.0) / 3000.0, 1.0))
             obs[8] = float(st.get("leader_speed", 0.0) / 33.33)
             obs[9] = float(st.get("leader_priority", 0.0))
-            obs[10] = 1.0 if (st.get("leader_dist", 3000.0) < 1500.0 and st.get("leader_speed", 50.0) < st.get("speed_m_s", 0.0)) else 0.0
+            obs[10] = 1.0 if (st.get("leader_dist", 3000.0) < 1500.0 and st.get("leader_speed", 50.0) < st.get("speed", 0.0)) else 0.0
 
         # Siding and bypass availability (11..13)
         loop_occ = 0.0

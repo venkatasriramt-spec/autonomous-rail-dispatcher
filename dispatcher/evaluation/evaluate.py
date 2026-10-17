@@ -83,8 +83,9 @@ class ModelAgentWrapper(BaseDispatcher):
                 if not (is_leader_tight and is_ontime):
                     h_act = 0
 
-            # Rule 3: Intelligent platform resolution (only when approaching station)
-            if obs_1d[15] > 0.50:
+            # Rule 3: Intelligent platform resolution (only when approaching station before approach locking: 400m to 2500m)
+            dist_in_approach = (0.133 <= obs_1d[8] <= 0.833) if len(obs_1d) > 8 else True
+            if obs_1d[15] > 0.50 and dist_in_approach:
                 current_day = info.get("day") if (info and isinstance(info, dict)) else None
                 # Check whether the nominal scheduled platform is free
                 is_free = (obs_1d[sched_feat] <= 0.50) and not (
@@ -97,17 +98,24 @@ class ModelAgentWrapper(BaseDispatcher):
                     # Scheduled platform is clear: preserve action 0 as keeping the scheduled stop
                     p_act = 0
                 else:
+                    sched_edge = info.get("scheduled_platform_edge", "") if (info and isinstance(info, dict)) else ""
+                    max_plats = 6
+                    if "City_3" in str(sched_edge):
+                        max_plats = 4
+                    elif any(c in str(sched_edge) for c in ("City_1", "City_4")):
+                        max_plats = 5
+
                     # Scheduled platform is occupied (or Sunday turnaround buffer): search for an available alternate
                     target_valid = False
-                    if p_act > 0 and p_act != (sched_plat_idx + 1):
+                    if p_act > 0 and (p_act - 1) < max_plats and p_act != (sched_plat_idx + 1):
                         target_feat = 16 + (p_act - 1) * 2
                         if target_feat < 28 and obs_1d[target_feat] <= 0.50:
                             target_valid = True
 
                     if not target_valid:
-                        # Exclude the scheduled platform from candidates and assign an available alternate
+                        # Exclude the scheduled platform from candidates and assign an available alternate within physical capacity
                         p_act = 0
-                        for p_idx in range(6):
+                        for p_idx in range(max_plats):
                             if p_idx != sched_plat_idx and (16 + p_idx * 2) < 28:
                                 if obs_1d[16 + p_idx * 2] < 0.50:
                                     p_act = p_idx + 1
