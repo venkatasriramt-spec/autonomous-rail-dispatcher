@@ -3,13 +3,13 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 22.8,
+    "elapsed_sec": 29.4,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.5,
-    "knock_on_events": 491,
+    "knock_on_events": 3,
     "actions_taken": 0,
     "applied_disruptions": [
       {
@@ -30,13 +30,13 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 22.8,
+    "elapsed_sec": 29.6,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.5,
-    "knock_on_events": 491,
+    "knock_on_events": 3,
     "actions_taken": 52,
     "applied_disruptions": [
       {
@@ -57,13 +57,13 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 22.9,
+    "elapsed_sec": 29.5,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.5,
-    "knock_on_events": 491,
+    "knock_on_events": 3,
     "actions_taken": 52,
     "applied_disruptions": [
       {
@@ -84,13 +84,13 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 24.9,
+    "elapsed_sec": 44.4,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 13.31,
-    "max_delay_sec": 132.0,
-    "punctuality_pct": 96.9,
-    "knock_on_events": 516,
+    "mean_delay_sec": 25.81,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 94.7,
+    "knock_on_events": 0,
     "actions_taken": 480,
     "applied_disruptions": [
       {
@@ -98,26 +98,26 @@
         "train_id": "REG-C2-02",
         "time": 22200.0,
         "duration": 600.0,
-        "edge": "c2_City_5_Town_4_fw_b0"
+        "edge": "City_5_plat_1_fw"
       }
     ],
     "action_breakdown": {
-      "route_diversions": 171,
-      "platform_switches": 480,
-      "holds": 277
+      "route_diversions": 374,
+      "platform_switches": 474,
+      "holds": 6
     }
   },
   {
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 22.3,
+    "elapsed_sec": 29.1,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
-    "knock_on_events": 490,
+    "knock_on_events": 3,
     "actions_taken": 0,
     "applied_disruptions": [
       {
@@ -139,13 +139,13 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 22.6,
+    "elapsed_sec": 29.6,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
-    "knock_on_events": 490,
+    "knock_on_events": 3,
     "actions_taken": 37,
     "applied_disruptions": [
       {
@@ -167,13 +167,13 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 23.0,
+    "elapsed_sec": 29.0,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 3.49,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
-    "knock_on_events": 490,
+    "knock_on_events": 3,
     "actions_taken": 37,
     "applied_disruptions": [
       {
@@ -195,13 +195,13 @@
     "scenario_id": "platform_blockage",
     "scenario_name": "Platform Closure (1800s Hub Shutdown)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 24.9,
+    "elapsed_sec": 43.5,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 13.31,
-    "max_delay_sec": 132.0,
-    "punctuality_pct": 96.9,
-    "knock_on_events": 516,
+    "mean_delay_sec": 2.55,
+    "max_delay_sec": 24.0,
+    "punctuality_pct": 99.9,
+    "knock_on_events": 0,
     "actions_taken": 480,
     "applied_disruptions": [
       {
@@ -214,22 +214,22 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 171,
-      "platform_switches": 480,
-      "holds": 277
+      "route_diversions": 355,
+      "platform_switches": 474,
+      "holds": 6
     }
   },
   {
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 23.5,
+    "elapsed_sec": 30.0,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 4.12,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
-    "knock_on_events": 453,
+    "knock_on_events": 3,
     "actions_taken": 0,
     "applied_disruptions": [
       {
@@ -348,13 +348,13 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 23.1,
+    "elapsed_sec": 30.1,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 4.1,
+    "mean_delay_sec": 4.12,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
-    "knock_on_events": 367,
+    "knock_on_events": 3,
     "actions_taken": 35,
     "applied_disruptions": [
       {
@@ -473,13 +473,13 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 23.3,
+    "elapsed_sec": 29.9,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 4.1,
+    "mean_delay_sec": 4.12,
     "max_delay_sec": 33.7,
     "punctuality_pct": 99.9,
-    "knock_on_events": 367,
+    "knock_on_events": 3,
     "actions_taken": 35,
     "applied_disruptions": [
       {
@@ -598,13 +598,13 @@
     "scenario_id": "stochastic",
     "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 25.5,
+    "elapsed_sec": 44.8,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 14.99,
-    "max_delay_sec": 139.0,
-    "punctuality_pct": 96.4,
-    "knock_on_events": 517,
+    "mean_delay_sec": 3.05,
+    "max_delay_sec": 45.3,
+    "punctuality_pct": 99.9,
+    "knock_on_events": 0,
     "actions_taken": 480,
     "applied_disruptions": [
       {
@@ -714,22 +714,22 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 174,
-      "platform_switches": 480,
-      "holds": 274
+      "route_diversions": 361,
+      "platform_switches": 474,
+      "holds": 6
     }
   },
   {
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 22.6,
+    "elapsed_sec": 29.4,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.5,
-    "knock_on_events": 491,
+    "knock_on_events": 3,
     "actions_taken": 0,
     "applied_disruptions": [
       {
@@ -758,13 +758,13 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 22.7,
+    "elapsed_sec": 29.8,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.5,
-    "knock_on_events": 491,
+    "knock_on_events": 3,
     "actions_taken": 52,
     "applied_disruptions": [
       {
@@ -793,13 +793,13 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 22.5,
+    "elapsed_sec": 29.7,
     "steps_simulated": 480,
     "peak_active_trains": 15,
     "mean_delay_sec": 25.68,
     "max_delay_sec": 195.0,
     "punctuality_pct": 94.5,
-    "knock_on_events": 491,
+    "knock_on_events": 3,
     "actions_taken": 52,
     "applied_disruptions": [
       {
@@ -828,13 +828,13 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Trained_PPO_Dispatcher",
-    "elapsed_sec": 25.1,
+    "elapsed_sec": 44.2,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 13.31,
-    "max_delay_sec": 132.0,
-    "punctuality_pct": 96.9,
-    "knock_on_events": 516,
+    "mean_delay_sec": 25.81,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 94.7,
+    "knock_on_events": 0,
     "actions_taken": 480,
     "applied_disruptions": [
       {
@@ -842,7 +842,7 @@
         "train_id": "REG-C2-02",
         "time": 22200.0,
         "duration": 600.0,
-        "edge": "c2_City_5_Town_4_fw_b0"
+        "edge": "City_5_plat_1_fw"
       },
       {
         "type": "platform_blockage",
@@ -854,9 +854,9 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 171,
-      "platform_switches": 480,
-      "holds": 277
+      "route_diversions": 375,
+      "platform_switches": 474,
+      "holds": 6
     }
   }
 ]
