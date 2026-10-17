@@ -27,11 +27,30 @@ from dispatcher.agents.baseline_dispatchers import (
 
 
 class ModelAgentWrapper(BaseDispatcher):
-    def __init__(self, model_path: str, name: str = "Trained_PPO_Dispatcher"):
+    def __init__(self, model_path: str, name: str = "Trained_PPO_Dispatcher", exception_gating: bool = True):
         super().__init__(name=name)
         self.model = PPO.load(model_path)
+        self.exception_gating = exception_gating
 
     def predict(self, observation: np.ndarray, info: Optional[Dict[str, Any]] = None) -> np.ndarray:
+        obs_1d = observation.flatten()
+
+        # Frontier 1: Dispatch-by-Exception Gating
+        # In real-world rail operations, trains run on scheduled nominal routes by default.
+        # The AI dispatcher intervenes only when an active physical exception is detected.
+        if self.exception_gating and len(obs_1d) >= 28:
+            has_network_delay = obs_1d[2] > 0.033         # Fleet mean delay > 60s
+            has_train_delay = obs_1d[6] > 0.033           # Focus train delay > 60s
+            is_dwelling = obs_1d[9] > 0.5                 # Focus train currently berthed at a stop
+            is_leader_close = obs_1d[11] < 0.50           # Leader consist within 1500m
+            is_overtake_candidate = obs_1d[14] > 0.50     # Slower train ahead to overtake
+            is_station_approach = obs_1d[15] > 0.50       # Approaching a scheduled station
+            has_platform_conflict = np.any(obs_1d[16:28:2] > 0.5) if is_station_approach else False
+
+            # If the consist is on-time with clear track ahead and no conflict, leave on nominal schedule
+            if not (has_network_delay or has_train_delay or is_dwelling or is_leader_close or is_overtake_candidate or has_platform_conflict):
+                return np.array([0, 0, 0])
+
         action, _ = self.model.predict(observation, deterministic=True)
         return action
 
