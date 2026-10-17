@@ -276,8 +276,8 @@ Dynamic platform reassignment previously relied solely on edge ID string matchin
 - **Fleet Punctuality:** Maintained **98.3% – 99.3%** on-time arrivals.
 - **Intervention Discipline:** Compulsive 120s mainline holds completely eliminated; interventions are strictly targeted to conflict resolution.
 - **Artifacts:**
-  - Checkpoint: [`dispatcher/models/ppo_stage3_full_day.zip`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/ppo_stage3_full_day.zip)
-  - Active Production Model: [`dispatcher/models/best_model.zip`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/best_model.zip)
+  - Checkpoint: [`models/ppo_stage3_full_day.zip`](models/ppo_stage3_full_day.zip)
+  - Active Production Model: [`models/best_model.zip`](models/best_model.zip)
 
 ---
 
@@ -302,7 +302,7 @@ To elevate the autonomous dispatcher from a standard RL policy into a production
 
 ### A. Frontier 1: Dispatch-by-Exception Action Gating
 * **Operational Principle:** In real-world rail operations (e.g. EULYNX / DB Netz standards), trains run strictly on their published working timetable routes by default. An automated dispatcher must intervene **only** when a physical conflict, headway compression, or schedule deviation is detected.
-* **Mechanism:** Codified in [`dispatcher/evaluation/evaluate.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/evaluate.py) (`ModelAgentWrapper`). If a consist is on-time with clear track ahead ($d_{\text{leader}} \ge 1,500\text{m}$), not berthed at a stop, not an overtake candidate, and facing no platform conflicts, action `[0, 0, 0]` is returned immediately without querying the policy network.
+* **Mechanism:** Codified in [`evaluation/evaluate.py`](evaluation/evaluate.py) (`ModelAgentWrapper`). If a consist is on-time with clear track ahead ($d_{\text{leader}} \ge 1,500\text{m}$), not berthed at a stop, not an overtake candidate, and facing no platform conflicts, action `[0, 0, 0]` is returned immediately without querying the policy network.
 * **Impact:** Reduced unneeded dispatcher actions by **48.8%** (from 5,760 down to approximately **2,951 actions/day**, matching `project_history.md`) with zero sacrifice in punctuality.
 
 ### B. Frontier 2: Smart Interlocking Gating & Calendar-Aware Working Timetable (WTT) Calibration
@@ -321,12 +321,12 @@ To elevate the autonomous dispatcher from a standard RL policy into a production
   1. **6 Station-Master Interlocking Agents (`station_city_1` to `station_city_6`):** Observe 24 localized features (track occupancy, approach train headway, dwell countdown) and manage 6-track platform routing and departure holds (`MultiDiscrete([7, 4])`).
   2. **1 Corridor Line Controller Agent (`corridor_trunk`):** Observes 14 localized trunk metrics (density, Alpine gradient status, overtake flag) and controls mainline overtakes, Alpine passing loop siding diversions, and high-speed bypass switches (`Discrete(3)`).
 * **Blended Cooperative Reward:** $R_i = (1 - \alpha) R_{\text{local}, i} + \alpha R_{\text{global}}$ ($\alpha = 0.5$), aligning distributed interlocking incentives with system-wide punctuality and knock-on suppression.
-* **High-Performance Multi-Worker Training Pipeline ([`dispatcher/training/train_mappo.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/train_mappo.py)):**
+* **High-Performance Multi-Worker Training Pipeline ([`training/train_mappo.py`](training/train_mappo.py)):**
   - **Multi-Core Scaling:** Deployed 8 parallel SUMO environments via `multiprocessing.Pipe()`, dynamically allocating distinct TraCI ports (`12500 + worker_id * 10`) to maximize hardware utilization across CPU cores without socket contention.
   - **Training Rollout:** Executed 10 iterations of 128 steps across 8 parallel workers (10,240 environment timesteps) in 306.6s (~5.1 min at 33.4 SPS).
-  - **Convergence:** Centralized Critic loss plummeted from **4.7098** down to **0.1034** (a **97.8% value error reduction**), with Actor loss converging smoothly to -0.0337. Checkpoints saved to [`dispatcher/models/mappo_interlocking.pt`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/mappo_interlocking.pt) and [`dispatcher/models/mappo_best.pt`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/mappo_best.pt).
+  - **Convergence:** Centralized Critic loss plummeted from **4.7098** down to **0.1034** (a **97.8% value error reduction**), with Actor loss converging smoothly to -0.0337. Checkpoints saved to [`models/mappo_interlocking.pt`](models/mappo_interlocking.pt) and [`models/mappo_best.pt`](models/mappo_best.pt).
 * **Empirical Benchmark & Validation (Peak Morning Commuter Window, 240 Steps):**
-  - **Status:** Trained policy fully benchmarked against Centralized PPO, Static Baseline, and FIFO Heuristic in [`dispatcher/evaluation/audit_marl_comparison.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_marl_comparison.py).
+  - **Status:** Trained policy fully benchmarked against Centralized PPO, Static Baseline, and FIFO Heuristic in [`evaluation/audit_marl_comparison.py`](evaluation/audit_marl_comparison.py).
   - **Mean Delay:** **0.08s per train** (**90.9% delay reduction** vs 0.88s Centralized PPO, 0.88s FIFO, and 0.88s Static Baseline).
   - **Max Delay:** **31.0s peak individual train delay** (**70.2% reduction** vs 104.0s for Centralized PPO, FIFO, and Static baselines).
   - **Action Concurrency:** Safely executed **248 coordinated local actions** across 7 concurrent interlockings (vs 25 under centralized single-agent control).
@@ -336,14 +336,14 @@ To elevate the autonomous dispatcher from a standard RL policy into a production
 ### E. Scaled Multi-Wave Diurnal Curriculum Training & Full 24-Hour 7-Day 6-Model Microscopic Benchmark
 To test true generalizability across all real-world operational regimes and resolve the Pareto trade-off between delay reduction, timetable punctuality, and dispatcher workload, the MAPPO policy was regularized with an explicit action workload penalty ($-0.10$ per active intervention in `MultiAgentRailwayEnv`), equipped with throat-gated interlocking guardrails in `MAPPODispatcher`, and trained through an expanded 4-wave diurnal curriculum (102,400 timesteps):
 
-1. **4-Wave Diurnal Curriculum Scaling ([`dispatcher/training/train_mappo_curriculum.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/train_mappo_curriculum.py)):**
-   - **Phase 1 (Nocturnal Freight Wave, 21:30–02:30):** 20,480 timesteps on 16 parallel workers. Critic loss: 0.0521 $\rightarrow$ 0.0034; Actor loss: -0.0335. Checkpoint: [`dispatcher/models/mappo_best_nocturnal_freight.pt`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/mappo_best_nocturnal_freight.pt).
-   - **Phase 2 (Evening Commuter Peak, 16:00–18:45):** 20,480 timesteps. Critic loss: 0.0042 $\rightarrow$ 0.0012; Actor loss: -0.0336. Checkpoint: [`dispatcher/models/mappo_best_evening_peak.pt`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/mappo_best_evening_peak.pt).
-   - **Phase 3 (Sunday Platform Staging & Turnaround Calibration, 08:00–12:00, Sun):** 20,480 timesteps. Critic loss: 0.0003 $\rightarrow$ 0.0001; Actor loss: -0.0348. Checkpoint: [`dispatcher/models/mappo_best_sunday_staging.pt`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/mappo_best_sunday_staging.pt).
-   - **Phase 4 (Full 24-Hour Continuous Fleet Synthesis, 05:00–23:00):** 40,960 timesteps across 16 parallel workers across 242 runs / 31 continuous rakes. Checkpoint: [`dispatcher/models/mappo_best_full_day.pt`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/models/mappo_best_full_day.pt).
+1. **4-Wave Diurnal Curriculum Scaling ([`training/train_mappo_curriculum.py`](training/train_mappo_curriculum.py)):**
+   - **Phase 1 (Nocturnal Freight Wave, 21:30–02:30):** 20,480 timesteps on 16 parallel workers. Critic loss: 0.0521 $\rightarrow$ 0.0034; Actor loss: -0.0335. Checkpoint: [`models/mappo_best_nocturnal_freight.pt`](models/mappo_best_nocturnal_freight.pt).
+   - **Phase 2 (Evening Commuter Peak, 16:00–18:45):** 20,480 timesteps. Critic loss: 0.0042 $\rightarrow$ 0.0012; Actor loss: -0.0336. Checkpoint: [`models/mappo_best_evening_peak.pt`](models/mappo_best_evening_peak.pt).
+   - **Phase 3 (Sunday Platform Staging & Turnaround Calibration, 08:00–12:00, Sun):** 20,480 timesteps. Critic loss: 0.0003 $\rightarrow$ 0.0001; Actor loss: -0.0348. Checkpoint: [`models/mappo_best_sunday_staging.pt`](models/mappo_best_sunday_staging.pt).
+   - **Phase 4 (Full 24-Hour Continuous Fleet Synthesis, 05:00–23:00):** 40,960 timesteps across 16 parallel workers across 242 runs / 31 continuous rakes. Checkpoint: [`models/mappo_best_full_day.pt`](models/mappo_best_full_day.pt).
    - Total scaled curriculum training completed in **816.1s (13.60 min)** across 16 parallel workers.
 
-2. **Full 24-Hour 7-Day 6-Model Microscopic Evaluation ([`dispatcher/evaluation/audit_cross_comparison_24h.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_cross_comparison_24h.py)):**
+2. **Full 24-Hour 7-Day 6-Model Microscopic Evaluation ([`evaluation/audit_cross_comparison_24h.py`](evaluation/audit_cross_comparison_24h.py)):**
    - 42 parallel runs (00:00 to 24:00, 86,400s, 5,760 steps/day) across 28 concurrent workers on the 32-core VM host:
      - **Static Baseline:** 236.20s avg delay (237.73s weighted) | 93.44% punctuality | 10,878 knock-on events | 0 actions
      - **FIFO Heuristic:** 50.07s avg delay (51.31s weighted) | 96.34% punctuality | 901 knock-ons | 5,792 weekly actions
@@ -352,7 +352,7 @@ To test true generalizability across all real-world operational regimes and reso
      - **Decentralized MAPPO (Ours):** **182.50s 7-day average delay (180.97s weighted)** | **94.54% punctuality** | **5,645 knock-ons** | **407 weekly actions** (Operates with surgical economy at ~58 actions/day, reducing operator workload by 96.8% vs Trained PPO and cutting knock-ons by 48.1% vs Static).
      - **Trained PPO Dispatcher (Ours):** **39.86s 7-day average delay (39.37s weighted)** | **98.79% punctuality** | **980 knock-ons** | **12,673 weekly actions** (Maintains network-wide delay leadership across all 1,446 services, achieving highest schedule adherence).
 
-3. **Peak Morning Disruption Stress-Testing Benchmark (20 Parallel Runs, [`dispatcher/evaluation/audit_stress_testing.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_stress_testing.py)):**
+3. **Peak Morning Disruption Stress-Testing Benchmark (20 Parallel Runs, [`evaluation/audit_stress_testing.py`](evaluation/audit_stress_testing.py)):**
    - Evaluated under 4 severe disruption scenarios (Train Breakdown, Platform Closure, Fleet Surge, Compound Failure) during morning commuter peak (06:00 to 08:00 AM, 480 macro-steps):
      - **Train Breakdown (600s):** Heuristics and Centralized PPO achieved 44.14s mean delay (90.5% punc, 585.0s max delay); Decentralized MAPPO achieved identical **44.14s mean delay (90.5% punc, 585.0s max delay)** with **28 actions (26 platform switches, 2 holds)**, reducing operator workload by 64% vs heuristics (78 actions) and 80% vs Centralized PPO (143 actions).
      - **Platform Closure (1800s):** Centralized PPO and Decentralized MAPPO both achieved **2.97s mean delay (100.0% punc, 195.0s max delay)** vs Static Baseline (2.97s); MAPPO executed **20 actions (18 platform switches, 2 holds)** vs Central PPO's 50 actions and heuristics' 44 actions.
@@ -362,10 +362,10 @@ To test true generalizability across all real-world operational regimes and reso
 
 ---
 
-### F. Automated End-to-End Retraining & Benchmarking Pipeline ([`dispatcher/training/train_and_benchmark_all.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/train_and_benchmark_all.py))
+### F. Automated End-to-End Retraining & Benchmarking Pipeline ([`training/train_and_benchmark_all.py`](training/train_and_benchmark_all.py))
 
 To ensure complete reproducibility and automate regression testing across models, an end-to-end automated orchestration pipeline was deployed:
-1. **Stage 1 (MAPPO Morning Peak Retraining):** Trains 7-agent decentralized interlocking actors across 8 parallel SUMO workers on multi-core CPU.
+1. **Stage 1 (MAPPO Morning Peak Retraining):** Trains 7-agent decentralized interlocking actors across 16 parallel SUMO workers on multi-core CPU.
 2. **Stage 2 (Centralized PPO Morning Peak Fine-Tuning):** Optimizes centralized single-agent policy with exception-gating penalties.
 3. **Stage 3 (Full 24-Hour 7-Day 42-Run Microscopic Cross-Comparison):** Invalidates pre-existing benchmark JSONs, executes 42 parallel 24-hour simulations across all 7 days, and validates fresh file generation.
 4. **Stage 4 (Comparative Reporting & Validation):** Automatically compares post-fix results against pre-fix metrics, reporting mean delay, punctuality, knock-ons, and operator action distributions across all 6 dispatchers.

@@ -157,7 +157,7 @@ Demonstrates active secondary delay suppression under rolling stock breakdown:
 | **Trained PPO Dispatcher (Phase 3)** | **Deep RL (Ours)** | 44.0s | 211.3s | **88.5%** | **0** *(100% cascade elimination!)* | 360 | -1,155.9 |
 
 ### C. Full 7-Day 24-Hour Continuous Microscopic Audit (6-Model Comparison, All 1,446 Services)
-Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 daily, 5,760 steps/day) across all six dispatcher paradigms ([`cross_comparison_24h.json`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json)):
+Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 daily, 5,760 steps/day) across all six dispatcher paradigms ([`cross_comparison_24h.json`](logs/evaluations/weekly_audits/cross_comparison_24h.json)):
 
 | Day | Services | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | Decentralized MAPPO | Trained PPO Dispatcher | Performance Leadership |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
@@ -203,10 +203,10 @@ Evaluated during peak morning commuter operations (06:00 to 07:00 AM, 240 steps)
 
 
 - **Decentralized Spatial Decomposition:**
-  - [`dispatcher/envs/marl_zones.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/envs/marl_zones.py): Defines physical boundaries for 6 station interlockings (`station_city_1` to `station_city_6`) and the trunk line controller (`corridor_trunk`).
-  - [`dispatcher/envs/multi_agent_builder.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/envs/multi_agent_builder.py): Extracts 24-dim localized station observations and 14-dim localized corridor observations.
-  - [`dispatcher/envs/multi_agent_railway_env.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/envs/multi_agent_railway_env.py): Multi-agent gym environment implementing cooperative reward blending ($R_i = 0.5 R_{\text{local}, i} + 0.5 R_{\text{global}}$).
-  - [`dispatcher/agents/mappo_agent.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/agents/mappo_agent.py): PyTorch MAPPO implementation with decentralized `StationActor` and `CorridorActor` MLPs and a centralized critic $V(\mathbf{S}_{\text{joint}})$.
+  - [`envs/marl_zones.py`](envs/marl_zones.py): Defines physical boundaries for 6 station interlockings (`station_city_1` to `station_city_6`) and the trunk line controller (`corridor_trunk`).
+  - [`envs/multi_agent_builder.py`](envs/multi_agent_builder.py): Extracts 24-dim localized station observations and 14-dim localized corridor observations.
+  - [`envs/multi_agent_railway_env.py`](envs/multi_agent_railway_env.py): Multi-agent gym environment implementing cooperative reward blending ($R_i = 0.5 R_{\text{local}, i} + 0.5 R_{\text{global}}$).
+  - [`agents/mappo_agent.py`](agents/mappo_agent.py): PyTorch MAPPO implementation with decentralized `StationActor` and `CorridorActor` MLPs and a centralized critic $V(\mathbf{S}_{\text{joint}})$.
 
 ### Visual Artifacts Generated (Stored in `dispatcher/logs/visual_proofs/`)
 1. **`benchmark_delay_comparison.png`:** Bar chart comparing Mean and Max delay across methods.
