@@ -188,10 +188,22 @@ class ObservationBuilder:
         train_weight = specs["weight"]
         vclass = specs["vclass"]
         is_freight = specs["is_freight"]
+        is_electric = (vclass == "rail_electric")
         is_overtake_candidate = bool(
             leader_id
             and priority > leader_priority
             and leader_speed < max_speed * 0.7
+        )
+        station_platform_edges = set()
+        if upcoming_station and upcoming_station in STATION_PLATFORMS:
+            station_dict = STATION_PLATFORMS[upcoming_station]
+            station_platform_edges = set(station_dict.get("fw", []) + station_dict.get("bw", []))
+
+        is_at_scheduled_stop = bool(
+            is_at_stop and (
+                (scheduled_platform_edge and road_id == scheduled_platform_edge)
+                or (road_id in station_platform_edges)
+            )
         )
 
         return {
@@ -208,6 +220,7 @@ class ObservationBuilder:
             "upcoming_direction": upcoming_direction,
             "scheduled_platform_edge": scheduled_platform_edge,
             "is_at_stop": is_at_stop,
+            "is_at_scheduled_stop": is_at_scheduled_stop,
             "leader_id": leader_id,
             "leader_dist": leader_dist,
             "leader_speed": leader_speed,

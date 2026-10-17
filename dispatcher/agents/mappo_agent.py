@@ -24,6 +24,7 @@ from ..envs.marl_zones import (
     STATION_OBS_DIM,
     CORRIDOR_OBS_DIM
 )
+from .baseline_dispatchers import find_free_alternative_platform
 
 
 class StationActor(nn.Module):
@@ -294,14 +295,7 @@ class MAPPODispatcher:
             assigned_is_blocked = (plat_act <= 0) or (plat_act > 0 and (plat_act - 1 >= max_plats or obs[12 + plat_act - 1] > 0.5))
             if is_critical_approach and ((day == "Sun" and sched_plat_idx == 0 and obs[12] > 0.5) or (assigned_is_blocked and sched_is_occupied)):
                 # Scheduled platform is blocked or turnaround staged; route to first open platform within capacity
-                found_open = False
-                for p_idx in range(max_plats):
-                    if p_idx != sched_plat_idx and obs[12 + p_idx] < 0.5:
-                        plat_act = p_idx + 1
-                        found_open = True
-                        break
-                if not found_open:
-                    plat_act = 0
+                plat_act = find_free_alternative_platform(obs, sched_plat_idx, max_plats, obs_offset=12, stride=1)
             elif not sched_is_occupied:
                 # Nominal scheduled platform is clear; preserve action 0
                 plat_act = 0
@@ -309,11 +303,7 @@ class MAPPODispatcher:
                 # Scheduled platform is occupied and reallocation requested: ensure target platform is clear and physically exists
                 target_plat_idx = plat_act - 1
                 if target_plat_idx >= max_plats or target_plat_idx == sched_plat_idx or obs[12 + target_plat_idx] > 0.5:
-                    plat_act = 0
-                    for p_idx in range(max_plats):
-                        if p_idx != sched_plat_idx and obs[12 + p_idx] < 0.5:
-                            plat_act = p_idx + 1
-                            break
+                    plat_act = find_free_alternative_platform(obs, sched_plat_idx, max_plats, obs_offset=12, stride=1)
 
         return plat_act, hold_act
 

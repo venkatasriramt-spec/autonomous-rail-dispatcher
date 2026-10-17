@@ -22,7 +22,10 @@ from dispatcher.agents.baseline_dispatchers import (
     BaseDispatcher,
     StaticDispatcher,
     FIFODispatcher,
-    PriorityGreedyDispatcher
+    PriorityGreedyDispatcher,
+    parse_scheduled_platform_idx,
+    get_station_capacity_from_edge,
+    find_free_alternative_platform
 )
 
 
@@ -37,19 +40,11 @@ class ModelAgentWrapper(BaseDispatcher):
         obs_1d = observation.flatten()
 
         # Frontier 1: Dispatch-by-Exception Gating
-        # Extract scheduled platform identity from info if available (defaulting to platform index 0 / feature 16)
-        sched_plat_idx = 0
-        if info and isinstance(info, dict):
-            if "scheduled_platform_idx" in info:
-                sched_plat_idx = int(info["scheduled_platform_idx"])
-            elif "scheduled_platform_edge" in info and info["scheduled_platform_edge"]:
-                edge_str = str(info["scheduled_platform_edge"])
-                if "_plat_" in edge_str:
-                    try:
-                        sched_plat_idx = int(edge_str.split("_plat_")[1].split("_")[0]) - 1
-                    except Exception:
-                        sched_plat_idx = 0
-        sched_feat = 16 + sched_plat_idx * 2 if (0 <= sched_plat_idx < 6) else 16
+        # Extract scheduled platform identity safely from info using shared helper
+        sched_edge = info.get("scheduled_platform_edge", "") if (info and isinstance(info, dict)) else ""
+        max_plats = get_station_capacity_from_edge(sched_edge)
+        sched_plat_idx = parse_scheduled_platform_idx(info, max_plats=max_plats)
+        sched_feat = 16 + sched_plat_idx * 2
 
         # Frontier 1: Dispatch-by-Exception Gating
         # In real-world rail operations, trains run on scheduled nominal routes by default.
@@ -99,11 +94,7 @@ class ModelAgentWrapper(BaseDispatcher):
                     p_act = 0
                 else:
                     sched_edge = info.get("scheduled_platform_edge", "") if (info and isinstance(info, dict)) else ""
-                    max_plats = 6
-                    if "City_3" in str(sched_edge):
-                        max_plats = 4
-                    elif any(c in str(sched_edge) for c in ("City_1", "City_4")):
-                        max_plats = 5
+                    max_plats = get_station_capacity_from_edge(sched_edge)
 
                     # Scheduled platform is occupied (or Sunday turnaround buffer): search for an available alternate
                     target_valid = False
@@ -114,12 +105,7 @@ class ModelAgentWrapper(BaseDispatcher):
 
                     if not target_valid:
                         # Exclude the scheduled platform from candidates and assign an available alternate within physical capacity
-                        p_act = 0
-                        for p_idx in range(max_plats):
-                            if p_idx != sched_plat_idx and (16 + p_idx * 2) < 28:
-                                if obs_1d[16 + p_idx * 2] < 0.50:
-                                    p_act = p_idx + 1
-                                    break
+                        p_act = find_free_alternative_platform(obs_1d, sched_plat_idx, max_plats, obs_offset=16, stride=2)
             elif p_act > 0:
                 p_act = 0
 

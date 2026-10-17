@@ -196,11 +196,15 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
                     if (not is_stopped) and speed < 3.0 and leader_info is not None and leader_info[1] < 150.0:
                         lead_id = leader_info[0]
                         lead_stopped = False
+                        lead_road = ""
                         try:
                             lead_stopped = traci.vehicle.isStopped(lead_id)
+                            lead_road = traci.vehicle.getRoadID(lead_id)
                         except Exception:
                             lead_stopped = False
-                        if not lead_stopped:
+                        lead_at_platform = any(p in lead_road for p in ("_plat_", "_p1_", "_p2_"))
+                        # Distinguish scheduled platform dwell from an obstructing mainline stop
+                        if not (lead_stopped and lead_at_platform):
                             step_knock_ons += 1
                             knock_on_vehs_this_step.add(vid)
             except Exception:

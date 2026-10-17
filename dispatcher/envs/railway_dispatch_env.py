@@ -314,7 +314,15 @@ class RailwayDispatchEnv(gym.Env):
                             lead_id, dist = leader_info
                             # Secondary delay: following train forced to crawl (<3 m/s, within 150m) behind non-berthed leader
                             if dist < 150.0 and traci.vehicle.getSpeed(vid) < 3.0:
-                                if not traci.vehicle.isStopped(lead_id):
+                                lead_stopped = False
+                                lead_road = ""
+                                try:
+                                    lead_stopped = traci.vehicle.isStopped(lead_id)
+                                    lead_road = traci.vehicle.getRoadID(lead_id)
+                                except Exception:
+                                    lead_stopped = False
+                                lead_at_platform = any(p in lead_road for p in ("_plat_", "_p1_", "_p2_"))
+                                if not (lead_stopped and lead_at_platform):
                                     knock_on_vehs_this_step.add(vid)
                                     step_knock_ons += 1
                     except Exception:

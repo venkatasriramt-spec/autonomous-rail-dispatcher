@@ -180,11 +180,13 @@ class MultiAgentObservationBuilder:
                         stops = traci_module.vehicle.getStops(v_on_plat)
                         if stops:
                             curr_st = stops[0]
+                            min_duration = max(0.0, getattr(curr_st, "duration", 0.0))
                             if getattr(curr_st, "until", -1) > 0 and sim_time > 0:
-                                rem_dwell = max(0.0, curr_st.until - sim_time)
+                                rem_until = max(0.0, curr_st.until - sim_time)
+                                rem_dwell = max(rem_until, min_duration)
                                 dwell_ratio = min(rem_dwell / 180.0, 1.0)
                             else:
-                                dwell_ratio = min(max(curr_st.duration, 0.0) / 180.0, 1.0)
+                                dwell_ratio = min(min_duration / 180.0, 1.0)
             except Exception:
                 pass
             obs[12 + p_idx] = float(is_occ)

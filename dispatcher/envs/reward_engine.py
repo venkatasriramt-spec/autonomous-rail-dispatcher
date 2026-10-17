@@ -85,8 +85,8 @@ class RewardEngine:
             total_reward -= self.delay_delta_weight * weight * (delta / 60.0)
             self.prev_delays[vid] = delay
 
-            # Penalty for stopping unexpectedly on mainline
-            if state.get("speed", 10.0) < 0.1 and not state.get("is_at_stop", False):
+            # Penalty for stopping unexpectedly on mainline (exempts scheduled station stops)
+            if state.get("speed", 10.0) < 0.1 and not state.get("is_at_scheduled_stop", False):
                 total_reward -= self.unnecessary_stop_penalty * weight
 
         # 2. Knock-on / Secondary delay penalty
