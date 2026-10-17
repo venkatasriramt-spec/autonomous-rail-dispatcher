@@ -48,6 +48,7 @@ def main():
     parser.add_argument("--steps-per-phase", type=int, default=10240, help="Timesteps per intermediate curriculum wave")
     parser.add_argument("--full-day-steps", type=int, default=15360, help="Timesteps for full-day consolidation wave")
     parser.add_argument("--start-phase", type=int, default=1, choices=[1, 2, 3, 4], help="Starting curriculum phase (1..4)")
+    parser.add_argument("--fresh", action="store_true", help="Start fresh training without loading existing weights in Phase 1")
     args = parser.parse_args()
 
     total_t0 = time.time()
@@ -56,7 +57,7 @@ def main():
     print(f"Root: {ROOT_DIR}")
     print(f"Hardware: 32 CPU Cores | Parallel Workers: {args.workers}")
     print(f"Steps per Wave: {args.steps_per_phase} | Full Day Steps: {args.full_day_steps}")
-    print(f"Initial Weights: {BASE_MODEL if os.path.exists(BASE_MODEL) else 'Random Init'}")
+    print(f"Initial Weights: {'Fresh Init' if args.fresh else (BASE_MODEL if os.path.exists(BASE_MODEL) else 'Random Init')}")
     print("=" * 90)
 
     # -------------------------------------------------------------
@@ -71,7 +72,7 @@ def main():
             "--save-path", BASE_MODEL,
             "--best-path", os.path.join(MODELS_DIR, "mappo_best_nocturnal_freight.pt")
         ]
-        if os.path.exists(BASE_MODEL):
+        if os.path.exists(BASE_MODEL) and not args.fresh:
             cmd_p1.extend(["--load-checkpoint", BASE_MODEL])
         run_phase(cmd_p1, "Phase 1: Nocturnal Freight & Logistics Wave (21:30-02:30, Alpine Overtakes)")
 

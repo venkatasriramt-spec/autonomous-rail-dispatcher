@@ -259,18 +259,22 @@ def main():
                         help="Peak-hour disruption scenario to inject")
     parser.add_argument("--dispatchers", type=str, default=None,
                         help="Comma-separated dispatchers to audit (default: all 5)")
+    parser.add_argument("--days", type=str, default=None,
+                        help="Comma-separated days to audit (default: all 7 days Mon-Sun)")
     parser.add_argument("--workers", type=int, default=28, help="Number of parallel worker processes")
     parser.add_argument("--output-json", type=str, default=None, help="Custom output JSON path")
     args = parser.parse_args()
 
     selected_dispatchers = [d.strip() for d in args.dispatchers.split(",")] if args.dispatchers else DISPATCHER_TYPES
+    selected_days = [d.strip() for d in args.days.split(",")] if args.days else DAYS
 
     print("=" * 95)
     print("AUTONOMOUS TRAIN DISPATCHER: FULL 24-HOUR 5-MODEL CROSS-COMPARISON BENCHMARK")
     print(f"Operational Horizon: 00:00 to 24:00 (86,400s) | Cadence: {MACRO_STEP_SEC}s (5,760 steps/day)")
+    print(f"Days Audited: {', '.join(selected_days)}")
     print(f"Models Audited: {', '.join(selected_dispatchers)}")
     print(f"Disruption Mode: {args.disruption.upper()}")
-    print(f"Execution: {len(DAYS) * len(selected_dispatchers)} Parallel Tasks across {args.workers} workers on VM Host")
+    print(f"Execution: {len(selected_days) * len(selected_dispatchers)} Parallel Tasks across {args.workers} workers on VM Host")
     print("=" * 95)
 
     if not os.path.exists(MODEL_PATH):
@@ -284,8 +288,8 @@ def main():
     t0 = time.time()
 
     # Step 1: Ensure all day configs are ready
-    print("\n[*] Verifying 7-day isolated configurations...")
-    for day in DAYS:
+    print("\n[*] Verifying isolated configurations...")
+    for day in selected_days:
         prepare_day_config(day)
 
     # Restore master composite schedule in root config
@@ -294,7 +298,7 @@ def main():
 
     # Step 2: Build task matrix
     tasks = []
-    for day in DAYS:
+    for day in selected_days:
         for disp in selected_dispatchers:
             tasks.append((day, disp, args.disruption))
 

@@ -256,6 +256,22 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
             blended_reward = (1.0 - self.cooperation_factor) * local_reward + self.cooperation_factor * global_reward
             reward_dict[aid] = float(np.clip(blended_reward, -10.0, 5.0))
 
+        # Action Workload Penalty (Pareto Regularization)
+        # Penalizes frivolous interventions to incentivize minimal-action policies
+        for aid, act in action_dict.items():
+            if aid in reward_dict:
+                is_active_action = False
+                if aid.startswith("station_"):
+                    p_act = int(act[0]) if hasattr(act, "__len__") and len(act) > 0 else 0
+                    h_act = int(act[1]) if hasattr(act, "__len__") and len(act) > 1 else 0
+                    is_active_action = (p_act > 0 or h_act > 0)
+                else:
+                    r_act = int(act) if not hasattr(act, "__len__") else int(act[0])
+                    is_active_action = (r_act > 0)
+
+                if is_active_action:
+                    reward_dict[aid] -= 0.10  # Baseline intervention cost
+
         # PettingZoo / Multi-Agent termination flags
         terminated_dict = {aid: terminated_flag for aid in self.agents}
         truncated_dict = {aid: truncated_flag for aid in self.agents}

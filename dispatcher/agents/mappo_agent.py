@@ -216,18 +216,21 @@ class MAPPODispatcher:
     ) -> Tuple[int, int]:
         """Station Agent decision logic with local Frontier 1 & 2 guardrails."""
         # Frontier 1: Dispatch-by-Exception Gating
-        # If no focus train or consist is on-time with clear approach, default to nominal [0, 0]
+        # In real-world rail operations, trains run on scheduled nominal routes by default.
+        # The AI dispatcher intervenes only when an active physical exception is detected.
         if self.exception_gating:
-            has_train = obs[3] > 0.0  # priority > 0 indicates active train
-            has_delay = obs[4] > 0.05  # delay > 30s
+            has_train = obs[3] > 0.0          # priority > 0 indicates active train
+            has_delay = obs[4] > 0.05         # delay > 30s
             is_at_stop = obs[7] > 0.5
             dist_to_stop = obs[6]
-            is_critical_approach = (0.05 < dist_to_stop < 0.8)
+            is_critical_approach = (0.05 < dist_to_stop < 0.60)
+            is_leader_tight = (obs[10] < 0.25 and obs[10] > 0.0)
 
-            # Check if any platform has conflict
-            has_platform_conflict = np.any(obs[12:18] > 0.5)
+            # Check if station throat has tight leader or active platform conflict
+            has_throat_conflict = is_leader_tight or (is_critical_approach and np.all(obs[12:15] > 0.5))
 
-            if not has_train or (not has_delay and not is_at_stop and not has_platform_conflict and not is_critical_approach):
+            # If the consist is on-time with clear track ahead and no conflict, leave on nominal schedule
+            if not has_train or (not has_delay and not is_at_stop and not has_throat_conflict):
                 return 0, 0
 
         # Query local neural actor
@@ -236,10 +239,15 @@ class MAPPODispatcher:
 
         # Frontier 2: Smart Interlocking Guardrails
         if self.smart_interlocking:
+            # Rule 1: Platform reallocation is only physically valid when approaching a station
+            if plat_act > 0 and not (0.05 < obs[6] < 0.65):
+                plat_act = 0
+
             # Rule 2: Bar holds on trains that are already delayed or without tight leader
-            is_delayed = obs[4] > 0.05
+            # Never hold a train that is already running late!
+            is_ontime = obs[4] <= 0.01
             is_leader_tight = (obs[10] < 0.25 and obs[10] > 0.0)
-            if hold_act > 0 and (is_delayed or not is_leader_tight):
+            if hold_act > 0 and (not is_ontime or not is_leader_tight):
                 hold_act = 0
 
             # Rule 3: Sunday platform 1 turnaround reallocation

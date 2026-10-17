@@ -148,29 +148,29 @@ Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 dail
 
 | Day | Services | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | Decentralized MAPPO | Peak Central / MAPPO Punctuality | Interventions (Central / MAPPO) | Performance Leadership |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Monday** | 232 | 198.65s | 40.16s | 40.16s | **57.06s** | 1386.08s | 98.1% / 88.0% | 2,310 / 11,044 | **-71.3% vs Static** |
-| **Tuesday** | 233 | 229.29s | 91.12s | 91.12s | **10.85s** | 2233.35s | **99.5%** / 73.7% | 1,239 / 10,145 | **Centralized Dominates (-95.3% vs Static, -88.1% vs FIFO)** |
-| **Wednesday** | 229 | 184.72s | 197.65s | 197.65s | **53.83s** | 2185.47s | 98.0% / 74.1% | 2,015 / 10,307 | **Centralized Dominates (-70.9% vs Static, -72.8% vs FIFO)** |
-| **Thursday** | 235 | 198.58s | 40.11s | 40.11s | **57.01s** | 1441.03s | 98.1% / 87.2% | 2,057 / 10,970 | **-71.3% vs Static** |
-| **Friday** | 231 | 229.31s | 91.06s | 91.06s | **10.86s** | 2194.33s | **99.5%** / 74.0% | 1,427 / 10,254 | **Centralized Dominates (-95.3% vs Static, -88.1% vs FIFO)** |
-| **Saturday** | 145 | 354.88s | 80.59s | 80.59s | 80.52s | **0.26s** | 98.9% / **99.9%** | 1,855 / 7,919 | **MAPPO Dominates (-99.9% vs Static, -99.7% vs Heuristics)** |
-| **Sunday** | 141 | 236.16s | 148.45s | 148.45s | 8.87s | **0.12s** | 99.4% / **100.0%** | 1,770 / 8,285 | **MAPPO Dominates (-99.9% vs Static, -98.6% vs Centralized)** |
-| **Average of Daily Means** | — | **233.08s** | **98.45s** | **98.45s** | **39.86s** | **1348.66s** | **98.8%** / 85.3% | **~1,810** / 9,846 | **Central PPO Leads Weekdays (-82.9%); MAPPO Dominates Weekends** |
-| **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **39.37s** | **1513.14s** | **98.8%** / 83.5% | **~1,810** / 9,846 | **Central PPO -82.5% vs Static; MAPPO 0.12s-0.26s on Weekend Roster** |
+| **Monday** | 232 | 198.65s | 40.16s | 40.16s | **57.06s** | 2230.15s | 98.1% / 77.3% | 2,310 / 122 | **-71.3% vs Static** |
+| **Tuesday** | 233 | 229.29s | 91.12s | 91.12s | **10.85s** | 1823.56s | **99.5%** / 82.1% | 1,239 / 127 | **Centralized Dominates (-95.3% vs Static, -88.1% vs FIFO)** |
+| **Wednesday** | 229 | 184.72s | 197.65s | 197.65s | **53.83s** | 1749.34s | 98.0% / 82.6% | 2,015 / 135 | **Centralized Dominates (-70.9% vs Static, -72.8% vs FIFO)** |
+| **Thursday** | 235 | 198.58s | 40.11s | 40.11s | **57.01s** | 2251.95s | 98.1% / 77.0% | 2,057 / 121 | **-71.3% vs Static** |
+| **Friday** | 231 | 229.31s | 91.06s | 91.06s | **10.86s** | 1749.34s | **99.5%** / 82.6% | 1,427 / 126 | **Centralized Dominates (-95.3% vs Static, -88.1% vs FIFO)** |
+| **Saturday** | 145 | 354.88s | 80.59s | 80.59s | 80.52s | **0.13s** | 98.9% / **100.0%** | 1,855 / 7 | **MAPPO Dominates (-99.9% vs Static, -99.8% vs Heuristics; 7 actions)** |
+| **Sunday** | 141 | 236.16s | 148.45s | 148.45s | 8.87s | **0.22s** | 99.4% / **100.0%** | 1,770 / 175 | **MAPPO Dominates (-99.9% vs Static, -97.5% vs Centralized)** |
+| **Average of Daily Means** | — | **233.08s** | **98.45s** | **98.45s** | **39.86s** | **1400.67s** | **98.8%** / 85.9% | **~1,810** / 116 | **Central PPO Leads Weekdays (-82.9%); MAPPO Dominates Weekends** |
+| **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **39.37s** | **1574.16s** | **98.8%** / 83.9% | **~1,810** / 116 | **Central PPO -82.5% vs Static; MAPPO 0.13s-0.22s on Weekend Roster** |
 
-* **Secondary Knock-On Delay Cascades:** Slashed from **11,944 events** (Static) down to **980 events** (**91.8% cascade elimination** across the entire week). MAPPO excels in localized station zones and weekend traffic (53-58 knock-ons) but accumulates secondary holding cascades during dense weekday commutes.
+* **Secondary Knock-On Delay Cascades:** Slashed from **11,944 events** (Static) down to **980 events** (**91.8% cascade elimination** across the entire week). MAPPO excels in localized station zones and weekend traffic (37-44 knock-ons) with minimal intervention workload (~116 actions/day).
 
 ### D. Peak Disruption Stress-Testing Benchmark (5-Model Comparison)
 Evaluated across 4 simultaneous operational failure modes during the morning commuter peak (06:00 to 08:00 AM, 480 macro-steps, 20 parallel runs):
 
 | Disruption Scenario | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | **Decentralized MAPPO** | MAPPO Punctuality | MAPPO Actions | Leadership |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Train Breakdown (10m)** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.13s** *(max 61s)* | **100.0%** | 951 | **MAPPO -99.5% delay; 61s peak** |
-| **Platform Closure (30m)** | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | **0.12s** *(max 61s)* | **100.0%** | 938 | **MAPPO -96.6% delay; 61s peak** |
-| **Fleet Surge (15% Jitter)** | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | **0.22s** *(max 76s)* | **100.0%** | 943 | **MAPPO -94.7% delay; 76s peak** |
-| **Compound Failure** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.13s** *(max 61s)* | **100.0%** | 951 | **MAPPO -99.5% delay; 61s peak** |
+| **Train Breakdown (10m)** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.49s** *(max 141s)* | **100.0%** | **0** | **MAPPO -98.1% delay; 141s peak; 0 unneeded actions** |
+| **Platform Closure (30m)** | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | 3.49s *(max 216s)* | **0.28s** *(max 111s)* | **100.0%** | **0** | **MAPPO -92.0% delay; 111s peak; 0 unneeded actions** |
+| **Fleet Surge (15% Jitter)** | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | 4.12s *(max 231s)* | **0.34s** *(max 126s)* | **100.0%** | **0** | **MAPPO -91.7% delay; 126s peak; 0 unneeded actions** |
+| **Compound Failure** | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 25.68s *(max 585s)* | 26.15s *(max 585s)* | **0.49s** *(max 141s)* | **100.0%** | **0** | **MAPPO -98.1% delay; 141s peak; 0 unneeded actions** |
 
-*(Note: In localized morning disruptions, Decentralized MAPPO's independent station actors instantly divert traffic through local throat crossovers without waiting for sequential central commands, keeping peak delay below 61-76s with 100.0% punctuality).*
+*(Note: In localized morning disruptions, Decentralized MAPPO's independent station actors instantly divert traffic through local throat crossovers without waiting for sequential central commands, keeping peak delay below 111-141s with 100.0% punctuality and zero unneeded actions).*
 
 ### E. Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO) Benchmark
 Evaluated during peak morning commuter operations (06:00 to 07:00 AM, 240 steps) under Centralized Training with Decentralized Execution (CTDE) partitioning the corridor into **7 autonomous control agents** (6 Station-Master Interlocking Controllers + 1 Corridor Line Controller) trained across 8 parallel SUMO workers on multi-core CPU:
