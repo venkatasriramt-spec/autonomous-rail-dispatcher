@@ -40,16 +40,14 @@ class ModelAgentWrapper(BaseDispatcher):
         # In real-world rail operations, trains run on scheduled nominal routes by default.
         # The AI dispatcher intervenes only when an active physical exception is detected.
         if self.exception_gating and len(obs_1d) >= 28:
-            has_network_delay = obs_1d[2] > 0.033         # Fleet mean delay > 60s
             has_train_delay = obs_1d[6] > 0.033           # Focus train delay > 60s
-            is_dwelling = obs_1d[9] > 0.5                 # Focus train currently berthed at a stop
-            is_leader_close = obs_1d[11] < 0.50           # Leader consist within 1500m
+            is_leader_close = obs_1d[11] < 0.40           # Leader consist within 1200m
             is_overtake_candidate = obs_1d[14] > 0.50     # Slower train ahead to overtake
             is_station_approach = obs_1d[15] > 0.50       # Approaching a scheduled station
-            has_platform_conflict = np.any(obs_1d[16:28:2] > 0.5) if is_station_approach else False
+            default_plat_occupied = obs_1d[16] > 0.50 if is_station_approach else False
 
             # If the consist is on-time with clear track ahead and no conflict, leave on nominal schedule
-            if not (has_network_delay or has_train_delay or is_dwelling or is_leader_close or is_overtake_candidate or has_platform_conflict):
+            if not (has_train_delay or is_leader_close or is_overtake_candidate or default_plat_occupied):
                 return np.array([0, 0, 0])
 
         action, _ = self.model.predict(observation, deterministic=True)
@@ -58,7 +56,7 @@ class ModelAgentWrapper(BaseDispatcher):
         # Frontier 2: Smart Interlocking Gating & Sunday Platform Calibration
         if self.smart_interlocking and len(obs_1d) >= 28:
             # Rule 1: No unprovoked passing loop siding diversion on clear mainline
-            if obs_1d[14] < 0.50:
+            if obs_1d[14] < 0.50 and r_act == 1:
                 r_act = 0
 
             # Rule 2: No unprovoked holds (only hold if leader is close and ego train is on-time)
@@ -68,7 +66,7 @@ class ModelAgentWrapper(BaseDispatcher):
                 if not (is_leader_tight and is_ontime):
                     h_act = 0
 
-            # Rule 3: Intelligent platform resolution
+            # Rule 3: Intelligent platform resolution (only when approaching station and default platform is occupied)
             if obs_1d[15] > 0.50:
                 current_day = info.get("day") if (info and isinstance(info, dict)) else None
                 # On Sunday, platform 1 at hub stations is reserved for turnaround staging buffers
@@ -78,9 +76,20 @@ class ModelAgentWrapper(BaseDispatcher):
                             p_act = p_idx + 1
                             break
                 elif p_act > 0:
-                    target_feat = 16 + (p_act - 1) * 2
-                    if target_feat < 28 and obs_1d[target_feat] > 0.50:
+                    # If default platform is free, leave train on its scheduled platform
+                    if obs_1d[16] <= 0.50:
                         p_act = 0
+                    else:
+                        # Default platform is occupied: ensure target platform is actually free
+                        target_feat = 16 + (p_act - 1) * 2
+                        if target_feat < 28 and obs_1d[target_feat] > 0.50:
+                            p_act = 0
+                            for p_idx in range(1, 6):
+                                if obs_1d[16 + p_idx * 2] < 0.50:
+                                    p_act = p_idx + 1
+                                    break
+            elif p_act > 0:
+                p_act = 0
 
         return np.array([r_act, p_act, h_act])
 

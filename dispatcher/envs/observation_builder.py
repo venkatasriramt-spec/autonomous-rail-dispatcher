@@ -144,10 +144,18 @@ class ObservationBuilder:
                                 pass
 
             # Calculate delay relative to scheduled arrival/departure
-            if next_stop.intendedArrival > 0 and sim_time > next_stop.intendedArrival:
-                delay_sec = sim_time - next_stop.intendedArrival
-            elif next_stop.until > 0 and sim_time > next_stop.until:
-                delay_sec = sim_time - next_stop.until
+            if is_at_stop:
+                if next_stop.until > 0 and sim_time > next_stop.until:
+                    delay_sec = sim_time - next_stop.until
+                elif next_stop.duration > 0 and next_stop.intendedArrival > 0 and sim_time > (next_stop.intendedArrival + next_stop.duration):
+                    delay_sec = sim_time - (next_stop.intendedArrival + next_stop.duration)
+                else:
+                    delay_sec = 0.0
+            else:
+                if next_stop.intendedArrival > 0 and sim_time > next_stop.intendedArrival:
+                    delay_sec = sim_time - next_stop.intendedArrival
+                elif next_stop.until > 0 and sim_time > next_stop.until:
+                    delay_sec = sim_time - next_stop.until
 
             # Distance to stop
             try:

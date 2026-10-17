@@ -150,9 +150,13 @@ class MultiAgentObservationBuilder:
             obs[11] = float(st.get("leader_speed", 0.0) / 33.33)
 
         # Platform status matrix (12..23: 6 binary occupancies + 6 dwell ratios)
-        plats_fw = STATION_PLATFORMS.get(city_name, {}).get("fw", [])
-        for p_idx in range(min(6, len(plats_fw))):
-            plat_edge = plats_fw[p_idx]
+        # Direction-aware platform alignment based on ego focus train's upcoming direction
+        plat_dir = "fw"
+        if focus_veh_id and focus_veh_id in train_states:
+            plat_dir = train_states[focus_veh_id].get("upcoming_direction", "fw")
+        plats = STATION_PLATFORMS.get(city_name, {}).get(plat_dir, [])
+        for p_idx in range(min(6, len(plats))):
+            plat_edge = plats[p_idx]
             is_occ = 0.0
             dwell_ratio = 0.0
             try:

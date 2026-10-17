@@ -3,12 +3,12 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 34.9,
+    "elapsed_sec": 33.1,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 50.11,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.1,
+    "mean_delay_sec": 45.02,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.4,
     "knock_on_events": 2,
     "actions_taken": 0,
     "applied_disruptions": [
@@ -30,14 +30,14 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 35.5,
+    "elapsed_sec": 33.5,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 49.17,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.2,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
     "knock_on_events": 2,
-    "actions_taken": 80,
+    "actions_taken": 78,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -49,7 +49,7 @@
     ],
     "action_breakdown": {
       "route_diversions": 0,
-      "platform_switches": 80,
+      "platform_switches": 78,
       "holds": 0
     }
   },
@@ -57,14 +57,14 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 35.5,
+    "elapsed_sec": 33.8,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 49.17,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.2,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
     "knock_on_events": 2,
-    "actions_taken": 80,
+    "actions_taken": 78,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -76,7 +76,7 @@
     ],
     "action_breakdown": {
       "route_diversions": 0,
-      "platform_switches": 80,
+      "platform_switches": 78,
       "holds": 0
     }
   },
@@ -84,14 +84,14 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Centralized_PPO",
-    "elapsed_sec": 39.9,
+    "elapsed_sec": 35.7,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 36.93,
-    "max_delay_sec": 594.0,
-    "punctuality_pct": 92.4,
-    "knock_on_events": 3,
-    "actions_taken": 152,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
+    "knock_on_events": 2,
+    "actions_taken": 143,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -102,8 +102,8 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 146,
+      "route_diversions": 105,
+      "platform_switches": 78,
       "holds": 6
     }
   },
@@ -111,14 +111,14 @@
     "scenario_id": "train_delay",
     "scenario_name": "Train Breakdown (600s Incident)",
     "dispatcher": "Decentralized_MAPPO",
-    "elapsed_sec": 44.7,
+    "elapsed_sec": 42.0,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 49.17,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.2,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
     "knock_on_events": 7,
-    "actions_taken": 24,
+    "actions_taken": 28,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -126,789 +126,789 @@
         "time": 22200.0,
         "duration": 600.0,
         "edge": "City_5_plat_1_fw"
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 24,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "platform_blockage",
-    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
-    "dispatcher": "Static_Baseline",
-    "elapsed_sec": 35.0,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.6,
-    "max_delay_sec": 216.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 0,
-    "applied_disruptions": [
-      {
-        "type": "platform_blockage",
-        "lane_id": "City_3_EW_plat_1_fw_0",
-        "orig_speed": 13.89,
-        "start_time": 22200.0,
-        "duration": 1800.0,
-        "reopened": true
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 0,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "platform_blockage",
-    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
-    "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 35.2,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.6,
-    "max_delay_sec": 216.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 51,
-    "applied_disruptions": [
-      {
-        "type": "platform_blockage",
-        "lane_id": "City_3_EW_plat_1_fw_0",
-        "orig_speed": 13.89,
-        "start_time": 22200.0,
-        "duration": 1800.0,
-        "reopened": true
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 51,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "platform_blockage",
-    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
-    "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 34.9,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.6,
-    "max_delay_sec": 216.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 51,
-    "applied_disruptions": [
-      {
-        "type": "platform_blockage",
-        "lane_id": "City_3_EW_plat_1_fw_0",
-        "orig_speed": 13.89,
-        "start_time": 22200.0,
-        "duration": 1800.0,
-        "reopened": true
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 51,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "platform_blockage",
-    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
-    "dispatcher": "Centralized_PPO",
-    "elapsed_sec": 37.7,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.56,
-    "max_delay_sec": 216.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 3,
-    "actions_taken": 69,
-    "applied_disruptions": [
-      {
-        "type": "platform_blockage",
-        "lane_id": "City_3_EW_plat_1_fw_0",
-        "orig_speed": 13.89,
-        "start_time": 22200.0,
-        "duration": 1800.0,
-        "reopened": true
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 63,
-      "holds": 6
-    }
-  },
-  {
-    "scenario_id": "platform_blockage",
-    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
-    "dispatcher": "Decentralized_MAPPO",
-    "elapsed_sec": 44.8,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.56,
-    "max_delay_sec": 216.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 7,
-    "actions_taken": 23,
-    "applied_disruptions": [
-      {
-        "type": "platform_blockage",
-        "lane_id": "City_3_EW_plat_1_fw_0",
-        "orig_speed": 13.89,
-        "start_time": 22200.0,
-        "duration": 1800.0,
-        "reopened": true
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 23,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "stochastic",
-    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
-    "dispatcher": "Static_Baseline",
-    "elapsed_sec": 35.9,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.79,
-    "max_delay_sec": 231.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 0,
-    "applied_disruptions": [
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-02",
-        "time": 21692.0,
-        "duration": 260,
-        "edge": "City_5_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-01",
-        "time": 21992.0,
-        "duration": 172,
-        "edge": "City_1_yard_6_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-04",
-        "time": 22293.0,
-        "duration": 336,
-        "edge": "City_1_yard_15_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-02",
-        "time": 24751.0,
-        "duration": 167,
-        "edge": "City_1_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-02",
-        "time": 24903.0,
-        "duration": 221,
-        "edge": "City_4_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-04",
-        "time": 25323.0,
-        "duration": 314,
-        "edge": "City_5_yard_4_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-03",
-        "time": 25611.0,
-        "duration": 296,
-        "edge": "City_1_yard_8_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "ALP-Rake-01",
-        "time": 25917.0,
-        "duration": 236,
-        "edge": "City_2_plat_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-01",
-        "time": 25929.0,
-        "duration": 445,
-        "edge": "City_1_yard_12_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-04",
-        "time": 26112.0,
-        "duration": 281,
-        "edge": "City_2_plat_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-03",
-        "time": 26552.0,
-        "duration": 410,
-        "edge": "City_1_yard_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-05",
-        "time": 27127.0,
-        "duration": 144,
-        "edge": "City_5_yard_5_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-04",
-        "time": 27423.0,
-        "duration": 394,
-        "edge": "City_1_yard_9_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-05",
-        "time": 27716.0,
-        "duration": 254,
-        "edge": "City_1_yard_16_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-01",
-        "time": 28504.0,
-        "duration": 440,
-        "edge": "City_4_yard_1_bw"
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 0,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "stochastic",
-    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
-    "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 36.0,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.79,
-    "max_delay_sec": 231.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 50,
-    "applied_disruptions": [
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-02",
-        "time": 21692.0,
-        "duration": 260,
-        "edge": "City_5_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-01",
-        "time": 21992.0,
-        "duration": 172,
-        "edge": "City_1_yard_6_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-04",
-        "time": 22293.0,
-        "duration": 336,
-        "edge": "City_1_yard_15_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-02",
-        "time": 24751.0,
-        "duration": 167,
-        "edge": "City_1_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-02",
-        "time": 24903.0,
-        "duration": 221,
-        "edge": "City_4_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-04",
-        "time": 25323.0,
-        "duration": 314,
-        "edge": "City_5_yard_4_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-03",
-        "time": 25611.0,
-        "duration": 296,
-        "edge": "City_1_yard_8_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "ALP-Rake-01",
-        "time": 25917.0,
-        "duration": 236,
-        "edge": "City_2_plat_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-01",
-        "time": 25929.0,
-        "duration": 445,
-        "edge": "City_1_yard_12_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-04",
-        "time": 26112.0,
-        "duration": 281,
-        "edge": "City_2_plat_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-03",
-        "time": 26552.0,
-        "duration": 410,
-        "edge": "City_1_yard_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-05",
-        "time": 27127.0,
-        "duration": 144,
-        "edge": "City_5_yard_5_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-04",
-        "time": 27423.0,
-        "duration": 394,
-        "edge": "City_1_yard_9_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-05",
-        "time": 27716.0,
-        "duration": 254,
-        "edge": "City_1_yard_16_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-01",
-        "time": 28504.0,
-        "duration": 440,
-        "edge": "City_4_yard_1_bw"
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 50,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "stochastic",
-    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
-    "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 35.9,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.79,
-    "max_delay_sec": 231.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 50,
-    "applied_disruptions": [
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-02",
-        "time": 21692.0,
-        "duration": 260,
-        "edge": "City_5_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-01",
-        "time": 21992.0,
-        "duration": 172,
-        "edge": "City_1_yard_6_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-04",
-        "time": 22293.0,
-        "duration": 336,
-        "edge": "City_1_yard_15_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-02",
-        "time": 24751.0,
-        "duration": 167,
-        "edge": "City_1_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-02",
-        "time": 24903.0,
-        "duration": 221,
-        "edge": "City_4_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-04",
-        "time": 25323.0,
-        "duration": 314,
-        "edge": "City_5_yard_4_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-03",
-        "time": 25611.0,
-        "duration": 296,
-        "edge": "City_1_yard_8_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "ALP-Rake-01",
-        "time": 25917.0,
-        "duration": 236,
-        "edge": "City_2_plat_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-01",
-        "time": 25929.0,
-        "duration": 445,
-        "edge": "City_1_yard_12_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-04",
-        "time": 26112.0,
-        "duration": 281,
-        "edge": "City_2_plat_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-03",
-        "time": 26552.0,
-        "duration": 410,
-        "edge": "City_1_yard_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-05",
-        "time": 27127.0,
-        "duration": 144,
-        "edge": "City_5_yard_5_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-04",
-        "time": 27423.0,
-        "duration": 394,
-        "edge": "City_1_yard_9_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-05",
-        "time": 27716.0,
-        "duration": 254,
-        "edge": "City_1_yard_16_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-01",
-        "time": 28504.0,
-        "duration": 440,
-        "edge": "City_4_yard_1_bw"
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 50,
-      "holds": 0
-    }
-  },
-  {
-    "scenario_id": "stochastic",
-    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
-    "dispatcher": "Centralized_PPO",
-    "elapsed_sec": 38.3,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.75,
-    "max_delay_sec": 231.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 2,
-    "actions_taken": 70,
-    "applied_disruptions": [
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-02",
-        "time": 21692.0,
-        "duration": 260,
-        "edge": "City_5_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-01",
-        "time": 21992.0,
-        "duration": 172,
-        "edge": "City_1_yard_6_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-04",
-        "time": 22293.0,
-        "duration": 336,
-        "edge": "City_1_yard_15_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-02",
-        "time": 24751.0,
-        "duration": 167,
-        "edge": "City_1_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-02",
-        "time": 24903.0,
-        "duration": 221,
-        "edge": "City_4_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-04",
-        "time": 25323.0,
-        "duration": 314,
-        "edge": "City_5_yard_4_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-03",
-        "time": 25611.0,
-        "duration": 296,
-        "edge": "City_1_yard_8_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "ALP-Rake-01",
-        "time": 25917.0,
-        "duration": 236,
-        "edge": "City_2_plat_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-01",
-        "time": 25929.0,
-        "duration": 445,
-        "edge": "City_1_yard_12_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-04",
-        "time": 26112.0,
-        "duration": 281,
-        "edge": "City_2_plat_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-03",
-        "time": 26552.0,
-        "duration": 410,
-        "edge": "City_1_yard_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-05",
-        "time": 27127.0,
-        "duration": 144,
-        "edge": "City_5_yard_5_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-04",
-        "time": 27423.0,
-        "duration": 394,
-        "edge": "City_1_yard_9_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-05",
-        "time": 27716.0,
-        "duration": 254,
-        "edge": "City_1_yard_16_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-01",
-        "time": 28504.0,
-        "duration": 440,
-        "edge": "City_4_yard_1_bw"
-      }
-    ],
-    "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 64,
-      "holds": 6
-    }
-  },
-  {
-    "scenario_id": "stochastic",
-    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
-    "dispatcher": "Decentralized_MAPPO",
-    "elapsed_sec": 45.1,
-    "steps_simulated": 480,
-    "peak_active_trains": 15,
-    "mean_delay_sec": 6.75,
-    "max_delay_sec": 231.0,
-    "punctuality_pct": 99.9,
-    "knock_on_events": 7,
-    "actions_taken": 26,
-    "applied_disruptions": [
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-02",
-        "time": 21692.0,
-        "duration": 260,
-        "edge": "City_5_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-01",
-        "time": 21992.0,
-        "duration": 172,
-        "edge": "City_1_yard_6_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-04",
-        "time": 22293.0,
-        "duration": 336,
-        "edge": "City_1_yard_15_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-02",
-        "time": 24751.0,
-        "duration": 167,
-        "edge": "City_1_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-02",
-        "time": 24903.0,
-        "duration": 221,
-        "edge": "City_4_yard_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-04",
-        "time": 25323.0,
-        "duration": 314,
-        "edge": "City_5_yard_4_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-03",
-        "time": 25611.0,
-        "duration": 296,
-        "edge": "City_1_yard_8_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "ALP-Rake-01",
-        "time": 25917.0,
-        "duration": 236,
-        "edge": "City_2_plat_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-01",
-        "time": 25929.0,
-        "duration": 445,
-        "edge": "City_1_yard_12_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-04",
-        "time": 26112.0,
-        "duration": 281,
-        "edge": "City_2_plat_2_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "HS-Rake-03",
-        "time": 26552.0,
-        "duration": 410,
-        "edge": "City_1_yard_3_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C2-05",
-        "time": 27127.0,
-        "duration": 144,
-        "edge": "City_5_yard_5_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C1-04",
-        "time": 27423.0,
-        "duration": 394,
-        "edge": "City_1_yard_9_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-C4-05",
-        "time": 27716.0,
-        "duration": 254,
-        "edge": "City_1_yard_16_bw"
-      },
-      {
-        "type": "stochastic_delay",
-        "train_id": "REG-XFER-01",
-        "time": 28504.0,
-        "duration": 440,
-        "edge": "City_4_yard_1_bw"
       }
     ],
     "action_breakdown": {
       "route_diversions": 0,
       "platform_switches": 26,
+      "holds": 2
+    }
+  },
+  {
+    "scenario_id": "platform_blockage",
+    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
+    "dispatcher": "Static_Baseline",
+    "elapsed_sec": 32.6,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 2.97,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 0,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 22200.0,
+        "duration": 1800.0,
+        "reopened": true
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
       "holds": 0
+    }
+  },
+  {
+    "scenario_id": "platform_blockage",
+    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
+    "dispatcher": "FIFO_Heuristic",
+    "elapsed_sec": 32.8,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 2.97,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 44,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 22200.0,
+        "duration": 1800.0,
+        "reopened": true
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 44,
+      "holds": 0
+    }
+  },
+  {
+    "scenario_id": "platform_blockage",
+    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "elapsed_sec": 32.7,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 2.97,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 44,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 22200.0,
+        "duration": 1800.0,
+        "reopened": true
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 44,
+      "holds": 0
+    }
+  },
+  {
+    "scenario_id": "platform_blockage",
+    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
+    "dispatcher": "Centralized_PPO",
+    "elapsed_sec": 35.1,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 2.97,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 50,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 22200.0,
+        "duration": 1800.0,
+        "reopened": true
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 16,
+      "platform_switches": 44,
+      "holds": 6
+    }
+  },
+  {
+    "scenario_id": "platform_blockage",
+    "scenario_name": "Platform Closure (1800s Hub Shutdown)",
+    "dispatcher": "Decentralized_MAPPO",
+    "elapsed_sec": 41.8,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 2.97,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 7,
+    "actions_taken": 20,
+    "applied_disruptions": [
+      {
+        "type": "platform_blockage",
+        "lane_id": "City_3_EW_plat_1_fw_0",
+        "orig_speed": 13.89,
+        "start_time": 22200.0,
+        "duration": 1800.0,
+        "reopened": true
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 18,
+      "holds": 2
+    }
+  },
+  {
+    "scenario_id": "stochastic",
+    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
+    "dispatcher": "Static_Baseline",
+    "elapsed_sec": 33.5,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 3.07,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 0,
+    "applied_disruptions": [
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-02",
+        "time": 21692.0,
+        "duration": 260,
+        "edge": "City_5_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-01",
+        "time": 21992.0,
+        "duration": 172,
+        "edge": "City_1_yard_6_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-04",
+        "time": 22293.0,
+        "duration": 336,
+        "edge": "City_1_yard_15_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-02",
+        "time": 24751.0,
+        "duration": 167,
+        "edge": "City_1_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-02",
+        "time": 24903.0,
+        "duration": 221,
+        "edge": "City_4_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-04",
+        "time": 25323.0,
+        "duration": 314,
+        "edge": "City_5_yard_4_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-03",
+        "time": 25611.0,
+        "duration": 296,
+        "edge": "City_1_yard_8_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "ALP-Rake-01",
+        "time": 25917.0,
+        "duration": 236,
+        "edge": "City_2_plat_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-01",
+        "time": 25929.0,
+        "duration": 445,
+        "edge": "City_1_yard_12_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-04",
+        "time": 26112.0,
+        "duration": 281,
+        "edge": "City_2_plat_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-03",
+        "time": 26552.0,
+        "duration": 410,
+        "edge": "City_1_yard_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-05",
+        "time": 27127.0,
+        "duration": 144,
+        "edge": "City_5_yard_5_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-04",
+        "time": 27423.0,
+        "duration": 394,
+        "edge": "City_1_yard_9_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-05",
+        "time": 27716.0,
+        "duration": 254,
+        "edge": "City_1_yard_16_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-01",
+        "time": 28504.0,
+        "duration": 440,
+        "edge": "City_4_yard_1_bw"
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 0,
+      "holds": 0
+    }
+  },
+  {
+    "scenario_id": "stochastic",
+    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
+    "dispatcher": "FIFO_Heuristic",
+    "elapsed_sec": 33.7,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 3.07,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 42,
+    "applied_disruptions": [
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-02",
+        "time": 21692.0,
+        "duration": 260,
+        "edge": "City_5_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-01",
+        "time": 21992.0,
+        "duration": 172,
+        "edge": "City_1_yard_6_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-04",
+        "time": 22293.0,
+        "duration": 336,
+        "edge": "City_1_yard_15_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-02",
+        "time": 24751.0,
+        "duration": 167,
+        "edge": "City_1_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-02",
+        "time": 24903.0,
+        "duration": 221,
+        "edge": "City_4_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-04",
+        "time": 25323.0,
+        "duration": 314,
+        "edge": "City_5_yard_4_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-03",
+        "time": 25611.0,
+        "duration": 296,
+        "edge": "City_1_yard_8_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "ALP-Rake-01",
+        "time": 25917.0,
+        "duration": 236,
+        "edge": "City_2_plat_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-01",
+        "time": 25929.0,
+        "duration": 445,
+        "edge": "City_1_yard_12_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-04",
+        "time": 26112.0,
+        "duration": 281,
+        "edge": "City_2_plat_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-03",
+        "time": 26552.0,
+        "duration": 410,
+        "edge": "City_1_yard_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-05",
+        "time": 27127.0,
+        "duration": 144,
+        "edge": "City_5_yard_5_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-04",
+        "time": 27423.0,
+        "duration": 394,
+        "edge": "City_1_yard_9_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-05",
+        "time": 27716.0,
+        "duration": 254,
+        "edge": "City_1_yard_16_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-01",
+        "time": 28504.0,
+        "duration": 440,
+        "edge": "City_4_yard_1_bw"
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 42,
+      "holds": 0
+    }
+  },
+  {
+    "scenario_id": "stochastic",
+    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
+    "dispatcher": "Priority_Greedy_Heuristic",
+    "elapsed_sec": 33.7,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 3.07,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 42,
+    "applied_disruptions": [
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-02",
+        "time": 21692.0,
+        "duration": 260,
+        "edge": "City_5_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-01",
+        "time": 21992.0,
+        "duration": 172,
+        "edge": "City_1_yard_6_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-04",
+        "time": 22293.0,
+        "duration": 336,
+        "edge": "City_1_yard_15_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-02",
+        "time": 24751.0,
+        "duration": 167,
+        "edge": "City_1_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-02",
+        "time": 24903.0,
+        "duration": 221,
+        "edge": "City_4_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-04",
+        "time": 25323.0,
+        "duration": 314,
+        "edge": "City_5_yard_4_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-03",
+        "time": 25611.0,
+        "duration": 296,
+        "edge": "City_1_yard_8_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "ALP-Rake-01",
+        "time": 25917.0,
+        "duration": 236,
+        "edge": "City_2_plat_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-01",
+        "time": 25929.0,
+        "duration": 445,
+        "edge": "City_1_yard_12_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-04",
+        "time": 26112.0,
+        "duration": 281,
+        "edge": "City_2_plat_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-03",
+        "time": 26552.0,
+        "duration": 410,
+        "edge": "City_1_yard_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-05",
+        "time": 27127.0,
+        "duration": 144,
+        "edge": "City_5_yard_5_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-04",
+        "time": 27423.0,
+        "duration": 394,
+        "edge": "City_1_yard_9_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-05",
+        "time": 27716.0,
+        "duration": 254,
+        "edge": "City_1_yard_16_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-01",
+        "time": 28504.0,
+        "duration": 440,
+        "edge": "City_4_yard_1_bw"
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 42,
+      "holds": 0
+    }
+  },
+  {
+    "scenario_id": "stochastic",
+    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
+    "dispatcher": "Centralized_PPO",
+    "elapsed_sec": 35.6,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 3.07,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 2,
+    "actions_taken": 48,
+    "applied_disruptions": [
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-02",
+        "time": 21692.0,
+        "duration": 260,
+        "edge": "City_5_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-01",
+        "time": 21992.0,
+        "duration": 172,
+        "edge": "City_1_yard_6_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-04",
+        "time": 22293.0,
+        "duration": 336,
+        "edge": "City_1_yard_15_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-02",
+        "time": 24751.0,
+        "duration": 167,
+        "edge": "City_1_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-02",
+        "time": 24903.0,
+        "duration": 221,
+        "edge": "City_4_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-04",
+        "time": 25323.0,
+        "duration": 314,
+        "edge": "City_5_yard_4_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-03",
+        "time": 25611.0,
+        "duration": 296,
+        "edge": "City_1_yard_8_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "ALP-Rake-01",
+        "time": 25917.0,
+        "duration": 236,
+        "edge": "City_2_plat_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-01",
+        "time": 25929.0,
+        "duration": 445,
+        "edge": "City_1_yard_12_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-04",
+        "time": 26112.0,
+        "duration": 281,
+        "edge": "City_2_plat_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-03",
+        "time": 26552.0,
+        "duration": 410,
+        "edge": "City_1_yard_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-05",
+        "time": 27127.0,
+        "duration": 144,
+        "edge": "City_5_yard_5_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-04",
+        "time": 27423.0,
+        "duration": 394,
+        "edge": "City_1_yard_9_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-05",
+        "time": 27716.0,
+        "duration": 254,
+        "edge": "City_1_yard_16_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-01",
+        "time": 28504.0,
+        "duration": 440,
+        "edge": "City_4_yard_1_bw"
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 15,
+      "platform_switches": 42,
+      "holds": 6
+    }
+  },
+  {
+    "scenario_id": "stochastic",
+    "scenario_name": "Fleet Surge (15% Stochastic Dwell)",
+    "dispatcher": "Decentralized_MAPPO",
+    "elapsed_sec": 42.5,
+    "steps_simulated": 480,
+    "peak_active_trains": 15,
+    "mean_delay_sec": 3.07,
+    "max_delay_sec": 195.0,
+    "punctuality_pct": 100.0,
+    "knock_on_events": 7,
+    "actions_taken": 23,
+    "applied_disruptions": [
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-02",
+        "time": 21692.0,
+        "duration": 260,
+        "edge": "City_5_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-01",
+        "time": 21992.0,
+        "duration": 172,
+        "edge": "City_1_yard_6_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-04",
+        "time": 22293.0,
+        "duration": 336,
+        "edge": "City_1_yard_15_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-02",
+        "time": 24751.0,
+        "duration": 167,
+        "edge": "City_1_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-02",
+        "time": 24903.0,
+        "duration": 221,
+        "edge": "City_4_yard_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-04",
+        "time": 25323.0,
+        "duration": 314,
+        "edge": "City_5_yard_4_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-03",
+        "time": 25611.0,
+        "duration": 296,
+        "edge": "City_1_yard_8_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "ALP-Rake-01",
+        "time": 25917.0,
+        "duration": 236,
+        "edge": "City_2_plat_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-01",
+        "time": 25929.0,
+        "duration": 445,
+        "edge": "City_1_yard_12_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-04",
+        "time": 26112.0,
+        "duration": 281,
+        "edge": "City_2_plat_2_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "HS-Rake-03",
+        "time": 26552.0,
+        "duration": 410,
+        "edge": "City_1_yard_3_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C2-05",
+        "time": 27127.0,
+        "duration": 144,
+        "edge": "City_5_yard_5_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C1-04",
+        "time": 27423.0,
+        "duration": 394,
+        "edge": "City_1_yard_9_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-C4-05",
+        "time": 27716.0,
+        "duration": 254,
+        "edge": "City_1_yard_16_bw"
+      },
+      {
+        "type": "stochastic_delay",
+        "train_id": "REG-XFER-01",
+        "time": 28504.0,
+        "duration": 440,
+        "edge": "City_4_yard_1_bw"
+      }
+    ],
+    "action_breakdown": {
+      "route_diversions": 0,
+      "platform_switches": 21,
+      "holds": 2
     }
   },
   {
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Static_Baseline",
-    "elapsed_sec": 35.2,
+    "elapsed_sec": 32.3,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 50.11,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.1,
+    "mean_delay_sec": 45.02,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.4,
     "knock_on_events": 2,
     "actions_taken": 0,
     "applied_disruptions": [
@@ -938,14 +938,14 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "FIFO_Heuristic",
-    "elapsed_sec": 35.7,
+    "elapsed_sec": 33.7,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 49.17,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.2,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
     "knock_on_events": 2,
-    "actions_taken": 80,
+    "actions_taken": 78,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -965,7 +965,7 @@
     ],
     "action_breakdown": {
       "route_diversions": 0,
-      "platform_switches": 80,
+      "platform_switches": 78,
       "holds": 0
     }
   },
@@ -973,14 +973,14 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Priority_Greedy_Heuristic",
-    "elapsed_sec": 35.7,
+    "elapsed_sec": 33.4,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 49.17,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.2,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
     "knock_on_events": 2,
-    "actions_taken": 80,
+    "actions_taken": 78,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -1000,7 +1000,7 @@
     ],
     "action_breakdown": {
       "route_diversions": 0,
-      "platform_switches": 80,
+      "platform_switches": 78,
       "holds": 0
     }
   },
@@ -1008,14 +1008,14 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Centralized_PPO",
-    "elapsed_sec": 39.4,
+    "elapsed_sec": 35.5,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 36.93,
-    "max_delay_sec": 594.0,
-    "punctuality_pct": 92.4,
-    "knock_on_events": 3,
-    "actions_taken": 152,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
+    "knock_on_events": 2,
+    "actions_taken": 143,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -1034,8 +1034,8 @@
       }
     ],
     "action_breakdown": {
-      "route_diversions": 0,
-      "platform_switches": 146,
+      "route_diversions": 105,
+      "platform_switches": 78,
       "holds": 6
     }
   },
@@ -1043,14 +1043,14 @@
     "scenario_id": "compound",
     "scenario_name": "Compound Failure (Breakdown + Blockage)",
     "dispatcher": "Decentralized_MAPPO",
-    "elapsed_sec": 44.8,
+    "elapsed_sec": 42.3,
     "steps_simulated": 480,
     "peak_active_trains": 15,
-    "mean_delay_sec": 49.17,
-    "max_delay_sec": 691.0,
-    "punctuality_pct": 90.2,
+    "mean_delay_sec": 44.14,
+    "max_delay_sec": 585.0,
+    "punctuality_pct": 90.5,
     "knock_on_events": 7,
-    "actions_taken": 24,
+    "actions_taken": 28,
     "applied_disruptions": [
       {
         "type": "train_delay",
@@ -1070,8 +1070,8 @@
     ],
     "action_breakdown": {
       "route_diversions": 0,
-      "platform_switches": 24,
-      "holds": 0
+      "platform_switches": 26,
+      "holds": 2
     }
   }
 ]

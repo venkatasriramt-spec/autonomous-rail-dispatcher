@@ -252,7 +252,7 @@ class MAPPODispatcher:
 
             # Rule 3: Dynamic open platform resolution when Platform 1 is blocked/staging
             assigned_is_blocked = (plat_act <= 1) or (plat_act > 1 and obs[12 + plat_act - 1] > 0.5)
-            if (day == "Sun" or (is_critical_approach and assigned_is_blocked)) and obs[12] > 0.5:
+            if is_critical_approach and (day == "Sun" or assigned_is_blocked) and obs[12] > 0.5:
                 # Platform 1 is blocked or turnaround staged; route to first open platform
                 found_open = False
                 for p_idx in range(1, 6):
@@ -262,6 +262,9 @@ class MAPPODispatcher:
                         break
                 if not found_open:
                     plat_act = 0
+            elif not (day == "Sun") and obs[12] <= 0.5:
+                # Default platform is free and unblocked; maintain nominal timetable routing
+                plat_act = 0
             elif plat_act > 0:
                 # Don't route to an already-occupied platform
                 target_plat_idx = plat_act - 1

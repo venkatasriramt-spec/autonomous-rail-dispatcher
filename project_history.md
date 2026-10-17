@@ -625,38 +625,38 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 
 | Day | Services | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | Decentralized MAPPO | Peak Central / MAPPO Punc | Interventions (Central / MAPPO) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Mon** | 232 | 198.65s (max 11181s) | 40.16s (max 11211s) | 40.16s (max 11211s) | **57.06s** (max 11150s) | 2230.15s (max 38024s) | 98.1% / 77.3% | 2,310 / 122 |
-| **Tue** | 233 | 229.29s (max 14785s) | 91.12s (max 14723s) | 91.12s (max 14723s) | **10.85s** (max 3727s)  | 1823.56s (max 25608s) | **99.5%** / 82.1% | 1,239 / 127 |
-| **Wed** | 229 | 184.72s (max 14890s) | 197.65s (max 25446s) | 197.65s (max 25446s) | **53.83s** (max 8887s)  | 1749.34s (max 25608s) | 98.0% / 82.6% | 2,015 / 135 |
-| **Thu** | 235 | 198.58s (max 11181s) | 40.11s (max 11211s) | 40.11s (max 11211s) | **57.01s** (max 11150s) | 2251.95s (max 38024s) | 98.1% / 77.0% | 2,057 / 121 |
-| **Fri** | 231 | 229.31s (max 14785s) | 91.06s (max 14723s) | 91.06s (max 14723s) | **10.86s** (max 3727s)  | 1749.34s (max 25608s) | **99.5%** / 82.6% | 1,427 / 126 |
-| **Sat** | 145 | 354.88s (max 21985s) | 80.59s (max 14723s) | 80.59s (max 14723s) | 80.52s (max 14723s) | **0.13s** (max 166s)    | 98.9% / **100.0%** | 1,855 / 7 |
-| **Sun** | 141 | 236.16s (max 21969s) | 148.45s (max 17964s) | 148.45s (max 17964s) | 8.87s (max 2793s)   | **0.22s** (max 249s)    | 99.4% / **100.0%** | 1,770 / 175 |
+| **Mon** | 232 | 198.65s (max 11181s) | 40.16s (max 11211s) | 40.16s (max 11211s) | **71.41s** (max 11207s) | 165.04s (max 18344s) | 96.2% / 94.9% | 871 / 405 |
+| **Tue** | 233 | 229.29s (max 14785s) | 91.12s (max 14723s) | 91.12s (max 14723s) | **34.99s** (max 3875s)  | 263.52s (max 21939s) | **96.2%** / 93.5% | 861 / 406 |
+| **Wed** | 229 | 184.72s (max 14890s) | 197.65s (max 25446s) | 197.65s (max 25446s) | **31.50s** (max 3875s)  | 258.46s (max 21939s) | 96.8% / 94.1% | 827 / 396 |
+| **Thu** | 235 | 198.58s (max 11181s) | 40.11s (max 11211s) | 40.11s (max 11211s) | **75.77s** (max 11207s) | 171.78s (max 18344s) | 95.4% / 94.1% | 929 / 409 |
+| **Fri** | 231 | 229.31s (max 14785s) | 91.06s (max 14723s) | 91.06s (max 14723s) | **31.48s** (max 3875s)  | 258.45s (max 21939s) | 96.8% / 94.1% | 820 / 390 |
+| **Sat** | 145 | 354.88s (max 21985s) | 80.59s (max 14723s) | 80.59s (max 14723s) | **28.03s** (max 1426s)  | 289.97s (max 21939s) | 96.5% / 93.5% | 881 / 225 |
+| **Sun** | 141 | 236.16s (max 21969s) | 148.45s (max 17964s) | 148.45s (max 17964s) | **32.14s** (max 3887s)  | 127.38s (max 7444s)  | 97.0% / 94.2% | 1,144 / 200 |
 
-*(Note on Wed/Fri: Despite differing service counts (229 on Wednesday vs. 231 on Friday), under MAPPO's regularized low-intervention policy the shared line bottleneck was encountered identically, producing matching mean delays of 1,749.34s, max delays of 25,608s, and 12,822 knock-ons with 135 actions on Wednesday and 126 actions on Friday, verified against `cross_comparison_24h.json`).*
+*(Note on Direction-Aware MAPPO: With direction-aware platform sensing and dwell delay calculation fixes, weekday delays are reduced by 84.3% from 1,400s down to 219.23s, with total knock-ons cut by 73.3% from 78,143 to 20,884 while maintaining a disciplined ~347 actions/day).*
 
 | Dispatcher Paradigm | Weekly Avg Mean Delay | Weekly Punctuality | Total Knock-on Events | Delay Reduction vs Static | Weekly Interventions |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Static Baseline** | 233.08s | 96.2% | 11,944 | Baseline | 0 |
 | **FIFO Heuristic** | 98.45s | 98.6% | 394 | +57.8% | 3,400 |
 | **Priority Greedy Heuristic** | 98.45s | 98.6% | 391 | +57.8% | 3,550 |
-| **Centralized PPO (Ours)** | **39.86s** | **98.8%** | **980** | **+82.9%** | 12,673 |
-| **Decentralized MAPPO (Ours)** | 1400.67s | 85.9% | 78,143 | -500.9% (Weekdays passive; Weekend masterclass: 0.13s–0.22s) | **813** |
+| **Centralized PPO (Ours)** | **43.62s** | **96.4%** | **321** | **+81.3%** | **6,333** |
+| **Decentralized MAPPO (Ours)** | 219.23s | 94.1% | 20,884 | +5.9% (84.3% delay cut vs prior unguided run) | **2,431** |
 
 3. **Peak Morning Disruption Stress-Testing Benchmark (20 Parallel Runs):**
    - Evaluated under 4 unplanned failure scenarios during the morning peak (06:00 to 08:00 AM, 480 macro-steps, 20 parallel runs):
 
 | Disruption Scenario | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | **Decentralized MAPPO** | MAPPO Punc | MAPPO Actions |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Train Breakdown (10m)** | 50.11s *(max 691s)* | 49.17s *(max 691s)* | 49.17s *(max 691s)* | 36.93s *(max 594s)* | **49.17s** *(max 691s)* | **90.2%** | **24** |
-| **Platform Closure (30m)** | 6.60s *(max 216s)* | 6.60s *(max 216s)* | 6.60s *(max 216s)* | 6.56s *(max 216s)* | **6.56s** *(max 216s)* | **99.9%** | **23** |
-| **Fleet Surge (15% Jitter)** | 6.79s *(max 231s)* | 6.79s *(max 231s)* | 6.79s *(max 231s)* | 6.75s *(max 231s)* | **6.75s** *(max 231s)* | **99.9%** | **26** |
-| **Compound Failure** | 50.11s *(max 691s)* | 49.17s *(max 691s)* | 49.17s *(max 691s)* | 36.93s *(max 594s)* | **49.17s** *(max 691s)* | **90.2%** | **24** |
+| **Train Breakdown (10m)** | 45.02s *(max 585s)* | 44.14s *(max 585s)* | 44.14s *(max 585s)* | 44.14s *(max 585s)* | **44.14s** *(max 585s)* | **90.5%** | **28** |
+| **Platform Closure (30m)** | 2.97s *(max 195s)* | 2.97s *(max 195s)* | 2.97s *(max 195s)* | 2.97s *(max 195s)* | **2.97s** *(max 195s)* | **100.0%** | **20** |
+| **Fleet Surge (15% Jitter)** | 3.07s *(max 195s)* | 3.07s *(max 195s)* | 3.07s *(max 195s)* | 3.07s *(max 195s)* | **3.07s** *(max 195s)* | **100.0%** | **23** |
+| **Compound Failure** | 45.02s *(max 585s)* | 44.14s *(max 585s)* | 44.14s *(max 585s)* | 44.14s *(max 585s)* | **44.14s** *(max 585s)* | **90.5%** | **28** |
 
 4. **Architectural Insights & Pareto Frontier Dynamics:**
    - **The Delay vs. Punctuality vs. Intervention Workload Trade-off:** The empirical comparison reveals the fundamental three-way trade-off in automated railway dispatching:
-     - **Centralized PPO** prioritizes delay minimization across the entire corridor, driving weekly delay down to 39.86s (+82.9% reduction) and punctuality to 98.8%, but incurs a high intervention rate (1,239 to 2,310 actions/day, totalling 12,673 actions/week).
-     - **Decentralized MAPPO** with action workload regularization operates with exceptional economy (813 actions/week, averaging ~116 actions/day). On weekends, it achieves near-zero delay (0.13s–0.22s, 100% punctuality, 7–175 actions). However, its conservative gating leads to weekday regression on complex mixed-traffic queues (1,749s–2,251s mean delay, 77.0%–82.6% punctuality, 78,143 knock-ons). Under acute morning disruptions where localized track blockages occur, MAPPO's station-master agents execute surgical platform switches to bypass the incident track: in the train breakdown and compound failure scenarios, MAPPO matches heuristic delay (49.17s) while reducing operator workload by 70% (24 vs 80 actions), while under platform closure (23 vs 51 actions, 6.56s delay) and fleet surge (26 vs 50 actions, 6.75s delay) it likewise maintains minimal intervention rates compared to heuristics.
+     - **Centralized PPO** prioritizes delay minimization across the entire corridor, driving weekly delay down to 43.62s (+81.3% reduction) and knock-on cascades down to 321 events (lowest across all models), with workload regularized to 6,333 actions/week (50.0% reduction from the previous 12.6k baseline).
+     - **Decentralized MAPPO** with action workload regularization operates with exceptional economy (2,431 actions/week, averaging ~347 actions/day). Direction-aware platform sensing resolves the previous weekday queue bottlenecks, bringing weekly mean delay down to 219.23s (down 84.3% from 1,400s) and knock-on events down to 20,884 (down 73.3%). Under acute morning disruptions where localized track blockages occur, MAPPO's station-master agents execute surgical platform switches to bypass the incident track: in the train breakdown and compound failure scenarios, MAPPO matches optimal delay (44.14s) while reducing operator workload by 64% vs heuristics (28 vs 78 actions) and 80% vs Centralized PPO (28 vs 143 actions), while under platform closure (20 vs 44–50 actions, 2.97s delay) and fleet surge (23 vs 42–48 actions, 3.07s delay) it maintains minimal intervention rates compared to all other models.
    - **Updated Visual Proofs Generated in [`dispatcher/logs/visual_proofs/`](dispatcher/logs/visual_proofs/):**
      - [`weekly_7day_delay_comparison.png`](dispatcher/logs/visual_proofs/weekly_7day_delay_comparison.png)
      - [`weekly_7day_knockon_cascades.png`](dispatcher/logs/visual_proofs/weekly_7day_knockon_cascades.png)
