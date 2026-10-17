@@ -633,7 +633,7 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 | **Sat** | 145 | 354.88s (max 21985s) | 80.59s (max 14723s) | 80.59s (max 14723s) | **28.03s** (max 1426s)  | 289.97s (max 21939s) | 96.5% / 93.5% | 881 / 225 |
 | **Sun** | 141 | 236.16s (max 21969s) | 148.45s (max 17964s) | 148.45s (max 17964s) | **32.14s** (max 3887s)  | 127.38s (max 7444s)  | 97.0% / 94.2% | 1,144 / 200 |
 
-*(Note on Direction-Aware MAPPO: With direction-aware platform sensing and dwell delay calculation fixes, weekday delays are reduced by 84.3% from 1,400s down to 219.23s, with total knock-ons cut by 73.3% from 78,143 to 20,884 while maintaining a disciplined ~347 actions/day).*
+*(Note on Direction-Aware MAPPO: With direction-aware platform sensing and dwell delay calculation fixes, Monday–Friday weekday average delay is reduced by 84.0% from 1,400s down to 223.45s (with a 219.23s seven-day average), and total knock-ons are cut by 73.3% from 78,143 to 20,884 while maintaining a disciplined ~347 actions/day).*
 
 | Dispatcher Paradigm | Weekly Avg Mean Delay | Weekly Punctuality | Total Knock-on Events | Delay Reduction vs Static | Weekly Interventions |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -641,7 +641,7 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 | **FIFO Heuristic** | 98.45s | 98.6% | 394 | +57.8% | 3,400 |
 | **Priority Greedy Heuristic** | 98.45s | 98.6% | 391 | +57.8% | 3,550 |
 | **Centralized PPO (Ours)** | **43.62s** | **96.4%** | **321** | **+81.3%** | **6,333** |
-| **Decentralized MAPPO (Ours)** | 219.23s | 94.1% | 20,884 | +5.9% (84.3% delay cut vs prior unguided run) | **2,431** |
+| **Decentralized MAPPO (Ours)** | 219.23s | 94.1% | 20,884 | +5.9% (84.0% weekday delay cut vs prior unguided run: 223.45s Mon–Fri) | **2,431** |
 
 3. **Peak Morning Disruption Stress-Testing Benchmark (20 Parallel Runs):**
    - Evaluated under 4 unplanned failure scenarios during the morning peak (06:00 to 08:00 AM, 480 macro-steps, 20 parallel runs):
@@ -656,7 +656,7 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 4. **Architectural Insights & Pareto Frontier Dynamics:**
    - **The Delay vs. Punctuality vs. Intervention Workload Trade-off:** The empirical comparison reveals the fundamental three-way trade-off in automated railway dispatching:
      - **Centralized PPO** prioritizes delay minimization across the entire corridor, driving weekly delay down to 43.62s (+81.3% reduction) and knock-on cascades down to 321 events (lowest across all models), with workload regularized to 6,333 actions/week (50.0% reduction from the previous 12.6k baseline).
-     - **Decentralized MAPPO** with action workload regularization operates with exceptional economy (2,431 actions/week, averaging ~347 actions/day). Direction-aware platform sensing resolves the previous weekday queue bottlenecks, bringing weekly mean delay down to 219.23s (down 84.3% from 1,400s) and knock-on events down to 20,884 (down 73.3%). Under acute morning disruptions where localized track blockages occur, MAPPO's station-master agents execute surgical platform switches to bypass the incident track: in the train breakdown and compound failure scenarios, MAPPO matches optimal delay (44.14s) while reducing operator workload by 64% vs heuristics (28 vs 78 actions) and 80% vs Centralized PPO (28 vs 143 actions), while under platform closure (20 vs 44–50 actions, 2.97s delay) and fleet surge (23 vs 42–48 actions, 3.07s delay) it maintains minimal intervention rates compared to all other models.
+     - **Decentralized MAPPO** with action workload regularization operates with exceptional economy (2,431 actions/week, averaging ~347 actions/day). Direction-aware platform sensing resolves the previous weekday queue bottlenecks, bringing weekly seven-day average delay down to 219.23s (Monday–Friday weekday average down 84.0% to 223.45s) and knock-on events down to 20,884 (down 73.3%). Under acute morning disruptions where localized track blockages occur, MAPPO's station-master agents execute surgical actions (18–26 platform switches across 20–28 actions) to bypass the incident track: in the train breakdown and compound failure scenarios, MAPPO matches optimal delay (44.14s) while reducing operator workload by 64% vs heuristics (28 vs 78 actions) and 80% vs Centralized PPO (28 vs 143 actions), while under platform closure (20 actions, 18 switches vs 44–50 actions, 2.97s delay) and fleet surge (23 actions, 21 switches vs 42–48 actions, 3.07s delay) it maintains minimal intervention rates compared to all other models.
    - **Updated Visual Proofs Generated in [`dispatcher/logs/visual_proofs/`](dispatcher/logs/visual_proofs/):**
      - [`weekly_7day_delay_comparison.png`](dispatcher/logs/visual_proofs/weekly_7day_delay_comparison.png)
      - [`weekly_7day_knockon_cascades.png`](dispatcher/logs/visual_proofs/weekly_7day_knockon_cascades.png)

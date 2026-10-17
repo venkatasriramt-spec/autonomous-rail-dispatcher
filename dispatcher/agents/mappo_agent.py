@@ -193,12 +193,35 @@ class MAPPODispatcher:
         actions = {}
         day = info.get("day") if (info and isinstance(info, dict)) else None
 
+        sched_indices = (
+            info.get("agent_scheduled_platform_indices", {})
+            if (info and isinstance(info, dict))
+            else {}
+        )
+        sched_occupied_map = (
+            info.get("agent_scheduled_platform_occupied", {})
+            if (info and isinstance(info, dict))
+            else {}
+        )
+
         for aid in MARL_AGENT_IDS:
             obs = obs_dict.get(aid, np.zeros(STATION_OBS_DIM if aid.startswith("station_") else CORRIDOR_OBS_DIM))
 
             if aid.startswith("station_"):
+                sched_idx = sched_indices.get(aid, 0)
+                is_sched_occ = sched_occupied_map.get(aid, None)
+                if is_sched_occ is None and info and isinstance(info, dict):
+                    if "scheduled_platform_idx" in info and info["scheduled_platform_idx"] is not None:
+                        sched_idx = int(info["scheduled_platform_idx"])
+                    if "scheduled_platform_occupied" in info:
+                        is_sched_occ = bool(info["scheduled_platform_occupied"])
+
                 # Station Agent Decision
-                plat_act, hold_act = self._decide_station_action(aid, obs, day, deterministic)
+                plat_act, hold_act = self._decide_station_action(
+                    aid, obs, day, deterministic,
+                    sched_plat_idx=sched_idx,
+                    sched_plat_occupied=is_sched_occ
+                )
                 actions[aid] = np.array([plat_act, hold_act], dtype=np.int64)
             else:
                 # Corridor Agent Decision
@@ -212,10 +235,14 @@ class MAPPODispatcher:
         aid: str,
         obs: np.ndarray,
         day: Optional[str],
-        deterministic: bool
+        deterministic: bool,
+        sched_plat_idx: int = 0,
+        sched_plat_occupied: Optional[bool] = None
     ) -> Tuple[int, int]:
         DELAY_THRESHOLD = 0.05
         is_critical_approach = (0.05 < obs[6] < 0.60)
+        sched_feat = 12 + sched_plat_idx if (0 <= sched_plat_idx < 6) else 12
+        sched_is_occupied = (obs[sched_feat] > 0.5) if sched_plat_occupied is None else sched_plat_occupied
 
         # Frontier 1: Dispatch-by-Exception Gating
         # In real-world rail operations, trains run on scheduled nominal routes by default.
@@ -226,8 +253,8 @@ class MAPPODispatcher:
             is_at_stop = obs[7] > 0.5
             is_leader_tight = (obs[10] < 0.25 and obs[10] > 0.0)
 
-            # Check if station throat has tight leader or active platform conflict
-            has_throat_conflict = is_leader_tight or (is_critical_approach and obs[12] > 0.5)
+            # Check if station throat has tight leader or active platform conflict on scheduled platform
+            has_throat_conflict = is_leader_tight or (is_critical_approach and sched_is_occupied)
 
             # If the consist is on-time with clear track ahead and no conflict, leave on nominal schedule
             if not has_train or (not has_delay and not is_at_stop and not has_throat_conflict):
@@ -250,26 +277,30 @@ class MAPPODispatcher:
             if hold_act > 0 and (not is_ontime or not is_leader_tight):
                 hold_act = 0
 
-            # Rule 3: Dynamic open platform resolution when Platform 1 is blocked/staging
-            assigned_is_blocked = (plat_act <= 1) or (plat_act > 1 and obs[12 + plat_act - 1] > 0.5)
-            if is_critical_approach and (day == "Sun" or assigned_is_blocked) and obs[12] > 0.5:
-                # Platform 1 is blocked or turnaround staged; route to first open platform
+            # Rule 3: Dynamic open platform resolution when scheduled platform is blocked or Sunday turnaround buffer
+            assigned_is_blocked = (plat_act <= 0) or (plat_act > 0 and obs[12 + plat_act - 1] > 0.5)
+            if is_critical_approach and ((day == "Sun" and sched_plat_idx == 0 and obs[12] > 0.5) or (assigned_is_blocked and sched_is_occupied)):
+                # Scheduled platform is blocked or turnaround staged; route to first open platform
                 found_open = False
-                for p_idx in range(1, 6):
-                    if obs[12 + p_idx] < 0.5:
+                for p_idx in range(6):
+                    if p_idx != sched_plat_idx and obs[12 + p_idx] < 0.5:
                         plat_act = p_idx + 1
                         found_open = True
                         break
                 if not found_open:
                     plat_act = 0
-            elif not (day == "Sun") and obs[12] <= 0.5:
-                # Default platform is free and unblocked; maintain nominal timetable routing
+            elif not sched_is_occupied:
+                # Nominal scheduled platform is clear; preserve action 0
                 plat_act = 0
             elif plat_act > 0:
-                # Don't route to an already-occupied platform
+                # Scheduled platform is occupied and reallocation requested: ensure target platform is clear
                 target_plat_idx = plat_act - 1
-                if target_plat_idx < 6 and obs[12 + target_plat_idx] > 0.5:
+                if target_plat_idx == sched_plat_idx or (target_plat_idx < 6 and obs[12 + target_plat_idx] > 0.5):
                     plat_act = 0
+                    for p_idx in range(6):
+                        if p_idx != sched_plat_idx and obs[12 + p_idx] < 0.5:
+                            plat_act = p_idx + 1
+                            break
 
         return plat_act, hold_act
 

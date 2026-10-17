@@ -29,12 +29,27 @@ from dispatcher.agents.baseline_dispatchers import (
 class ModelAgentWrapper(BaseDispatcher):
     def __init__(self, model_path: str, name: str = "Trained_PPO_Dispatcher", exception_gating: bool = True, smart_interlocking: bool = True):
         super().__init__(name=name)
-        self.model = PPO.load(model_path)
+        self.model = PPO.load(model_path) if isinstance(model_path, str) else model_path
         self.exception_gating = exception_gating
         self.smart_interlocking = smart_interlocking
 
     def predict(self, observation: np.ndarray, info: Optional[Dict[str, Any]] = None) -> np.ndarray:
         obs_1d = observation.flatten()
+
+        # Frontier 1: Dispatch-by-Exception Gating
+        # Extract scheduled platform identity from info if available (defaulting to platform index 0 / feature 16)
+        sched_plat_idx = 0
+        if info and isinstance(info, dict):
+            if "scheduled_platform_idx" in info:
+                sched_plat_idx = int(info["scheduled_platform_idx"])
+            elif "scheduled_platform_edge" in info and info["scheduled_platform_edge"]:
+                edge_str = str(info["scheduled_platform_edge"])
+                if "_plat_" in edge_str:
+                    try:
+                        sched_plat_idx = int(edge_str.split("_plat_")[1].split("_")[0]) - 1
+                    except Exception:
+                        sched_plat_idx = 0
+        sched_feat = 16 + sched_plat_idx * 2 if (0 <= sched_plat_idx < 6) else 16
 
         # Frontier 1: Dispatch-by-Exception Gating
         # In real-world rail operations, trains run on scheduled nominal routes by default.
@@ -44,10 +59,12 @@ class ModelAgentWrapper(BaseDispatcher):
             is_leader_close = obs_1d[11] < 0.40           # Leader consist within 1200m
             is_overtake_candidate = obs_1d[14] > 0.50     # Slower train ahead to overtake
             is_station_approach = obs_1d[15] > 0.50       # Approaching a scheduled station
-            default_plat_occupied = obs_1d[16] > 0.50 if is_station_approach else False
+            sched_plat_occupied = (obs_1d[sched_feat] > 0.50) if is_station_approach else False
+            if is_station_approach and info and isinstance(info, dict) and info.get("scheduled_platform_occupied"):
+                sched_plat_occupied = True
 
             # If the consist is on-time with clear track ahead and no conflict, leave on nominal schedule
-            if not (has_train_delay or is_leader_close or is_overtake_candidate or default_plat_occupied):
+            if not (has_train_delay or is_leader_close or is_overtake_candidate or sched_plat_occupied):
                 return np.array([0, 0, 0])
 
         action, _ = self.model.predict(observation, deterministic=True)
@@ -66,25 +83,32 @@ class ModelAgentWrapper(BaseDispatcher):
                 if not (is_leader_tight and is_ontime):
                     h_act = 0
 
-            # Rule 3: Intelligent platform resolution (only when approaching station and default platform is occupied)
+            # Rule 3: Intelligent platform resolution (only when approaching station)
             if obs_1d[15] > 0.50:
                 current_day = info.get("day") if (info and isinstance(info, dict)) else None
+                # Check whether the nominal scheduled platform is free
+                is_free = (obs_1d[sched_feat] <= 0.50) and not (
+                    info and isinstance(info, dict) and info.get("scheduled_platform_occupied", False)
+                )
                 # On Sunday, platform 1 at hub stations is reserved for turnaround staging buffers
-                if current_day == "Sun" and obs_1d[16] > 0.50:
-                    for p_idx in range(1, 6):
-                        if obs_1d[16 + p_idx * 2] < 0.50:
-                            p_act = p_idx + 1
-                            break
-                elif p_act > 0:
-                    # If default platform is free, leave train on its scheduled platform
-                    if obs_1d[16] <= 0.50:
-                        p_act = 0
-                    else:
-                        # Default platform is occupied: ensure target platform is actually free
+                is_sunday_buffer = (current_day == "Sun" and obs_1d[16] > 0.50 and sched_plat_idx == 0)
+
+                if is_free and not is_sunday_buffer:
+                    # Scheduled platform is clear: preserve action 0 as keeping the scheduled stop
+                    p_act = 0
+                else:
+                    # Scheduled platform is occupied (or Sunday turnaround buffer): search for an available alternate
+                    target_valid = False
+                    if p_act > 0 and p_act != (sched_plat_idx + 1):
                         target_feat = 16 + (p_act - 1) * 2
-                        if target_feat < 28 and obs_1d[target_feat] > 0.50:
-                            p_act = 0
-                            for p_idx in range(1, 6):
+                        if target_feat < 28 and obs_1d[target_feat] <= 0.50:
+                            target_valid = True
+
+                    if not target_valid:
+                        # Exclude the scheduled platform from candidates and assign an available alternate
+                        p_act = 0
+                        for p_idx in range(6):
+                            if p_idx != sched_plat_idx and (16 + p_idx * 2) < 28:
                                 if obs_1d[16 + p_idx * 2] < 0.50:
                                     p_act = p_idx + 1
                                     break

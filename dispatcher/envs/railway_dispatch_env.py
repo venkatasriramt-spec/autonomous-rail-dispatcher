@@ -366,6 +366,13 @@ class RailwayDispatchEnv(gym.Env):
         ontime_count = sum(1 for d in all_delays if d <= 180.0)
         punctuality = (ontime_count / max(1, len(all_delays))) * 100.0
         focus_state = self.train_states.get(self.focus_veh_id, {}) if self.focus_veh_id else {}
+        sched_plat_edge = focus_state.get("scheduled_platform_edge")
+        sched_plat_idx = 0
+        if sched_plat_edge and "_plat_" in str(sched_plat_edge):
+            try:
+                sched_plat_idx = int(str(sched_plat_edge).split("_plat_")[1].split("_")[0]) - 1
+            except Exception:
+                sched_plat_idx = 0
 
         return {
             "sim_time": self.sim_time,
@@ -378,6 +385,8 @@ class RailwayDispatchEnv(gym.Env):
             "teleports": getattr(self, "total_teleports", 0),
             "focus_vehicle": self.focus_veh_id,
             "day": self.day,
+            "scheduled_platform_edge": sched_plat_edge,
+            "scheduled_platform_idx": sched_plat_idx,
             "scheduled_platform_occupied": focus_state.get("scheduled_platform_occupied", False),
             "applied_actions_count": len(self.action_handler.action_history),
             "action_nonzero": getattr(self, "last_action_is_nonzero", False),

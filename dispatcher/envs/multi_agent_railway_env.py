@@ -97,10 +97,13 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
         self.agent_focus_trains = focus_dict
 
         day = global_info.get("day", getattr(self, "day", "all"))
+        sched_indices, sched_occ = self._get_agent_platform_info()
         info = {
             "day": day,
             "global_info": global_info,
-            "focus_trains": dict(self.agent_focus_trains)
+            "focus_trains": dict(self.agent_focus_trains),
+            "agent_scheduled_platform_indices": sched_indices,
+            "agent_scheduled_platform_occupied": sched_occ
         }
         return obs_dict, info
 
@@ -273,6 +276,7 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
         terminated_dict["__all__"] = terminated_flag
         truncated_dict["__all__"] = truncated_flag
 
+        sched_indices, sched_occ = self._get_agent_platform_info()
         info_dict = {
             "day": getattr(self, "day", "all"),
             "mean_delay_sec": mean_delay,
@@ -282,7 +286,26 @@ class MultiAgentRailwayEnv(RailwayDispatchEnv):
             "active_trains": len(self.train_states),
             "step_knock_ons": step_knock_ons,
             "agent_actions": agent_actions_summary,
-            "focus_trains": dict(self.agent_focus_trains)
+            "focus_trains": dict(self.agent_focus_trains),
+            "agent_scheduled_platform_indices": sched_indices,
+            "agent_scheduled_platform_occupied": sched_occ
         }
 
         return obs_dict, reward_dict, terminated_dict, truncated_dict, info_dict
+
+    def _get_agent_platform_info(self) -> Tuple[Dict[str, int], Dict[str, bool]]:
+        sched_plat_indices = {}
+        sched_plat_occupied = {}
+        for aid, vid in getattr(self, "agent_focus_trains", {}).items():
+            if vid and vid in self.train_states:
+                st = self.train_states[vid]
+                edge = st.get("scheduled_platform_edge")
+                idx = 0
+                if edge and "_plat_" in str(edge):
+                    try:
+                        idx = int(str(edge).split("_plat_")[1].split("_")[0]) - 1
+                    except Exception:
+                        idx = 0
+                sched_plat_indices[aid] = idx
+                sched_plat_occupied[aid] = bool(st.get("scheduled_platform_occupied", False))
+        return sched_plat_indices, sched_plat_occupied

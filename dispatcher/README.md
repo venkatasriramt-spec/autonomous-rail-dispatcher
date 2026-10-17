@@ -161,7 +161,7 @@ Evaluated across all 7 calendar days (Monday through Sunday, 00:00 to 24:00 dail
 * **Secondary Knock-On Delay Cascades:** Slashed from **11,944 events** (Static) down to **321 events** under Centralized PPO (**97.3% cascade elimination** across the entire week, lowest among all models). Decentralized MAPPO achieved **20,884 events** (a 73.3% reduction from the previous 78k unguided run) while requiring only **347 actions/day** (~2,431 actions/week).
 
 ### D. Peak Disruption Stress-Testing Benchmark (5-Model Comparison)
-Evaluated across 4 simultaneous operational failure modes during the morning commuter peak (06:00 to 09:00 AM, 720 macro-steps, 20 parallel runs):
+Evaluated across four separate operational scenarios during the morning commuter peak (06:00 to 08:00 AM, 480 macro-steps, 20 parallel runs):
 
 | Disruption Scenario | Static Baseline | FIFO Heuristic | Priority Greedy | Centralized PPO | **Decentralized MAPPO** | MAPPO Punctuality | MAPPO Actions | Leadership |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
@@ -170,7 +170,7 @@ Evaluated across 4 simultaneous operational failure modes during the morning com
 | **Fleet Surge (15% Jitter)** | 3.07s *(max 195s)* | 3.07s *(max 195s)* | 3.07s *(max 195s)* | 3.07s *(max 195s)* | **3.07s** *(max 195s)* | **100.0%** | **23** | **MAPPO & Central PPO achieve lowest delay (3.07s); MAPPO cuts actions to 23 vs 42–48** |
 | **Compound Failure** | 45.02s *(max 585s)* | 44.14s *(max 585s)* | 44.14s *(max 585s)* | 44.14s *(max 585s)* | **44.14s** *(max 585s)* | **90.5%** | **28** | **MAPPO matches optimal delay with 64% fewer actions than heuristics (28 vs 78)** |
 
-*(Note: In localized morning disruptions with identical applied incident locations, Decentralized MAPPO executes 20–28 surgical platform switches to bypass blocked tracks without unnecessary corridor-wide intervention, reducing operator actions by 64% compared to heuristics (28 vs 78) and 80% compared to Centralized PPO (28 vs 143 actions)).*
+*(Note: In localized morning disruptions with identical applied incident locations, Decentralized MAPPO executes 20–28 surgical actions (18–26 platform switches, 2 holds) to bypass blocked tracks without unnecessary corridor-wide intervention, reducing operator actions by 64% compared to heuristics (28 vs 78) and 80% compared to Centralized PPO (28 vs 143 actions) in breakdown and compound scenarios).*
 
 ### E. Frontier 3: Multi-Agent Reinforcement Learning (MARL / MAPPO) Benchmark
 Evaluated during peak morning commuter operations (06:00 to 07:00 AM, 240 steps) under Centralized Training with Decentralized Execution (CTDE) partitioning the corridor into **7 autonomous control agents** (6 Station-Master Interlocking Controllers + 1 Corridor Line Controller) trained across 8 parallel SUMO workers on multi-core CPU:
