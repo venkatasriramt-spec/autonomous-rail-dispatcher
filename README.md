@@ -61,8 +61,11 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 │   │   ├── action_handler.py       # Microscopic execution (reroute, replaceStop, resume)
 │   │   └── reward_engine.py        # Multi-class priority & secondary delay formulation
 │   ├── agents/                   # Dispatcher policies & benchmark heuristics
-│   │   ├── baseline_dispatchers.py # Static (no-op), FIFO, and Priority heuristic agents
-│   │   └── mappo_agent.py          # Multi-Agent PPO actor-critic architectures (PyTorch)
+│   │   ├── baseline_dispatchers.py # Static (no-op), FIFO, and Priority heuristic controllers
+│   │   ├── mappo_agent.py          # Multi-Agent PPO actor-critic architectures (PyTorch)
+│   │   ├── multi_train_ppo.py      # Concurrent multi-train centralized PPO controller
+│   │   ├── comm_mappo_agent.py     # Communicative MAPPO with inter-agent message passing
+│   │   └── hybrid_dispatcher.py    # Hierarchical Lookahead Ensemble (Tiers 1–3)
 │   ├── scenarios/                # Controlled disruption & perturbation generators
 │   │   └── perturbations.py        # Mechanical breakdowns, platform blockages, stochastic delays
 │   ├── training/                 # Deep RL training infrastructure
@@ -79,9 +82,9 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 │   │   ├── audit_marl_comparison.py # Multi-agent MARL vs Centralized PPO empirical benchmark
 │   │   ├── visualizer.py           # Publication-ready Matplotlib chart generator (disruption)
 │   │   ├── visualize_stress_test.py # Publication-ready chart generator (stress testing)
-│   │   ├── visualize_weekly_audit.py # Publication-ready chart generator (7-day 24h audits)
+│   │   ├── visualize_weekly_audit.py # Publication-ready 8-model visualizer (7-day 24h audits)
 │   │   ├── visualize_marl.py       # 4-panel MARL vs Centralized comparative visualizer
-│   │   ├── audit_cross_comparison_24h.py # 42-run weekly cross-comparison pipeline (all 7 days × 6 models)
+│   │   ├── audit_cross_comparison_24h.py # Authoritative 56-run weekly benchmarking engine (all 7 days × 8 models)
 │   │   ├── audit_full_day_parallel.py # 7-day continuous fleet evaluation
 │   │   ├── audit_weekly_calendar.py # Weekday vs weekend morning peak audit
 │   │   ├── audit_stress_testing.py # Multi-scenario stress benchmark (delays & blockages)
@@ -114,12 +117,16 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 - *For detailed trains documentation, see [trains/README.md](trains/README.md).*
 
 ### C. Autonomous Dispatcher AI Subsystem (`dispatcher/`)
-- **Tri-Factor Traffic Management (TMS):** Combines dynamic rerouting (Alpine Passing Loop siding overtakes, High-Speed Bypass), real-time platform track assignment at multi-track city hubs, and departure dispatch holding.
-- **Deep Reinforcement Learning (PPO & MAPPO):** Compact continuous observation vectors with discrete multi-agent action spaces trained on multi-core CPU.
+- **Tri-Factor Traffic Management (TMS):** Combines dynamic rerouting (Alpine Passing Loop siding overtakes, High-Speed Bypass), real-time platform track assignment at multi-track city hubs, and departure dispatch holding with safety guardrails (siding reservations, duplicate stop suppression, and vehicle-level bypass adaptation).
+- **Deep Reinforcement Learning (PPO, MAPPO, & Hybrids):** Compact continuous observation vectors with discrete single-agent, multi-train, communicative multi-agent, and hierarchical ensemble action spaces trained on multi-core CPU.
 - **Production Guardrails (Frontiers 1 & 2):** Dispatch-by-Exception action gating cuts redundant actions by **48.8%**; Smart Interlocking platform calibration drops Sunday delay from 185s to **8.87s** and Tuesday/Friday delays to **10.8s**.
-- **Decentralized Interlocking Paradigm (Frontier 3 - Trained Multi-Agent MAPPO):** Centralized Training with Decentralized Execution (CTDE) partitioning the corridor into 7 autonomous control agents (6 station-masters + 1 corridor line controller) trained through a 102.4k-step multi-wave diurnal curriculum across 16 parallel SUMO workers with an explicit action workload penalty.
-- **Comprehensive 6-Model 7-Day Cross-Comparison:** Benchmarked across all 1,446 weekly train runs in 42 parallel 24-hour simulations: Trained PPO leads fleet punctuality at **98.79%** (mean delay **39.86s**); Centralized PPO achieves **48.34s** mean delay with regularized operator workload (**4,897 weekly actions**, a 61.4% reduction vs Trained PPO); Decentralized MAPPO operates with surgical economy at only **407 total weekly actions** (~58 actions/day, 96.8% lower operator workload than Trained PPO) while maintaining **94.54%** punctuality; baseline heuristics achieve 46.89s–50.07s; and Static baseline averages 236.20s.
-- **Automated Pipeline:** Full end-to-end multi-stage training and cross-comparison verification automated via [`dispatcher/training/train_and_benchmark_all.py`](dispatcher/training/train_and_benchmark_all.py).
+- **Decentralized Interlocking & Communication (Frontiers 3 & 4):** Centralized Training with Decentralized Execution (CTDE) partitioning the network into 7 autonomous control agents (6 station-masters + 1 corridor line controller). Comm-MAPPO adds inter-agent continuous message passing and vehicle-level platform locking, cutting action churn by **90.4%** (1,095 actions vs 11,449 actions).
+- **Authoritative 8-Model 7-Day Cross-Comparison (56 Parallel 24-Hour Runs):** Benchmarked across all 1,446 weekly train runs in 56 parallel 24-hour simulations (11,568 simulated train journeys):
+  - **Hierarchical Hybrid Lookahead Ensemble** and **Priority Greedy** achieve top-tier performance, matching the lowest weekly mean delay (**46.89s**) and highest punctuality (**96.7%** / 96.58% weighted) with 913 knock-ons.
+  - **Centralized PPO** establishes the Pareto optimum for operator workload: matching heuristic delays (**50.07s**) and 96.3% punctuality with an **89.2% reduction in dispatcher actions** (only **649 weekly actions** vs 5,792–6,004 for heuristics).
+  - **Multi-Train PPO** executes concurrent multi-consist dispatching (71.80s delay, 2,577 actions).
+  - **Static Baseline** averages 236.20s delay with 10,878 knock-on events.
+- **Automated Pipeline:** Full multi-wave curriculum retraining and 8-model cross-comparison verification automated via [`dispatcher/training/train_and_benchmark_all.py`](dispatcher/training/train_and_benchmark_all.py).
 
 - *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
 
@@ -206,7 +213,7 @@ python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.z
 # Frontier 3: Multi-Agent MARL vs Centralized PPO empirical benchmark:
 python3 dispatcher/evaluation/audit_marl_comparison.py
 
-# Run full 7-day 24-hour microscopic cross-comparison audit (7 days × 6 dispatchers = 42 parallel runs):
+# Run full 7-day 24-hour microscopic cross-comparison audit (7 days × 8 dispatchers = 56 parallel runs):
 python3 dispatcher/evaluation/audit_cross_comparison_24h.py
 
 # Run peak morning disruption stress-test benchmark (4 failure scenarios):

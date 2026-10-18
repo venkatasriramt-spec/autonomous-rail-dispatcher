@@ -24,7 +24,7 @@ dispatcher/logs/
 ## Detailed File & Script Mapping
 
 ### 1. Training Runs & TensorBoard Logs (`dispatcher/logs/tensorboard/`)
-* **Generating Script:** [`dispatcher/training/train.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/train.py) or [`dispatcher/training/retrain_500k.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/retrain_500k.py)
+* **Generating Script:** [`dispatcher/training/train.py`](../training/train.py) or [`dispatcher/training/retrain_500k.py`](../training/retrain_500k.py)
 * **Contents:** Subdirectories `PPO_1`, `PPO_2`, ..., `PPO_25`, etc.
 * **Tracked Metrics:**
   * `train/loss`, `train/value_loss`, `train/policy_gradient_loss`, `train/entropy_loss`
@@ -44,9 +44,9 @@ dispatcher/logs/
 
 | File Name | Generating Script | CLI Command | Description |
 | :--- | :--- | :--- | :--- |
-| **`cross_comparison_24h.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Runs 56 parallel 24-hour simulations (7 days × 8 dispatchers: Static Baseline, FIFO Heuristic, Priority Greedy Heuristic, Centralized PPO, Multi-Train Centralized PPO, Decentralized MAPPO, Comm-MAPPO, and Hierarchical Hybrid Ensemble). Compares mean delay, max delay, punctuality, knock-ons, and intervention counts across every day of the week. |
-| **`cross_comparison_24h_pre_fix.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Historical baseline audit snapshot preserving pre-fix 24-hour evaluation metrics across all 7 days prior to platform reallocation logic centralization and dwell calculation fixes. |
-| **`full_day_weekly_audit.json`** | [`dispatcher/evaluation/audit_full_day_parallel.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_full_day_parallel.py) | `python3 dispatcher/evaluation/audit_full_day_parallel.py` | Evaluates 7-day continuous fleet operations under nominal timetable traffic. |
+| **`cross_comparison_24h.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](../evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Runs 56 parallel 24-hour simulations (7 days × 8 dispatchers: Static Baseline, FIFO Heuristic, Priority Greedy Heuristic, Centralized PPO, Multi-Train Centralized PPO, Decentralized MAPPO, Comm-MAPPO, and Hierarchical Hybrid Ensemble). Compares mean delay, max delay, punctuality, knock-ons, and intervention counts across every day of the week. |
+| **`cross_comparison_24h_pre_fix.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](../evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Historical baseline audit snapshot preserving pre-fix 24-hour evaluation metrics across all 7 days prior to platform reallocation logic centralization and dwell calculation fixes. |
+| **`full_day_weekly_audit.json`** | [`dispatcher/evaluation/audit_full_day_parallel.py`](../evaluation/audit_full_day_parallel.py) | `python3 dispatcher/evaluation/audit_full_day_parallel.py` | Evaluates 7-day continuous fleet operations under nominal timetable traffic. |
 
 ---
 
@@ -54,9 +54,9 @@ dispatcher/logs/
 
 | File Name | Generating Script | CLI Command | Description |
 | :--- | :--- | :--- | :--- |
-| **`weekly_calendar_audit.json`** | [`dispatcher/evaluation/audit_weekly_calendar.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_weekly_calendar.py) | `python3 dispatcher/evaluation/audit_weekly_calendar.py` | 1-hour morning rush evaluation (07:00–08:00) comparing PPO vs Static baseline across all 7 calendar days. |
-| **`option1_saturday_eval.json`** | [`dispatcher/training/train_multiday_option1.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/train_multiday_option1.py) | `python3 dispatcher/training/train_multiday_option1.py` | Saturday nominal leisure timetable evaluation verifying absence of artificial holds. |
-| **`saturday_eval.json`** | [`dispatcher/evaluation/evaluate.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/evaluate.py) | `python3 dispatcher/evaluation/evaluate.py --disruption none` | Saturday baseline timetable audit. |
+| **`weekly_calendar_audit.json`** | [`dispatcher/evaluation/audit_weekly_calendar.py`](../evaluation/audit_weekly_calendar.py) | `python3 dispatcher/evaluation/audit_weekly_calendar.py` | 1-hour morning rush evaluation (07:00–08:00) comparing PPO vs Static baseline across all 7 calendar days. |
+| **`option1_saturday_eval.json`** | [`dispatcher/training/train_multiday_option1.py`](../training/train_multiday_option1.py) | `python3 dispatcher/training/train_multiday_option1.py` | Saturday nominal leisure timetable evaluation verifying absence of artificial holds. |
+| **`saturday_eval.json`** | [`dispatcher/evaluation/evaluate.py`](../evaluation/evaluate.py) | `python3 dispatcher/evaluation/evaluate.py --disruption none` | Saturday baseline timetable audit. |
 
 ---
 
@@ -64,9 +64,9 @@ dispatcher/logs/
 
 | File Name | Generating Script | CLI Command | Description |
 | :--- | :--- | :--- | :--- |
-| **`benchmark_results.json`** | [`dispatcher/evaluation/evaluate.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/evaluate.py) | `python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay` | 1-hour morning rush disruption benchmark comparing Static, FIFO, Priority Greedy, and PPO under a 420-second train delay perturbation. |
-| **`retrained_500k_disruption_benchmark.json`** | [`dispatcher/training/retrain_500k.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/retrain_500k.py) | `python3 dispatcher/training/retrain_500k.py` | Automated post-training verification benchmark produced upon completing the 500,000-step curriculum. |
-| **`option1_disruption_eval.json`** | [`dispatcher/training/train_multiday_option1.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/training/train_multiday_option1.py) | `python3 dispatcher/training/train_multiday_option1.py` | Knock-on delay mitigation audit under synthetic delay injection on the 242-run composite fleet. |
+| **`benchmark_results.json`** | [`dispatcher/evaluation/evaluate.py`](../evaluation/evaluate.py) | `python3 dispatcher/evaluation/evaluate.py --model dispatcher/models/best_model.zip --disruption train_delay` | 1-hour morning rush disruption benchmark comparing Static, FIFO, Priority Greedy, and PPO under a 420-second train delay perturbation. |
+| **`retrained_500k_disruption_benchmark.json`** | [`dispatcher/training/retrain_500k.py`](../training/retrain_500k.py) | `python3 dispatcher/training/retrain_500k.py` | Automated post-training verification benchmark produced upon completing the 500,000-step curriculum. |
+| **`option1_disruption_eval.json`** | [`dispatcher/training/train_multiday_option1.py`](../training/train_multiday_option1.py) | `python3 dispatcher/training/train_multiday_option1.py` | Knock-on delay mitigation audit under synthetic delay injection on the 242-run composite fleet. |
 
 ---
 
@@ -74,9 +74,9 @@ dispatcher/logs/
 
 | File Name | Generating Script | CLI Command | Description |
 | :--- | :--- | :--- | :--- |
-| **`stress_testing_benchmark.json`** | [`dispatcher/evaluation/audit_stress_testing.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_stress_testing.py) | `python3 dispatcher/evaluation/audit_stress_testing.py` | Multi-scenario stress audit comparing models under platform blockages, cascading primary delays, and stochastic delays. |
-| **`stress_phase_A_24h.json`** | [`dispatcher/evaluation/audit_stress_24h_all_days.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_stress_24h_all_days.py) | `python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase A` | 24-hour simulation across all 7 days with persistent peak-hour primary train delay perturbations. |
-| **`stress_phase_B_24h.json`** | [`dispatcher/evaluation/audit_stress_24h_all_days.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_stress_24h_all_days.py) | `python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase B` | 24-hour simulation across all 7 days under major city platform corridor blockages. |
+| **`stress_testing_benchmark.json`** | [`dispatcher/evaluation/audit_stress_testing.py`](../evaluation/audit_stress_testing.py) | `python3 dispatcher/evaluation/audit_stress_testing.py` | Multi-scenario stress audit comparing models under platform blockages, cascading primary delays, and stochastic delays. |
+| **`stress_phase_A_24h.json`** | [`dispatcher/evaluation/audit_stress_24h_all_days.py`](../evaluation/audit_stress_24h_all_days.py) | `python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase A` | 24-hour simulation across all 7 days with persistent peak-hour primary train delay perturbations. |
+| **`stress_phase_B_24h.json`** | [`dispatcher/evaluation/audit_stress_24h_all_days.py`](../evaluation/audit_stress_24h_all_days.py) | `python3 dispatcher/evaluation/audit_stress_24h_all_days.py --phase B` | 24-hour simulation across all 7 days under major city platform corridor blockages. |
 
 ---
 
@@ -84,7 +84,7 @@ dispatcher/logs/
 
 | File Name | Generating Script | CLI Command | Description |
 | :--- | :--- | :--- | :--- |
-| **`marl_vs_centralized_benchmark.json`** | [`dispatcher/evaluation/audit_marl_comparison.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_marl_comparison.py) | `python3 dispatcher/evaluation/audit_marl_comparison.py` | Peak morning commuter comparison benchmarking Decentralized MAPPO (7 agents) vs Centralized PPO vs FIFO vs Static baseline across delays, action counts, and telemetry bandwidth. |
+| **`marl_vs_centralized_benchmark.json`** | [`dispatcher/evaluation/audit_marl_comparison.py`](../evaluation/audit_marl_comparison.py) | `python3 dispatcher/evaluation/audit_marl_comparison.py` | Peak morning commuter comparison benchmarking Decentralized MAPPO (7 agents) vs Centralized PPO vs FIFO vs Static baseline across delays, action counts, and telemetry bandwidth. |
 
 ---
 
@@ -93,7 +93,7 @@ dispatcher/logs/
 This directory contains **13 publication-ready, high-resolution (150–200 DPI) visualization artifacts** tracking network performance across disruption benchmarks, stress testing, 7-day 24-hour diurnal timelines, and multi-agent comparisons.
 
 #### Group A: Disruption Benchmark Visual Proofs
-* **Generating Script:** [`dispatcher/evaluation/visualizer.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualizer.py)
+* **Generating Script:** [`dispatcher/evaluation/visualizer.py`](../evaluation/visualizer.py)
 * **Command:** `python3 dispatcher/evaluation/visualizer.py --json dispatcher/logs/evaluations/disruption_benchmarks/benchmark_results.json --output-dir dispatcher/logs/visual_proofs`
 * **Artifacts:**
   * **`benchmark_delay_comparison.png`**: High-resolution bar chart comparing Mean Delay and Max Delay across Static, FIFO, Priority Greedy, and Trained PPO Dispatchers.
@@ -101,7 +101,7 @@ This directory contains **13 publication-ready, high-resolution (150–200 DPI) 
   * **`benchmark_punctuality_knockon.png`**: Multi-panel visualization comparing Schedule Punctuality (<3m delay) and Secondary Knock-On delay event suppression (100% elimination).
 
 #### Group B: Peak Morning Disruption Stress-Testing Visual Proofs
-* **Generating Script:** [`dispatcher/evaluation/visualize_stress_test.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_stress_test.py)
+* **Generating Script:** [`dispatcher/evaluation/visualize_stress_test.py`](../evaluation/visualize_stress_test.py)
 * **Command:** `python3 dispatcher/evaluation/visualize_stress_test.py --json dispatcher/logs/evaluations/stress_tests/stress_testing_benchmark.json --output-dir dispatcher/logs/visual_proofs`
 * **Artifacts:**
   * **`stress_test_delay_comparison.png`**: Comparative bar chart evaluating Mean Delay across the 4 stress scenarios (10-min Train Breakdown, 30-min Hub Platform Closure, 15% Fleet Dwell Jitter, and Compound Failure).
@@ -109,7 +109,7 @@ This directory contains **13 publication-ready, high-resolution (150–200 DPI) 
   * **`stress_test_punctuality.png`**: Schedule punctuality retention rates (%) under simultaneous rolling-stock and platform failures.
 
 #### Group C: Full 7-Day 24-Hour Diurnal & Calendar Visual Proofs (All 8 Models)
-* **Generating Script:** [`dispatcher/evaluation/visualize_weekly_audit.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_weekly_audit.py)
+* **Generating Script:** [`dispatcher/evaluation/visualize_weekly_audit.py`](../evaluation/visualize_weekly_audit.py)
 * **Command:** `python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs`
 * **Artifacts:**
   * **`weekly_7day_delay_comparison.png`**: Day-by-day (Monday through Sunday) delay comparison bar chart across all 8 models (Static, FIFO, Priority Greedy, Centralized PPO, Multi-Train PPO, Decentralized MAPPO, Comm-MAPPO, and Hierarchical Hybrid Ensemble).
@@ -120,7 +120,7 @@ This directory contains **13 publication-ready, high-resolution (150–200 DPI) 
   * **`model_efficiency_tradeoff.png`**: Action-efficiency trade-off scatter plot plotting Weekly Mean Delay (s) vs Total Actions Taken across all dispatcher models.
 
 #### Group D: Multi-Agent MARL vs Centralized PPO Visual Proofs
-* **Generating Script:** [`dispatcher/evaluation/visualize_marl.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_marl.py)
+* **Generating Script:** [`dispatcher/evaluation/visualize_marl.py`](../evaluation/visualize_marl.py)
 * **Command:** `python3 dispatcher/evaluation/visualize_marl.py`
 * **Artifacts:**
   * **`marl_vs_centralized_comparison.png`**: 4-panel publication-grade comparison of Mean Delay, Max Peak Delay, Control Action Interventions (Concurrency), and Telemetry Transmission Bandwidth.
