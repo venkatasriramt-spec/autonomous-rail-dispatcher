@@ -289,7 +289,8 @@ def main():
         print(f"[!] Error: Main model checkpoint not found at {MODEL_PATH}")
         sys.exit(1)
 
-    if "Decentralized_MAPPO" in selected_dispatchers and not os.path.exists(MAPPO_MODEL_PATH):
+    requires_mappo = any(d in selected_dispatchers for d in ("Decentralized_MAPPO", "Hierarchical_Hybrid", "Hierarchical_Hybrid_Ensemble"))
+    if requires_mappo and not os.path.exists(MAPPO_MODEL_PATH):
         print(f"[!] Error: MAPPO model checkpoint not found at {MAPPO_MODEL_PATH}")
         sys.exit(1)
 
@@ -317,7 +318,7 @@ def main():
 
     total_time = time.time() - t0
 
-    # Step 3: Save full JSON report (merging with existing baseline data if present)
+    # Step 3: Save full JSON report (merging by disruption, day, and dispatcher)
     os.makedirs(LOGS_DIR, exist_ok=True)
     out_json = args.output_json or os.path.join(LOGS_DIR, "cross_comparison_24h.json")
     existing_results = []
@@ -328,9 +329,9 @@ def main():
         except Exception:
             pass
 
-    merged_map = {(r["day"], r["dispatcher"]): r for r in existing_results}
+    merged_map = {(r.get("disruption", "none"), r["day"], r["dispatcher"]): r for r in existing_results}
     for r in results:
-        merged_map[(r["day"], r["dispatcher"])] = r
+        merged_map[(r.get("disruption", "none"), r["day"], r["dispatcher"])] = r
     final_results = list(merged_map.values())
 
     with open(out_json, "w") as f:
@@ -341,36 +342,48 @@ def main():
     print(f"Detailed results saved to: {out_json}")
     print("=" * 95)
 
-    # Organize results by Day
-    day_map = {d: {} for d in DAYS}
-    for r in final_results:
-        day_map[r["day"]][r["dispatcher"]] = r
+    # Keep current audit summary separate from records loaded from the output file.
+    # Group results by the requested run and disruption mode, deduplicating by (day, dispatcher).
+    unique_run_results = {}
+    for r in results:
+        if r.get("disruption", "none") == args.disruption:
+            key = (r["day"], r["dispatcher"])
+            unique_run_results[key] = r
+    current_run_results = list(unique_run_results.values())
 
-    all_audited_dispatchers = [d for d in DISPATCHER_TYPES if any(r["dispatcher"] == d for r in final_results)]
+    day_map = {d: {} for d in selected_days}
+    for r in current_run_results:
+        if r["day"] in day_map:
+            day_map[r["day"]][r["dispatcher"]] = r
 
-    # Step 4: Print Full Weekly Cross-Comparison Table
+    all_audited_dispatchers = [d for d in selected_dispatchers if any(r["dispatcher"] == d for r in current_run_results)]
+
+    # Step 4: Print Cross-Comparison Table for Current Audit Run
     print("\n" + "=" * 115)
+    print(f"CURRENT RUN AUDIT SUMMARY (Disruption Mode: {args.disruption.upper()}):")
+    print("-" * 115)
     print(f"{'Day':<5} | {'Dispatcher Model':<28} | {'Mean Delay':<11} | {'Max Delay':<10} | {'Punctuality':<12} | {'Knock-ons':<11} | {'Interventions'}")
     print("-" * 115)
-    for day in DAYS:
+    for day in selected_days:
         for disp in all_audited_dispatchers:
             if disp in day_map[day]:
                 r = day_map[day][disp]
                 print(f"{day:<5} | {disp:<28} | {r['mean_delay_sec']:>7.2f}s   | {r['max_delay_sec']:>7.1f}s  | {r['punctuality_pct']:>8.1f}%   | {r['knock_on_events']:>9}   | {r['actions_taken']:>6}")
         print("-" * 115)
 
-    # Step 5: Print Global Weekly Summary
+    # Step 5: Print Global Summary for Current Audit Run
     print("\n" + "=" * 105)
-    print("GLOBAL WEEKLY AGGREGATE SUMMARY (Averaged Across All 7 Days of the Week):")
+    print(f"GLOBAL AUDIT AGGREGATE SUMMARY (Averaged Across Requested Days | Disruption: {args.disruption.upper()}):")
     print("=" * 105)
     print(f"{'Dispatcher Model':<28} | {'Avg Mean Delay':<15} | {'Avg Punctuality':<16} | {'Total Weekly Knock-ons':<24} | {'Delay Reduction'}")
     print("-" * 105)
 
     model_aggregates = {}
     static_avg_delay = 0.0
+    static_baseline_ran = False
 
     for disp in all_audited_dispatchers:
-        disp_results = [r for r in final_results if r["dispatcher"] == disp]
+        disp_results = [r for r in current_run_results if r["dispatcher"] == disp]
         if not disp_results:
             continue
         avg_mean_del = float(np.mean([r["mean_delay_sec"] for r in disp_results]))
@@ -383,12 +396,16 @@ def main():
         }
         if disp == "Static_Baseline":
             static_avg_delay = avg_mean_del
+            static_baseline_ran = True
 
     for disp, agg in model_aggregates.items():
-        red_str = "Baseline"
-        if disp != "Static_Baseline" and static_avg_delay > 0:
+        if disp == "Static_Baseline":
+            red_str = "Baseline"
+        elif static_baseline_ran and static_avg_delay > 0:
             pct_red = ((static_avg_delay - agg["avg_delay"]) / static_avg_delay) * 100.0
             red_str = f"{pct_red:+.1f}%"
+        else:
+            red_str = "Unavailable"
         print(f"{disp:<28} | {agg['avg_delay']:>10.2f}s    | {agg['avg_punc']:>11.1f}%    | {agg['total_knockons']:>18}     | {red_str}")
     print("=" * 105)
 

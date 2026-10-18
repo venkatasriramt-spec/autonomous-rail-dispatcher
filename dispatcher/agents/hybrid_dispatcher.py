@@ -15,11 +15,14 @@ Synthesizes:
 import os
 import sys
 import numpy as np
+import logging
 from typing import Dict, Any, Optional
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 if ROOT_DIR not in sys.path:
     sys.path.insert(0, ROOT_DIR)
+
+logger = logging.getLogger(__name__)
 
 from dispatcher.agents.baseline_dispatchers import (
     BaseDispatcher,
@@ -36,6 +39,11 @@ from dispatcher.envs.marl_zones import (
 from dispatcher.evaluation.evaluate import ModelAgentWrapper
 from dispatcher.agents.mappo_agent import MAPPODispatcher
 
+try:
+    import traci
+except ImportError:
+    traci = None
+
 DEFAULT_PPO_PATH = os.path.join(ROOT_DIR, "dispatcher", "models", "best_model.zip")
 DEFAULT_MAPPO_PATH = os.path.join(ROOT_DIR, "dispatcher", "models", "mappo_interlocking.pt")
 
@@ -47,6 +55,46 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
     Supports both MultiAgentRailwayEnv (concurrent multi-agent execution)
     and RailwayDispatchEnv (single-agent focus vehicle execution).
     """
+
+    @staticmethod
+    def _is_siding_free(info: Optional[Dict[str, Any]] = None, focus_vid: str = "") -> bool:
+        """
+        Checks whether the Alpine passing loop siding is free of other trains.
+        Applies fail-safe behavior: returns False if occupancy cannot be verified.
+        """
+        if info and "siding_free" in info:
+            return bool(info["siding_free"])
+        if traci is None or not traci.isLoaded():
+            return False
+        try:
+            for edge_id in ("c3_Town_8_Town_9_loop_siding_fw", "c3_Town_8_Town_9_loop_siding_bw"):
+                vehs = traci.edge.getLastStepVehicleIDs(edge_id)
+                if any(v != focus_vid for v in vehs):
+                    return False
+            return True
+        except Exception as e:
+            logger.warning("TraCI error inspecting loop siding occupancy: %s", e)
+            return False
+
+    @staticmethod
+    def _is_bypass_free(info: Optional[Dict[str, Any]] = None, focus_vid: str = "") -> bool:
+        """
+        Checks whether the high-speed bypass chord is free of other trains.
+        Applies fail-safe behavior: returns False if occupancy cannot be verified.
+        """
+        if info and "bypass_free" in info:
+            return bool(info["bypass_free"])
+        if traci is None or not traci.isLoaded():
+            return False
+        try:
+            for edge_id in ("bypass_City_2_City_5_fw_b0", "bypass_City_2_City_5_bw_b0"):
+                vehs = traci.edge.getLastStepVehicleIDs(edge_id)
+                if any(v != focus_vid for v in vehs):
+                    return False
+                return True
+        except Exception as e:
+            logger.warning("TraCI error inspecting high-speed bypass occupancy: %s", e)
+            return False
     def __init__(
         self,
         ppo_model_path: str = DEFAULT_PPO_PATH,
@@ -199,6 +247,7 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
     ) -> np.ndarray:
         """
         Hierarchically fuses Macro PPO and Micro Interlocking & Priority Routing decisions in single-agent environment.
+        Combines macro_ppo with micro_mappo neural policies and physical guardrails.
         """
         obs_1d = observation.flatten()
 
@@ -216,23 +265,105 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
         is_overtake_cand = obs_1d[14] if len(obs_1d) > 14 else 0.0
         leader_prio = obs_1d[13] if len(obs_1d) > 13 else 0.0
         is_stopped = obs_1d[9] > 0.5 if len(obs_1d) > 9 else False
+        focus_vid = str(info_dict.get("focus_vehicle", ""))
+        sched_edge = str(info_dict.get("scheduled_platform_edge", ""))
+        is_c3_corridor = any(k in (focus_vid + sched_edge) for k in ("Town_8", "Town_9", "c3_", "68101", "68102", "68103", "12763", "12764", "12765"))
 
-        # Step 3: Priority-Guided Corridor Passing Loop & High-Speed Bypass Routing
+        # Step 3: Micro Policy & Priority-Guided Passing Loop / Bypass Routing
+        # Consult micro MAPPO corridor actor if available
+        if self.micro_mappo is not None and "corridor_trunk" in self.micro_mappo.actors:
+            corr_obs = np.zeros(CORRIDOR_OBS_DIM, dtype=np.float32)
+            corr_obs[0] = obs_1d[0] if len(obs_1d) > 0 else 0.0
+            corr_obs[1] = obs_1d[1] if len(obs_1d) > 1 else 0.0
+            corr_obs[2] = 0.3
+            corr_obs[3] = priority
+            corr_obs[4] = min(obs_1d[6] * 3.0, 1.0) if len(obs_1d) > 6 else 0.0
+            corr_obs[5] = obs_1d[7] if len(obs_1d) > 7 else 0.0
+            corr_obs[6] = 1.0 if is_c3_corridor else 0.0
+            corr_obs[7] = obs_1d[11] if len(obs_1d) > 11 else 1.0
+            corr_obs[8] = min(obs_1d[12] * 2.5, 1.0) if len(obs_1d) > 12 else 0.0
+            corr_obs[9] = leader_prio
+            corr_obs[10] = 1.0 if is_overtake_cand > 0.5 else 0.0
+            corr_obs[11] = 0.0 if self._is_siding_free(info_dict, focus_vid) else 1.0
+            corr_obs[12] = 0.0 if self._is_bypass_free(info_dict, focus_vid) else 1.0
+            corr_obs[13] = 1.0 if (len(obs_1d) > 11 and obs_1d[11] < 0.30) else 0.0
+
+            micro_route = self.micro_mappo._decide_corridor_action(corr_obs, deterministic=True)
+            if micro_route == 1:
+                loop_siding_free = (corr_obs[11] < 0.5)
+                is_passenger_express = (priority >= 0.90)
+                if loop_siding_free and not is_passenger_express:
+                    r_act = 1
+                else:
+                    r_act = 0
+            elif micro_route == 2:
+                bypass_free = (corr_obs[12] < 0.5)
+                is_high_speed_emu = (priority >= 0.70)
+                mainline_crowded = (corr_obs[7] < 0.40)
+                if bypass_free and is_high_speed_emu and mainline_crowded:
+                    r_act = 2
+                else:
+                    r_act = 0
+
+        # Physical occupancy guards for overtake candidates and corridor sidings
         if is_overtake_cand > 0.5:
             if priority >= 0.8:
-                r_act = 2  # High-Speed Bypass
+                if self._is_bypass_free(info_dict, focus_vid):
+                    r_act = 2  # High-Speed Bypass
+                else:
+                    r_act = 0
             else:
-                r_act = 1  # Alpine Passing Loop siding
-        else:
-            focus_vid = str(info_dict.get("focus_vehicle", ""))
-            sched_edge = str(info_dict.get("scheduled_platform_edge", ""))
-            is_c3_corridor = any(k in (focus_vid + sched_edge) for k in ("Town_8", "Town_9", "c3_", "68101", "68102", "68103", "12763", "12764", "12765"))
-            if is_c3_corridor and priority <= 0.40 and len(obs_1d) >= 12 and obs_1d[11] < 0.50:
+                is_passenger_express = (priority >= 0.90)
+                if not is_passenger_express and self._is_siding_free(info_dict, focus_vid):
+                    r_act = 1  # Alpine Passing Loop siding
+                else:
+                    r_act = 0
+        elif is_c3_corridor and priority <= 0.40 and len(obs_1d) >= 12 and obs_1d[11] < 0.50:
+            if self._is_siding_free(info_dict, focus_vid):
                 r_act = 1
+            else:
+                r_act = 0
 
-        # Step 4: Smart Interlocking Platform Track Reallocation
+        # Step 4: Smart Interlocking Platform Track Reallocation (Micro Policy / Interlocking)
         if len(obs_1d) >= 28 and obs_1d[15] > 0.50:
-            p_act = resolve_heuristic_platform(observation, info)
+            st_name = None
+            for city in ("City_1", "City_2", "City_3", "City_4", "City_5", "City_6"):
+                if city in sched_edge:
+                    st_name = city
+                    break
+
+            aid = f"station_{st_name.lower()}" if st_name else None
+            if self.micro_mappo is not None and aid in self.micro_mappo.actors:
+                st_obs = np.zeros(STATION_OBS_DIM, dtype=np.float32)
+                st_obs[0] = obs_1d[0]
+                st_obs[1] = obs_1d[1] if len(obs_1d) > 1 else 0.0
+                st_obs[2] = 0.2
+                st_obs[3] = priority
+                st_obs[4] = min(obs_1d[6] * 3.0, 1.0) if len(obs_1d) > 6 else 0.0
+                st_obs[5] = obs_1d[7] if len(obs_1d) > 7 else 0.0
+                st_obs[6] = min(obs_1d[8] * 1.2, 1.0) if len(obs_1d) > 8 else 0.0
+                st_obs[7] = 1.0 if is_stopped else 0.0
+                st_obs[8] = 0.0
+                st_obs[9] = leader_prio
+                st_obs[10] = obs_1d[11] if len(obs_1d) > 11 else 1.0
+                st_obs[11] = min(obs_1d[12] * 2.5, 1.0) if len(obs_1d) > 12 else 0.0
+                for p in range(6):
+                    if 16 + p * 2 < len(obs_1d):
+                        st_obs[12 + p] = obs_1d[16 + p * 2]
+                        st_obs[18 + p] = obs_1d[17 + p * 2]
+
+                sched_idx = int(info_dict.get("scheduled_platform_idx", 0))
+                sched_occ = bool(info_dict.get("scheduled_platform_occupied", False))
+                micro_plat_act, _ = self.micro_mappo._decide_station_action(
+                    aid, st_obs, day=current_day, deterministic=True,
+                    sched_plat_idx=sched_idx, sched_plat_occupied=sched_occ
+                )
+                if micro_plat_act > 0:
+                    p_act = micro_plat_act
+                else:
+                    p_act = resolve_heuristic_platform(observation, info)
+            else:
+                p_act = resolve_heuristic_platform(observation, info)
 
         # Step 5: Regulated Departure Holding
         if is_stopped and priority < 0.4 and leader_prio > 0.7:
