@@ -44,7 +44,7 @@ dispatcher/logs/
 
 | File Name | Generating Script | CLI Command | Description |
 | :--- | :--- | :--- | :--- |
-| **`cross_comparison_24h.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Runs 42 parallel 24-hour simulations (7 days × 6 dispatchers: Static Baseline, FIFO Heuristic, Priority Greedy Heuristic, Centralized PPO, Decentralized MAPPO, and Trained PPO Dispatcher). Compares mean delay, max delay, punctuality, knock-ons, and intervention counts across every day of the week. |
+| **`cross_comparison_24h.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Runs 56 parallel 24-hour simulations (7 days × 8 dispatchers: Static Baseline, FIFO Heuristic, Priority Greedy Heuristic, Centralized PPO, Multi-Train Centralized PPO, Decentralized MAPPO, Comm-MAPPO, and Hierarchical Hybrid Ensemble). Compares mean delay, max delay, punctuality, knock-ons, and intervention counts across every day of the week. |
 | **`cross_comparison_24h_pre_fix.json`** | [`dispatcher/evaluation/audit_cross_comparison_24h.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_cross_comparison_24h.py) | `python3 dispatcher/evaluation/audit_cross_comparison_24h.py` | Historical baseline audit snapshot preserving pre-fix 24-hour evaluation metrics across all 7 days prior to platform reallocation logic centralization and dwell calculation fixes. |
 | **`full_day_weekly_audit.json`** | [`dispatcher/evaluation/audit_full_day_parallel.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/audit_full_day_parallel.py) | `python3 dispatcher/evaluation/audit_full_day_parallel.py` | Evaluates 7-day continuous fleet operations under nominal timetable traffic. |
 
@@ -90,7 +90,7 @@ dispatcher/logs/
 
 ### 7. Visual Proofs & Charts (`dispatcher/logs/visual_proofs/`)
 
-This directory contains 11 publication-ready, high-resolution (150-200 DPI) visualization artifacts tracking network performance across disruption benchmarks, stress testing, 7-day 24-hour diurnal timelines, and multi-agent comparisons.
+This directory contains **13 publication-ready, high-resolution (150–200 DPI) visualization artifacts** tracking network performance across disruption benchmarks, stress testing, 7-day 24-hour diurnal timelines, and multi-agent comparisons.
 
 #### Group A: Disruption Benchmark Visual Proofs
 * **Generating Script:** [`dispatcher/evaluation/visualizer.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualizer.py)
@@ -108,19 +108,22 @@ This directory contains 11 publication-ready, high-resolution (150-200 DPI) visu
   * **`stress_test_knockon_cascades.png`**: Comparison of secondary knock-on event counts across disruption scenarios.
   * **`stress_test_punctuality.png`**: Schedule punctuality retention rates (%) under simultaneous rolling-stock and platform failures.
 
-#### Group C: Full 7-Day 24-Hour Diurnal & Calendar Visual Proofs
+#### Group C: Full 7-Day 24-Hour Diurnal & Calendar Visual Proofs (All 8 Models)
 * **Generating Script:** [`dispatcher/evaluation/visualize_weekly_audit.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_weekly_audit.py)
 * **Command:** `python3 dispatcher/evaluation/visualize_weekly_audit.py --json dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json --output-dir dispatcher/logs/visual_proofs`
 * **Artifacts:**
-  * **`weekly_7day_delay_comparison.png`**: Day-by-day (Monday through Sunday) delay comparison bar chart across all 1,446 services, illustrating PPO's dominance (39.86s global weekly delay vs 46.89s Priority Greedy, 48.34s Centralized PPO, 50.07s FIFO, and 236.20s Static).
-  * **`weekly_7day_knockon_cascades.png`**: Day-by-day secondary knock-on conflict counts showing cascade reduction (10,878 Static -> 901 FIFO, 913 Priority Greedy, 918 Centralized PPO, 980 Trained PPO, and 5,645 MAPPO events).
-  * **`weekly_7day_punctuality.png`**: Day-by-day schedule punctuality rates across all 7 calendar days (98.0% - 99.5%).
-  * **`weekly_24h_diurnal_timeline.png`**: 24-hour continuous timeline (00:00 to 24:00) tracking network-wide delay curves through early morning feeder, morning peak, midday base, evening peak, and nocturnal freight waves.
+  * **`weekly_7day_delay_comparison.png`**: Day-by-day (Monday through Sunday) delay comparison bar chart across all 8 models (Static, FIFO, Priority Greedy, Centralized PPO, Multi-Train PPO, Decentralized MAPPO, Comm-MAPPO, and Hierarchical Hybrid Ensemble).
+  * **`weekly_7day_knockon_cascades.png`**: Day-by-day secondary knock-on conflict counts showing cascade reduction across all 8 models.
+  * **`weekly_7day_punctuality.png`**: Day-by-day schedule punctuality rates across all 7 calendar days with the 95% punctuality target line.
+  * **`weekly_7day_actions_taken.png`**: Dispatcher intervention count and action churn comparison across all 7 days, visually demonstrating Centralized PPO's 89% action reduction and Comm-MAPPO's 90% churn suppression.
+  * **`weekly_24h_diurnal_timeline.png`**: 24-hour continuous timeline (00:00 to 24:00) comparing fleet delay curves between Monday commuter rush and Saturday leisure base.
+  * **`model_efficiency_tradeoff.png`**: Action-efficiency trade-off scatter plot plotting Weekly Mean Delay (s) vs Total Actions Taken across all dispatcher models.
 
 #### Group D: Multi-Agent MARL vs Centralized PPO Visual Proofs
 * **Generating Script:** [`dispatcher/evaluation/visualize_marl.py`](file:///home/venkatasriramt/Desktop/railway-simulation/dispatcher/evaluation/visualize_marl.py)
 * **Command:** `python3 dispatcher/evaluation/visualize_marl.py`
 * **Artifacts:**
   * **`marl_vs_centralized_comparison.png`**: 4-panel publication-grade comparison of Mean Delay, Max Peak Delay, Control Action Interventions (Concurrency), and Telemetry Transmission Bandwidth.
+
 
 
