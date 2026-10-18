@@ -58,7 +58,16 @@ def compare_and_report():
         with open(PRE_FIX_JSON, "r") as f:
             pre_data = json.load(f)
 
-    models = ["Static_Baseline", "FIFO_Heuristic", "Priority_Greedy_Heuristic", "Centralized_PPO", "Decentralized_MAPPO"]
+    models = [
+        "Static_Baseline",
+        "FIFO_Heuristic",
+        "Priority_Greedy_Heuristic",
+        "Centralized_PPO",
+        "Multi_Train_Centralized_PPO",
+        "Decentralized_MAPPO",
+        "Comm_MAPPO",
+        "Hierarchical_Hybrid"
+    ]
 
     print(f"{'Dispatcher Model':<28} | {'Avg Delay':<16} | {'Avg Punctuality':<16} | {'Weekly Knock-ons':<20} | {'Weekly Actions'}")
     print("-" * 105)

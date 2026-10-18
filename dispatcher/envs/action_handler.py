@@ -14,10 +14,12 @@ class ActionHandler:
     def __init__(self):
         self.action_history: List[Dict[str, Any]] = []
         self.train_hold_seconds: Dict[str, float] = {}
+        self.siding_reservations: Dict[str, str] = {}
 
     def reset(self):
         self.action_history.clear()
         self.train_hold_seconds.clear()
+        self.siding_reservations.clear()
 
     def apply_action(
         self,
@@ -44,6 +46,21 @@ class ActionHandler:
             "hold_act": hold_act,
             "changes": []
         }
+
+        # Clear expired loop-siding reservations when the reserving train has left or finished
+        for s_edge, res_vid in list(self.siding_reservations.items()):
+            if res_vid not in train_states:
+                del self.siding_reservations[s_edge]
+            else:
+                try:
+                    res_road = train_states[res_vid].get("road_id", "")
+                    res_route = list(traci_module.vehicle.getRoute(res_vid))
+                    res_idx = max(0, traci_module.vehicle.getRouteIndex(res_vid))
+                    rem_edges = res_route[res_idx:] if res_idx < len(res_route) else []
+                    if s_edge not in rem_edges and s_edge not in res_road:
+                        del self.siding_reservations[s_edge]
+                except Exception:
+                    del self.siding_reservations[s_edge]
 
         # -------------------------------------------------------------
         # 1. Platform Track Allocation Action (plat_act)
@@ -204,33 +221,105 @@ class ActionHandler:
                 })
             else:
                 road_id = focus_state.get("road_id", "")
-                if "c3_Town_8_Town_9" in road_id or "Town_8" in road_id:
-                    direction = "fw" if "_fw" in road_id else "bw"
+                if "c3_Town_8_Town_9" in road_id or "Town_8" in road_id or "Town_9" in road_id:
+                    direction = "fw" if "_fw" in road_id else ("bw" if "_bw" in road_id else focus_state.get("upcoming_direction", "fw"))
                     siding_edge = f"c3_Town_8_Town_9_loop_siding_{direction}"
+                    mid_edge = f"c3_Town_8_Town_9_loop_T1_mid_{direction}"
+                    loop_edges = [
+                        f"c3_Town_8_Town_9_loop_lead_in_{direction}",
+                        siding_edge,
+                        f"c3_Town_8_Town_9_loop_lead_out_{direction}"
+                    ]
                     try:
-                        curr_route = traci_module.vehicle.getRoute(focus_veh_id)
-                        route_idx = traci_module.vehicle.getRouteIndex(focus_veh_id)
-                        remaining = curr_route[route_idx:] if 0 <= route_idx < len(curr_route) else curr_route
-
-                        # Guardrail 3: Siding track must be physically in immediate downstream approach (edges 1 to 8)
-                        if siding_edge in remaining[1:8]:
-                            traci_module.vehicle.setStop(
-                                focus_veh_id,
-                                edgeID=siding_edge,
-                                pos=200.0,
-                                duration=180.0
-                            )
-                            action_summary["changes"].append({
-                                "type": "diverted_to_passing_loop",
-                                "siding": siding_edge
-                            })
-                        else:
+                        # Reservation guardrail: Reject if another train holds the reservation
+                        res_veh = self.siding_reservations.get(siding_edge)
+                        if res_veh and res_veh != focus_veh_id and res_veh in train_states:
                             action_summary["changes"].append({
                                 "type": "action_rejected",
-                                "reason": f"Siding {siding_edge} not in immediate approach for {focus_veh_id}"
+                                "reason": f"Passing loop siding {siding_edge} is currently reserved by {res_veh}"
                             })
-                    except Exception:
-                        pass
+                        else:
+                            # Occupancy guardrail: Inspect siding, lead-in, and lead-out edges for other vehicles
+                            active_loop_vehs = []
+                            for le in loop_edges:
+                                try:
+                                    active_loop_vehs.extend(traci_module.edge.getLastStepVehicleIDs(le))
+                                except Exception:
+                                    pass
+                            other_loop_vehs = [v for v in active_loop_vehs if v != focus_veh_id]
+                            if other_loop_vehs:
+                                action_summary["changes"].append({
+                                    "type": "action_rejected",
+                                    "reason": f"Passing loop track or turnouts ({siding_edge}) currently occupied by {other_loop_vehs[0]}"
+                                })
+                            else:
+                                curr_route = list(traci_module.vehicle.getRoute(focus_veh_id))
+                                route_idx = max(0, traci_module.vehicle.getRouteIndex(focus_veh_id))
+                                remaining = curr_route[route_idx:] if route_idx < len(curr_route) else curr_route
+
+                                # Siding track or mainline mid must be physically in immediate downstream approach
+                                if siding_edge in remaining[1:8]:
+                                    existing_stops = traci_module.vehicle.getStops(focus_veh_id)
+                                    if any(siding_edge in getattr(st, "lane", "") or getattr(st, "edge", "") == siding_edge for st in existing_stops):
+                                        pass  # Stop already exists on siding_edge; skip diversion and record nothing
+                                    else:
+                                        traci_module.vehicle.setStop(
+                                            focus_veh_id,
+                                            edgeID=siding_edge,
+                                            pos=200.0,
+                                            duration=180.0
+                                        )
+                                        self.siding_reservations[siding_edge] = focus_veh_id
+                                        action_summary["changes"].append({
+                                            "type": "diverted_to_passing_loop",
+                                            "siding": siding_edge
+                                        })
+                                elif mid_edge in remaining[1:8]:
+                                    existing_stops = traci_module.vehicle.getStops(focus_veh_id)
+                                    if any(siding_edge in getattr(st, "lane", "") or getattr(st, "edge", "") == siding_edge for st in existing_stops):
+                                        pass  # Stop already exists on siding_edge; skip diversion and record nothing
+                                    else:
+                                        mid_idx = curr_route.index(mid_edge, route_idx)
+                                        if direction == "fw":
+                                            siding_edges = [
+                                                "c3_Town_8_Town_9_loop_lead_in_fw",
+                                                "c3_Town_8_Town_9_loop_siding_fw",
+                                                "c3_Town_8_Town_9_loop_lead_out_fw"
+                                            ]
+                                        else:
+                                            siding_edges = [
+                                                "c3_Town_8_Town_9_loop_lead_out_bw",
+                                                "c3_Town_8_Town_9_loop_siding_bw",
+                                                "c3_Town_8_Town_9_loop_lead_in_bw"
+                                            ]
+                                        new_route = curr_route[route_idx:mid_idx] + siding_edges + curr_route[mid_idx + 1:]
+                                        traci_module.vehicle.setRoute(focus_veh_id, new_route)
+                                        traci_module.vehicle.setStop(
+                                            focus_veh_id,
+                                            edgeID=siding_edge,
+                                            pos=200.0,
+                                            duration=180.0
+                                        )
+                                        self.siding_reservations[siding_edge] = focus_veh_id
+                                        action_summary["changes"].append({
+                                            "type": "diverted_to_passing_loop",
+                                            "siding": siding_edge
+                                        })
+                                else:
+                                    action_summary["changes"].append({
+                                        "type": "action_rejected",
+                                        "reason": f"Siding {siding_edge} not in immediate approach for {focus_veh_id}"
+                                    })
+                    except Exception as loop_err:
+                        action_summary["changes"].append({
+                            "type": "action_rejected",
+                            "reason": f"Passing loop divert failed: {loop_err}"
+                        })
+                else:
+                    action_summary["changes"].append({
+                        "type": "action_rejected",
+                        "reason": f"Train {focus_veh_id} on {road_id} is not approaching Corridor 3 loop siding"
+                    })
 
         elif route_act == 2:
             # High-Speed Bypass divert between City 2 and City 5
@@ -245,13 +334,43 @@ class ActionHandler:
                 if ("City_2" in road_id or "City_5" in road_id) and focus_state.get("priority", 0) >= 0.8:
                     try:
                         # Dynamically reduce travel time cost on high-speed bypass edges to incentivize bypass
+                        bypass_edges = (
+                            [f"bypass_City_2_City_5_fw_b{i}" for i in range(10)]
+                            if "City_2" in road_id
+                            else [f"bypass_City_2_City_5_bw_b{i}" for i in range(10)]
+                        )
+                        for be in bypass_edges:
+                            try:
+                                traci_module.vehicle.setAdaptedTraveltime(focus_veh_id, be, 5.0)
+                            except Exception:
+                                pass
+                        route_before = list(traci_module.vehicle.getRoute(focus_veh_id))
                         traci_module.vehicle.rerouteTraveltime(focus_veh_id)
+                        route_after = list(traci_module.vehicle.getRoute(focus_veh_id))
+                        route_idx = max(0, traci_module.vehicle.getRouteIndex(focus_veh_id))
+                        remaining = route_after[route_idx:] if route_idx < len(route_after) else route_after
+                        bypass_set = set(bypass_edges)
+
+                        if route_after != route_before and any(be in bypass_set for be in remaining):
+                            action_summary["changes"].append({
+                                "type": "high_speed_bypass_reroute",
+                                "edge": road_id
+                            })
+                        else:
+                            action_summary["changes"].append({
+                                "type": "action_rejected",
+                                "reason": f"High-speed bypass reroute did not alter downstream route for {focus_veh_id}"
+                            })
+                    except Exception as bypass_err:
                         action_summary["changes"].append({
-                            "type": "high_speed_bypass_reroute",
-                            "edge": road_id
+                            "type": "action_rejected",
+                            "reason": f"High-speed bypass reroute failed: {bypass_err}"
                         })
-                    except Exception:
-                        pass
+                else:
+                    action_summary["changes"].append({
+                        "type": "action_rejected",
+                        "reason": f"Train {focus_veh_id} on {road_id} (prio={focus_state.get('priority', 0):.2f}) not eligible for High-Speed Bypass"
+                    })
 
         # -------------------------------------------------------------
         # 3. Timetable Departure Dispatch & Holding Action (hold_act)

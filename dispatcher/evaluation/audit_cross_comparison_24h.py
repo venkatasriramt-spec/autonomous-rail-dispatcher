@@ -181,54 +181,40 @@ def run_cross_eval_worker(task: Tuple[str, str, str]) -> Dict[str, Any]:
     terminated = False
     truncated = False
 
+    def _record_change(ch: Dict[str, Any]):
+        nonlocal actions_taken, plat_switches, route_diverts, holds_applied
+        ch_type = ch.get("type")
+        if ch_type == "platform_reassigned":
+            actions_taken += 1
+            plat_switches += 1
+        elif ch_type in ("diverted_to_passing_loop", "high_speed_bypass_reroute"):
+            actions_taken += 1
+            route_diverts += 1
+        elif ch_type == "departure_held":
+            actions_taken += 1
+            holds_applied += 1
+
     while not (terminated or truncated):
         if is_marl:
             actions_dict = agent.predict(obs, info, deterministic=True)
-            for aid, act in actions_dict.items():
-                if aid.startswith("station_"):
-                    p_act, h_act = int(act[0]), int(act[1])
-                    if p_act > 0 or h_act > 0:
-                        actions_taken += 1
-                    if p_act > 0:
-                        plat_switches += 1
-                    if h_act > 0:
-                        holds_applied += 1
-                else:
-                    r_act = int(act)
-                    if r_act > 0:
-                        actions_taken += 1
-                        route_diverts += 1
             obs, rewards, term_dict, trunc_dict, info = env.step(actions_dict)
+            agent_actions = info.get("agent_actions", {})
+            for aid, res in agent_actions.items():
+                if not isinstance(res, dict):
+                    continue
+                for ch in res.get("changes", []):
+                    _record_change(ch)
             terminated = term_dict.get("__all__", False)
             truncated = trunc_dict.get("__all__", False)
         else:
             action = agent.predict(obs, info)
-            if isinstance(action, dict):
-                for act_v in action.values():
-                    r_v = int(act_v[0]) if len(act_v) > 0 else 0
-                    p_v = int(act_v[1]) if len(act_v) > 1 else 0
-                    h_v = int(act_v[2]) if len(act_v) > 2 else 0
-                    if r_v > 0 or p_v > 0 or h_v > 0:
-                        actions_taken += 1
-                    if r_v > 0:
-                        route_diverts += 1
-                    if p_v > 0:
-                        plat_switches += 1
-                    if h_v > 0:
-                        holds_applied += 1
-            else:
-                r_act, p_act, h_act = int(action[0]), int(action[1]), int(action[2])
-
-                if r_act > 0 or p_act > 0 or h_act > 0:
-                    actions_taken += 1
-                if r_act > 0:
-                    route_diverts += 1
-                if p_act > 0:
-                    plat_switches += 1
-                if h_act > 0:
-                    holds_applied += 1
-
+            action_handler = getattr(env, "action_handler", getattr(getattr(env, "unwrapped", None), "action_handler", None))
+            prev_hist_len = len(action_handler.action_history) if action_handler else 0
             obs, reward, terminated, truncated, info = env.step(action)
+            new_entries = action_handler.action_history[prev_hist_len:] if action_handler else []
+            for entry in new_entries:
+                for ch in entry.get("changes", []):
+                    _record_change(ch)
 
         delays_history.append(info.get("mean_delay_sec", 0.0))
         peak_delays_history.append(info.get("max_delay_sec", info.get("mean_delay_sec", 0.0)))
