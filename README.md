@@ -1,12 +1,5 @@
 # Autonomous Rail Dispatcher
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![SUMO](https://img.shields.io/badge/SUMO-1.18+-green.svg)](https://eclipse.dev/sumo/)
-[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
-[![Stable-Baselines3](https://img.shields.io/badge/RL-Stable--Baselines3-purple.svg)](https://stable-baselines3.readthedocs.io/)
-[![GitHub Repo](https://img.shields.io/badge/GitHub-autonomous--rail--dispatcher-181717.svg?logo=github)](https://github.com/venkatasriramt-spec/autonomous-rail-dispatcher)
-
 Welcome to the **Autonomous Rail Dispatcher** (`autonomous-rail-dispatcher`) monorepo. This repository unites microscopic track engineering, procedural network generation, commercial timetabling, rolling stock logistics, and autonomous reinforcement learning dispatching into a single coherent codebase with full version-controlled history.
 
 ---
