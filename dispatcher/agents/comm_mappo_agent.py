@@ -168,7 +168,7 @@ class CommMAPPODispatcher(MAPPODispatcher):
         # Action stability tracking (Action Churn Suppression)
         self.last_actions: Dict[str, Any] = {}
         self.action_lock_timer: Dict[str, int] = {aid: 0 for aid in MARL_AGENT_IDS}
-        self.active_platform_locks: Dict[str, int] = {}  # focus_vid -> locked_plat_act
+        self.active_platform_locks: Dict[Tuple[str, str], int] = {}  # (aid, focus_vid) -> locked_plat_act
 
     def reset_history(self):
         """Resets action history at the beginning of an episode."""
@@ -231,13 +231,31 @@ class CommMAPPODispatcher(MAPPODispatcher):
         # Step 2: Station Master Decisions
         for aid in STATION_AGENT_NAMES:
             obs = obs_dict.get(aid, np.zeros(STATION_OBS_DIM, dtype=np.float32))
-            sched_idx = sched_indices.get(aid, 0)
-            is_sched_occ = sched_occupied_map.get(aid, None)
-            if is_sched_occ is None and info and isinstance(info, dict):
+            sched_idx = sched_indices.get(aid)
+            if sched_idx is None and info and isinstance(info, dict):
+                sched_idx = info.get(f"{aid}_sched_plat")
+            if sched_idx is None and info and isinstance(info, dict):
                 if "scheduled_platform_idx" in info and info["scheduled_platform_idx"] is not None:
                     sched_idx = int(info["scheduled_platform_idx"])
-                if "scheduled_platform_occupied" in info:
+
+            is_sched_occ = sched_occupied_map.get(aid)
+            if is_sched_occ is None and info and isinstance(info, dict):
+                if f"{aid}_sched_plat_occupied" in info:
+                    is_sched_occ = bool(info[f"{aid}_sched_plat_occupied"])
+                elif "scheduled_platform_occupied" in info:
                     is_sched_occ = bool(info["scheduled_platform_occupied"])
+
+            focus_vid = None
+            is_unique_focus = False
+            if info and isinstance(info, dict):
+                focus_trains = info.get("focus_trains")
+                if isinstance(focus_trains, dict):
+                    focus_vid = focus_trains.get(aid)
+                    if focus_vid:
+                        focused_agents = [a for a, v in focus_trains.items() if v == focus_vid]
+                        is_unique_focus = (len(focused_agents) == 1 and focused_agents[0] == aid)
+                if not focus_vid:
+                    focus_vid = info.get(f"{aid}_focus_vid") or info.get("focus_vehicle")
 
             plat_act, hold_act = self._decide_station_action(
                 aid, obs, day, deterministic,
@@ -245,16 +263,28 @@ class CommMAPPODispatcher(MAPPODispatcher):
                 sched_plat_occupied=is_sched_occ
             )
 
-            # Action Churn Suppression for Station Platforms:
-            # If an alternative platform was already assigned to this zone on the previous step,
-            # maintain that assignment until the train enters or clears the block (prevents platform flutter).
-            if aid in self.last_actions and self.action_lock_timer[aid] > 0:
-                prev_plat, _ = self.last_actions[aid]
-                if prev_plat > 0 and obs[6] > 0.16:  # still in approach zone
-                    plat_act = prev_plat
-                self.action_lock_timer[aid] -= 1
-            elif plat_act > 0:
-                self.action_lock_timer[aid] = 2  # lock for 2 macro steps (30 seconds)
+            # Platform Locking via active_platform_locks keyed by (aid, focus_vid):
+            if focus_vid:
+                # Discard vehicle's prior lock only when focus_trains confirms aid is uniquely focused on focus_vid
+                if is_unique_focus:
+                    prior_locks = [k for k in self.active_platform_locks if k[1] == focus_vid and k[0] != aid]
+                    for k in prior_locks:
+                        self.active_platform_locks.pop(k, None)
+
+                lock_key = (aid, focus_vid)
+                if lock_key in self.active_platform_locks:
+                    locked_plat = self.active_platform_locks[lock_key]
+                    in_approach = (obs[6] > 0.16)
+                    plat_feat = 12 + (locked_plat - 1)
+                    is_unoccupied = (plat_feat < len(obs) and obs[plat_feat] <= 0.5)
+                    if in_approach and is_unoccupied:
+                        plat_act = locked_plat
+                    else:
+                        self.active_platform_locks.pop(lock_key, None)
+
+                # Store replacement / new lock when conditions are met
+                if plat_act > 0:
+                    self.active_platform_locks[lock_key] = plat_act
 
             # Strict terminal departure holding: 0 (never hold berthed trains at station throats)
             hold_act = 0
@@ -291,18 +321,14 @@ class CommMAPPODispatcher(MAPPODispatcher):
         # Query actor
         raw_route = self.actors["corridor_trunk"].select_action(obs, deterministic=deterministic)
 
-        # Communication-informed Guardrail:
-        # Check aggregated station pressure (mean latent feature > 0.6 indicates heavy terminal bottleneck)
-        station_pressure = float(np.mean(np.abs(agg_station_msg)))
-
         if raw_route == 2:
             # Bypass Chord Protection:
             # Only allow bypass if high-speed passenger consist, bypass track is clear (obs[12] == 0),
-            # mainline is actually crowded (obs[7] < 0.40), and destination hubs are not saturated
+            # and mainline is actually crowded (obs[7] < 0.40)
             bypass_free = (obs[12] < 0.5)
             is_high_speed_emu = (obs[3] >= 0.70)
             mainline_crowded = (obs[7] < 0.40)
-            if bypass_free and is_high_speed_emu and mainline_crowded and station_pressure < 0.75:
+            if bypass_free and is_high_speed_emu and mainline_crowded:
                 route_act = 2
             else:
                 route_act = 0
@@ -321,10 +347,16 @@ class CommMAPPODispatcher(MAPPODispatcher):
         else:
             route_act = 0
 
-        # Action Churn Suppression:
-        # If previous step was mainline (0), require solid confirmation before switching
+        # Action Churn Suppression with Occupancy Safety Verification:
+        # Check if previous route remains safe before applying hysteresis lock
         prev_route = self.last_actions.get("corridor_trunk", 0)
-        if prev_route != route_act and self.action_lock_timer["corridor_trunk"] > 0:
+        prev_safe = True
+        if prev_route == 1:
+            prev_safe = (obs[11] < 0.5)
+        elif prev_route == 2:
+            prev_safe = (obs[12] < 0.5)
+
+        if prev_route != route_act and self.action_lock_timer["corridor_trunk"] > 0 and prev_safe:
             route_act = prev_route
             self.action_lock_timer["corridor_trunk"] -= 1
         elif route_act != 0:

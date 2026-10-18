@@ -264,15 +264,27 @@ class RailwayDispatchEnv(gym.Env):
         if isinstance(action, dict):
             # Concurrent multi-train action mapping: {veh_id: np.ndarray([r, p, h])}
             any_nonzero = False
+            any_route = False
+            any_plat = False
+            any_hold = False
             for v_id, act_v in action.items():
                 if v_id in self.train_states:
                     r_v = int(act_v[0]) if len(act_v) > 0 else 0
                     p_v = int(act_v[1]) if len(act_v) > 1 else 0
                     h_v = int(act_v[2]) if len(act_v) > 2 else 0
+                    if r_v > 0:
+                        any_route = True
+                    if p_v > 0:
+                        any_plat = True
+                    if h_v > 0:
+                        any_hold = True
                     if r_v > 0 or p_v > 0 or h_v > 0:
                         any_nonzero = True
                     self.action_handler.apply_action(v_id, act_v, self.train_states, self.sim_time, traci)
             self.last_action_is_nonzero = any_nonzero
+            self.last_route_act = any_route
+            self.last_plat_act = any_plat
+            self.last_hold_act = any_hold
             applied_veh_id = self.focus_veh_id
         else:
             applied_veh_id = self.focus_veh_id
@@ -398,6 +410,8 @@ class RailwayDispatchEnv(gym.Env):
 
         # Collect all active conflict trains requiring dispatcher intervention this step
         candidate_trains = []
+        candidate_observations = {}
+        candidate_info = {}
         for vid, s in self.train_states.items():
             needs_attention = (
                 (s.get("upcoming_station") and 200.0 < s.get("dist_to_next_stop", 9999.0) < 2500.0 and s.get("scheduled_platform_occupied"))
@@ -406,6 +420,26 @@ class RailwayDispatchEnv(gym.Env):
             )
             if needs_attention:
                 candidate_trains.append(vid)
+                sp_edge = s.get("scheduled_platform_edge")
+                sp_idx = 0
+                if sp_edge and "_plat_" in str(sp_edge):
+                    try:
+                        sp_idx = int(str(sp_edge).split("_plat_")[1].split("_")[0]) - 1
+                    except Exception:
+                        sp_idx = 0
+                candidate_info[vid] = {
+                    "scheduled_platform_edge": sp_edge,
+                    "scheduled_platform_idx": sp_idx,
+                    "scheduled_platform_occupied": s.get("scheduled_platform_occupied", False),
+                    "day": self.day
+                }
+                if traci is not None and getattr(self, "is_connected", False):
+                    try:
+                        candidate_observations[vid] = self.obs_builder.build_observation(
+                            vid, self.train_states, self.sim_time, traci
+                        )
+                    except Exception:
+                        pass
 
         return {
             "sim_time": self.sim_time,
@@ -418,6 +452,8 @@ class RailwayDispatchEnv(gym.Env):
             "teleports": getattr(self, "total_teleports", 0),
             "focus_vehicle": self.focus_veh_id,
             "candidate_trains": candidate_trains,
+            "candidate_observations": candidate_observations,
+            "candidate_info": candidate_info,
             "day": self.day,
             "scheduled_platform_edge": sched_plat_edge,
             "scheduled_platform_idx": sched_plat_idx,

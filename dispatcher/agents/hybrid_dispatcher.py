@@ -91,7 +91,7 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
                 vehs = traci.edge.getLastStepVehicleIDs(edge_id)
                 if any(v != focus_vid for v in vehs):
                     return False
-                return True
+            return True
         except Exception as e:
             logger.warning("TraCI error inspecting high-speed bypass occupancy: %s", e)
             return False
@@ -121,29 +121,25 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
                     direction = "bw" if "_bw" in road_id else "fw"
                     opp_direction = "fw" if direction == "bw" else "bw"
                     opp_edge = f"c3_Town_8_Town_9_{opp_direction}"
-                    try:
-                        opp_vehs = traci.edge.getLastStepVehicleIDs(opp_edge)
-                        if opp_vehs:
-                            logger.info("Lookahead vetoed siding divert for %s: opposing train detected on %s", focus_vid, opp_edge)
-                            return False
-                    except Exception:
-                        pass
+                    opp_vehs = traci.edge.getLastStepVehicleIDs(opp_edge)
+                    if opp_vehs:
+                        logger.info("Lookahead vetoed siding divert for %s: opposing train detected on %s", focus_vid, opp_edge)
+                        return False
 
                 elif route_act == 2:
                     # High-speed bypass check: verify destination hub platforms have at least 1 open track
-                    dest_hub = "City_5" if "_fw" in str(info) else "City_2"
-                    try:
-                        all_blocked = True
-                        for p_i in range(1, 6):
-                            p_edge = f"{dest_hub}_plat_{p_i}_fw"
-                            if not traci.edge.getLastStepVehicleIDs(p_edge):
-                                all_blocked = False
-                                break
-                        if all_blocked:
-                            logger.info("Lookahead vetoed bypass divert for %s: destination hub %s fully saturated", focus_vid, dest_hub)
-                            return False
-                    except Exception:
-                        pass
+                    road_id = traci.vehicle.getRoadID(focus_vid)
+                    direction = "bw" if "_bw" in road_id else "fw"
+                    dest_hub = "City_5" if direction == "fw" else "City_2"
+                    all_blocked = True
+                    for p_i in range(1, 7):
+                        p_edge = f"{dest_hub}_plat_{p_i}_{direction}"
+                        if not traci.edge.getLastStepVehicleIDs(p_edge):
+                            all_blocked = False
+                            break
+                    if all_blocked:
+                        logger.info("Lookahead vetoed bypass divert for %s: destination hub %s fully saturated", focus_vid, dest_hub)
+                        return False
         except Exception as e:
             logger.warning("Lookahead projection exception for %s: %s", focus_vid, e)
             return False

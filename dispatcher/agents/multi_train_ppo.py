@@ -76,11 +76,26 @@ class MultiTrainCentralizedDispatcher(BaseDispatcher):
         if focus_veh and focus_veh not in target_trains:
             target_trains = [focus_veh] + target_trains[:self.max_concurrent - 1]
 
+        candidate_obs_map = info_dict.get("candidate_observations", {})
+        candidate_info_map = info_dict.get("candidate_info", {})
+
         for vid in target_trains:
-            # Build localized train context
-            sub_info = dict(info_dict)
-            sub_info["focus_vehicle"] = vid
-            act = self.base_wrapper.predict(observation, sub_info)
+            if vid == focus_veh:
+                sub_obs = observation
+                sub_info = dict(info_dict)
+            else:
+                if vid not in candidate_obs_map:
+                    continue
+                sub_obs = candidate_obs_map[vid]
+                sub_info = dict(info_dict)
+                if vid in candidate_info_map:
+                    sub_info.update(candidate_info_map[vid])
+                sub_info["focus_vehicle"] = vid
+
+            act = self.base_wrapper.predict(sub_obs, sub_info)
             actions_dict[vid] = act
+
+        if not actions_dict and focus_veh:
+            return self.base_wrapper.predict(observation, info_dict)
 
         return actions_dict

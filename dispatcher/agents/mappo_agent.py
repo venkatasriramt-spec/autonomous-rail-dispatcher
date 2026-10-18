@@ -237,15 +237,20 @@ class MAPPODispatcher:
         obs: np.ndarray,
         day: Optional[str],
         deterministic: bool,
-        sched_plat_idx: int = 0,
+        sched_plat_idx: Optional[int] = None,
         sched_plat_occupied: Optional[bool] = None
     ) -> Tuple[int, int]:
         DELAY_THRESHOLD = 0.05
         # Interlocking approach zone: 400m to 1500m (obs[6] is dist / 2500m; 400/2500 = 0.16)
         # Prevents triggering platform switch inside the locked throat zone (<400m)
         is_critical_approach = (0.16 <= obs[6] <= 0.60)
-        sched_feat = 12 + sched_plat_idx if (0 <= sched_plat_idx < 6) else 12
-        sched_is_occupied = (obs[sched_feat] > 0.5) if sched_plat_occupied is None else sched_plat_occupied
+        has_valid_sched = (sched_plat_idx is not None and 0 <= sched_plat_idx < 6)
+        if sched_plat_occupied is not None:
+            sched_is_occupied = sched_plat_occupied
+        elif has_valid_sched:
+            sched_is_occupied = (obs[12 + sched_plat_idx] > 0.5)
+        else:
+            sched_is_occupied = False
 
         # Station physical platform capacities (avoids phantom platform wrap-around via modulo)
         station_capacities = {
@@ -293,17 +298,18 @@ class MAPPODispatcher:
 
             # Rule 3: Dynamic open platform resolution when scheduled platform is blocked or Sunday turnaround buffer
             assigned_is_blocked = (plat_act <= 0) or (plat_act > 0 and (plat_act - 1 >= max_plats or obs[12 + plat_act - 1] > 0.5))
+            alt_sched_idx = sched_plat_idx if has_valid_sched else -1
             if is_critical_approach and ((day == "Sun" and sched_plat_idx == 0 and obs[12] > 0.5) or (assigned_is_blocked and sched_is_occupied)):
                 # Scheduled platform is blocked or turnaround staged; route to first open platform within capacity
-                plat_act = find_free_alternative_platform(obs, sched_plat_idx, max_plats, obs_offset=12, stride=1)
+                plat_act = find_free_alternative_platform(obs, alt_sched_idx, max_plats, obs_offset=12, stride=1)
             elif not sched_is_occupied:
                 # Nominal scheduled platform is clear; preserve action 0
                 plat_act = 0
             elif plat_act > 0:
                 # Scheduled platform is occupied and reallocation requested: ensure target platform is clear and physically exists
                 target_plat_idx = plat_act - 1
-                if target_plat_idx >= max_plats or target_plat_idx == sched_plat_idx or obs[12 + target_plat_idx] > 0.5:
-                    plat_act = find_free_alternative_platform(obs, sched_plat_idx, max_plats, obs_offset=12, stride=1)
+                if target_plat_idx >= max_plats or (has_valid_sched and target_plat_idx == sched_plat_idx) or obs[12 + target_plat_idx] > 0.5:
+                    plat_act = find_free_alternative_platform(obs, alt_sched_idx, max_plats, obs_offset=12, stride=1)
 
         return plat_act, hold_act
 
