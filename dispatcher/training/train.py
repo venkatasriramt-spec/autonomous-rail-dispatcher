@@ -21,12 +21,16 @@ from dispatcher.scenarios.perturbations import PerturbationConfig
 from dispatcher.training.callbacks import RailwayMetricsCallback
 
 
+from typing import Optional
+
+
 def make_env(
     rank: int,
     seed: int = 42,
     disruption_mode: str = "none",
     start_time: float = 21600.0,
-    horizon: float = 7200.0
+    horizon: float = 7200.0,
+    sumocfg_path: Optional[str] = None
 ):
     def _init():
         p_cfg = None
@@ -56,6 +60,7 @@ def make_env(
             )
 
         env = RailwayDispatchEnv(
+            sumocfg_path=sumocfg_path,
             start_time_sec=start_time,
             sim_horizon_sec=horizon,
             macro_step_sec=15.0,
@@ -72,6 +77,7 @@ WAVE_CONFIGS = {
     "evening_peak": {"start_time": 57600.0, "horizon": 9900.0, "desc": "16:00-18:45 Evening Commuter Rush (16-22 runs/hr)"},
     "midday_base": {"start_time": 34200.0, "horizon": 14400.0, "desc": "09:30-13:30 Midday Clockface Cadence (10-14 runs/hr)"},
     "nocturnal_freight": {"start_time": 77400.0, "horizon": 18000.0, "desc": "21:30-02:30 Nocturnal Freight & Logistics Wave"},
+    "alpine_shuttle": {"start_time": 25200.0, "horizon": 10800.0, "desc": "07:00-10:00 Alpine Mountain Pass & Shuttle Wave", "day": "Mon"},
     "early_morning": {"start_time": 18000.0, "horizon": 7200.0, "desc": "05:00-07:00 Early Morning Feeder & Awakening"},
     "full_day": {"start_time": 18000.0, "horizon": 64800.0, "desc": "05:00-23:00 Full 24-Hour Continuous Fleet (242 runs)"},
 }
@@ -83,6 +89,10 @@ def main():
     parser.add_argument("--workers", type=int, default=8, help="Number of parallel environment workers")
     parser.add_argument("--wave", type=str, default="full_day", choices=list(WAVE_CONFIGS.keys()) + ["custom"],
                         help="Operational timetable wave for curriculum training")
+    parser.add_argument("--day", type=str, default=None, choices=["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+                        help="Calendar day to simulate (Mon..Sun)")
+    parser.add_argument("--start-time", type=float, default=21600.0, help="Simulation start time (used when wave=custom)")
+    parser.add_argument("--horizon", type=float, default=7200.0, help="Simulation horizon in seconds (used when wave=custom)")
     parser.add_argument("--disruption", type=str, default="none", choices=["none", "train_delay", "platform_blockage", "stochastic"])
     parser.add_argument("--n-steps", type=int, default=2048, help="PPO rollout buffer steps per worker")
     parser.add_argument("--batch-size", type=int, default=256, help="PPO minibatch size")
@@ -101,8 +111,18 @@ def main():
         args.start_time = cfg["start_time"]
         args.horizon = cfg["horizon"]
         wave_desc = cfg["desc"]
+        if "day" in cfg and not args.day:
+            args.day = cfg["day"]
     else:
         wave_desc = f"Custom Window ({args.start_time:.0f}s - {args.start_time + args.horizon:.0f}s)"
+
+    sumocfg_path = None
+    if args.day:
+        candidate_cfg = os.path.join(ROOT_DIR, "trains", "sumo_config", "days", args.day, "train_simulation.sumocfg")
+        if os.path.exists(candidate_cfg):
+            sumocfg_path = candidate_cfg
+        else:
+            raise FileNotFoundError(f"Day-specific SUMO configuration for '{args.day}' not found at: {candidate_cfg}")
 
     os.makedirs(args.save_dir, exist_ok=True)
     os.makedirs(args.log_dir, exist_ok=True)
@@ -111,6 +131,8 @@ def main():
     print("RAILWAY TRAFFIC MANAGEMENT SYSTEM - RL DISPATCHER TRAINING")
     print("=" * 70)
     print(f"Operational Wave:     {args.wave} ({wave_desc})")
+    if args.day:
+        print(f"Calendar Day:         {args.day}")
     print(f"Target Timesteps:     {args.timesteps}")
     print(f"Parallel Workers:     {args.workers}")
     print(f"Rollout n_steps:      {args.n_steps} (Total buffer: {args.n_steps * args.workers})")
@@ -130,7 +152,8 @@ def main():
             seed=42 + i,
             disruption_mode=args.disruption,
             start_time=args.start_time,
-            horizon=args.horizon
+            horizon=args.horizon,
+            sumocfg_path=sumocfg_path
         )
         for i in range(args.workers)
     ]

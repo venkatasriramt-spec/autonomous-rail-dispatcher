@@ -103,26 +103,41 @@ def main():
     print("  Stage 4: Automated Pre-Fix vs Post-Retraining Comparative Report")
     print("=" * 95)
 
-    # Stage 1: Retrain MAPPO Curriculum
+    # Stage 1: Retrain MAPPO Curriculum across 5 Diurnal Waves
     cmd_mappo = [
         PYTHON, "dispatcher/training/train_mappo_curriculum.py",
-        "--workers", "16",
-        "--steps-per-phase", "8192",
-        "--full-day-steps", "16384"
+        "--workers", "24",
+        "--steps-per-phase", "6144",
+        "--full-day-steps", "12288"
     ]
-    t1 = run_stage(cmd_mappo, "Stage 1: Decentralized MAPPO Multi-Wave Curriculum Retraining")
+    t1 = run_stage(cmd_mappo, "Stage 1: Decentralized MAPPO 5-Wave Curriculum Retraining (24 workers)")
 
-    # Stage 2: Fine-Tune Centralized PPO
+    # Stage 2A: Fine-Tune Centralized PPO on Monday Alpine Mountain Pass & Shuttle Wave
     best_ppo = os.path.join(MODELS_DIR, "best_model.zip")
-    cmd_ppo = [
+    cmd_ppo_alpine = [
         PYTHON, "dispatcher/training/train.py",
-        "--wave", "morning_peak",
-        "--timesteps", "32768",
-        "--workers", "16",
+        "--wave", "alpine_shuttle",
+        "--timesteps", "49152",
+        "--workers", "24",
+        "--n-steps", "1024",
+        "--batch-size", "256",
         "--load-model", best_ppo,
         "--model-name", "best_model.zip"
     ]
-    t2 = run_stage(cmd_ppo, "Stage 2: Centralized PPO Morning Peak Fine-Tuning")
+    t2a = run_stage(cmd_ppo_alpine, "Stage 2A: Centralized PPO Alpine Mountain Pass Fine-Tuning (24 workers)")
+
+    # Stage 2B: Consolidate Centralized PPO on Morning Peak
+    cmd_ppo_peak = [
+        PYTHON, "dispatcher/training/train.py",
+        "--wave", "morning_peak",
+        "--timesteps", "49152",
+        "--workers", "24",
+        "--n-steps", "1024",
+        "--batch-size", "256",
+        "--load-model", best_ppo,
+        "--model-name", "best_model.zip"
+    ]
+    t2b = run_stage(cmd_ppo_peak, "Stage 2B: Centralized PPO Morning Peak Consolidation (24 workers)")
 
     # Invalidate any pre-existing post-fix results so a stale file cannot satisfy the check
     if os.path.exists(POST_FIX_JSON):

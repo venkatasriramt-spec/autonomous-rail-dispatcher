@@ -227,23 +227,21 @@ class MultiAgentObservationBuilder:
             obs[10] = 1.0 if (st.get("leader_dist", 3000.0) < 1500.0 and st.get("leader_speed", 50.0) < st.get("speed", 0.0)) else 0.0
 
         # Siding and bypass availability (11..13)
-        loop_occ = 0.0
-        try:
-            loop_vehs = traci_module.edge.getLastStepVehicleIDs("c3_Town_8_Town_9_loop_siding_fw")
-            if loop_vehs:
-                loop_occ = 1.0
-        except Exception:
-            pass
-        obs[11] = float(loop_occ)
+        loop_vehs = []
+        for edge_id in ("c3_Town_8_Town_9_loop_siding_fw", "c3_Town_8_Town_9_loop_siding_bw"):
+            try:
+                loop_vehs.extend(traci_module.edge.getLastStepVehicleIDs(edge_id))
+            except Exception:
+                pass
+        obs[11] = 1.0 if loop_vehs else 0.0
 
-        bypass_occ = 0.0
-        try:
-            bypass_vehs = traci_module.edge.getLastStepVehicleIDs("bypass_City_2_City_5_fw_b0")
-            if bypass_vehs:
-                bypass_occ = 1.0
-        except Exception:
-            pass
-        obs[12] = float(bypass_occ)
+        bypass_vehs = []
+        for edge_id in ("bypass_City_2_City_5_fw_b0", "bypass_City_2_City_5_bw_b0"):
+            try:
+                bypass_vehs.extend(traci_module.edge.getLastStepVehicleIDs(edge_id))
+            except Exception:
+                pass
+        obs[12] = 1.0 if bypass_vehs else 0.0
 
         # Tight headway alert
         obs[13] = 1.0 if obs[7] < 0.30 else 0.0

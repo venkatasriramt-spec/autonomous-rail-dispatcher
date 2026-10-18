@@ -54,6 +54,7 @@ WAVE_CONFIGS = {
     "evening_peak": {"start_time": 57600.0, "horizon": 9900.0, "desc": "16:00-18:45 Evening Commuter Rush (16-22 runs/hr)"},
     "midday_base": {"start_time": 34200.0, "horizon": 14400.0, "desc": "09:30-13:30 Midday Clockface Cadence (10-14 runs/hr)"},
     "nocturnal_freight": {"start_time": 77400.0, "horizon": 18000.0, "desc": "21:30-02:30 Nocturnal Freight & Logistics Wave"},
+    "alpine_shuttle": {"start_time": 25200.0, "horizon": 10800.0, "desc": "07:00-10:00 Alpine Mountain Pass & Shuttle Wave", "day": "Mon"},
     "sunday_staging": {"start_time": 28800.0, "horizon": 14400.0, "desc": "08:00-12:00 Sunday Platform Staging Wave", "day": "Sun"},
     "early_morning": {"start_time": 18000.0, "horizon": 7200.0, "desc": "05:00-07:00 Early Morning Feeder & Awakening"},
     "full_day": {"start_time": 18000.0, "horizon": 64800.0, "desc": "05:00-23:00 Full Continuous Fleet (242 runs)"},
