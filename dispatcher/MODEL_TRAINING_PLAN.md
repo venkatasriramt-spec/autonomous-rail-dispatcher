@@ -2,7 +2,7 @@
 
 **Autonomous Railway Traffic Management & Dynamic Rescheduling System**
 **Subsystem:** `dispatcher/`
-**Monorepo:** `railway-simulation`
+**Monorepo:** `autonomous-rail-dispatcher`
 **Execution Hardware:** Google Cloud VM (32 vCPUs, 256 GB RAM, CPU-only)
 **Overall Status:** **100% COMPLETED (Phases 0, 1A, 1B, 2, 3, and 4 Verified & Benchmarked)**
 

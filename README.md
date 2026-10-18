@@ -1,12 +1,19 @@
-# Unified Railway Simulation & Infrastructure Monorepo
+# Autonomous Rail Dispatcher
 
-Welcome to the **Unified Railway Simulation & Infrastructure Monorepo**. This repository unites microscopic track engineering, procedural network generation, commercial timetabling, rolling stock logistics, and headless SUMO simulation auditing into a single coherent codebase with full version-controlled history.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![SUMO](https://img.shields.io/badge/SUMO-1.18+-green.svg)](https://eclipse.dev/sumo/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.0+-red.svg)](https://pytorch.org/)
+[![Stable-Baselines3](https://img.shields.io/badge/RL-Stable--Baselines3-purple.svg)](https://stable-baselines3.readthedocs.io/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-autonomous--rail--dispatcher-181717.svg?logo=github)](https://github.com/venkatasriramt-spec/autonomous-rail-dispatcher)
+
+Welcome to the **Autonomous Rail Dispatcher** (`autonomous-rail-dispatcher`) monorepo. This repository unites microscopic track engineering, procedural network generation, commercial timetabling, rolling stock logistics, and autonomous reinforcement learning dispatching into a single coherent codebase with full version-controlled history.
 
 ---
 
 ## 1. System Architecture
 
-The monorepo is organized into two isolated yet tightly integrated subsystems:
+The monorepo is organized into three isolated yet tightly integrated subsystems:
 
 ```
 .
@@ -140,8 +147,8 @@ The monorepo is organized into two isolated yet tightly integrated subsystems:
 
 ### Installation
 ```bash
-git clone <repo-url> railway_system
-cd railway_system
+git clone https://github.com/venkatasriramt-spec/autonomous-rail-dispatcher.git
+cd autonomous-rail-dispatcher
 pip install -r requirements.txt
 ```
 
@@ -241,3 +248,11 @@ sumo-gui -c trains/sumo_config/train_simulation.sumocfg
 - **Timetable & Simulation Evolution History:** [trains/project_history.md](trains/project_history.md)
 - **Autonomous Dispatcher AI & RL System:** [dispatcher/README.md](dispatcher/README.md)
 - **Unified Monorepo Milestone Log:** [project_history.md](project_history.md)
+
+---
+
+## 6. Academic Attribution & License
+
+* **Project:** Autonomous Rail Dispatcher (Project 1, Vellore Institute of Technology - VIT)
+* **Author:** Venkata Sriram Topalli ([@venkatasriramt-spec](https://github.com/venkatasriramt-spec))
+* **License:** [MIT License](LICENSE)
