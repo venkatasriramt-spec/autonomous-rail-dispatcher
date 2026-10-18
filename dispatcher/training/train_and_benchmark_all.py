@@ -103,20 +103,33 @@ def main():
     print("  Stage 4: Automated Pre-Fix vs Post-Retraining Comparative Report")
     print("=" * 95)
 
-    # Stage 1: Retrain MAPPO Curriculum across 5 Diurnal Waves
+    # Stage 1: Retrain MAPPO Curriculum across 6 Diurnal Waves (including Midday Glacier Wave)
     cmd_mappo = [
         PYTHON, "dispatcher/training/train_mappo_curriculum.py",
         "--workers", "24",
         "--steps-per-phase", "6144",
         "--full-day-steps", "12288"
     ]
-    t1 = run_stage(cmd_mappo, "Stage 1: Decentralized MAPPO 5-Wave Curriculum Retraining (24 workers)")
+    t1 = run_stage(cmd_mappo, "Stage 1: Decentralized MAPPO 6-Wave Curriculum Retraining (24 workers)")
 
-    # Stage 2A: Fine-Tune Centralized PPO on Monday Alpine Mountain Pass & Shuttle Wave
+    # Stage 2A: Deep Fine-Tune Centralized PPO on Monday Alpine Mountain Pass & Shuttle Wave (150k steps)
     best_ppo = os.path.join(MODELS_DIR, "best_model.zip")
     cmd_ppo_alpine = [
         PYTHON, "dispatcher/training/train.py",
         "--wave", "alpine_shuttle",
+        "--timesteps", "147456",
+        "--workers", "24",
+        "--n-steps", "1024",
+        "--batch-size", "256",
+        "--load-model", best_ppo,
+        "--model-name", "best_model.zip"
+    ]
+    t2a = run_stage(cmd_ppo_alpine, "Stage 2A: Centralized PPO Deep Alpine Fine-Tuning 150k steps (24 workers)")
+
+    # Stage 2B: Fine-Tune Centralized PPO on Tuesday Midday Glacier Wave
+    cmd_ppo_glacier = [
+        PYTHON, "dispatcher/training/train.py",
+        "--wave", "glacier_express",
         "--timesteps", "49152",
         "--workers", "24",
         "--n-steps", "1024",
@@ -124,9 +137,9 @@ def main():
         "--load-model", best_ppo,
         "--model-name", "best_model.zip"
     ]
-    t2a = run_stage(cmd_ppo_alpine, "Stage 2A: Centralized PPO Alpine Mountain Pass Fine-Tuning (24 workers)")
+    t2b = run_stage(cmd_ppo_glacier, "Stage 2B: Centralized PPO Midday Glacier Fine-Tuning (24 workers)")
 
-    # Stage 2B: Consolidate Centralized PPO on Morning Peak
+    # Stage 2C: Consolidate Centralized PPO on Morning Peak
     cmd_ppo_peak = [
         PYTHON, "dispatcher/training/train.py",
         "--wave", "morning_peak",
@@ -137,7 +150,7 @@ def main():
         "--load-model", best_ppo,
         "--model-name", "best_model.zip"
     ]
-    t2b = run_stage(cmd_ppo_peak, "Stage 2B: Centralized PPO Morning Peak Consolidation (24 workers)")
+    t2c = run_stage(cmd_ppo_peak, "Stage 2C: Centralized PPO Morning Peak Consolidation (24 workers)")
 
     # Invalidate any pre-existing post-fix results so a stale file cannot satisfy the check
     if os.path.exists(POST_FIX_JSON):

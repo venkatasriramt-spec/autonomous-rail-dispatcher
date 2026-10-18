@@ -48,7 +48,7 @@ def main():
     parser.add_argument("--workers", type=int, default=16, help="Number of parallel SUMO workers (utilizing 32 CPU cores)")
     parser.add_argument("--steps-per-phase", type=int, default=10240, help="Timesteps per intermediate curriculum wave")
     parser.add_argument("--full-day-steps", type=int, default=15360, help="Timesteps for full-day consolidation wave")
-    parser.add_argument("--start-phase", type=int, default=1, choices=[1, 2, 3, 4, 5], help="Starting curriculum phase (1..5)")
+    parser.add_argument("--start-phase", type=int, default=1, choices=[1, 2, 3, 4, 5, 6], help="Starting curriculum phase (1..6)")
     parser.add_argument("--fresh", action="store_true", help="Start fresh training without loading existing weights in Phase 1")
     args = parser.parse_args()
 
@@ -103,10 +103,26 @@ def main():
         run_phase(cmd_p2, "Phase 2: Alpine Mountain Pass & Shuttle Wave (07:00-10:00, Monday Shuttles)")
 
     # -------------------------------------------------------------
-    # Phase 3: Evening Commuter Peak (16:00 - 18:45)
+    # Phase 3: Alpine Glacier Express & Midday Freight Wave (10:00 - 13:00, Tue)
     # -------------------------------------------------------------
     if args.start_phase <= 3:
         cmd_p3 = [
+            PYTHON, "dispatcher/training/train_mappo.py",
+            "--wave", "glacier_express",
+            "--day", "Tue",
+            "--timesteps", str(args.steps_per_phase),
+            "--workers", str(args.workers),
+            "--load-checkpoint", BASE_MODEL,
+            "--save-path", BASE_MODEL,
+            "--best-path", os.path.join(MODELS_DIR, "mappo_best_glacier_express.pt")
+        ]
+        run_phase(cmd_p3, "Phase 3: Alpine Glacier Express & Midday Freight Wave (10:00-13:00, Tuesday Meets)")
+
+    # -------------------------------------------------------------
+    # Phase 4: Evening Commuter Peak (16:00 - 18:45)
+    # -------------------------------------------------------------
+    if args.start_phase <= 4:
+        cmd_p4 = [
             PYTHON, "dispatcher/training/train_mappo.py",
             "--wave", "evening_peak",
             "--timesteps", str(args.steps_per_phase),
@@ -115,13 +131,13 @@ def main():
             "--save-path", BASE_MODEL,
             "--best-path", os.path.join(MODELS_DIR, "mappo_best_evening_peak.pt")
         ]
-        run_phase(cmd_p3, "Phase 3: Evening Commuter Peak Wave (16:00-18:45, High-Density Reverse Commute)")
+        run_phase(cmd_p4, "Phase 4: Evening Commuter Peak Wave (16:00-18:45, High-Density Reverse Commute)")
 
     # -------------------------------------------------------------
-    # Phase 4: Sunday Staging & Platform Calibration (08:00 - 12:00)
+    # Phase 5: Sunday Staging & Platform Calibration (08:00 - 12:00)
     # -------------------------------------------------------------
-    if args.start_phase <= 4:
-        cmd_p4 = [
+    if args.start_phase <= 5:
+        cmd_p5 = [
             PYTHON, "dispatcher/training/train_mappo.py",
             "--wave", "sunday_staging",
             "--day", "Sun",
@@ -131,13 +147,13 @@ def main():
             "--save-path", BASE_MODEL,
             "--best-path", os.path.join(MODELS_DIR, "mappo_best_sunday_staging.pt")
         ]
-        run_phase(cmd_p4, "Phase 4: Sunday Platform Staging & Turnaround Calibration (08:00-12:00, Platform 1 Buffer)")
+        run_phase(cmd_p5, "Phase 5: Sunday Platform Staging & Turnaround Calibration (08:00-12:00, Platform 1 Buffer)")
 
     # -------------------------------------------------------------
-    # Phase 5: Full-Day Continuous Fleet (05:00 - 23:00)
+    # Phase 6: Full-Day Continuous Fleet (05:00 - 23:00)
     # -------------------------------------------------------------
-    if args.start_phase <= 5:
-        cmd_p5 = [
+    if args.start_phase <= 6:
+        cmd_p6 = [
             PYTHON, "dispatcher/training/train_mappo.py",
             "--wave", "full_day",
             "--timesteps", str(args.full_day_steps),
@@ -146,7 +162,7 @@ def main():
             "--save-path", BASE_MODEL,
             "--best-path", os.path.join(MODELS_DIR, "mappo_best_full_day.pt")
         ]
-        run_phase(cmd_p5, "Phase 5: Full 24-Hour Continuous Fleet Synthesis (05:00-23:00, 242 Runs / 31 Rakes)")
+        run_phase(cmd_p6, "Phase 6: Full 24-Hour Continuous Fleet Synthesis (05:00-23:00, 242 Runs / 31 Rakes)")
 
     total_elapsed = time.time() - total_t0
     print("\n" + "=" * 90)
