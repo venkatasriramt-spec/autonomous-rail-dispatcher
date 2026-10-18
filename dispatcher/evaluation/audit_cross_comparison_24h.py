@@ -54,7 +54,8 @@ DISPATCHER_TYPES = [
     "FIFO_Heuristic",
     "Priority_Greedy_Heuristic",
     "Centralized_PPO",
-    "Decentralized_MAPPO"
+    "Decentralized_MAPPO",
+    "Hierarchical_Hybrid"
 ]
 
 SIM_HORIZON_SEC = 86400.0  # Full 24 Hours
@@ -143,6 +144,9 @@ def run_cross_eval_worker(task: Tuple[str, str, str]) -> Dict[str, Any]:
             agent = PriorityGreedyDispatcher()
         elif disp_name in ("Trained_PPO_Dispatcher", "Centralized_PPO"):
             agent = ModelAgentWrapper(MODEL_PATH)
+        elif disp_name in ("Hierarchical_Hybrid", "Hierarchical_Hybrid_Ensemble"):
+            from dispatcher.agents.hybrid_dispatcher import HierarchicalHybridDispatcher
+            agent = HierarchicalHybridDispatcher(MODEL_PATH, MAPPO_MODEL_PATH)
         else:
             raise ValueError(f"Unknown dispatcher: {disp_name}")
 
@@ -342,12 +346,14 @@ def main():
     for r in final_results:
         day_map[r["day"]][r["dispatcher"]] = r
 
+    all_audited_dispatchers = [d for d in DISPATCHER_TYPES if any(r["dispatcher"] == d for r in final_results)]
+
     # Step 4: Print Full Weekly Cross-Comparison Table
     print("\n" + "=" * 115)
     print(f"{'Day':<5} | {'Dispatcher Model':<28} | {'Mean Delay':<11} | {'Max Delay':<10} | {'Punctuality':<12} | {'Knock-ons':<11} | {'Interventions'}")
     print("-" * 115)
     for day in DAYS:
-        for disp in selected_dispatchers:
+        for disp in all_audited_dispatchers:
             if disp in day_map[day]:
                 r = day_map[day][disp]
                 print(f"{day:<5} | {disp:<28} | {r['mean_delay_sec']:>7.2f}s   | {r['max_delay_sec']:>7.1f}s  | {r['punctuality_pct']:>8.1f}%   | {r['knock_on_events']:>9}   | {r['actions_taken']:>6}")
@@ -363,7 +369,7 @@ def main():
     model_aggregates = {}
     static_avg_delay = 0.0
 
-    for disp in selected_dispatchers:
+    for disp in all_audited_dispatchers:
         disp_results = [r for r in final_results if r["dispatcher"] == disp]
         if not disp_results:
             continue
