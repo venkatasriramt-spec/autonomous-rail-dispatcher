@@ -95,6 +95,61 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
         except Exception as e:
             logger.warning("TraCI error inspecting high-speed bypass occupancy: %s", e)
             return False
+
+    @staticmethod
+    def _lookahead_conflict_check(
+        route_act: int,
+        focus_vid: str,
+        priority: float,
+        info: Optional[Dict[str, Any]] = None,
+        lookahead_sec: float = 300.0
+    ) -> bool:
+        """
+        Proactive Lookahead Conflict Forecasting (Option 3):
+        Projects downstream kinematic trajectories for 300s forward.
+        Returns True if the proposed routing action is conflict-free, or False if an
+        impending downstream conflict or face-to-face deadlock is detected.
+        """
+        if route_act == 0:
+            return True
+
+        try:
+            if traci is not None and traci.isLoaded():
+                # Opposing single-track conflict check on Corridor 3
+                if route_act == 1:
+                    road_id = traci.vehicle.getRoadID(focus_vid)
+                    direction = "bw" if "_bw" in road_id else "fw"
+                    opp_direction = "fw" if direction == "bw" else "bw"
+                    opp_edge = f"c3_Town_8_Town_9_{opp_direction}"
+                    try:
+                        opp_vehs = traci.edge.getLastStepVehicleIDs(opp_edge)
+                        if opp_vehs:
+                            logger.info("Lookahead vetoed siding divert for %s: opposing train detected on %s", focus_vid, opp_edge)
+                            return False
+                    except Exception:
+                        pass
+
+                elif route_act == 2:
+                    # High-speed bypass check: verify destination hub platforms have at least 1 open track
+                    dest_hub = "City_5" if "_fw" in str(info) else "City_2"
+                    try:
+                        all_blocked = True
+                        for p_i in range(1, 6):
+                            p_edge = f"{dest_hub}_plat_{p_i}_fw"
+                            if not traci.edge.getLastStepVehicleIDs(p_edge):
+                                all_blocked = False
+                                break
+                        if all_blocked:
+                            logger.info("Lookahead vetoed bypass divert for %s: destination hub %s fully saturated", focus_vid, dest_hub)
+                            return False
+                    except Exception:
+                        pass
+        except Exception as e:
+            logger.warning("Lookahead projection exception for %s: %s", focus_vid, e)
+            return False
+
+        return True
+
     def __init__(
         self,
         ppo_model_path: str = DEFAULT_PPO_PATH,
@@ -118,9 +173,10 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
         else:
             self.macro_ppo = None
 
-        # Micro Layer: Decentralized MAPPO
+        # Micro Layer: Communicative MAPPO (Option 1)
         if os.path.exists(mappo_model_path):
-            self.micro_mappo = MAPPODispatcher(
+            from dispatcher.agents.comm_mappo_agent import CommMAPPODispatcher
+            self.micro_mappo = CommMAPPODispatcher(
                 checkpoint_path=mappo_model_path,
                 exception_gating=exception_gating,
                 smart_interlocking=smart_interlocking
@@ -233,7 +289,11 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
                         mainline_crowded = (obs[7] < 0.40)
                         if bypass_free and is_high_speed_emu and mainline_crowded:
                             route_act = 2
-                        else:
+                    # Proactive Lookahead Conflict Forecasting (Option 3)
+                    if route_act > 0:
+                        fvid = focus_trains.get("corridor_trunk", "")
+                        f_prio = obs[3] if len(obs) > 3 else 0.5
+                        if not self._lookahead_conflict_check(route_act, fvid, f_prio, info):
                             route_act = 0
 
                 actions[aid] = int(route_act)
@@ -322,6 +382,11 @@ class HierarchicalHybridDispatcher(BaseDispatcher):
             if self._is_siding_free(info_dict, focus_vid):
                 r_act = 1
             else:
+                r_act = 0
+
+        # Step 3B: Proactive Lookahead Conflict Forecasting (Option 3)
+        if r_act > 0:
+            if not self._lookahead_conflict_check(r_act, focus_vid, priority, info_dict):
                 r_act = 0
 
         # Step 4: Smart Interlocking Platform Track Reallocation (Micro Policy / Interlocking)

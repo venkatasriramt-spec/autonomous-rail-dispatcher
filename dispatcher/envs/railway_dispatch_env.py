@@ -261,23 +261,37 @@ class RailwayDispatchEnv(gym.Env):
         self.completed_trains.clear()
         step_knock_ons = 0
 
-        applied_veh_id = self.focus_veh_id
-        route_act = int(action[0]) if len(action) > 0 else 0
-        plat_act = int(action[1]) if len(action) > 1 else 0
-        hold_act = int(action[2]) if len(action) > 2 else 0
-        self.last_action_is_nonzero = (route_act > 0 or plat_act > 0 or hold_act > 0)
-        self.last_plat_act = (plat_act > 0)
-        self.last_route_act = (route_act > 0)
-        self.last_hold_act = (hold_act > 0)
+        if isinstance(action, dict):
+            # Concurrent multi-train action mapping: {veh_id: np.ndarray([r, p, h])}
+            any_nonzero = False
+            for v_id, act_v in action.items():
+                if v_id in self.train_states:
+                    r_v = int(act_v[0]) if len(act_v) > 0 else 0
+                    p_v = int(act_v[1]) if len(act_v) > 1 else 0
+                    h_v = int(act_v[2]) if len(act_v) > 2 else 0
+                    if r_v > 0 or p_v > 0 or h_v > 0:
+                        any_nonzero = True
+                    self.action_handler.apply_action(v_id, act_v, self.train_states, self.sim_time, traci)
+            self.last_action_is_nonzero = any_nonzero
+            applied_veh_id = self.focus_veh_id
+        else:
+            applied_veh_id = self.focus_veh_id
+            route_act = int(action[0]) if len(action) > 0 else 0
+            plat_act = int(action[1]) if len(action) > 1 else 0
+            hold_act = int(action[2]) if len(action) > 2 else 0
+            self.last_action_is_nonzero = (route_act > 0 or plat_act > 0 or hold_act > 0)
+            self.last_plat_act = (plat_act > 0)
+            self.last_route_act = (route_act > 0)
+            self.last_hold_act = (hold_act > 0)
 
-        # 1. Apply Dispatcher Decision to Focus Train
-        self.action_handler.apply_action(
-            applied_veh_id,
-            action,
-            self.train_states,
-            self.sim_time,
-            traci
-        )
+            # 1. Apply Dispatcher Decision to Focus Train
+            self.action_handler.apply_action(
+                applied_veh_id,
+                action,
+                self.train_states,
+                self.sim_time,
+                traci
+            )
 
         # 2. Advance Microscopic Simulation by macro_step_sec (e.g. 15s)
         target_time = self.sim_time + self.macro_step_sec
@@ -382,6 +396,17 @@ class RailwayDispatchEnv(gym.Env):
             except Exception:
                 sched_plat_idx = 0
 
+        # Collect all active conflict trains requiring dispatcher intervention this step
+        candidate_trains = []
+        for vid, s in self.train_states.items():
+            needs_attention = (
+                (s.get("upcoming_station") and 200.0 < s.get("dist_to_next_stop", 9999.0) < 2500.0 and s.get("scheduled_platform_occupied"))
+                or (s.get("is_overtake_candidate"))
+                or (s.get("is_at_stop") and s.get("delay_sec", 0) > 0)
+            )
+            if needs_attention:
+                candidate_trains.append(vid)
+
         return {
             "sim_time": self.sim_time,
             "active_trains": len(self.train_states),
@@ -392,6 +417,7 @@ class RailwayDispatchEnv(gym.Env):
             "collisions": getattr(self, "total_collisions", 0),
             "teleports": getattr(self, "total_teleports", 0),
             "focus_vehicle": self.focus_veh_id,
+            "candidate_trains": candidate_trains,
             "day": self.day,
             "scheduled_platform_edge": sched_plat_edge,
             "scheduled_platform_idx": sched_plat_idx,

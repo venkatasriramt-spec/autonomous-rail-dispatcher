@@ -54,7 +54,9 @@ DISPATCHER_TYPES = [
     "FIFO_Heuristic",
     "Priority_Greedy_Heuristic",
     "Centralized_PPO",
+    "Multi_Train_Centralized_PPO",
     "Decentralized_MAPPO",
+    "Comm_MAPPO",
     "Hierarchical_Hybrid"
 ]
 
@@ -124,9 +126,13 @@ def run_cross_eval_worker(task: Tuple[str, str, str]) -> Dict[str, Any]:
             seed=42
         )
 
-    is_marl = (disp_name == "Decentralized_MAPPO")
+    is_marl = disp_name in ("Decentralized_MAPPO", "Comm_MAPPO")
     if is_marl:
-        agent = MAPPODispatcher(checkpoint_path=MAPPO_MODEL_PATH, exception_gating=True, smart_interlocking=True)
+        if disp_name == "Comm_MAPPO":
+            from dispatcher.agents.comm_mappo_agent import CommMAPPODispatcher
+            agent = CommMAPPODispatcher(checkpoint_path=MAPPO_MODEL_PATH, exception_gating=True, smart_interlocking=True)
+        else:
+            agent = MAPPODispatcher(checkpoint_path=MAPPO_MODEL_PATH, exception_gating=True, smart_interlocking=True)
         env = MultiAgentRailwayEnv(
             sumocfg_path=day_cfg,
             start_time_sec=0.0,
@@ -144,6 +150,9 @@ def run_cross_eval_worker(task: Tuple[str, str, str]) -> Dict[str, Any]:
             agent = PriorityGreedyDispatcher()
         elif disp_name in ("Trained_PPO_Dispatcher", "Centralized_PPO"):
             agent = ModelAgentWrapper(MODEL_PATH)
+        elif disp_name in ("Multi_Train_Centralized_PPO", "Multi_Train_PPO"):
+            from dispatcher.agents.multi_train_ppo import MultiTrainCentralizedDispatcher
+            agent = MultiTrainCentralizedDispatcher(MODEL_PATH)
         elif disp_name in ("Hierarchical_Hybrid", "Hierarchical_Hybrid_Ensemble"):
             from dispatcher.agents.hybrid_dispatcher import HierarchicalHybridDispatcher
             agent = HierarchicalHybridDispatcher(MODEL_PATH, MAPPO_MODEL_PATH)
@@ -194,16 +203,30 @@ def run_cross_eval_worker(task: Tuple[str, str, str]) -> Dict[str, Any]:
             truncated = trunc_dict.get("__all__", False)
         else:
             action = agent.predict(obs, info)
-            r_act, p_act, h_act = int(action[0]), int(action[1]), int(action[2])
+            if isinstance(action, dict):
+                for act_v in action.values():
+                    r_v = int(act_v[0]) if len(act_v) > 0 else 0
+                    p_v = int(act_v[1]) if len(act_v) > 1 else 0
+                    h_v = int(act_v[2]) if len(act_v) > 2 else 0
+                    if r_v > 0 or p_v > 0 or h_v > 0:
+                        actions_taken += 1
+                    if r_v > 0:
+                        route_diverts += 1
+                    if p_v > 0:
+                        plat_switches += 1
+                    if h_v > 0:
+                        holds_applied += 1
+            else:
+                r_act, p_act, h_act = int(action[0]), int(action[1]), int(action[2])
 
-            if r_act > 0 or p_act > 0 or h_act > 0:
-                actions_taken += 1
-            if r_act > 0:
-                route_diverts += 1
-            if p_act > 0:
-                plat_switches += 1
-            if h_act > 0:
-                holds_applied += 1
+                if r_act > 0 or p_act > 0 or h_act > 0:
+                    actions_taken += 1
+                if r_act > 0:
+                    route_diverts += 1
+                if p_act > 0:
+                    plat_switches += 1
+                if h_act > 0:
+                    holds_applied += 1
 
             obs, reward, terminated, truncated, info = env.step(action)
 
@@ -289,7 +312,7 @@ def main():
         print(f"[!] Error: Main model checkpoint not found at {MODEL_PATH}")
         sys.exit(1)
 
-    requires_mappo = any(d in selected_dispatchers for d in ("Decentralized_MAPPO", "Hierarchical_Hybrid", "Hierarchical_Hybrid_Ensemble"))
+    requires_mappo = any(d in selected_dispatchers for d in ("Decentralized_MAPPO", "Comm_MAPPO", "Hierarchical_Hybrid", "Hierarchical_Hybrid_Ensemble"))
     if requires_mappo and not os.path.exists(MAPPO_MODEL_PATH):
         print(f"[!] Error: MAPPO model checkpoint not found at {MAPPO_MODEL_PATH}")
         sys.exit(1)

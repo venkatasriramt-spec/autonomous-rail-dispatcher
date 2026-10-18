@@ -102,66 +102,74 @@ class RewardEngine:
             total_reward += self.completion_bonus
 
         # 5. Intervention Cost & Dynamic Conflict Resolution
-        if focus_veh_id and action is not None and focus_veh_id in train_states:
-            focus_state = train_states[focus_veh_id]
-            route_act = int(action[0]) if len(action) > 0 else 0
-            plat_act = int(action[1]) if len(action) > 1 else 0
-            hold_act = int(action[2]) if len(action) > 2 else 0
+        if action is not None:
+            if isinstance(action, dict):
+                actions_to_eval = [(vid, act) for vid, act in action.items() if vid in train_states]
+            elif focus_veh_id and focus_veh_id in train_states:
+                actions_to_eval = [(focus_veh_id, action)]
+            else:
+                actions_to_eval = []
 
-            leader_dist = focus_state.get("leader_dist", 3000.0)
-            leader_id = focus_state.get("leader_id", None)
-            has_close_leader = (leader_id is not None and leader_dist < 800.0)
-            is_overtake_candidate = focus_state.get("is_overtake_candidate", False)
-            delay_sec = focus_state.get("delay_sec", 0.0)
-            dist_to_stop = focus_state.get("dist_to_next_stop", 9999.0)
-            is_at_stop = focus_state.get("is_at_stop", False)
-            plat_occupied = focus_state.get("scheduled_platform_occupied", False)
-            approaching_station = (dist_to_stop < 2500.0 and dist_to_stop > 400.0 and not is_at_stop)
+            for vid, act_vec in actions_to_eval:
+                focus_state = train_states[vid]
+                route_act = int(act_vec[0]) if len(act_vec) > 0 else 0
+                plat_act = int(act_vec[1]) if len(act_vec) > 1 else 0
+                hold_act = int(act_vec[2]) if len(act_vec) > 2 else 0
 
-            # Train is truly nominal: On-schedule, clear track ahead, scheduled platform is free
-            is_nominal = (delay_sec < 60.0 and not has_close_leader and not is_overtake_candidate and not plat_occupied)
+                leader_dist = focus_state.get("leader_dist", 3000.0)
+                leader_id = focus_state.get("leader_id", None)
+                has_close_leader = (leader_id is not None and leader_dist < 800.0)
+                is_overtake_candidate = focus_state.get("is_overtake_candidate", False)
+                delay_sec = focus_state.get("delay_sec", 0.0)
+                dist_to_stop = focus_state.get("dist_to_next_stop", 9999.0)
+                is_at_stop = focus_state.get("is_at_stop", False)
+                plat_occupied = focus_state.get("scheduled_platform_occupied", False)
+                approaching_station = (dist_to_stop < 2500.0 and dist_to_stop > 400.0 and not is_at_stop)
 
-            # A. Platform Switch Evaluation:
-            if plat_act > 0:
-                if plat_occupied and approaching_station:
-                    # SMART INTERVENTION: Active conflict resolution!
-                    # Reassigning away from an occupied platform avoids a massive mainline blockage
-                    total_reward += 2.0
-                else:
-                    # Frivolous platform change (unneeded, too close to switch, or already nominal)
-                    total_reward -= 1.5
+                # Train is truly nominal: On-schedule, clear track ahead, scheduled platform is free
+                is_nominal = (delay_sec < 60.0 and not has_close_leader and not is_overtake_candidate and not plat_occupied)
 
-            # B. Route Divert Evaluation:
-            if route_act > 0:
-                if is_overtake_candidate:
-                    # Smart overtakes/sidings
-                    total_reward += 1.5
-                else:
-                    # Unnecessary route diversion
-                    total_reward -= 1.5
+                # A. Platform Switch Evaluation:
+                if plat_act > 0:
+                    if plat_occupied and approaching_station:
+                        # SMART INTERVENTION: Active conflict resolution!
+                        # Reassigning away from an occupied platform avoids a massive mainline blockage
+                        total_reward += 2.0
+                    else:
+                        # Frivolous platform change (unneeded, too close to switch, or already nominal)
+                        total_reward -= 1.5
 
-            # C. Hold Action Evaluation:
-            if hold_act > 0:
-                # Regulating hold is ONLY justified when dwelling at a platform to let an express pass
-                if is_at_stop and has_close_leader and focus_state.get("priority", 0.5) < 0.8:
-                    total_reward += 0.5
-                elif is_at_stop and plat_occupied:
-                    total_reward += 0.5
-                else:
-                    # Severe penalty for stopping trains on open mainline track!
-                    hold_penalty = 2.0 if is_at_stop else 5.0
-                    total_reward -= hold_penalty * (1.0 if hold_act == 1 else (1.5 if hold_act == 2 else 2.5))
+                # B. Route Divert Evaluation:
+                if route_act > 0:
+                    if is_overtake_candidate:
+                        # Smart overtakes/sidings
+                        total_reward += 1.5
+                    else:
+                        # Unnecessary route diversion
+                        total_reward -= 1.5
 
-            # D. Timetable Adherence Bonus vs Conflict Neglect:
-            if route_act == 0 and plat_act == 0 and hold_act == 0:
-                if is_nominal:
-                    # Reward smooth timetable flow: do nothing when everything is on schedule!
-                    total_reward += 0.5
-                elif plat_occupied and approaching_station:
-                    # Neglect penalty: heading straight into an occupied platform without intervening!
-                    total_reward -= 1.0
-                elif has_close_leader and leader_dist < 300.0:
-                    # Neglect penalty: closing in dangerously on leader without holding
-                    total_reward -= 0.5
+                # C. Hold Action Evaluation:
+                if hold_act > 0:
+                    # Regulating hold is ONLY justified when dwelling at a platform to let an express pass
+                    if is_at_stop and has_close_leader and focus_state.get("priority", 0.5) < 0.8:
+                        total_reward += 0.5
+                    elif is_at_stop and plat_occupied:
+                        total_reward += 0.5
+                    else:
+                        # Severe penalty for stopping trains on open mainline track!
+                        hold_penalty = 2.0 if is_at_stop else 5.0
+                        total_reward -= hold_penalty * (1.0 if hold_act == 1 else (1.5 if hold_act == 2 else 2.5))
+
+                # D. Timetable Adherence Bonus vs Conflict Neglect:
+                if route_act == 0 and plat_act == 0 and hold_act == 0:
+                    if is_nominal:
+                        # Reward smooth timetable flow: do nothing when everything is on schedule!
+                        total_reward += 0.5
+                    elif plat_occupied and approaching_station:
+                        # Neglect penalty: heading straight into an occupied platform without intervening!
+                        total_reward -= 1.0
+                    elif has_close_leader and leader_dist < 300.0:
+                        # Neglect penalty: closing in dangerously on leader without holding
+                        total_reward -= 0.5
 
         return float(total_reward)
