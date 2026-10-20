@@ -6,7 +6,7 @@ Welcome to the **Autonomous Rail Dispatcher** (`autonomous-rail-dispatcher`) mon
 
 ## 1. System Architecture
 
-The monorepo is organized into three isolated yet tightly integrated subsystems:
+The monorepo is organized into four isolated yet tightly integrated subsystems:
 
 ```
 .
@@ -92,6 +92,16 @@ The monorepo is organized into three isolated yet tightly integrated subsystems:
 │   ├── models/                   # Saved model weights (best_model.zip, mappo_*.pt)
 │   ├── logs/                     # Hierarchical logs (evaluations/, visual_proofs/, tensorboard/)
 │   └── README.md                 # Detailed Dispatcher AI subsystem documentation
+│
+├── backend/                      # Production FastAPI & WebSocket Simulation Server
+│   ├── main.py                   # Master FastAPI application, CORS & lifecycle
+│   ├── run_server.py             # CLI entrypoint (host, port, mode, day, model)
+│   ├── config.py                 # Central filesystem paths & constants
+│   ├── test_backend.py           # End-to-end unit test & validation suite
+│   ├── core/                     # SimManager, DispatcherBridge, NetworkGeometry, Streamer
+│   ├── routers/                  # Simulation, WebSocket, Network, Timetable, Analytics
+│   ├── schemas/                  # Pydantic models for REST endpoints and WebSocket frames
+│   └── README.md                 # Detailed backend documentation & API specifications
 │
 ├── README.md                     # Monorepo architecture & quick-start guide
 ├── project_history.md             # Unified monorepo milestones & integration log

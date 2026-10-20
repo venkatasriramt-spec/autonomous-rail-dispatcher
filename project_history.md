@@ -781,5 +781,55 @@ Audited 56 parallel 24-hour simulations (7 calendar days × 8 dispatcher models 
   - **Comm-MAPPO** successfully eliminates 90.4% of baseline MAPPO action churn through inter-agent communication and persistent platform locks.
   - Generated complete 8-model visual proof charts in [`dispatcher/logs/visual_proofs/`](dispatcher/logs/visual_proofs/) including `weekly_7day_delay_comparison.png`, `weekly_7day_punctuality.png`, `weekly_7day_knockon_cascades.png`, `weekly_7day_actions_taken.png`, `weekly_24h_diurnal_timeline.png`, and `model_efficiency_tradeoff.png`.
 
+---
+
+### 20 October 2026 — Milestone: Production FastAPI & WebSocket Simulation Server (`backend/`) Architecture & Full-System Integration
+
+#### Milestone Objective
+Engineer and integrate a production-ready, thread-safe FastAPI and high-frequency WebSocket backend service (`backend/`) capable of serving live microscopic SUMO simulation telemetry, streaming active AI dispatcher decisions across all 8 paradigms, exposing 2D track vector geometry for UI canvas rendering, querying the commercial SQLite database (`trains.db`), and enabling interactive human-in-the-loop manual overrides.
+
+---
+
+#### 1. System Engineering & Architecture
+
+1. **Master Simulation Manager (`backend/core/sim_manager.py`):**
+   - Thread-safe orchestrator managing SUMO TraCI lifecycle, background worker threads, play/pause/step/reset state machines, and variable playback speeds (1x to 20x).
+   - Dual-mode flexibility:
+     - `LIVE_SUMO`: Interfaces with microscopic SUMO via TraCI, executing 1-second continuous physical steps and 15-second AI macro-steps.
+     - `DEMO_REPLAY`: High-fidelity simulated replay mode allowing frontend developers to test interactive map visualizations and dashboards without needing local SUMO running.
+
+2. **Unified Dispatcher Bridge (`backend/core/dispatcher_bridge.py`):**
+   - Factory pattern supporting seamless in-flight switching across all 8 dispatcher models (`Centralized_PPO`, `Hierarchical_Hybrid`, `Decentralized_MAPPO`, `Comm_MAPPO`, `Multi_Train_Centralized_PPO`, `Priority_Greedy_Heuristic`, `FIFO_Heuristic`, `Static_Baseline`).
+   - Seamlessly handles both single-agent SMDP and multi-agent CTDE step formats.
+
+3. **2D Vector Network Geometry Engine (`backend/core/network_geometry.py`):**
+   - Microscopic XML parser extracting 776 track lanes with coordinates, speed limits, lengths, and functional categories (`high_speed`, `regional`, `passing_loop`, `pocket`, `platform`, `crossover`, `yard`, `depot`).
+   - Extracts all 18 stations with centroid coordinates and 116 `<trainStop>` platforms.
+   - Caches parsed geometry to disk (`backend/network_geometry.json`) for instant sub-millisecond retrieval.
+
+4. **Real-Time WebSocket Telemetry Broadcaster (`backend/core/telemetry_streamer.py`):**
+   - Connection hub managing concurrent WebSocket subscribers at `/ws/telemetry`.
+   - Streams live vehicle vectors (`x`, `y`, `angle`, `speed_kmh`, `delay_sec`, `vtype`, `length`), platform occupancies, recent dispatcher action events, and network KPIs at 4 Hz.
+
+5. **REST API Subsystem (`backend/routers/`):**
+   - `/api/sim`: Lifecycle commands (`play`, `pause`, `step`, `reset`), configuration updates, and model/day selection.
+   - `/api/network`: 2D vector track geometry, station metadata, platform listings, and bounding box coordinates.
+   - `/api/timetable`: SQLite queries for 242 scheduled services, 31 rakes, and 7 rolling stock specifications.
+   - `/api/analytics`: Precomputed 56-run weekly benchmarks, 24-hour diurnal delay curves, and disruption audit summaries.
+   - `/api/disruption`: Injection engine for mechanical stalls, platform closures, and fleet surge jitter.
+   - `/api/override`: Human-in-the-loop manual overrides (platform switches, departure holds, bypass diversions).
+
+---
+
+#### 2. Verification & Validation Audit
+
+The backend subsystem was audited end-to-end via [`backend/test_backend.py`](backend/test_backend.py):
+- **Core Database Layer:** 232 Monday services, 31 rakes, and 7 rolling stock types queried successfully.
+- **Network Geometry Parser:** 776 lanes, 18 stations, 116 platforms, and 23 buffer stops parsed and verified within bounds `[-0.33, -0.18, 29708.16, 26683.47]`.
+- **REST Endpoints:** 100% of routes returned `200 OK`.
+- **Live HTTP Server:** Tested over socket `127.0.0.1:8009` with live startup, request handling, stepping, and clean shutdown.
+- **All tests passed cleanly.**
+
+
 
 
