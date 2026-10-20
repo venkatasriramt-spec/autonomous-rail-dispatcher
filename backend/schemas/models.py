@@ -4,7 +4,7 @@ Pydantic schemas for request bodies, responses, and real-time telemetry frames.
 """
 
 from enum import Enum
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Literal
 from pydantic import BaseModel, Field
 
 
@@ -85,16 +85,16 @@ class TelemetryFrame(BaseModel):
 
 # Request Models
 class SimulationControlRequest(BaseModel):
-    action: str = Field(..., description="'play', 'pause', 'step', or 'reset'")
-    speed: Optional[float] = Field(None, description="Playback speed multiplier (e.g. 1.0, 5.0, 10.0)")
+    action: Literal["play", "pause", "step", "reset"] = Field(..., description="'play', 'pause', 'step', or 'reset'")
+    speed: Optional[float] = Field(None, gt=0, description="Playback speed multiplier (e.g. 1.0, 5.0, 10.0)")
 
 
 class SimulationConfigRequest(BaseModel):
     day: Optional[str] = Field(None, description="Calendar day: Mon, Tue, Wed, Thu, Fri, Sat, Sun")
     model: Optional[str] = Field(None, description="Dispatcher model name")
     mode: Optional[SimulationMode] = Field(None, description="LIVE_SUMO or DEMO_REPLAY")
-    start_time_sec: Optional[float] = Field(None, description="Start time in seconds from 00:00 (e.g. 21600 for 06:00)")
-    speed: Optional[float] = Field(None, description="Simulation speed multiplier")
+    start_time_sec: Optional[float] = Field(None, ge=0.0, lt=86400.0, description="Start time in seconds from 00:00 (e.g. 21600 for 06:00)")
+    speed: Optional[float] = Field(None, gt=0, description="Simulation speed multiplier")
 
 
 class DisruptionRequest(BaseModel):

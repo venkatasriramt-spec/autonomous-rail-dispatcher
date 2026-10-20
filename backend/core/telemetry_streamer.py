@@ -61,6 +61,11 @@ class TelemetryStreamer:
             async with self._lock:
                 for ws in dead_connections:
                     self.active_connections.discard(ws)
+            for ws in dead_connections:
+                try:
+                    await ws.close(code=1011)
+                except Exception:
+                    pass
 
     def get_latest_frame(self) -> Optional[Dict[str, Any]]:
         """Returns the most recently broadcast telemetry frame."""

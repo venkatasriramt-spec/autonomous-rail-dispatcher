@@ -12,7 +12,7 @@ router = APIRouter(prefix="/api/disruption", tags=["Perturbations & Disruptions"
 
 
 @router.post("/inject")
-async def inject_disruption(req: DisruptionRequest):
+def inject_disruption(req: DisruptionRequest):
     """
     Injects a live disruption into the running simulation:
     - train_delay: Mechanical breakdown/stall
@@ -34,7 +34,7 @@ async def inject_disruption(req: DisruptionRequest):
 
 
 @router.post("/clear")
-async def clear_all_disruptions():
+def clear_all_disruptions():
     """Clears all active perturbations."""
     sim_manager.clear_disruptions()
     return {

@@ -139,11 +139,11 @@ def test_routers_direct():
         print("  ✓ get_diurnal_timeline: OK (24 hours)")
 
         # Disruptions
-        dis_res = await inject_disruption(DisruptionRequest(mode="fleet_surge", delay_duration_sec=300.0))
+        dis_res = inject_disruption(DisruptionRequest(mode="fleet_surge", delay_duration_sec=300.0))
         assert dis_res["success"] is True
         active_dis = await get_active_disruptions()
         assert len(active_dis["active_disruptions"]) > 0
-        await clear_all_disruptions()
+        clear_all_disruptions()
         print("  ✓ Disruption inject & clear: OK")
 
         # Overrides
@@ -168,40 +168,94 @@ def test_live_http_server():
     thread = threading.Thread(target=server.run, daemon=True)
     thread.start()
 
-    start_deadline = time.time() + 5.0
-    while not server.started:
-        if not thread.is_alive():
-            raise RuntimeError("Serving thread failed to start or died unexpectedly.")
-        if time.time() > start_deadline:
-            raise TimeoutError("Timed out waiting for uvicorn server to start.")
-        time.sleep(0.05)
-
     try:
-        r = requests.get("http://127.0.0.1:8009/")
+        start_deadline = time.time() + 5.0
+        while not server.started:
+            if not thread.is_alive():
+                raise RuntimeError("Serving thread failed to start or died unexpectedly.")
+            if time.time() > start_deadline:
+                raise TimeoutError("Timed out waiting for uvicorn server to start.")
+            time.sleep(0.05)
+
+        HTTP_TIMEOUT = (2.0, 5.0)
+
+        r = requests.get("http://127.0.0.1:8009/", timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
         data = r.json()
         assert data["status"] == "online"
-        print("  ✓ HTTP GET http://127.0.0.1:8009/: 200 OK")
+        print("  ✓ HTTP GET /: 200 OK")
 
-        r = requests.get("http://127.0.0.1:8009/health")
+        r = requests.get("http://127.0.0.1:8009/health", timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
-        print("  ✓ HTTP GET http://127.0.0.1:8009/health: 200 OK")
+        print("  ✓ HTTP GET /health: 200 OK")
 
-        r = requests.get("http://127.0.0.1:8009/api/sim/status")
+        r = requests.get("http://127.0.0.1:8009/api/sim/status", timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
-        print("  ✓ HTTP GET http://127.0.0.1:8009/api/sim/status: 200 OK")
+        print("  ✓ HTTP GET /api/sim/status: 200 OK")
 
-        r = requests.get("http://127.0.0.1:8009/api/network/bounds")
+        r = requests.post("http://127.0.0.1:8009/api/sim/control", json={"action": "step"}, timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
-        print("  ✓ HTTP GET http://127.0.0.1:8009/api/network/bounds: 200 OK")
+        print("  ✓ HTTP POST /api/sim/control (step): 200 OK")
 
-        r = requests.get("http://127.0.0.1:8009/api/analytics/weekly-summary")
+        r = requests.post("http://127.0.0.1:8009/api/sim/config", json={"speed": 1.5}, timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
-        print("  ✓ HTTP GET http://127.0.0.1:8009/api/analytics/weekly-summary: 200 OK")
+        print("  ✓ HTTP POST /api/sim/config: 200 OK")
 
-        r = requests.post("http://127.0.0.1:8009/api/sim/control", json={"action": "step"})
+        r = requests.get("http://127.0.0.1:8009/api/network/bounds", timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
-        print("  ✓ HTTP POST http://127.0.0.1:8009/api/sim/control (step): 200 OK")
+        print("  ✓ HTTP GET /api/network/bounds: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/network/stations", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/network/stations: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/network/platforms", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/network/platforms: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/network/geometry", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/network/geometry: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/timetable/services", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/timetable/services: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/timetable/rakes", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/timetable/rakes: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/timetable/rolling-stock", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/timetable/rolling-stock: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/analytics/weekly-summary", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/analytics/weekly-summary: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/analytics/diurnal?day=Mon", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/analytics/diurnal: 200 OK")
+
+        r = requests.post("http://127.0.0.1:8009/api/disruption/inject", json={"mode": "fleet_surge", "delay_duration_sec": 60.0}, timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP POST /api/disruption/inject: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/disruption/active", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/disruption/active: 200 OK")
+
+        r = requests.post("http://127.0.0.1:8009/api/disruption/clear", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP POST /api/disruption/clear: 200 OK")
+
+        r = requests.post("http://127.0.0.1:8009/api/override/action", json={"vehicle_id": "HS_300_01", "override_type": "platform_switch", "target_platform": 2}, timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP POST /api/override/action: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/override/recent", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/override/recent: 200 OK")
 
     finally:
         server.should_exit = True

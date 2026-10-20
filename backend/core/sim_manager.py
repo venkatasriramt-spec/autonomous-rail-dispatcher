@@ -321,8 +321,9 @@ class SimulationManager:
                 step_duration = time.time() - step_start
                 simulated_seconds = self.macro_step_sec
                 real_time_budget = simulated_seconds / max(0.1, self.speed_multiplier)
-                sleep_needed = max(0.01, real_time_budget - step_duration)
-                time.sleep(min(sleep_needed, 0.5))
+                sleep_needed = max(0.0, real_time_budget - step_duration)
+                if sleep_needed > 0:
+                    self._stop_event.wait(timeout=sleep_needed)
         finally:
             with self._lock:
                 if self.env is not None:
@@ -369,6 +370,25 @@ class SimulationManager:
 
             self.sim_time_sec = info.get("sim_time", self.sim_time_sec + self.macro_step_sec)
             self.total_knock_ons = info.get("knock_on_events", self.total_knock_ons)
+
+            # Revert expired disruptions in LIVE_SUMO
+            if self._applied_perturbations and traci is not None:
+                still_active = []
+                for p in self._applied_perturbations:
+                    if p.get("expiry") is not None and self.sim_time_sec >= p["expiry"]:
+                        try:
+                            if p.get("type") == "vehicle_speed":
+                                traci.vehicle.setSpeed(p["vid"], -1.0)
+                            elif p.get("type") == "lane_disallow":
+                                traci.lane.setDisallowed(p["lane"], [])
+                        except Exception as e:
+                            logger.warning(f"Error reverting expired perturbation {p}: {e}")
+                        desc = p.get("desc")
+                        if desc and desc in self.active_disruptions:
+                            self.active_disruptions.remove(desc)
+                    else:
+                        still_active.append(p)
+                self._applied_perturbations = still_active
 
             # Capture vehicle telemetry from TraCI
             self._extract_live_trains()
@@ -596,9 +616,15 @@ class SimulationManager:
             # If live SUMO, apply direct TraCI perturbation and record for rollback
             if self.mode == SimulationMode.LIVE_SUMO and traci is not None:
                 try:
+                    expiry = self.sim_time_sec + duration
                     if mode == "train_delay" and vehicle_id:
                         traci.vehicle.setSpeed(vehicle_id, 0.0)
-                        self._applied_perturbations.append({"type": "vehicle_speed", "vid": vehicle_id})
+                        self._applied_perturbations.append({
+                            "type": "vehicle_speed",
+                            "vid": vehicle_id,
+                            "expiry": expiry,
+                            "desc": desc
+                        })
                     elif mode == "platform_blockage" and platform_id:
                         resolved_lane = platform_id
                         if self.geometry and "stations" in self.geometry:
@@ -608,7 +634,12 @@ class SimulationManager:
                                         resolved_lane = plat.get("lane", platform_id)
                                         break
                         traci.lane.setDisallowed(resolved_lane, ["all"])
-                        self._applied_perturbations.append({"type": "lane_disallow", "lane": resolved_lane})
+                        self._applied_perturbations.append({
+                            "type": "lane_disallow",
+                            "lane": resolved_lane,
+                            "expiry": expiry,
+                            "desc": desc
+                        })
                 except Exception as e:
                     logger.error(f"Failed to inject TraCI disruption: {e}")
                     return False

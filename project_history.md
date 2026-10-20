@@ -826,7 +826,7 @@ Engineer and integrate a production-ready, thread-safe FastAPI and high-frequenc
 The backend subsystem was audited end-to-end via [`backend/test_backend.py`](backend/test_backend.py):
 - **Core Database Layer:** 232 Monday services, 31 rakes, and 7 rolling stock types queried successfully.
 - **Network Geometry Parser:** 776 lanes, 18 stations, 116 platforms, and 23 buffer stops parsed and verified within bounds `[-0.33, -0.18, 29708.16, 26683.47]`.
-- **REST Endpoints:** 100% of routes returned `200 OK`.
+- **REST Endpoints:** 100% of routes exercised and verified with `200 OK` responses via live HTTP requests in [`backend/test_backend.py`](backend/test_backend.py).
 - **Live HTTP Server:** Tested over socket `127.0.0.1:8009` with live startup, request handling, stepping, and clean shutdown.
 - **All tests passed cleanly.**
 

@@ -9,7 +9,11 @@ import xml.etree.ElementTree as ET
 from typing import Dict, Any, List, Tuple
 from pathlib import Path
 
-from backend.config import NET_FILE, ADD_FILE, GEOMETRY_CACHE_FILE
+from backend.config import ROOT_DIR, NET_FILE, ADD_FILE, GEOMETRY_CACHE_FILE
+
+# Machine-independent relative paths for source files
+NET_FILE_REL = str(Path(NET_FILE).relative_to(ROOT_DIR))
+ADD_FILE_REL = str(Path(ADD_FILE).relative_to(ROOT_DIR))
 
 # Station friendly display names
 STATION_DISPLAY_NAMES = {
@@ -78,7 +82,7 @@ def parse_network_geometry(force_reparse: bool = False) -> Dict[str, Any]:
             if _CACHED_GEOMETRY and cache_mtime == _CACHED_MTIME:
                 rec_net = _CACHED_GEOMETRY.get("net_file")
                 rec_add = _CACHED_GEOMETRY.get("add_file")
-                if rec_net == str(NET_FILE) and rec_add == str(ADD_FILE):
+                if rec_net == NET_FILE_REL and rec_add == ADD_FILE_REL:
                     if cache_mtime >= net_mtime and cache_mtime >= add_mtime:
                         return _CACHED_GEOMETRY
 
@@ -88,7 +92,7 @@ def parse_network_geometry(force_reparse: bool = False) -> Dict[str, Any]:
                     disk_cache = json.load(f)
                 rec_net = disk_cache.get("net_file")
                 rec_add = disk_cache.get("add_file")
-                if rec_net == str(NET_FILE) and rec_add == str(ADD_FILE):
+                if rec_net == NET_FILE_REL and rec_add == ADD_FILE_REL:
                     _CACHED_GEOMETRY = disk_cache
                     _CACHED_MTIME = cache_mtime
                     return _CACHED_GEOMETRY
@@ -228,14 +232,16 @@ def parse_network_geometry(force_reparse: bool = False) -> Dict[str, Any]:
         "stations": stations_data,
         "signals_count": signals_count,
         "buffer_stops_count": buffer_stops_count,
-        "net_file": str(NET_FILE),
-        "add_file": str(ADD_FILE)
+        "net_file": NET_FILE_REL,
+        "add_file": ADD_FILE_REL
     }
 
-    # Save to disk cache
+    # Save to disk cache atomically
     try:
-        with open(GEOMETRY_CACHE_FILE, "w") as f:
+        temp_file = f"{GEOMETRY_CACHE_FILE}.tmp.{os.getpid()}"
+        with open(temp_file, "w") as f:
             json.dump(result, f)
+        os.replace(temp_file, GEOMETRY_CACHE_FILE)
         _CACHED_MTIME = os.path.getmtime(GEOMETRY_CACHE_FILE)
     except Exception:
         _CACHED_MTIME = 0.0

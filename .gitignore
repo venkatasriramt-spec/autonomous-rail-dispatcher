@@ -87,6 +87,10 @@ dispatcher/models/*.pt
 !dispatcher/models/mappo_*.pt
 *.tfevents.*
 
+# Backend cached data
+backend/network_geometry.json
+backend/*.tmp*
+
 # NOTE ON XML FILES:
 # DO NOT ignore *.xml files!
 # Network data (tracks/network_data/*.xml) and compiled routes (trains/sumo_config/*.xml)
