@@ -83,15 +83,19 @@ export default function QueryPage() {
   const [trainDetailsCache, setTrainDetailsCache] = useState({});
   const [loadingDetail, setLoadingDetail] = useState(false);
 
-  // Station Board State
+  // Station Board State & Pagination
   const [selectedStation, setSelectedStation] = useState('City_1');
   const [selectedBoardDay, setSelectedBoardDay] = useState('Mon');
   const [stationBoardData, setStationBoardData] = useState([]);
   const [loadingStationBoard, setLoadingStationBoard] = useState(false);
   const [stationMoveFilter, setStationMoveFilter] = useState('ALL'); // 'ALL' | 'DEPARTURES' | 'ARRIVALS'
+  const [boardCurrentPage, setBoardCurrentPage] = useState(1);
+  const [boardPageSize, setBoardPageSize] = useState(15); // 15 | 25 | 50 | 'all'
 
-  // Rakes Filter State
+  // Rakes Filter & Pagination State
   const [rakeTypeFilter, setRakeTypeFilter] = useState('ALL');
+  const [rakeCurrentPage, setRakeCurrentPage] = useState(1);
+  const [rakePageSize, setRakePageSize] = useState(12); // 12 | 24 | 'all'
 
   // 1. Initial Data Fetching
   useEffect(() => {
@@ -308,11 +312,71 @@ export default function QueryPage() {
     };
   }, [stationBoardData]);
 
+  // Reset Station Board page when filters change
+  useEffect(() => {
+    setBoardCurrentPage(1);
+  }, [selectedStation, selectedBoardDay, stationMoveFilter, boardPageSize]);
+
+  // Paginated Station Movements
+  const boardTotalPages = useMemo(() => {
+    if (boardPageSize === 'all') return 1;
+    return Math.ceil(stationMovements.length / boardPageSize) || 1;
+  }, [stationMovements.length, boardPageSize]);
+
+  const paginatedStationMovements = useMemo(() => {
+    if (boardPageSize === 'all') return stationMovements;
+    const start = (boardCurrentPage - 1) * boardPageSize;
+    return stationMovements.slice(start, start + boardPageSize);
+  }, [stationMovements, boardCurrentPage, boardPageSize]);
+
+  const getBoardPageNumbers = () => {
+    if (boardTotalPages <= 7) {
+      return Array.from({ length: boardTotalPages }, (_, i) => i + 1);
+    }
+    if (boardCurrentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', boardTotalPages];
+    }
+    if (boardCurrentPage >= boardTotalPages - 3) {
+      return [1, '...', boardTotalPages - 4, boardTotalPages - 3, boardTotalPages - 2, boardTotalPages - 1, boardTotalPages];
+    }
+    return [1, '...', boardCurrentPage - 1, boardCurrentPage, boardCurrentPage + 1, '...', boardTotalPages];
+  };
+
   // 5. Filtered Physical Rakes
   const filteredRakes = useMemo(() => {
     if (rakeTypeFilter === 'ALL') return rakes;
     return rakes.filter(r => r.rolling_stock_type === rakeTypeFilter);
   }, [rakes, rakeTypeFilter]);
+
+  // Reset Rakes page when filter changes
+  useEffect(() => {
+    setRakeCurrentPage(1);
+  }, [rakeTypeFilter, rakePageSize]);
+
+  // Paginated Sliced Rakes
+  const rakeTotalPages = useMemo(() => {
+    if (rakePageSize === 'all') return 1;
+    return Math.ceil(filteredRakes.length / rakePageSize) || 1;
+  }, [filteredRakes.length, rakePageSize]);
+
+  const paginatedRakes = useMemo(() => {
+    if (rakePageSize === 'all') return filteredRakes;
+    const start = (rakeCurrentPage - 1) * rakePageSize;
+    return filteredRakes.slice(start, start + rakePageSize);
+  }, [filteredRakes, rakeCurrentPage, rakePageSize]);
+
+  const getRakePageNumbers = () => {
+    if (rakeTotalPages <= 7) {
+      return Array.from({ length: rakeTotalPages }, (_, i) => i + 1);
+    }
+    if (rakeCurrentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', rakeTotalPages];
+    }
+    if (rakeCurrentPage >= rakeTotalPages - 3) {
+      return [1, '...', rakeTotalPages - 4, rakeTotalPages - 3, rakeTotalPages - 2, rakeTotalPages - 1, rakeTotalPages];
+    }
+    return [1, '...', rakeCurrentPage - 1, rakeCurrentPage, rakeCurrentPage + 1, '...', rakeTotalPages];
+  };
 
   // Format Helper: Seconds to mm:ss or hh:mm:ss
   const formatDuration = (sec) => {
@@ -991,7 +1055,7 @@ export default function QueryPage() {
                           </tr>
                         </thead>
                         <tbody>
-                          {stationMovements.map((move, mIdx) => (
+                          {paginatedStationMovements.map((move, mIdx) => (
                             <tr 
                               key={`${move.train_number}-${move.stop_sequence || mIdx}-${mIdx}`} 
                               className={`move-row move-${(move.movement_type || 'halt').toLowerCase()}`}
@@ -1051,6 +1115,109 @@ export default function QueryPage() {
                       </table>
                     </div>
                   )}
+
+                  {/* Sliced Pagination Controls for Station Board */}
+                  {stationMovements.length > 0 && (
+                    <div className="pagination-bar station-board-pagination">
+                      <div className="pagination-info">
+                        <span>
+                          Showing <strong>{stationMovements.length === 0 ? 0 : (boardCurrentPage - 1) * (boardPageSize === 'all' ? stationMovements.length : boardPageSize) + 1}</strong>
+                          {' – '}
+                          <strong>{boardPageSize === 'all' ? stationMovements.length : Math.min(boardCurrentPage * boardPageSize, stationMovements.length)}</strong>
+                          {' of '}
+                          <strong>{stationMovements.length}</strong> movements
+                        </span>
+
+                        <div className="page-size-selector">
+                          <label>Show per page:</label>
+                          <select 
+                            value={boardPageSize} 
+                            onChange={(e) => setBoardPageSize(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                            className="page-size-select"
+                          >
+                            <option value={15}>15 per page</option>
+                            <option value={25}>25 per page</option>
+                            <option value={50}>50 per page</option>
+                            <option value="all">All ({stationMovements.length})</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {boardTotalPages > 1 && (
+                        <div className="pagination-controls">
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={boardCurrentPage === 1}
+                            onClick={() => {
+                              setBoardCurrentPage(1);
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="First Page"
+                          >
+                            « First
+                          </button>
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={boardCurrentPage === 1}
+                            onClick={() => {
+                              setBoardCurrentPage(p => Math.max(1, p - 1));
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="Previous Page"
+                          >
+                            ‹ Prev
+                          </button>
+
+                          <div className="page-numbers-list">
+                            {getBoardPageNumbers().map((pNum, idx) => (
+                              pNum === '...' ? (
+                                <span key={`ellipsis-board-${idx}`} className="page-ellipsis">…</span>
+                              ) : (
+                                <button
+                                  key={pNum}
+                                  type="button"
+                                  className={`btn-page-number ${boardCurrentPage === pNum ? 'active' : ''}`}
+                                  onClick={() => {
+                                    setBoardCurrentPage(pNum);
+                                    window.scrollTo({ top: 380, behavior: 'smooth' });
+                                  }}
+                                >
+                                  {pNum}
+                                </button>
+                              )
+                            ))}
+                          </div>
+
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={boardCurrentPage === boardTotalPages}
+                            onClick={() => {
+                              setBoardCurrentPage(p => Math.min(boardTotalPages, p + 1));
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="Next Page"
+                          >
+                            Next ›
+                          </button>
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={boardCurrentPage === boardTotalPages}
+                            onClick={() => {
+                              setBoardCurrentPage(boardTotalPages);
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="Last Page"
+                          >
+                            Last »
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             )}
@@ -1087,7 +1254,7 @@ export default function QueryPage() {
 
                 {/* Rakes Grid */}
                 <div className="rakes-cards-grid">
-                  {filteredRakes.map(rake => (
+                  {paginatedRakes.map(rake => (
                     <div key={rake.rake_id} className="rake-card">
                       <div className="rake-card-header">
                         <div className="rake-id-badge">
@@ -1132,6 +1299,108 @@ export default function QueryPage() {
                     </div>
                   ))}
                 </div>
+
+                {/* Sliced Pagination Controls for Rakes Roster */}
+                {filteredRakes.length > 0 && (
+                  <div className="pagination-bar">
+                    <div className="pagination-info">
+                      <span>
+                        Showing <strong>{filteredRakes.length === 0 ? 0 : (rakeCurrentPage - 1) * (rakePageSize === 'all' ? filteredRakes.length : rakePageSize) + 1}</strong>
+                        {' – '}
+                        <strong>{rakePageSize === 'all' ? filteredRakes.length : Math.min(rakeCurrentPage * rakePageSize, filteredRakes.length)}</strong>
+                        {' of '}
+                        <strong>{filteredRakes.length}</strong> physical rakes
+                      </span>
+
+                      <div className="page-size-selector">
+                        <label>Show per page:</label>
+                        <select 
+                          value={rakePageSize} 
+                          onChange={(e) => setRakePageSize(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                          className="page-size-select"
+                        >
+                          <option value={12}>12 per page</option>
+                          <option value={24}>24 per page</option>
+                          <option value="all">All ({filteredRakes.length})</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    {rakeTotalPages > 1 && (
+                      <div className="pagination-controls">
+                        <button 
+                          type="button"
+                          className="btn-page-nav"
+                          disabled={rakeCurrentPage === 1}
+                          onClick={() => {
+                            setRakeCurrentPage(1);
+                            window.scrollTo({ top: 380, behavior: 'smooth' });
+                          }}
+                          title="First Page"
+                        >
+                          « First
+                        </button>
+                        <button 
+                          type="button"
+                          className="btn-page-nav"
+                          disabled={rakeCurrentPage === 1}
+                          onClick={() => {
+                            setRakeCurrentPage(p => Math.max(1, p - 1));
+                            window.scrollTo({ top: 380, behavior: 'smooth' });
+                          }}
+                          title="Previous Page"
+                        >
+                          ‹ Prev
+                        </button>
+
+                        <div className="page-numbers-list">
+                          {getRakePageNumbers().map((pNum, idx) => (
+                            pNum === '...' ? (
+                              <span key={`ellipsis-rake-${idx}`} className="page-ellipsis">…</span>
+                            ) : (
+                              <button
+                                key={pNum}
+                                type="button"
+                                className={`btn-page-number ${rakeCurrentPage === pNum ? 'active' : ''}`}
+                                onClick={() => {
+                                  setRakeCurrentPage(pNum);
+                                  window.scrollTo({ top: 380, behavior: 'smooth' });
+                                }}
+                              >
+                                {pNum}
+                              </button>
+                            )
+                          ))}
+                        </div>
+
+                        <button 
+                          type="button"
+                          className="btn-page-nav"
+                          disabled={rakeCurrentPage === rakeTotalPages}
+                          onClick={() => {
+                            setRakeCurrentPage(p => Math.min(rakeTotalPages, p + 1));
+                            window.scrollTo({ top: 380, behavior: 'smooth' });
+                          }}
+                          title="Next Page"
+                        >
+                          Next ›
+                        </button>
+                        <button 
+                          type="button"
+                          className="btn-page-nav"
+                          disabled={rakeCurrentPage === rakeTotalPages}
+                          onClick={() => {
+                            setRakeCurrentPage(rakeTotalPages);
+                            window.scrollTo({ top: 380, behavior: 'smooth' });
+                          }}
+                          title="Last Page"
+                        >
+                          Last »
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 

@@ -1374,6 +1374,16 @@
   box-shadow: var(--shadow-sm);
 }
 
+.station-board-pagination {
+  margin-top: 0;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  border-top: 1px solid var(--border-light);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  background: rgba(10, 15, 29, 0.5);
+}
+
 .pagination-info {
   display: flex;
   flex-wrap: wrap;
