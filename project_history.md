@@ -848,7 +848,7 @@ Design and deploy a modern, reactive React 19 + Vite 8 frontend for the Autonomo
 2. **Full Multi-Page Suite (`frontend/src/pages/`):**
    - **Overview Home Page (`/`):** Comprehensive project blueprint, headline KPIs (776 lanes, 18 stations, 99.4% punctuality, 242 services), subsystem feature cards, quick launcher, and contributor attributions.
    - **2D Real-Time Simulation Studio (`/simulation`):** 60 FPS Canvas 2D vector renderer visualizing track lanes, train consists, platform halts, switch throats, and moving rakes. Integrated with simulation speed multipliers (1x–20x), model selector (8 AI and heuristic controllers), calendar day switcher, injection modal for physical disruptions, and manual human-in-the-loop override controls.
-   - **Interactive Timetable & PNR Search (`/query`):** Sleek station-to-station route query engine with origin/destination swap, travel class filters, date selectors, and tabular timetable departures extracted from `trains.db`.
+   - **Railway Fleet & Timetable Explorer (`/query`):** Diagnostic railway intelligence console featuring 4 interactive views: 242-run scheduled services directory with expandable intermediate stops, 18-station chronological movement boards, 31 physical rake rosters with stabling tracks, and comprehensive 7-class rolling stock engineering specifications.
    - **System Architecture & Metrics Blueprint (`/about`):** Detailed formalization of the Markov Decision Process (MDP state space $S_t$, action space $A_t$, multi-objective reward $R_t$), empirical 56-run benchmark analysis across all 8 models, and real-world rail engineering foundations.
 
 3. **Resilience & Bug Resolutions:**

@@ -18,6 +18,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import './HomePage.css';
+import Footer from '../components/Footer';
 
 export default function HomePage() {
   const [stats, setStats] = useState({
@@ -364,6 +365,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* Global Project Footer */}
+      <Footer />
     </div>
   );
 }

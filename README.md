@@ -153,7 +153,7 @@ The monorepo is organized into four isolated yet tightly integrated subsystems:
 - **Interactive Full-Stack Architecture:** Built with React 19 and Vite 8, featuring 4 fully functional pages:
   - **Overview Home (`/`):** Project blueprint, KPI highlights, architecture badges, and contributor attributions.
   - **Real-Time Simulation (`/simulation`):** High-frequency 60 FPS Canvas 2D track renderer, live WebSocket telemetry bridge (`/ws/telemetry`), 8-model dispatcher AI selector, calendar day switcher, interactive speed multipliers (1x–20x), disruption injection modal, and manual human-in-the-loop dispatch override panel.
-  - **Commercial Timetable Query & PNR (`/query`):** Multi-modal train service search, origin/destination station filtering, travel class selection, and live departure/arrival timetable lookup across all 242 daily scheduled services.
+  - **Railway Fleet & Timetable Explorer (`/query`):** Diagnostic railway intelligence console featuring 4 interactive views: 242-run scheduled services directory with expandable intermediate stops, 18-station chronological movement boards, 31 physical rake rosters with stabling tracks, and comprehensive 7-class rolling stock engineering specifications.
   - **Engineering & Metrics Blueprint (`/about`):** Detailed mathematical formulation of the MDP (state, action, and multi-objective reward formulation), empirical 56-run benchmark analysis, and engineering foundations.
 - **Resilient UI Runtime:** Protected with React Error Boundaries, zero console errors, high-contrast cyber-railway dark design, and reactive telemetry reconnection.
 
@@ -295,8 +295,8 @@ npm run dev
 
 * **Project:** Autonomous Rail Dispatcher (Project 1, Vellore Institute of Technology - VIT)
 * **Contributors:**
-  * **Venkata Sriram Topalli** — Lead Developer, Core Backend & Reinforcement Learning Architecture ([@venkatasriramt-spec](https://github.com/venkatasriramt-spec))
-  * **Ayush M Singh** — SUMO Microscopic Modeling & Rail Traffic Research ([@AYUSHMSINGH2004](https://github.com/AYUSHMSINGH2004))
-  * **Avanish Kushwaha** — Timetable Optimization & Heuristic Benchmarking ([@avanish06](https://github.com/avanish06))
+  * **Venkata Sriram Topalli** ([@venkatasriramt-spec](https://github.com/venkatasriramt-spec))
+  * **Ayush M Singh** ([@AYUSHMSINGH2004](https://github.com/AYUSHMSINGH2004))
+  * **Avanish Kushwaha** ([@avanish06](https://github.com/avanish06))
 * **License:** [MIT License](LICENSE)
 

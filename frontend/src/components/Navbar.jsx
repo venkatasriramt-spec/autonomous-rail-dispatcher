@@ -79,8 +79,8 @@ export default function Navbar() {
             to="/query" 
             className={({ isActive }) => `nav-link ${isActive ? 'nav-link-active' : ''}`}
           >
-            <Search size={16} />
-            <span>Train Query & PNR</span>
+            <Train size={16} />
+            <span>Fleet & Timetables</span>
           </NavLink>
 
           <NavLink 

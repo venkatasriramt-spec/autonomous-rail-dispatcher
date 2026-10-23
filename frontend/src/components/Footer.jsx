@@ -21,24 +21,18 @@ function GithubIcon({ size = 16, className = "" }) {
 const CONTRIBUTORS = [
   {
     name: 'Venkata Sriram Topalli',
-    role: 'Core Backend, RL Architecture & Lead Developer',
     github: 'https://github.com/venkatasriramt-spec',
-    handle: '@venkatasriramt-spec',
-    tag: 'Lead AI Engineer'
+    handle: '@venkatasriramt-spec'
   },
   {
     name: 'Ayush M Singh',
-    role: 'SUMO Microscopic Modeling & Rail Traffic Research',
     github: 'https://github.com/AYUSHMSINGH2004',
-    handle: '@AYUSHMSINGH2004',
-    tag: 'Simulation Lead'
+    handle: '@AYUSHMSINGH2004'
   },
   {
     name: 'Avanish Kushwaha',
-    role: 'Timetable Optimization & Heuristics Benchmarking',
     github: 'https://github.com/avanish06',
-    handle: '@avanish06',
-    tag: 'Systems & Data'
+    handle: '@avanish06'
   }
 ];
 
@@ -84,10 +78,8 @@ export default function Footer() {
                     <h4 className="contributor-name">{contributor.name}</h4>
                     <ArrowUpRight size={15} className="external-arrow" />
                   </div>
-                  <span className="contributor-role">{contributor.role}</span>
                   <div className="contributor-meta">
                     <span className="contributor-handle">{contributor.handle}</span>
-                    <span className="contributor-tag">{contributor.tag}</span>
                   </div>
                 </div>
               </a>
@@ -120,7 +112,7 @@ export default function Footer() {
             <ul className="footer-links-list">
               <li><Link to="/">Project Overview & Dashboard</Link></li>
               <li><Link to="/simulation">2D Real-Time Simulation Canvas</Link></li>
-              <li><Link to="/query">Passenger Timetable & PNR</Link></li>
+              <li><Link to="/query">Fleet & Timetable Directory</Link></li>
               <li><Link to="/about">System Architecture & 56-Run Benchmark</Link></li>
             </ul>
           </div>
