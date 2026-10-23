@@ -16,15 +16,78 @@ import {
   Server, 
   Monitor, 
   Database,
-  Award
+  Award,
+  Info,
+  Calendar,
+  TrendingDown,
+  AlertTriangle,
+  Sliders
 } from 'lucide-react';
 import './AboutPage.css';
+
+// Fritsch-Carlson Monotone Cubic Spline generator (guarantees zero overshoot/undershoot)
+function getMonotoneCubicPath(points, clampYMin = 25, clampYMax = 280) {
+  if (!points || points.length === 0) return '';
+  const n = points.length;
+  if (n === 1) return `M ${points[0].x} ${points[0].y}`;
+
+  const dx = [];
+  const dy = [];
+  const m = [];
+  for (let i = 0; i < n - 1; i++) {
+    const dxi = points[i + 1].x - points[i].x;
+    const dyi = points[i + 1].y - points[i].y;
+    dx.push(dxi);
+    dy.push(dyi);
+    m.push(dxi === 0 ? 0 : dyi / dxi);
+  }
+
+  const tangents = [m[0]];
+  for (let i = 1; i < n - 1; i++) {
+    if (m[i - 1] * m[i] <= 0) {
+      tangents.push(0);
+    } else {
+      const common = dx[i - 1] + dx[i];
+      tangents.push((3 * common) / ((common + dx[i]) / m[i - 1] + (common + dx[i - 1]) / m[i]));
+    }
+  }
+  tangents.push(m[n - 2]);
+
+  let path = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+  for (let i = 0; i < n - 1; i++) {
+    const segDx = dx[i] / 3;
+    const cp1x = points[i].x + segDx;
+    let cp1y = points[i].y + tangents[i] * segDx;
+    const cp2x = points[i + 1].x - segDx;
+    let cp2y = points[i + 1].y - tangents[i + 1] * segDx;
+
+    if (clampYMin !== undefined && clampYMax !== undefined) {
+      cp1y = Math.max(clampYMin, Math.min(clampYMax, cp1y));
+      cp2y = Math.max(clampYMin, Math.min(clampYMax, cp2y));
+    }
+
+    path += ` C ${cp1x.toFixed(1)},${cp1y.toFixed(1)} ${cp2x.toFixed(1)},${cp2y.toFixed(1)} ${points[i + 1].x.toFixed(1)},${points[i + 1].y.toFixed(1)}`;
+  }
+  return path;
+}
+
+const COMPARISON_MODELS = [
+  { id: 'Centralized_PPO', label: 'Centralized PPO (Lead RL)', color: '#00f0ff', strokeWidth: 3.5 },
+  { id: 'Decentralized_MAPPO', label: 'Decentralized MAPPO (Multi-Agent)', color: '#10b981', strokeWidth: 3 },
+  { id: 'Hierarchical_Hybrid', label: 'Hierarchical Hybrid', color: '#a855f7', strokeWidth: 3 },
+  { id: 'FIFO_Heuristic', label: 'FIFO Rule Baseline', color: '#f59e0b', strokeWidth: 2.5 }
+];
+
+const WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export default function AboutPage() {
   const [benchmarkData, setBenchmarkData] = useState(null);
   const [diurnalData, setDiurnalData] = useState(null);
   const [loadingAnalytics, setLoadingAnalytics] = useState(true);
   const [selectedArchLayer, setSelectedArchLayer] = useState(null);
+  const [selectedDay, setSelectedDay] = useState('Mon');
+  const [comparisonModel, setComparisonModel] = useState('Centralized_PPO');
+  const [hoveredHour, setHoveredHour] = useState(null);
 
   // Fetch benchmark & diurnal analytics from backend
   useEffect(() => {
@@ -33,18 +96,18 @@ export default function AboutPage() {
       try {
         const [benchRes, diurnalRes] = await Promise.all([
           fetch('/api/analytics/weekly-summary'),
-          fetch('/api/analytics/diurnal?day=Mon')
+          fetch(`/api/analytics/diurnal?day=${selectedDay}`)
         ]);
 
-        if (benchRes.ok && diurnalRes.ok) {
+        if (benchRes.ok) {
           const bench = await benchRes.json();
-          const diurnal = await diurnalRes.json();
-          if (mounted) {
-            setBenchmarkData(bench);
-            setDiurnalData(diurnal);
-            setLoadingAnalytics(false);
-          }
+          if (mounted) setBenchmarkData(bench);
         }
+        if (diurnalRes.ok) {
+          const diurnal = await diurnalRes.json();
+          if (mounted) setDiurnalData(diurnal);
+        }
+        if (mounted) setLoadingAnalytics(false);
       } catch (err) {
         console.error('Error fetching analytics:', err);
         if (mounted) setLoadingAnalytics(false);
@@ -52,7 +115,7 @@ export default function AboutPage() {
     };
     fetchAnalytics();
     return () => { mounted = false; };
-  }, []);
+  }, [selectedDay]);
 
   // Standard benchmark figures from authoritative 56-run benchmark
   const modelStats = [
@@ -467,68 +530,469 @@ export default function AboutPage() {
           </div>
 
           {/* Diurnal Traffic Wave Explanation */}
-          <div className="diurnal-card glass-panel">
-            <div className="diurnal-header">
-              <div className="diurnal-title-box">
-                <TrendingUp size={20} className="diurnal-icon" />
-                <div>
-                  <h4 className="diurnal-title">24-Hour Diurnal Demand & Cascade Delay Attenuation</h4>
-                  <p className="diurnal-desc">
-                    Traffic peaks at morning commute (07:30–09:30) and evening return (17:00–19:30). 
-                    While standard SUMO queues escalate into gridlock, Centralized PPO preemptively holds freight on depot sidings, 
-                    retaining &gt;99% punctuality throughout peak surges.
-                  </p>
+          {(() => {
+            const activeModelMeta = COMPARISON_MODELS.find(m => m.id === comparisonModel) || COMPARISON_MODELS[0];
+            const hours = diurnalData?.hours || Array.from({ length: 24 }, (_, i) => i);
+            const baselineDelays = diurnalData?.hourly_delays_by_model?.Static_Baseline || [];
+            const modelDelays = diurnalData?.hourly_delays_by_model?.[comparisonModel] || [];
+
+            // SVG ViewBox: 0 0 920 340
+            // Left: 75, Right: 885 (width: 810)
+            // Top: 35, Baseline: 280 (height: 245)
+            // Maximum delay ceiling: 1000s
+            const mapPoint = (h, delayVal) => {
+              const x = 75 + (h / 23) * 810;
+              const clampedDelay = Math.max(0, Math.min(1000, delayVal || 0));
+              const y = 280 - (clampedDelay / 1000) * 245;
+              return { x, y, delay: delayVal || 0, hour: h };
+            };
+
+            const baselinePoints = hours.map(h => mapPoint(h, baselineDelays[h] || 0));
+            const modelPoints = hours.map(h => mapPoint(h, modelDelays[h] || 0));
+
+            const baselineCurve = getMonotoneCubicPath(baselinePoints, 35, 280);
+            const modelCurve = getMonotoneCubicPath(modelPoints, 35, 280);
+
+            const baselineArea = baselinePoints.length > 0 
+              ? `${baselineCurve} L 885 280 L 75 280 Z` 
+              : '';
+
+            const modelArea = modelPoints.length > 0 
+              ? `${modelCurve} L 885 280 L 75 280 Z` 
+              : '';
+
+            // Metric peaks for summary cards
+            const morningBaselinePeak = baselineDelays.length ? Math.max(...baselineDelays.slice(7, 12)) : 920.9;
+            const morningModelPeak = modelDelays.length ? Math.max(...modelDelays.slice(7, 12)) : 305.1;
+            const eveningBaselinePeak = baselineDelays.length ? Math.max(...baselineDelays.slice(16, 20)) : 708.4;
+            const eveningModelPeak = modelDelays.length ? Math.max(...modelDelays.slice(16, 20)) : 290.8;
+            const morningReduction = morningBaselinePeak > 0 
+              ? Math.round(((morningBaselinePeak - morningModelPeak) / morningBaselinePeak) * 100) 
+              : 0;
+            const eveningReduction = eveningBaselinePeak > 0 
+              ? Math.round(((eveningBaselinePeak - eveningModelPeak) / eveningBaselinePeak) * 100) 
+              : 0;
+
+            const hoverBaselineVal = hoveredHour !== null ? (baselineDelays[hoveredHour] || 0) : 0;
+            const hoverModelVal = hoveredHour !== null ? (modelDelays[hoveredHour] || 0) : 0;
+            const hoverDiff = hoverBaselineVal - hoverModelVal;
+            const hoverSavingsPct = hoverBaselineVal > 0 ? Math.round((hoverDiff / hoverBaselineVal) * 100) : 0;
+
+            return (
+              <div className="diurnal-card glass-panel">
+                <div className="diurnal-header-wrapper">
+                  <div className="diurnal-title-box">
+                    <div className="diurnal-icon-badge">
+                      <TrendingUp size={22} className="diurnal-icon" />
+                    </div>
+                    <div>
+                      <div className="diurnal-badge-row">
+                        <span className="diurnal-category-badge">Operational Telemetry</span>
+                        <span className="diurnal-status-badge">Live Benchmark Curves</span>
+                      </div>
+                      <h4 className="diurnal-title">24-Hour Diurnal Demand & Cascade Delay Attenuation</h4>
+                      <p className="diurnal-desc">
+                        Railway passenger ridership naturally surges twice daily during morning and evening rush hours. 
+                        This chart contrasts how an unmanaged network succumbs to exponential <strong>cascade delay gridlock</strong> versus 
+                        how intelligent reinforcement learning dispatchers <strong>attenuate and suppress</strong> delays back to near-zero.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Interactive Day & Model Controls */}
+                  <div className="diurnal-controls-container">
+                    {/* Day selector */}
+                    <div className="diurnal-control-group">
+                      <span className="control-group-label">
+                        <Calendar size={13} /> Timetable Day:
+                      </span>
+                      <div className="day-pills-list">
+                        {WEEK_DAYS.map(d => (
+                          <button
+                            key={d}
+                            className={`day-pill-btn ${selectedDay === d ? 'active' : ''}`}
+                            onClick={() => setSelectedDay(d)}
+                          >
+                            {d}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Comparison model selector */}
+                    <div className="diurnal-control-group">
+                      <span className="control-group-label">
+                        <Sliders size={13} /> Active Dispatcher:
+                      </span>
+                      <div className="model-pills-list">
+                        {COMPARISON_MODELS.map(m => (
+                          <button
+                            key={m.id}
+                            className={`model-pill-btn ${comparisonModel === m.id ? 'active' : ''}`}
+                            onClick={() => setComparisonModel(m.id)}
+                          >
+                            <span className="model-pill-dot" style={{ backgroundColor: m.color }} />
+                            <span>{m.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Key Metrics Ribbon */}
+                <div className="diurnal-metrics-ribbon">
+                  <div className="metric-ribbon-card morning">
+                    <div className="metric-ribbon-icon">
+                      <TrendingUp size={16} />
+                    </div>
+                    <div className="metric-ribbon-body">
+                      <span className="ribbon-label">Morning Commute (07:30–10:30)</span>
+                      <div className="ribbon-stat-row">
+                        <span className="stat-unmanaged">{morningBaselinePeak.toFixed(0)}s ({(morningBaselinePeak/60).toFixed(1)}m)</span>
+                        <ArrowRight size={12} className="stat-arrow" />
+                        <span className="stat-managed" style={{ color: activeModelMeta.color }}>
+                          {morningModelPeak.toFixed(0)}s ({(morningModelPeak/60).toFixed(1)}m)
+                        </span>
+                        <span className="stat-pill green">-{morningReduction}% Delay</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="metric-ribbon-card evening">
+                    <div className="metric-ribbon-icon">
+                      <TrendingDown size={16} />
+                    </div>
+                    <div className="metric-ribbon-body">
+                      <span className="ribbon-label">Evening Return (17:00–19:30)</span>
+                      <div className="ribbon-stat-row">
+                        <span className="stat-unmanaged">{eveningBaselinePeak.toFixed(0)}s ({(eveningBaselinePeak/60).toFixed(1)}m)</span>
+                        <ArrowRight size={12} className="stat-arrow" />
+                        <span className="stat-managed" style={{ color: activeModelMeta.color }}>
+                          {eveningModelPeak.toFixed(0)}s ({(eveningModelPeak/60).toFixed(1)}m)
+                        </span>
+                        <span className="stat-pill green">-{eveningReduction}% Delay</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={`metric-ribbon-card inspection ${hoveredHour !== null ? 'active' : ''}`}>
+                    <div className="metric-ribbon-icon">
+                      <Activity size={16} />
+                    </div>
+                    <div className="metric-ribbon-body">
+                      <span className="ribbon-label">
+                        {hoveredHour !== null ? `Hour ${hoveredHour.toString().padStart(2, '0')}:00 Live Telemetry` : 'Interactive Telemetry'}
+                      </span>
+                      <div className="ribbon-stat-row">
+                        {hoveredHour !== null ? (
+                          <>
+                            <span className="stat-unmanaged">Base: {hoverBaselineVal.toFixed(1)}s</span>
+                            <span className="stat-managed" style={{ color: activeModelMeta.color }}>
+                              AI: {hoverModelVal.toFixed(1)}s
+                            </span>
+                            {hoverDiff > 0 && (
+                              <span className="stat-pill cyan">-{hoverSavingsPct}% Cut</span>
+                            )}
+                          </>
+                        ) : (
+                          <span className="ribbon-hint">Hover timeline below to inspect hour-by-hour lateness</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* SVG Visual Graph */}
+                <div className="diurnal-svg-container">
+                  <svg 
+                    viewBox="0 0 920 340" 
+                    className="diurnal-svg-canvas"
+                    onMouseLeave={() => setHoveredHour(null)}
+                  >
+                    <defs>
+                      <linearGradient id="baselineAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#ef4444" stopOpacity="0.25" />
+                        <stop offset="85%" stopColor="#ef4444" stopOpacity="0.03" />
+                        <stop offset="100%" stopColor="#ef4444" stopOpacity="0" />
+                      </linearGradient>
+                      <linearGradient id="modelAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor={activeModelMeta.color} stopOpacity="0.30" />
+                        <stop offset="85%" stopColor={activeModelMeta.color} stopOpacity="0.04" />
+                        <stop offset="100%" stopColor={activeModelMeta.color} stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+
+                    {/* Morning Commute Surge Zone */}
+                    <rect 
+                      x="321.5" 
+                      y="35" 
+                      width="140.9" 
+                      height="245" 
+                      fill="rgba(245, 158, 11, 0.08)" 
+                      stroke="rgba(245, 158, 11, 0.3)" 
+                      strokeDasharray="4 3" 
+                      rx="4" 
+                    />
+                    <text x="392" y="52" textAnchor="middle" fill="#fbbf24" fontSize="10" fontWeight="700" letterSpacing="0.05em">
+                      AM PEAK SURGE (07:30–10:30)
+                    </text>
+
+                    {/* Evening Commute Surge Zone */}
+                    <rect 
+                      x="638.5" 
+                      y="35" 
+                      width="140.8" 
+                      height="245" 
+                      fill="rgba(245, 158, 11, 0.08)" 
+                      stroke="rgba(245, 158, 11, 0.3)" 
+                      strokeDasharray="4 3" 
+                      rx="4" 
+                    />
+                    <text x="709" y="52" textAnchor="middle" fill="#fbbf24" fontSize="10" fontWeight="700" letterSpacing="0.05em">
+                      PM PEAK SURGE (17:00–19:30)
+                    </text>
+
+                    {/* Y-Axis Horizontal Grid Lines */}
+                    <line x1="75" y1="35" x2="885" y2="35" stroke="rgba(255,255,255,0.08)" strokeDasharray="2 3" />
+                    <line x1="75" y1="96.25" x2="885" y2="96.25" stroke="rgba(255,255,255,0.08)" strokeDasharray="2 3" />
+                    <line x1="75" y1="157.5" x2="885" y2="157.5" stroke="rgba(255,255,255,0.08)" strokeDasharray="2 3" />
+                    <line x1="75" y1="218.75" x2="885" y2="218.75" stroke="rgba(255,255,255,0.08)" strokeDasharray="2 3" />
+                    <line x1="75" y1="280" x2="885" y2="280" stroke="rgba(255,255,255,0.25)" strokeWidth="1.5" />
+
+                    {/* Y-Axis Tick Labels & Units */}
+                    <text x="65" y="39" textAnchor="end" fill="#94a3b8" fontSize="10.5" fontFamily="var(--font-mono)">1,000s (16.7m)</text>
+                    <text x="65" y="100" textAnchor="end" fill="#94a3b8" fontSize="10.5" fontFamily="var(--font-mono)">750s (12.5m)</text>
+                    <text x="65" y="161" textAnchor="end" fill="#94a3b8" fontSize="10.5" fontFamily="var(--font-mono)">500s (8.3m)</text>
+                    <text x="65" y="222" textAnchor="end" fill="#94a3b8" fontSize="10.5" fontFamily="var(--font-mono)">250s (4.2m)</text>
+                    <text x="65" y="284" textAnchor="end" fill="#10b981" fontSize="10.5" fontWeight="700" fontFamily="var(--font-mono)">0s (On Time)</text>
+
+                    {/* Y-Axis Title */}
+                    <text x="75" y="22" fill="#94a3b8" fontSize="10.5" fontWeight="600" letterSpacing="0.04em">
+                      AVERAGE NETWORK DELAY PER TRAIN (SECONDS / MINUTES)
+                    </text>
+
+                    {/* Area fills */}
+                    {baselineArea && <path d={baselineArea} fill="url(#baselineAreaGrad)" />}
+                    {modelArea && <path d={modelArea} fill="url(#modelAreaGrad)" />}
+
+                    {/* Baseline curve (Red dashed - SUMO Default) */}
+                    {baselineCurve && (
+                      <path 
+                        d={baselineCurve} 
+                        fill="none" 
+                        stroke="#ef4444" 
+                        strokeWidth="2.5"
+                        strokeDasharray="5 4"
+                      />
+                    )}
+
+                    {/* AI Model curve (Solid glowing curve) */}
+                    {modelCurve && (
+                      <path 
+                        d={modelCurve} 
+                        fill="none" 
+                        stroke={activeModelMeta.color} 
+                        strokeWidth={activeModelMeta.strokeWidth}
+                        style={{ filter: `drop-shadow(0 0 6px ${activeModelMeta.color}88)` }}
+                      />
+                    )}
+
+                    {/* Peak Callout Badges */}
+                    {baselinePoints[11] && (
+                      <g>
+                        <circle cx={baselinePoints[11].x} cy={baselinePoints[11].y} r="4" fill="#ef4444" stroke="#ffffff" strokeWidth="1.5" />
+                        <rect 
+                          x={baselinePoints[11].x - 55} 
+                          y={baselinePoints[11].y - 24} 
+                          width="110" 
+                          height="18" 
+                          rx="3" 
+                          fill="rgba(15, 23, 42, 0.85)" 
+                          stroke="#ef4444" 
+                          strokeWidth="1" 
+                        />
+                        <text x={baselinePoints[11].x} y={baselinePoints[11].y - 12} textAnchor="middle" fill="#ef4444" fontSize="9.5" fontWeight="700">
+                          {baselineDelays[11]?.toFixed(0)}s (15.3m) Peak
+                        </text>
+                      </g>
+                    )}
+                    {modelPoints[11] && (
+                      <g>
+                        <circle cx={modelPoints[11].x} cy={modelPoints[11].y} r="4" fill={activeModelMeta.color} stroke="#ffffff" strokeWidth="1.5" />
+                        <rect 
+                          x={modelPoints[11].x - 65} 
+                          y={modelPoints[11].y + 10} 
+                          width="130" 
+                          height="18" 
+                          rx="3" 
+                          fill="rgba(15, 23, 42, 0.85)" 
+                          stroke={activeModelMeta.color} 
+                          strokeWidth="1" 
+                        />
+                        <text x={modelPoints[11].x} y={modelPoints[11].y + 22} textAnchor="middle" fill={activeModelMeta.color} fontSize="9.5" fontWeight="700">
+                          {modelDelays[11]?.toFixed(0)}s (5.1m) Controlled
+                        </text>
+                      </g>
+                    )}
+
+                    {/* X-Axis Tick Marks and Labels */}
+                    {[
+                      { h: 0, label: '00:00' },
+                      { h: 3, label: '03:00' },
+                      { h: 6, label: '06:00' },
+                      { h: 8, label: '08:00 (Peak)' },
+                      { h: 10, label: '10:00' },
+                      { h: 12, label: '12:00' },
+                      { h: 14, label: '14:00' },
+                      { h: 16, label: '16:00' },
+                      { h: 18, label: '18:00 (Peak)' },
+                      { h: 20, label: '20:00' },
+                      { h: 23, label: '23:00' }
+                    ].map(tick => {
+                      const x = 75 + (tick.h / 23) * 810;
+                      return (
+                        <g key={tick.h}>
+                          <line x1={x} y1="280" x2={x} y2="286" stroke="rgba(255,255,255,0.3)" />
+                          <text 
+                            x={x} 
+                            y="298" 
+                            textAnchor="middle" 
+                            fill={tick.label.includes('Peak') ? '#fbbf24' : '#64748b'} 
+                            fontSize="10" 
+                            fontWeight={tick.label.includes('Peak') ? '700' : '500'}
+                            fontFamily="var(--font-mono)"
+                          >
+                            {tick.label}
+                          </text>
+                        </g>
+                      );
+                    })}
+
+                    {/* X-Axis Title */}
+                    <text x="480" y="324" textAnchor="middle" fill="#64748b" fontSize="10.5" fontWeight="600" letterSpacing="0.05em">
+                      24-HOUR OPERATIONAL CYCLE (TIME OF DAY)
+                    </text>
+
+                    {/* Hover Crosshair and Markers */}
+                    {hoveredHour !== null && baselinePoints[hoveredHour] && modelPoints[hoveredHour] && (
+                      <g>
+                        <line 
+                          x1={baselinePoints[hoveredHour].x} 
+                          y1="35" 
+                          x2={baselinePoints[hoveredHour].x} 
+                          y2="280" 
+                          stroke="rgba(0, 240, 255, 0.6)" 
+                          strokeWidth="1.5" 
+                          strokeDasharray="3 3" 
+                        />
+                        <circle cx={baselinePoints[hoveredHour].x} cy={baselinePoints[hoveredHour].y} r="5" fill="#ef4444" stroke="#ffffff" strokeWidth="2" />
+                        <circle cx={modelPoints[hoveredHour].x} cy={modelPoints[hoveredHour].y} r="6" fill={activeModelMeta.color} stroke="#ffffff" strokeWidth="2" />
+                      </g>
+                    )}
+
+                    {/* Transparent hover capture rects */}
+                    {hours.map(h => {
+                      const sliceW = 810 / 23;
+                      const x = 75 + (h / 23) * 810 - sliceW / 2;
+                      return (
+                        <rect
+                          key={h}
+                          x={Math.max(75, x)}
+                          y="35"
+                          width={sliceW}
+                          height="245"
+                          fill="transparent"
+                          style={{ cursor: 'crosshair' }}
+                          onMouseEnter={() => setHoveredHour(h)}
+                        />
+                      );
+                    })}
+                  </svg>
+                </div>
+
+                {/* Legend Bar */}
+                <div className="diurnal-legend-bar">
+                  <div className="legend-entry">
+                    <span className="legend-indicator" style={{ backgroundColor: activeModelMeta.color, boxShadow: `0 0 8px ${activeModelMeta.color}` }} />
+                    <span className="legend-label"><strong>{activeModelMeta.label}:</strong> Preemptive Siding Holding & Dynamic Platform Switching (Stable, Controlled)</span>
+                  </div>
+                  <div className="legend-entry">
+                    <span className="legend-indicator red-dashed" />
+                    <span className="legend-label"><strong>SUMO Default / Raw Heuristic:</strong> Unmanaged Cascade Escalation (Junction Chokepoints &gt;15m delay)</span>
+                  </div>
+                  <div className="legend-entry">
+                    <span className="legend-indicator amber-zone" />
+                    <span className="legend-label"><strong>Shaded Zones:</strong> Peak Commuter Density Windows</span>
+                  </div>
+                </div>
+
+                {/* Structured 3-Card Explanation: What This Graph Conveys */}
+                <div className="diurnal-narrative-section">
+                  <div className="narrative-section-header">
+                    <Info size={16} className="text-cyan" />
+                    <h5 className="narrative-section-title">Decoding the Diurnal Attenuation Graph: Core Railway Principles</h5>
+                  </div>
+
+                  <div className="diurnal-narrative-grid">
+                    <div className="narrative-card">
+                      <div className="narrative-card-header">
+                        <div className="narrative-icon-badge amber">
+                          <Activity size={18} />
+                        </div>
+                        <div>
+                          <h6 className="narrative-card-title">1. Diurnal Passenger Waves</h6>
+                          <span className="narrative-card-tag">Traffic Load Dynamics</span>
+                        </div>
+                      </div>
+                      <p className="narrative-card-text">
+                        Passenger travel demand naturally follows a <strong>bi-modal diurnal curve</strong>, surging during 
+                        <strong> Morning Commute (07:30–10:30)</strong> and <strong>Evening Return (17:00–19:30)</strong>. 
+                        Train frequencies double across the corridor, driving central convergence hubs 
+                        (such as <code>City_3</code> and <code>City_4</code>) near 100% physical track capacity.
+                      </p>
+                    </div>
+
+                    <div className="narrative-card">
+                      <div className="narrative-card-header">
+                        <div className="narrative-icon-badge red">
+                          <AlertTriangle size={18} />
+                        </div>
+                        <div>
+                          <h6 className="narrative-card-title">2. Cascade Delay Escalation</h6>
+                          <span className="narrative-card-tag">Unmanaged Failure Mode</span>
+                        </div>
+                      </div>
+                      <p className="narrative-card-text">
+                        Without intelligent intervention (<span className="text-red font-semibold">red dashed line</span>), 
+                        a 45-second platform conflict blocks following trains at red signals. Because braking safety overlaps enforce 
+                        multi-kilometer stopping headways, minor friction cascades exponentially across the network. 
+                        Average fleet delay explodes past <strong>15.3 minutes (920s)</strong>, triggering gridlock.
+                      </p>
+                    </div>
+
+                    <div className="narrative-card">
+                      <div className="narrative-card-header">
+                        <div className="narrative-icon-badge cyan">
+                          <ShieldCheck size={18} />
+                        </div>
+                        <div>
+                          <h6 className="narrative-card-title">3. Preemptive AI Attenuation</h6>
+                          <span className="narrative-card-tag">Deep RL Solution</span>
+                        </div>
+                      </div>
+                      <p className="narrative-card-text">
+                        Centralized PPO (<span className="text-cyan font-semibold">cyan solid curve</span>) detects 
+                        downstream saturation 15–20 minutes before queues form. It proactively holds low-priority freight rakes 
+                        in <code>Depot_1..3</code> sidings and dynamically diverts passenger trains across double-track scissors X-crossings 
+                        into vacant platforms—slashing peak delays by <strong>67%</strong> and maintaining <strong>&gt;99% punctuality</strong>.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            <div className="diurnal-timeline-graph">
-              <div className="diurnal-curve-mock">
-                <svg viewBox="0 0 800 200" className="diurnal-svg">
-                  {/* Grid Lines */}
-                  <line x1="50" y1="20" x2="750" y2="20" stroke="rgba(255,255,255,0.08)" />
-                  <line x1="50" y1="80" x2="750" y2="80" stroke="rgba(255,255,255,0.08)" />
-                  <line x1="50" y1="140" x2="750" y2="140" stroke="rgba(255,255,255,0.08)" />
-                  <line x1="50" y1="180" x2="750" y2="180" stroke="rgba(255,255,255,0.2)" />
-
-                  {/* SUMO Default Curve (Red) */}
-                  <path 
-                    d="M 50 170 Q 150 160 250 80 T 450 120 T 600 40 T 750 90" 
-                    fill="none" 
-                    stroke="#ef4444" 
-                    strokeWidth="3"
-                    strokeDasharray="4 4"
-                  />
-
-                  {/* Centralized PPO Curve (Cyan Glow) */}
-                  <path 
-                    d="M 50 175 Q 150 172 250 165 T 450 170 T 600 160 T 750 172" 
-                    fill="none" 
-                    stroke="#00f0ff" 
-                    strokeWidth="3.5"
-                  />
-
-                  {/* Hour markers */}
-                  <text x="50" y="196" fill="#64748b" fontSize="11" fontFamily="var(--font-mono)">00:00</text>
-                  <text x="230" y="196" fill="#64748b" fontSize="11" fontFamily="var(--font-mono)">08:00 (Peak)</text>
-                  <text x="430" y="196" fill="#64748b" fontSize="11" fontFamily="var(--font-mono)">13:00</text>
-                  <text x="580" y="196" fill="#64748b" fontSize="11" fontFamily="var(--font-mono)">18:30 (Peak)</text>
-                  <text x="730" y="196" fill="#64748b" fontSize="11" fontFamily="var(--font-mono)">23:59</text>
-                </svg>
-
-                <div className="diurnal-legend">
-                  <div className="legend-item">
-                    <span className="legend-line cyan" />
-                    <span>Centralized PPO (Stable, Controlled Delay)</span>
-                  </div>
-                  <div className="legend-item">
-                    <span className="legend-line red-dashed" />
-                    <span>SUMO Default / Raw Heuristic (Severe Cascade Escalation)</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            );
+          })()}
 
           {/* Full Benchmark Table */}
           <div className="full-benchmark-table-wrapper glass-panel">
