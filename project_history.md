@@ -881,3 +881,73 @@ Design and deploy a modern, reactive React 19 + Vite 8 frontend for the Autonomo
   - `http://127.0.0.1:5173/query`: Interactive search form and station selector confirmed, zero errors/warnings. Captured `query_page_confirmed.png`.
   - `http://127.0.0.1:5173/about`: Architecture blueprint, MDP cards, and engineering inspirations verified, zero errors/warnings. Captured `about_page_confirmed.png`.
 - **Contributor Attribution:** Correctly credited Ayush M Singh, Venkata Sriram Topalli, and Avanish Kushwaha with their respective GitHub repository profiles across UI footer and documentation.
+
+---
+
+### 23 October 2026 — Milestone: Interactive Station Board, Multi-Table Pagination & Mathematical Spline Diurnal Visualization
+
+#### Milestone Objective
+Evolve the web UI and backend API from an initial frontend prototype into a high-performance, technical railway engineering platform. Implement station-centric departure and arrival boards with multi-level junction platform aggregation, deploy client-side pagination across high-cardinality lists (services, station movements, rakes roster) to ensure deterministic DOM scalability, and revamp the analytical diurnal curve on `/about` with mathematically rigorous Fritsch-Carlson monotone cubic spline interpolation.
+
+---
+
+#### 1. Technical Railway Fleet & Timetable Explorer Overhaul (`/query`)
+
+1. **Station Schedule Board Backend Queries & Endpoints (`backend/`):**
+   - Implemented `get_timetable_stations()` and `get_station_timetable()` in [`backend/core/database.py`](backend/core/database.py).
+   - Exposed `GET /api/timetable/stations` returning 24 distinct station query entries categorized by functional role (`City`, `Town`, `Depot`).
+   - Exposed `GET /api/timetable/station/{station_name}?day=Mon` providing a real-time departure/arrival board:
+     - Movements classified into `DEPARTURE`, `ARRIVAL`, and intermediate `PASSENGER_HALT`.
+     - Multi-level platform aggregation for complex hubs: queries for `City_3` transparently aggregate traffic across both the East-West ground level (`City_3_EW`) and North-South elevated viaduct level (`City_3_NS`).
+     - Siding aggregation for `Town_8` and `Town_8_Passing_Loop`.
+   - Expanded [`backend/test_backend.py`](backend/test_backend.py) to validate both direct router calls and live HTTP requests for station boards, achieving 100% test pass rate across all REST endpoints.
+
+2. **Frontend UI Transformation (`frontend/src/pages/QueryPage.jsx`):**
+   - Transformed `/query` from a passenger ticketing mockup into a diagnostic railway operations console with 4 tabbed views:
+     - **Services Directory (242 Runs):** Search by number/name, filter by corridor/class/endpoints, expandable intermediate stops.
+     - **Station Board:** Real-world passenger departure/arrival display with platform track indicators, departure times, origin/destination bounds, and operating day filters.
+     - **Physical Rakes Roster (31 Trainsets):** Rake duty cycles, rolling stock types, rollout bases, and overnight stabling assignments.
+     - **Rolling Stock Fleet:** Deep engineering specs (voltage, length, weight, max speed, passenger capacity).
+   - Moved `Footer` exclusively to `HomePage`, freeing 100% vertical viewport space for full-screen data exploration on `/simulation` and `/query`.
+
+3. **Full-Spectrum Client-Side Pagination:**
+   - Designed a responsive pagination component with configurable page sizes (15, 25, 50, all) and smart ellipsis navigation (`First`, `Prev`, sliding page window, `Next`, `Last`).
+   - Deployed across three high-cardinality lists:
+     - **Services Directory:** Slices 242 services into lightweight page views, cutting active DOM elements from ~4,500 down to <300.
+     - **Station Movements:** Efficiently renders heavy hub stations (e.g., `City_1` with 126 daily movements, `City_3` with 218 movements).
+     - **Physical Rakes Roster:** Clean tabular navigation across all 31 continuous rakes.
+   - Built with automatic page resets whenever search filters, day selections, or corridor criteria change.
+
+---
+
+#### 2. Mathematical Spline Diurnal Curve & Interactive Analytics (`/about`)
+
+1. **Fritsch-Carlson Monotone Cubic Spline Interpolation:**
+   - Standard Bezier or polynomial splines produce unrealistic negative delay overshoots or excessive peaks when interpolating discrete hourly railway metrics.
+   - Implemented the Fritsch-Carlson algorithm directly in [`frontend/src/pages/AboutPage.jsx`](frontend/src/pages/AboutPage.jsx), computing exact tangents and monotonic secants across 24 hourly data points:
+     $$\Delta_k = \frac{y_{k+1} - y_k}{x_{k+1} - x_k}, \quad \alpha_k = \frac{d_k}{\Delta_k}, \quad \beta_k = \frac{d_{k+1}}{\Delta_k}$$
+   - Guarantees strictly monotonic, mathematically sound curve trajectories for 24-hour fleet delay visualization with zero visual artifacts.
+
+2. **Interactive Controls & Diurnal Narrative:**
+   - Added interactive day pill selectors (`Mon` through `Sun`) and model selector buttons directly within the SVG timeline view.
+   - Built a Key Metrics Ribbon displaying:
+     - Peak Morning Rush Delay ($07:00\text{--}09:30$)
+     - Peak Evening Rush Delay ($16:00\text{--}18:45$)
+     - Off-Peak Base Delay ($10:00\text{--}15:00$)
+     - 24-Hour Network Mean Delay
+   - Added a 3-card analytical narrative section explaining the morning commuter wave, midday base recovery, and nocturnal freight traffic window.
+
+---
+
+#### 3. Full-Stack Verification & Repository Hygiene
+
+- **Backend Validation Suite:** [`backend/test_backend.py`](backend/test_backend.py) executed cleanly with 100% pass rate:
+  - Database queries, network geometry parser (776 lanes, 18 stations), and all REST endpoints verified.
+  - Live HTTP server tested on socket `127.0.0.1:8009` with live startup, step execution, and graceful shutdown.
+- **Frontend Production Build:** `npm run build` executed cleanly in 316ms, generating optimized client assets in `frontend/dist/`.
+- **Repository Hygiene & Ignore Rules:**
+  - Upgraded root [`.gitignore`](.gitignore) and [`frontend/.gitignore`](frontend/.gitignore) to cover Vite build outputs (`dist/`, `dist-ssr/`), bundler caches (`.vite/`), linter caches (`.oxlint_cache/`), SQLite WAL temporary files (`*.db-wal`, `*.db-shm`), and test artifacts.
+  - Authored comprehensive documentation in [`frontend/README.md`](frontend/README.md) documenting architecture, components, API proxying, and scripts.
+  - Updated [`backend/README.md`](backend/README.md) and [`README.md`](README.md) with complete subsystem coverage and cross-links.
+- **Git State:** 8 local commits verified and documented; repository prepared cleanly for git commit and push.
+

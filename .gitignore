@@ -17,6 +17,7 @@ pyenv/
 *.env
 *.env.*
 *.local
+.env*.local
 
 # IDE & Editor directory-scoped artifacts
 .vscode/
@@ -70,14 +71,31 @@ trains/sumo_config/days/
 .cache
 .pytest_cache/
 htmlcov/
+test-results/
+playwright-report/
 
 # Packaging & Node dependencies
 dist/
+dist-ssr/
 build/
 *.egg-info/
 node_modules/
 frontend/node_modules/
 frontend/dist/
+.npm/
+.yarn/
+.pnpm-store/
+.vite/
+frontend/.vite/
+.oxlint_cache/
+.eslintcache
+
+# SQLite temporary journal & WAL files
+*.db-wal
+*.db-shm
+*.sqlite-wal
+*.sqlite-shm
+*.db-journal
 
 # Reinforcement Learning & Dispatcher AI artifacts
 dispatcher/logs/tensorboard/

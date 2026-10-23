@@ -6,7 +6,7 @@ Welcome to the **Autonomous Rail Dispatcher** (`autonomous-rail-dispatcher`) mon
 
 ## 1. System Architecture
 
-The monorepo is organized into four isolated yet tightly integrated subsystems:
+The monorepo is organized into five isolated yet tightly integrated subsystems:
 
 ```
 .
@@ -99,18 +99,19 @@ The monorepo is organized into four isolated yet tightly integrated subsystems:
 │   ├── config.py                 # Central filesystem paths & constants
 │   ├── test_backend.py           # End-to-end unit test & validation suite
 │   ├── core/                     # SimManager, DispatcherBridge, NetworkGeometry, Streamer
-│   ├── routers/                  # Simulation, WebSocket, Network, Timetable, Analytics
+│   ├── routers/                  # Simulation, WebSocket, Network, Timetable, Analytics, Overrides, Disruption
 │   ├── schemas/                  # Pydantic models for REST endpoints and WebSocket frames
 │   └── README.md                 # Detailed backend documentation & API specifications
 │
 ├── frontend/                     # Modern React 19 + Vite 8 Web Application
 │   ├── src/
 │   │   ├── pages/                # HomePage, SimulationPage, QueryPage, AboutPage
-│   │   ├── components/           # Navigation, ErrorBoundary, DisruptionModal, OverrideModal
+│   │   ├── components/           # Navigation, ErrorBoundary, Footer
 │   │   ├── App.jsx               # Client-side router & global state
 │   │   └── index.css             # High-contrast dark cyber-railway design system
 │   ├── package.json              # React 19, Lucide-React, Canvas 2D telemetry dependencies
-│   └── vite.config.js            # Port 5173 dev server & WebSocket reverse-proxy
+│   ├── vite.config.js            # Port 5173 dev server & WebSocket reverse-proxy
+│   └── README.md                 # Detailed frontend architecture & development guide
 │
 ├── README.md                     # Monorepo architecture & quick-start guide
 ├── project_history.md             # Unified monorepo milestones & integration log
@@ -146,18 +147,31 @@ The monorepo is organized into four isolated yet tightly integrated subsystems:
   - **Multi-Train PPO** executes concurrent multi-consist dispatching (71.80s delay, 2,577 actions).
   - **Static Baseline** averages 236.20s delay with 10,878 knock-on events.
 - **Automated Pipeline:** Full multi-wave curriculum retraining and 8-model cross-comparison verification automated via [`dispatcher/training/train_and_benchmark_all.py`](dispatcher/training/train_and_benchmark_all.py).
-
 - *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
 
-### D. Modern Web UI & Simulation Dashboard (`frontend/`)
-- **Interactive Full-Stack Architecture:** Built with React 19 and Vite 8, featuring 4 fully functional pages:
-  - **Overview Home (`/`):** Project blueprint, KPI highlights, architecture badges, and contributor attributions.
-  - **Real-Time Simulation (`/simulation`):** High-frequency 60 FPS Canvas 2D track renderer, live WebSocket telemetry bridge (`/ws/telemetry`), 8-model dispatcher AI selector, calendar day switcher, interactive speed multipliers (1x–20x), disruption injection modal, and manual human-in-the-loop dispatch override panel.
-  - **Railway Fleet & Timetable Explorer (`/query`):** Diagnostic railway intelligence console featuring 4 interactive views: 242-run scheduled services directory with expandable intermediate stops, 18-station chronological movement boards, 31 physical rake rosters with stabling tracks, and comprehensive 7-class rolling stock engineering specifications.
-  - **Engineering & Metrics Blueprint (`/about`):** Detailed mathematical formulation of the MDP (state, action, and multi-objective reward formulation), empirical 56-run benchmark analysis, and engineering foundations.
-- **Resilient UI Runtime:** Protected with React Error Boundaries, zero console errors, high-contrast cyber-railway dark design, and reactive telemetry reconnection.
+### D. Production FastAPI & WebSocket Simulation Server (`backend/`)
+- **Microscopic TraCI Bridge:** Thread-safe simulation manager orchestrating live Eclipse SUMO execution, step throttling, variable speed multipliers (1x–20x), and dual-mode runtime (`LIVE_SUMO` and zero-dependency `DEMO_REPLAY`).
+- **Unified Dispatcher Bridge:** Polymorphic loader and execution wrapper supporting all 8 AI, heuristic, and baseline dispatcher models with seamless in-flight switching.
+- **2D Vector Track Geometry:** Microscopic XML parser extracting 776 track lanes with curvature coordinates, physical speed limits, and functional categories, pre-cached for sub-millisecond retrieval.
+- **High-Frequency WebSocket Telemetry:** Broadcasts 4 Hz real-time vehicle vectors, platform occupancies, recent dispatcher decisions, and simulation KPIs at `/ws/telemetry`.
+- **Relational Timetable Engine:** High-performance read-only SQLite queries serving the 242-run timetable, 31-rake roster, station schedule boards with multi-level platform aggregation, and 7 rolling stock specifications.
+- **Human-in-the-Loop & Perturbation Injection:** REST endpoints for injecting mechanical breakdowns, track closures, and manual platform/hold overrides.
+- *For detailed backend documentation, see [backend/README.md](backend/README.md).*
 
-### E. Operational Foundations & Track Design Inspirations
+### E. Modern Web UI & Simulation Dashboard (`frontend/`)
+- **Interactive Full-Stack Architecture:** Built with React 19 and Vite 8, featuring 4 fully functional pages:
+  - **Overview Home (`/`):** Project blueprint, headline KPIs (776 lanes, 18 stations, 99.4% punctuality, 242 services), subsystem feature cards, quick launcher, and academic contributor attributions.
+  - **Real-Time Simulation (`/simulation`):** High-frequency 60 FPS Canvas 2D vector track renderer, live WebSocket telemetry bridge (`/ws/telemetry`), 8-model dispatcher AI selector, calendar day switcher, interactive speed multipliers (1x–20x), disruption injection modal, and manual human-in-the-loop dispatch override panel.
+  - **Railway Fleet & Timetable Explorer (`/query`):** Diagnostic railway intelligence console featuring 4 interactive views:
+    1. *Services Directory:* 242 scheduled train runs with intermediate stops and client-side pagination (15/25/50/all per page).
+    2. *Station Schedule Board:* 18-station chronological movements with multi-level platform aggregation (`City_3`, `Town_8`) and pagination.
+    3. *Physical Rakes Roster:* 31 continuous physical rakes with stabling facilities and pagination.
+    4. *Rolling Stock Specifications:* Full engineering parameters for all 7 consist models.
+  - **System Architecture & Metrics Blueprint (`/about`):** Detailed formalization of the Markov Decision Process (MDP state space $S_t \in \mathbb{R}^{28}$, action space $A_t \in \text{MultiDiscrete}([3, 7, 4])$, multi-objective reward $R_t$), authoritative 56-run benchmark analysis, and an **Interactive Diurnal Timeline** with Fritsch-Carlson Monotone Cubic Spline curve interpolation, day/model pill selectors, morning/evening key metrics ribbon, and explanatory narrative cards.
+- **Resilient UI Runtime:** Protected with React Error Boundaries, zero console errors, high-contrast cyber-railway dark design, and reactive telemetry reconnection.
+- *For detailed frontend documentation, see [frontend/README.md](frontend/README.md).*
+
+### F. Operational Foundations & Track Design Inspirations
 While the railway network graph is entirely synthetic and fictional, its scheduling philosophy and physical track engineering are directly inspired by proven gold-standard international railway practices:
 - **Periodic Integrated Timetable (*Taktfahrplan* Inspiration):** The master schedule operates on symmetrical, repeating clockface departure cadences (e.g., :00, :15, :30, :45) inspired by the Swiss *Taktfahrplan* network paradigm. This maximizes passenger interchange synchronization while creating predictable harmonic headway spacing.
 - **Scissors Crossovers (Double X-Crossings):** Station throats and inter-corridor junctions incorporate prototypical double scissors crossovers (paired universal X-crossings), permitting simultaneous parallel routing and dynamic opposite-track diversions during track maintenance or platform congestion.
@@ -171,12 +185,14 @@ While the railway network graph is entirely synthetic and fictional, its schedul
 ### Prerequisites
 - **Python 3.10+**
 - **Eclipse SUMO** (Simulation of Urban MObility, v1.18.0+) with `sumo`, `netconvert`, and `duarouter` available on system `PATH`.
+- **Node.js (v18+) & npm** (for building and running the modern React 19 frontend).
 
 ### Installation
 ```bash
 git clone https://github.com/venkatasriramt-spec/autonomous-rail-dispatcher.git
 cd autonomous-rail-dispatcher
 pip install -r requirements.txt
+cd frontend && npm install && cd ..
 ```
 
 ---
@@ -286,7 +302,10 @@ npm run dev
 - **Train Scheduling, Rolling Stock & SQL Database:** [trains/README.md](trains/README.md)
 - **Timetable & Simulation Evolution History:** [trains/project_history.md](trains/project_history.md)
 - **Autonomous Dispatcher AI & RL System:** [dispatcher/README.md](dispatcher/README.md)
-- **Backend API & Streaming Architecture:** [backend/README.md](backend/README.md)
+- **Dispatcher Training Roadmap & Verification:** [dispatcher/MODEL_TRAINING_PLAN.md](dispatcher/MODEL_TRAINING_PLAN.md)
+- **Dispatcher Logs & Evaluation Reference:** [dispatcher/logs/LOGS_MAP.md](dispatcher/logs/LOGS_MAP.md)
+- **FastAPI Backend API & Streaming Architecture:** [backend/README.md](backend/README.md)
+- **Modern Web UI & Simulation Dashboard:** [frontend/README.md](frontend/README.md)
 - **Unified Monorepo Milestone Log:** [project_history.md](project_history.md)
 
 ---

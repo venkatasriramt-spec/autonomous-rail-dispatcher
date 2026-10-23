@@ -282,3 +282,14 @@ In your external train project, hook into this track network like this:
     </processing>
 </configuration>
 ```
+
+---
+
+## 7. Subsystem Links & References
+
+- **Monorepo Architecture:** [Root README](../README.md)
+- **Fleet Management & Timetables:** [trains/README.md](../trains/README.md)
+- **Autonomous Dispatcher AI:** [dispatcher/README.md](../dispatcher/README.md)
+- **FastAPI Backend Server:** [backend/README.md](../backend/README.md)
+- **Modern Web UI Dashboard:** [frontend/README.md](../frontend/README.md)
+- **Unified Milestone Log:** [project_history.md](../project_history.md)

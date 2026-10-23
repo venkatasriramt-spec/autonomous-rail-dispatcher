@@ -44,7 +44,9 @@ from backend.routers.timetable import (
     list_train_services,
     get_service_by_number,
     list_physical_rakes,
-    list_rolling_stock_types
+    list_rolling_stock_types,
+    list_timetable_stations,
+    get_station_board
 )
 from backend.routers.analytics import (
     get_weekly_benchmark_summary,
@@ -127,6 +129,15 @@ def test_routers_direct():
         assert detail["train_number"] == first_svc
         assert "stops" in detail
         print(f"  ✓ get_service_by_number ({first_svc}): OK ({len(detail['stops'])} stops)")
+
+        stations_tt = await list_timetable_stations()
+        assert len(stations_tt) == 24
+        print(f"  ✓ list_timetable_stations: OK ({len(stations_tt)} station categories)")
+
+        board = await get_station_board("City_1", day="Mon")
+        assert isinstance(board, list)
+        assert len(board) > 0
+        print(f"  ✓ get_station_board (City_1): OK ({len(board)} movements)")
 
         # Analytics
         summary = await get_weekly_benchmark_summary()
@@ -228,6 +239,14 @@ def test_live_http_server():
         r = requests.get("http://127.0.0.1:8009/api/timetable/rolling-stock", timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
         print("  ✓ HTTP GET /api/timetable/rolling-stock: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/timetable/stations", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/timetable/stations: 200 OK")
+
+        r = requests.get("http://127.0.0.1:8009/api/timetable/station/City_1?day=Mon", timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        print("  ✓ HTTP GET /api/timetable/station/City_1: 200 OK")
 
         r = requests.get("http://127.0.0.1:8009/api/analytics/weekly-summary", timeout=HTTP_TIMEOUT)
         assert r.status_code == 200

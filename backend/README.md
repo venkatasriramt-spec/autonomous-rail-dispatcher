@@ -22,7 +22,7 @@ Welcome to the **Autonomous Railway Traffic Management Backend API** subsystem. 
 │  ├── /api/sim        - Lifecycle & Playback Controls (play, pause, step, speed)        │
 │  ├── /ws/telemetry   - Real-Time WebSocket Telemetry Broadcast (4-10 Hz)               │
 │  ├── /api/network    - 2D Track Vector Geometry, Station Centroids, Platform Bounds    │
-│  ├── /api/timetable  - SQLite Service Schedules (242 runs), 31 Rakes, Consist Specs   │
+│  ├── /api/timetable  - SQLite Service Schedules (242 runs), 31 Rakes, Station Boards   │
 │  ├── /api/analytics  - Authoritative 56-Run Weekly Benchmarks, Diurnal Curves          │
 │  ├── /api/disruption - Mechanical Breakdowns, Platform Closures, Fleet Surge Jitter    │
 │  └── /api/override   - Human-in-the-Loop Manual Interventions (Holds, Platform Swaps)  │
@@ -31,6 +31,7 @@ Welcome to the **Autonomous Railway Traffic Management Backend API** subsystem. 
 │  ├── SimulationManager   - Thread-safe SUMO/TraCI lifecycle & Step Controller          │
 │  ├── DispatcherBridge    - Model Factory (Centralized PPO, MAPPO, Comm-MAPPO, Hybrid)  │
 │  ├── NetworkGeometry     - XML-to-Vector Parser & Cache (776 lanes, 18 stations)       │
+│  ├── DatabaseEngine      - Normalized SQLite Query Engine (trains.db)                  │
 │  └── TelemetryStreamer   - Async WebSocket Client Hub                                  │
 └────────────────────────┬─────────────────────────────────────┬─────────────────────────┘
                          │                                     │
@@ -65,7 +66,7 @@ backend/
 │   ├── simulation.py         # POST /api/sim/control, POST /api/sim/config, GET /api/sim/status
 │   ├── websocket.py          # WS /ws/telemetry
 │   ├── network.py            # GET /api/network/geometry, stations, platforms, bounds
-│   ├── timetable.py          # GET /api/timetable/services, rakes, rolling-stock
+│   ├── timetable.py          # GET /api/timetable/stations, station/{station_name}, services, rakes
 │   ├── analytics.py          # GET /api/analytics/weekly-summary, diurnal, stress-test
 │   ├── disruption.py         # POST /api/disruption/inject, clear, active
 │   └── overrides.py          # POST /api/override/action, recent
@@ -197,15 +198,37 @@ Once the server is running, navigate to:
 * `GET /api/network/bounds`: Coordinate bounding box `[min_x, min_y, max_x, max_y]`.
 
 ### D. Timetable & Fleet (`/api/timetable`)
-* `GET /api/timetable/services`: Query scheduled services with filters (`?day=Mon&corridor=Corridor_1`).
+* `GET /api/timetable/stations`: Returns 24 station query entries categorized by functional role (`City`, `Town`, `Depot`) with multi-level platform aggregation (`City_3`, `City_3_EW`, `City_3_NS`, `Town_8_Passing_Loop`).
+* `GET /api/timetable/station/{station_name}?day=Mon`: Station-centric schedule board of all scheduled departures, arrivals, and intermediate halts for the requested station and operating day:
+  ```json
+  [
+    {
+      "train_number": "12001",
+      "train_name": "Express Sunrise",
+      "service_class": "high_speed_express",
+      "origin_station": "City_1",
+      "dest_station": "City_4",
+      "train_stop_id": "City_1_p1_fw",
+      "arrival_time": null,
+      "departure_time": "06:00:00",
+      "dwell_sec": 120,
+      "movement_type": "DEPARTURE",
+      "display_time": "06:00:00",
+      "bound": "To City_4",
+      "is_origin": 1,
+      "is_terminus": 0
+    }
+  ]
+  ```
+* `GET /api/timetable/services`: Query scheduled services with filters (`?day=Mon&corridor=Corridor_1&service_class=high_speed_express`).
 * `GET /api/timetable/services/{train_number}`: Detailed service with intermediate stops and timings.
-* `GET /api/timetable/rakes`: Fleet roster of 31 continuous physical rakes and duty cycles.
-* `GET /api/timetable/rolling-stock`: 7 physical consist models with speeds, lengths, and power.
+* `GET /api/timetable/rakes`: Fleet roster of 31 continuous physical rakes, rolling stock types, and daily duty cycles.
+* `GET /api/timetable/rolling-stock`: Specifications for all 7 physical consist models with speeds, lengths, and power regimes.
 
 ### E. Analytics & Benchmarking (`/api/analytics`)
-* `GET /api/analytics/weekly-summary`: Summary metrics from the authoritative 56-run weekly benchmark.
-* `GET /api/analytics/diurnal?day=Mon`: 24-hour hour-by-hour fleet delay progression by model.
-* `GET /api/analytics/stress-test`: Multi-scenario disruption stress test results.
+* `GET /api/analytics/weekly-summary`: Summary metrics from the authoritative 56-run weekly benchmark across all 8 models.
+* `GET /api/analytics/diurnal?day=Mon`: 24-hour hour-by-hour fleet delay progression and diurnal curves by model.
+* `GET /api/analytics/stress-test`: Multi-scenario disruption stress test results (Phases A & B).
 
 ### F. Perturbations & Human-in-the-Loop (`/api/disruption` & `/api/override`)
 * `POST /api/disruption/inject`: Injects mechanical breakdowns, platform blockages, or dwell jitter:
@@ -217,6 +240,7 @@ Once the server is running, navigate to:
   }
   ```
 * `POST /api/disruption/clear`: Clears all active disruptions.
+* `GET /api/disruption/active`: Returns list of currently active injected disruptions and remaining durations.
 * `POST /api/override/action`: Applies manual operator intervention:
   ```json
   {
@@ -225,3 +249,16 @@ Once the server is running, navigate to:
     "target_platform": 4
   }
   ```
+* `GET /api/override/recent`: Returns recent manual intervention event history.
+
+---
+
+## 5. Subsystem Links & References
+
+* **Monorepo Architecture:** [Root README](../README.md)
+* **Frontend Web Dashboard:** [frontend/README.md](../frontend/README.md)
+* **Physical Track Network:** [tracks/README.md](../tracks/README.md)
+* **Fleet Management & Timetables:** [trains/README.md](../trains/README.md)
+* **Autonomous Dispatcher AI:** [dispatcher/README.md](../dispatcher/README.md)
+* **Unified Milestones & History:** [project_history.md](../project_history.md)
+

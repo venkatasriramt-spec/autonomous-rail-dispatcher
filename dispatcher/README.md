@@ -266,3 +266,17 @@ python3 dispatcher/training/train.py --wave full_day --timesteps 100000 --worker
 # Train Comm-MAPPO multi-agent policy:
 python3 dispatcher/training/train_mappo_curriculum.py
 ```
+
+---
+
+## 9. Subsystem Links & References
+
+- **Monorepo Architecture:** [Root README](../README.md)
+- **Track Infrastructure & Topology:** [tracks/README.md](../tracks/README.md)
+- **Fleet Management & Timetables:** [trains/README.md](../trains/README.md)
+- **FastAPI Backend Server:** [backend/README.md](../backend/README.md)
+- **Modern Web UI Dashboard:** [frontend/README.md](../frontend/README.md)
+- **Model Training Roadmap:** [MODEL_TRAINING_PLAN.md](MODEL_TRAINING_PLAN.md)
+- **Logs & Evaluation Reference:** [logs/LOGS_MAP.md](logs/LOGS_MAP.md)
+- **Unified Milestone Log:** [project_history.md](../project_history.md)
+

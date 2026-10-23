@@ -237,3 +237,15 @@ FROM train_services ts
 JOIN service_post_disposition spd ON ts.train_number = spd.train_number
 WHERE spd.action = 'turnaround';
 ```
+
+---
+
+## 6. Subsystem Links & References
+
+- **Monorepo Architecture:** [Root README](../README.md)
+- **Track Infrastructure & Topology:** [tracks/README.md](../tracks/README.md)
+- **Autonomous Dispatcher AI:** [dispatcher/README.md](../dispatcher/README.md)
+- **FastAPI Backend Server:** [backend/README.md](../backend/README.md)
+- **Modern Web UI Dashboard:** [frontend/README.md](../frontend/README.md)
+- **Unified Milestone Log:** [project_history.md](../project_history.md)
+
