@@ -73,6 +73,10 @@ export default function QueryPage() {
   const [selectedDest, setSelectedDest] = useState('ALL');
   const [sortBy, setSortBy] = useState('departure'); // 'departure' | 'train_number' | 'distance' | 'duration'
 
+  // Pagination State for Services Directory
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(15); // 15 | 25 | 50 | 'all'
+
   // Expanded Service details for stops lookup
   const [expandedTrain, setExpandedTrain] = useState(null);
   const [trainDetailsCache, setTrainDetailsCache] = useState({});
@@ -211,6 +215,37 @@ export default function QueryPage() {
       return 0;
     });
   }, [services, searchQuery, selectedCorridor, selectedClass, selectedOrigin, selectedDest, sortBy]);
+
+  // Reset to first page when search or filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedCorridor, selectedClass, selectedOrigin, selectedDest, sortBy, pageSize]);
+
+  // Paginated Sliced Services
+  const totalPages = useMemo(() => {
+    if (pageSize === 'all') return 1;
+    return Math.ceil(filteredServices.length / pageSize) || 1;
+  }, [filteredServices.length, pageSize]);
+
+  const paginatedServices = useMemo(() => {
+    if (pageSize === 'all') return filteredServices;
+    const start = (currentPage - 1) * pageSize;
+    return filteredServices.slice(start, start + pageSize);
+  }, [filteredServices, currentPage, pageSize]);
+
+  // Helper for generating page numbers with smart ellipsis
+  const getPageNumbers = () => {
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, '...', totalPages];
+    }
+    if (currentPage >= totalPages - 3) {
+      return [1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages];
+    }
+    return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
+  };
 
   // 4. Station Movements (Departures & Arrivals)
   const stationMovements = useMemo(() => {
@@ -543,8 +578,9 @@ export default function QueryPage() {
                     <p>No services match your active search filters. Try clearing filters or searching another keyword.</p>
                   </div>
                 ) : (
-                  <div className="services-grid-list">
-                    {filteredServices.map(service => {
+                  <>
+                    <div className="services-grid-list">
+                    {paginatedServices.map(service => {
                       const isExpanded = expandedTrain === service.train_number;
                       const durationSec = (service.arrival_sec || 0) - (service.departure_sec || 0);
                       const detail = trainDetailsCache[service.train_number];
@@ -697,8 +733,112 @@ export default function QueryPage() {
                       );
                     })}
                   </div>
-                )}
-              </div>
+
+                  {/* Sliced Pagination Controls */}
+                  {filteredServices.length > 0 && (
+                    <div className="pagination-bar">
+                      <div className="pagination-info">
+                        <span>
+                          Showing <strong>{filteredServices.length === 0 ? 0 : (currentPage - 1) * (pageSize === 'all' ? filteredServices.length : pageSize) + 1}</strong>
+                          {' – '}
+                          <strong>{pageSize === 'all' ? filteredServices.length : Math.min(currentPage * pageSize, filteredServices.length)}</strong>
+                          {' of '}
+                          <strong>{filteredServices.length}</strong> services
+                        </span>
+
+                        <div className="page-size-selector">
+                          <label>Show per page:</label>
+                          <select 
+                            value={pageSize} 
+                            onChange={(e) => setPageSize(e.target.value === 'all' ? 'all' : Number(e.target.value))}
+                            className="page-size-select"
+                          >
+                            <option value={15}>15 per page</option>
+                            <option value={25}>25 per page</option>
+                            <option value={50}>50 per page</option>
+                            <option value="all">All ({filteredServices.length})</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      {totalPages > 1 && (
+                        <div className="pagination-controls">
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={currentPage === 1}
+                            onClick={() => {
+                              setCurrentPage(1);
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="First Page"
+                          >
+                            « First
+                          </button>
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={currentPage === 1}
+                            onClick={() => {
+                              setCurrentPage(p => Math.max(1, p - 1));
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="Previous Page"
+                          >
+                            ‹ Prev
+                          </button>
+
+                          <div className="page-numbers-list">
+                            {getPageNumbers().map((pNum, idx) => (
+                              pNum === '...' ? (
+                                <span key={`ellipsis-${idx}`} className="page-ellipsis">…</span>
+                              ) : (
+                                <button
+                                  key={pNum}
+                                  type="button"
+                                  className={`btn-page-number ${currentPage === pNum ? 'active' : ''}`}
+                                  onClick={() => {
+                                    setCurrentPage(pNum);
+                                    window.scrollTo({ top: 380, behavior: 'smooth' });
+                                  }}
+                                >
+                                  {pNum}
+                                </button>
+                              )
+                            ))}
+                          </div>
+
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={currentPage === totalPages}
+                            onClick={() => {
+                              setCurrentPage(p => Math.min(totalPages, p + 1));
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="Next Page"
+                          >
+                            Next ›
+                          </button>
+                          <button 
+                            type="button"
+                            className="btn-page-nav"
+                            disabled={currentPage === totalPages}
+                            onClick={() => {
+                              setCurrentPage(totalPages);
+                              window.scrollTo({ top: 380, behavior: 'smooth' });
+                            }}
+                            title="Last Page"
+                          >
+                            Last »
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
             )}
 
             {/* ======================================================== */}

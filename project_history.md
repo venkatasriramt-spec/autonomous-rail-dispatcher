@@ -855,6 +855,7 @@ Design and deploy a modern, reactive React 19 + Vite 8 frontend for the Autonomo
    - *JSX Math Rendering:* Resolved an unescaped JSX curly-brace parsing error in LaTeX expressions on `/about` that caused blank-screen reference errors. Encapsulated all mathematical strings in safe literal expressions.
    - *Error Boundary:* Implemented [`frontend/src/components/ErrorBoundary.jsx`](frontend/src/components/ErrorBoundary.jsx) wrapping all client routes to prevent catastrophic rendering failures.
    - *WebSocket Lifecycle:* Enhanced `/ws/telemetry` subscription in [`frontend/src/pages/SimulationPage.jsx`](frontend/src/pages/SimulationPage.jsx) with mount tracking and safe ready-state disposal, eliminating React 19 StrictMode connection drop warnings.
+   - *DOM Optimization & Sliced Pagination:* Resolved potential browser layout lag on the 242-train directory in [`frontend/src/pages/QueryPage.jsx`](frontend/src/pages/QueryPage.jsx) by implementing client-side pagination (15/25/50/all per page), cutting active DOM nodes from ~4,500 down to <300 while maintaining instant in-memory search.
 
 ---
 
