@@ -107,6 +107,42 @@
   background: var(--border-light);
 }
 
+.hud-timejumps {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+}
+
+.btn-timejump-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-size: 0.725rem;
+  font-weight: 600;
+  padding: 0.25rem 0.55rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-timejump-pill:hover {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: rgba(0, 240, 255, 0.4);
+  color: #ffffff;
+}
+
+.btn-timejump-pill.active {
+  background: var(--cyan-primary);
+  border-color: var(--cyan-primary);
+  color: #04111d;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.35);
+}
+
 .hud-select-group {
   display: flex;
   align-items: center;

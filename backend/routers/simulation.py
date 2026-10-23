@@ -23,9 +23,29 @@ def get_simulation_status():
     return sim_manager.get_status()
 
 
+@router.get("/telemetry")
+def get_simulation_telemetry():
+    """Retrieves real-time telemetry snapshot: active trains, platforms, KPIs, and decisions."""
+    status = sim_manager.get_status()
+    return {
+        "status": status,
+        "kpis": {
+            "sim_time_sec": status.get("sim_time_sec", 21600.0),
+            "time_formatted": status.get("time_formatted", "06:00:00"),
+            "active_trains_count": status.get("active_trains_count", 0),
+            "mean_delay_sec": status.get("mean_delay_sec", 0.0),
+            "punctuality_pct": status.get("punctuality_pct", 100.0),
+            "total_actions_taken": status.get("total_actions_taken", 0),
+        },
+        "trains": sim_manager.trains_cache,
+        "platforms": sim_manager.platforms_cache,
+        "recent_actions": sim_manager.recent_actions[:15],
+    }
+
+
 @router.post("/control")
 def control_simulation(req: SimulationControlRequest):
-    """Executes a play, pause, step, or reset command."""
+    """Executes a play, pause, step, reset, or speed command."""
     action = req.action.lower()
 
     if req.speed is not None and req.speed > 0:
@@ -39,8 +59,10 @@ def control_simulation(req: SimulationControlRequest):
         success = sim_manager.step()
     elif action == "reset":
         success = sim_manager.reset()
+    elif action in ("set_speed", "speed"):
+        success = True
     else:
-        raise HTTPException(status_code=400, detail=f"Invalid action '{req.action}'. Expected play, pause, step, reset.")
+        raise HTTPException(status_code=400, detail=f"Invalid action '{req.action}'. Expected play, pause, step, reset, set_speed.")
 
     return {
         "success": success,

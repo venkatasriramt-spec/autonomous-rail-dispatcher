@@ -41,6 +41,13 @@ const MODELS = [
   { id: 'SUMO_Default', label: 'SUMO Default (No Dispatcher)' }
 ];
 
+const TIME_JUMPS = [
+  { label: '06:00 Dawn', sec: 21600 },
+  { label: '07:30 Peak', sec: 27000 },
+  { label: '12:00 Midday', sec: 43200 },
+  { label: '17:30 Rush', sec: 63000 }
+];
+
 export default function SimulationPage() {
   // Sim state
   const [simStatus, setSimStatus] = useState({
@@ -58,9 +65,9 @@ export default function SimulationPage() {
   const [trains, setTrains] = useState([]);
   const [kpis, setKpis] = useState({
     active_trains: 0,
-    punctuality_pct: 99.4,
-    avg_delay_sec: 12.0,
-    max_delay_sec: 45.0,
+    punctuality_pct: 100.0,
+    avg_delay_sec: 0.0,
+    max_delay_sec: 0.0,
     platform_utilization_pct: 28.5,
     throughput_tph: 18.0
   });
@@ -79,7 +86,7 @@ export default function SimulationPage() {
   const [selectedTrain, setSelectedTrain] = useState(null);
   const [showDisruptionModal, setShowDisruptionModal] = useState(false);
   const [showOverrideModal, setShowOverrideModal] = useState(false);
-  const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'events' | 'stations'
+  const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'events'
 
   // Disruption Form
   const [disruptionForm, setDisruptionForm] = useState({
@@ -97,12 +104,41 @@ export default function SimulationPage() {
     hold_duration_sec: 60
   });
 
+  // Filtered Trains computed for both Canvas & Sidebar
+  const filteredTrains = React.useMemo(() => {
+    return trains.filter(t => {
+      if (categoryFilter !== 'ALL' && t.category !== categoryFilter) return false;
+      if (delayOnlyFilter && (!t.delay_sec || t.delay_sec <= 0)) return false;
+      if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        const num = String(t.train_number || t.id).toLowerCase();
+        if (!num.includes(q)) return false;
+      }
+      return true;
+    });
+  }, [trains, categoryFilter, delayOnlyFilter, searchQuery]);
+
   // Canvas Refs
   const canvasRef = useRef(null);
   const transformRef = useRef({ scale: 0.03, offsetX: 100, offsetY: 100 });
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const wsRef = useRef(null);
+
+  // Helper: compute centered transform from geometry bounds
+  const getCenteredTransform = useCallback((bounds, cWidth, cHeight) => {
+    if (!bounds || bounds.length < 4) return { scale: 0.03, offsetX: 50, offsetY: 50 };
+    const [minX, minY, maxX, maxY] = bounds;
+    const netWidth = maxX - minX || 30000;
+    const netHeight = maxY - minY || 27000;
+    const pad = 40;
+    const availW = Math.max(100, cWidth - pad * 2);
+    const availH = Math.max(100, cHeight - pad * 2);
+    const scale = Math.min(availW / netWidth, availH / netHeight);
+    const offsetX = (cWidth - netWidth * scale) / 2 - minX * scale;
+    const offsetY = (cHeight - netHeight * scale) / 2 - minY * scale;
+    return { scale, offsetX, offsetY };
+  }, []);
 
   // 1. Fetch Network Geometry on Mount
   useEffect(() => {
@@ -118,17 +154,9 @@ export default function SimulationPage() {
 
             // Fit network to canvas initial scale
             if (data.bounds && canvasRef.current) {
-              const [minX, minY, maxX, maxY] = data.bounds;
-              const netWidth = maxX - minX;
-              const netHeight = maxY - minY;
               const cWidth = canvasRef.current.clientWidth || 1000;
               const cHeight = canvasRef.current.clientHeight || 700;
-              const scale = Math.min(cWidth / netWidth, cHeight / netHeight) * 0.9;
-              transformRef.current = {
-                scale: Math.max(scale, 0.015),
-                offsetX: (cWidth - netWidth * scale) / 2 - minX * scale,
-                offsetY: (cHeight - netHeight * scale) / 2 - minY * scale
-              };
+              transformRef.current = getCenteredTransform(data.bounds, cWidth, cHeight);
             }
           }
         }
@@ -138,17 +166,27 @@ export default function SimulationPage() {
     };
     fetchGeometry();
     return () => { mounted = false; };
-  }, []);
+  }, [getCenteredTransform]);
 
-  // 2. Fetch Initial Sim Status
+  // 2. Fetch Sim Status and Telemetry Poll Fallback
   const fetchStatus = useCallback(async () => {
     try {
       const res = await fetch('/api/sim/status');
       if (res.ok) {
         const data = await res.json();
-        setSimStatus(data);
-        if (data.current_day) setSelectedDay(data.current_day);
-        if (data.current_model) setSelectedModel(data.current_model);
+        setSimStatus(prev => ({
+          ...prev,
+          running: data.status === 'RUNNING',
+          paused: data.status === 'PAUSED',
+          sim_time_sec: data.sim_time_sec ?? prev.sim_time_sec,
+          sim_time_formatted: data.time_formatted ?? prev.sim_time_formatted,
+          current_model: data.dispatcher_model ?? prev.current_model,
+          current_day: data.calendar_day ?? prev.current_day,
+          speed_multiplier: data.speed_multiplier ?? prev.speed_multiplier,
+          active_disruptions: data.active_disruptions ?? prev.active_disruptions
+        }));
+        if (data.calendar_day) setSelectedDay(data.calendar_day);
+        if (data.dispatcher_model) setSelectedModel(data.dispatcher_model);
       }
     } catch (e) {
       console.warn('Status poll error:', e);
@@ -157,14 +195,16 @@ export default function SimulationPage() {
 
   useEffect(() => {
     fetchStatus();
+    const interval = setInterval(fetchStatus, 3000);
+    return () => clearInterval(interval);
   }, [fetchStatus]);
 
   // 3. Connect WebSocket for Real-Time Telemetry
   useEffect(() => {
     let isMounted = true;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsHost = window.location.port === '5173' ? `${window.location.hostname}:8000` : window.location.host;
-    const wsUrl = `${protocol}//${wsHost}/ws/telemetry`;
+    // Use current host so Vite proxy forwards to backend
+    const wsUrl = `${protocol}//${window.location.host}/ws/telemetry`;
     let ws = null;
     let reconnectTimeout = null;
 
@@ -184,25 +224,69 @@ export default function SimulationPage() {
           if (!isMounted) return;
           try {
             const data = JSON.parse(event.data);
-            if (data.active_trains) {
-              setTrains(data.active_trains);
-            }
-            if (data.kpi) {
-              setKpis(data.kpi);
-            }
-            if (data.sim_time_formatted) {
-              setSimStatus(prev => ({
-                ...prev,
-                sim_time_formatted: data.sim_time_formatted,
-                sim_time_sec: data.sim_time_sec,
-                running: data.running,
-                paused: data.paused,
-                current_model: data.current_model,
-                current_day: data.current_day
+            
+            // Ingest active trains
+            const incomingTrains = data.trains || data.active_trains;
+            if (Array.isArray(incomingTrains)) {
+              setTrains(incomingTrains.map(t => {
+                let cat = t.category;
+                if (!cat) {
+                  const vid = t.id || '';
+                  const vtype = t.vtype || '';
+                  if (vid.startsWith('HS') || vtype.includes('high_speed')) {
+                    cat = 'HighSpeed';
+                  } else if (vid.startsWith('FRT') || vtype.includes('freight')) {
+                    cat = 'Freight';
+                  } else {
+                    cat = 'Regional';
+                  }
+                }
+                return {
+                  ...t,
+                  category: cat,
+                  train_number: t.train_number || t.id,
+                  speed_kmh: t.speed_kmh ?? Math.round((t.speed || 0) * 3.6),
+                  speed: t.speed_ms ?? t.speed ?? ((t.speed_kmh || 0) / 3.6)
+                };
               }));
             }
-            if (data.recent_events && data.recent_events.length > 0) {
-              setEvents(prev => [...data.recent_events, ...prev].slice(0, 50));
+
+            // Ingest KPIs
+            const incomingKpis = data.kpis || data.kpi;
+            if (incomingKpis) {
+              setKpis({
+                active_trains: incomingKpis.active_trains_count ?? incomingKpis.active_trains ?? 0,
+                punctuality_pct: incomingKpis.punctuality_pct ?? 100.0,
+                avg_delay_sec: incomingKpis.mean_delay_sec ?? incomingKpis.avg_delay_sec ?? 0.0,
+                max_delay_sec: incomingKpis.max_delay_sec ?? 0.0,
+                platform_utilization_pct: incomingKpis.platform_utilization_pct ?? 28.5,
+                throughput_tph: incomingKpis.throughput_tph ?? 18.0
+              });
+            }
+
+            // Ingest clock and sim state
+            const timeFormatted = incomingKpis?.time_formatted || data.sim_time_formatted || data.time_formatted;
+            const timeSec = incomingKpis?.sim_time_sec ?? data.sim_time_sec;
+            const statusStr = data.sim_status || data.status;
+
+            if (timeFormatted || statusStr) {
+              setSimStatus(prev => ({
+                ...prev,
+                sim_time_formatted: timeFormatted || prev.sim_time_formatted,
+                sim_time_sec: timeSec ?? prev.sim_time_sec,
+                running: statusStr === 'RUNNING' || (data.running ?? prev.running),
+                paused: statusStr === 'PAUSED' || (data.paused ?? prev.paused),
+                current_model: data.dispatcher_model || data.current_model || prev.current_model,
+                current_day: data.calendar_day || data.current_day || prev.current_day,
+                speed_multiplier: data.speed_multiplier || prev.speed_multiplier,
+                active_disruptions: data.active_disruptions || prev.active_disruptions
+              }));
+            }
+
+            // Ingest recent AI actions
+            const incomingActions = data.recent_actions || data.recent_events;
+            if (Array.isArray(incomingActions) && incomingActions.length > 0) {
+              setEvents(incomingActions);
             }
           } catch (err) {
             console.error('WebSocket parse error:', err);
@@ -211,7 +295,7 @@ export default function SimulationPage() {
 
         ws.onclose = () => {
           if (isMounted) {
-            reconnectTimeout = setTimeout(connectWS, 3000);
+            reconnectTimeout = setTimeout(connectWS, 2500);
           }
         };
         ws.onerror = () => {
@@ -219,7 +303,7 @@ export default function SimulationPage() {
         };
       } catch (_) {
         if (isMounted) {
-          reconnectTimeout = setTimeout(connectWS, 3000);
+          reconnectTimeout = setTimeout(connectWS, 2500);
         }
       }
     };
@@ -259,9 +343,15 @@ export default function SimulationPage() {
     ctx.save();
     ctx.scale(dpr, dpr);
 
-    // Dark grid background
-    ctx.fillStyle = '#06090e';
+    // Deep modern dark background
+    ctx.fillStyle = '#05080f';
     ctx.fillRect(0, 0, width, height);
+
+    // Grid coordinates conversion: SUMO has Y increasing UP, Canvas has Y increasing DOWN.
+    // Bounds: [minX, minY, maxX, maxY].
+    const bounds = geometry?.bounds || [-0.33, -0.18, 29708.16, 26683.47];
+    const [minX, minY, maxX, maxY] = bounds;
+    const toCanvasY = (sumoY) => maxY - sumoY + minY;
 
     // Apply viewport pan & zoom
     const { scale, offsetX, offsetY } = transformRef.current;
@@ -269,113 +359,175 @@ export default function SimulationPage() {
     ctx.translate(offsetX, offsetY);
     ctx.scale(scale, scale);
 
-    // Draw Track Lanes
+    // 1. Draw Track Lanes
     if (geometry && geometry.lanes) {
       for (let i = 0; i < geometry.lanes.length; i++) {
         const lane = geometry.lanes[i];
-        const shape = lane.shape;
-        if (!shape || shape.length < 2) continue;
+        const coords = lane.coordinates || lane.shape;
+        if (!coords || coords.length < 2) continue;
 
-        const isPlatform = lane.category === 'platform';
-        const isSiding = lane.category === 'siding';
+        const cat = lane.category || 'connector';
+        const isHighSpeed = cat === 'high_speed';
+        const isPlatform = cat === 'platform';
+        const isCrossover = cat === 'crossover';
+        const isPassingLoop = cat === 'passing_loop' || cat === 'pocket';
+        const isYard = cat === 'yard' || cat === 'depot';
 
         ctx.beginPath();
-        // Invert Y coordinate because SUMO Y grows upward, Canvas Y grows downward
-        ctx.moveTo(shape[0][0], -shape[0][1]);
-        for (let j = 1; j < shape.length; j++) {
-          ctx.lineTo(shape[j][0], -shape[j][1]);
+        ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+        for (let j = 1; j < coords.length; j++) {
+          ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
         }
 
         if (isPlatform) {
-          ctx.strokeStyle = '#f59e0b'; // amber for platform track
+          // Amber Platform Track
+          ctx.strokeStyle = '#291800';
           ctx.lineWidth = 14 / scale;
           ctx.stroke();
-          ctx.strokeStyle = '#fbbf24';
-          ctx.lineWidth = 6 / scale;
+          ctx.strokeStyle = '#f59e0b';
+          ctx.lineWidth = 5.5 / scale;
           ctx.stroke();
-        } else if (isSiding) {
-          ctx.strokeStyle = '#475569';
-          ctx.lineWidth = 4 / scale;
+          ctx.strokeStyle = '#fef08a';
+          ctx.lineWidth = 1.8 / scale;
+          ctx.stroke();
+        } else if (isHighSpeed) {
+          // Electric Neon Cyan High-Speed Mainline
+          ctx.strokeStyle = '#07162c';
+          ctx.lineWidth = 10 / scale;
+          ctx.stroke();
+          ctx.strokeStyle = '#0284c7';
+          ctx.lineWidth = 5 / scale;
+          ctx.stroke();
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2.2 / scale;
+          ctx.stroke();
+        } else if (isCrossover) {
+          // Scissors X-Crossover (Indigo/Violet)
+          ctx.strokeStyle = '#1e1b4b';
+          ctx.lineWidth = 7 / scale;
+          ctx.stroke();
+          ctx.strokeStyle = '#818cf8';
+          ctx.lineWidth = 3 / scale;
+          ctx.stroke();
+        } else if (isPassingLoop) {
+          // Siding / Overtake Loop (Teal)
+          ctx.strokeStyle = '#042f2e';
+          ctx.lineWidth = 7 / scale;
+          ctx.stroke();
+          ctx.strokeStyle = '#2dd4bf';
+          ctx.lineWidth = 2.8 / scale;
+          ctx.stroke();
+        } else if (isYard) {
+          // Staging Yard / Siding (Muted Slate)
+          ctx.strokeStyle = '#334155';
+          ctx.lineWidth = 2.5 / scale;
           ctx.stroke();
         } else {
-          ctx.strokeStyle = '#1e293b'; // mainline ballast
-          ctx.lineWidth = 8 / scale;
+          // Standard Mainline / Intercity Trunk (Deep Blue/Cyan)
+          ctx.strokeStyle = '#0a101d';
+          ctx.lineWidth = 7 / scale;
           ctx.stroke();
-          ctx.strokeStyle = '#38bdf8'; // mainline rail glow
+          ctx.strokeStyle = '#0369a1';
           ctx.lineWidth = 2.5 / scale;
           ctx.stroke();
         }
       }
     }
 
-    // Draw Stations
+    // 2. Draw Stations
     if (geometry && geometry.stations) {
       for (const st of geometry.stations) {
         const sx = st.x;
-        const sy = -st.y;
+        const sy = toCanvasY(st.y);
+        const isCity = st.station_name && st.station_name.startsWith('City');
+        const hubRadius = (isCity ? 14 : 9) / scale;
+        const innerRadius = (isCity ? 7 : 4.5) / scale;
 
-        // Station hub circle
+        // Outer Glow Halo
         ctx.beginPath();
-        ctx.arc(sx, sy, 35 / scale, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(7, 47, 95, 0.7)';
+        ctx.arc(sx, sy, hubRadius * 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = isCity ? 'rgba(0, 240, 255, 0.12)' : 'rgba(56, 189, 248, 0.08)';
         ctx.fill();
-        ctx.strokeStyle = '#00f0ff';
-        ctx.lineWidth = 3 / scale;
+
+        // Hub Disc
+        ctx.beginPath();
+        ctx.arc(sx, sy, hubRadius, 0, Math.PI * 2);
+        ctx.fillStyle = isCity ? 'rgba(12, 74, 110, 0.95)' : 'rgba(30, 58, 138, 0.9)';
+        ctx.fill();
+        ctx.strokeStyle = isCity ? '#00f0ff' : '#38bdf8';
+        ctx.lineWidth = 2.5 / scale;
         ctx.stroke();
 
-        // Station Label
-        ctx.font = `bold ${Math.max(14 / scale, 12)}px Inter, sans-serif`;
+        // Core dot
+        ctx.beginPath();
+        ctx.arc(sx, sy, innerRadius, 0, Math.PI * 2);
         ctx.fillStyle = '#ffffff';
+        ctx.fill();
+
+        // Station Name Pill Badge
+        const name = st.display_name || st.station_name || 'Station';
+        const fontSize = (isCity ? 11 : 9.5) / scale;
+        ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+        const textMetrics = ctx.measureText(name);
+        const textWidth = textMetrics.width;
+        const padX = 6 / scale;
+        const padY = 3 / scale;
+        const badgeH = fontSize + padY * 2;
+        const badgeW = textWidth + padX * 2;
+        const badgeX = sx - badgeW / 2;
+        const badgeY = sy - hubRadius * 1.6 - badgeH - (4 / scale);
+
+        // Badge background
+        ctx.fillStyle = 'rgba(6, 11, 24, 0.9)';
+        ctx.beginPath();
+        ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4 / scale);
+        ctx.fill();
+        ctx.strokeStyle = isCity ? 'rgba(0, 240, 255, 0.6)' : 'rgba(56, 189, 248, 0.4)';
+        ctx.lineWidth = 1 / scale;
+        ctx.stroke();
+
+        // Badge text
+        ctx.fillStyle = '#f8fafc';
         ctx.textAlign = 'center';
-        ctx.textBaseline = 'bottom';
-        ctx.fillText(st.name, sx, sy - (40 / scale));
+        ctx.textBaseline = 'middle';
+        ctx.fillText(name, sx, badgeY + badgeH / 2);
       }
     }
 
-    // Filter trains
-    const filteredTrains = trains.filter(t => {
-      if (categoryFilter !== 'ALL' && t.category !== categoryFilter) return false;
-      if (delayOnlyFilter && (!t.delay_sec || t.delay_sec <= 0)) return false;
-      if (searchQuery) {
-        const q = searchQuery.toLowerCase();
-        const num = String(t.train_number || t.id).toLowerCase();
-        if (!num.includes(q)) return false;
-      }
-      return true;
-    });
-
-    // Draw Trains
+    // 3. Draw Active Trains
     for (const train of filteredTrains) {
       const tx = train.x;
-      const ty = -train.y;
-      const angleRad = (train.angle || 0) * (Math.PI / 180);
+      const ty = toCanvasY(train.y);
+      // SUMO angle: 0 = North, 90 = East, 180 = South, 270 = West.
+      // Canvas coordinates with Y-inverted: ((angle - 90) * PI / 180) aligns heading directly with track vector
+      const angleRad = ((train.angle ?? 90) - 90) * (Math.PI / 180);
 
       const isSelected = selectedTrain && (selectedTrain.id === train.id);
       const isHighSpeed = train.category === 'HighSpeed';
       const isFreight = train.category === 'Freight';
-      const isDelayed = train.delay_sec > 30;
+      const isDelayed = (train.delay_sec || 0) > 30;
+
+      const trainLen = (isFreight ? 38 : isHighSpeed ? 34 : 26) / scale;
+      const trainWidth = (isFreight ? 10 : 8) / scale;
 
       ctx.save();
       ctx.translate(tx, ty);
       ctx.rotate(angleRad);
 
-      // Train Body
-      const trainLen = 45 / scale;
-      const trainWidth = 14 / scale;
-
       // Glow if selected
       if (isSelected) {
         ctx.shadowColor = '#00f0ff';
-        ctx.shadowBlur = 20;
+        ctx.shadowBlur = 18;
       }
 
+      // Train Body
       ctx.beginPath();
-      ctx.roundRect(-trainLen / 2, -trainWidth / 2, trainLen, trainWidth, 4 / scale);
+      ctx.roundRect(-trainLen / 2, -trainWidth / 2, trainLen, trainWidth, 3 / scale);
 
       if (isDelayed) {
-        ctx.fillStyle = '#ef4444'; // Red if heavily delayed
+        ctx.fillStyle = '#ef4444'; // Red for delayed
       } else if (isHighSpeed) {
-        ctx.fillStyle = '#00f0ff'; // Cyan for High-Speed Express
+        ctx.fillStyle = '#00f0ff'; // Neon Cyan for High-Speed
       } else if (isFreight) {
         ctx.fillStyle = '#f97316'; // Orange for Freight
       } else {
@@ -384,32 +536,48 @@ export default function SimulationPage() {
       ctx.fill();
 
       ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1.5 / scale;
+      ctx.lineWidth = 1.2 / scale;
       ctx.stroke();
 
-      // Heading indicator (nose)
+      // Heading indicator (nose chevron)
       ctx.beginPath();
       ctx.moveTo(trainLen / 2, 0);
-      ctx.lineTo(trainLen / 2 - 8 / scale, -trainWidth / 3);
-      ctx.lineTo(trainLen / 2 - 8 / scale, trainWidth / 3);
+      ctx.lineTo(trainLen / 2 - 6 / scale, -trainWidth / 3);
+      ctx.lineTo(trainLen / 2 - 6 / scale, trainWidth / 3);
       ctx.closePath();
       ctx.fillStyle = '#ffffff';
       ctx.fill();
 
       ctx.restore();
 
-      // Train Label (non-rotated)
-      ctx.font = `600 ${Math.max(11 / scale, 10)}px Inter, sans-serif`;
-      ctx.fillStyle = isSelected ? '#00f0ff' : '#e2e8f0';
+      // Train Label Pill (non-rotated)
+      const speedKmh = Math.round(train.speed_kmh ?? ((train.speed || 0) * 3.6));
+      const trainLabel = `${train.id} • ${speedKmh} km/h`;
+      const tFontSize = 9.5 / scale;
+      ctx.font = `600 ${tFontSize}px Inter, system-ui, sans-serif`;
+      const tMetrics = ctx.measureText(trainLabel);
+      const tW = tMetrics.width + (6 / scale);
+      const tH = tFontSize + (4 / scale);
+      const tBoxX = tx - tW / 2;
+      const tBoxY = ty + (10 / scale);
+
+      ctx.fillStyle = isSelected ? 'rgba(0, 240, 255, 0.95)' : 'rgba(15, 23, 42, 0.88)';
+      ctx.beginPath();
+      ctx.roundRect(tBoxX, tBoxY, tW, tH, 3 / scale);
+      ctx.fill();
+      ctx.strokeStyle = isSelected ? '#ffffff' : 'rgba(255, 255, 255, 0.25)';
+      ctx.lineWidth = 1 / scale;
+      ctx.stroke();
+
+      ctx.fillStyle = isSelected ? '#04111d' : '#f1f5f9';
       ctx.textAlign = 'center';
-      ctx.textBaseline = 'top';
-      const label = `${train.train_number || train.id} (${Math.round((train.speed || 0) * 3.6)} km/h)`;
-      ctx.fillText(label, tx, ty + (15 / scale));
+      ctx.textBaseline = 'middle';
+      ctx.fillText(trainLabel, tx, tBoxY + tH / 2);
     }
 
     ctx.restore();
     ctx.restore();
-  }, [geometry, trains, selectedTrain, categoryFilter, searchQuery, delayOnlyFilter]);
+  }, [geometry, filteredTrains, selectedTrain]);
 
   // Request Animation Frame loop
   useEffect(() => {
@@ -466,34 +634,29 @@ export default function SimulationPage() {
   };
   const resetView = () => {
     if (geometry && geometry.bounds && canvasRef.current) {
-      const [minX, minY, maxX, maxY] = geometry.bounds;
-      const netWidth = maxX - minX;
-      const netHeight = maxY - minY;
       const cWidth = canvasRef.current.clientWidth || 1000;
       const cHeight = canvasRef.current.clientHeight || 700;
-      const scale = Math.min(cWidth / netWidth, cHeight / netHeight) * 0.9;
-      transformRef.current = {
-        scale: Math.max(scale, 0.015),
-        offsetX: (cWidth - netWidth * scale) / 2 - minX * scale,
-        offsetY: (cHeight - netHeight * scale) / 2 - minY * scale
-      };
+      transformRef.current = getCenteredTransform(geometry.bounds, cWidth, cHeight);
     }
   };
 
-  // Click on Canvas to Select Nearest Train
+  // Click on Canvas to Select Nearest Train or Station
   const handleCanvasClick = (e) => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !geometry) return;
     const rect = canvas.getBoundingClientRect();
     const clickX = e.clientX - rect.left;
     const clickY = e.clientY - rect.top;
 
     const { scale, offsetX, offsetY } = transformRef.current;
+    const bounds = geometry.bounds || [-0.33, -0.18, 29708.16, 26683.47];
+    const [minX, minY, maxX, maxY] = bounds;
+
     const worldX = (clickX - offsetX) / scale;
-    const worldY = -(clickY - offsetY) / scale;
+    const worldY = maxY + minY - (clickY - offsetY) / scale;
 
     let closest = null;
-    let minDist = 30 / scale; // click tolerance
+    let minDist = 35 / scale; // click tolerance in world coordinates
 
     for (const t of trains) {
       const dist = Math.hypot(t.x - worldX, t.y - worldY);
@@ -531,6 +694,26 @@ export default function SimulationPage() {
       fetchStatus();
     } catch (err) {
       console.error('Config change error:', err);
+    }
+  };
+
+  // Quick Time Jump Handler (Dawn, Morning Peak, Midday, Evening Rush)
+  const handleTimeJump = async (sec) => {
+    try {
+      await fetch('/api/sim/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          day: selectedDay,
+          model: selectedModel,
+          start_time_sec: sec
+        })
+      });
+      // Start playback to see trains in motion immediately
+      await sendControl('play');
+      fetchStatus();
+    } catch (err) {
+      console.error('Time jump error:', err);
     }
   };
 
@@ -616,7 +799,7 @@ export default function SimulationPage() {
             <button 
               onClick={() => sendControl('step')} 
               className="btn btn-hud" 
-              title="Step Single Tick (1s)"
+              title="Step Single Tick (15s)"
             >
               <ChevronRight size={18} />
               <span>Step</span>
@@ -642,6 +825,23 @@ export default function SimulationPage() {
                 className={`btn-speed-pill ${simStatus.speed_multiplier === s ? 'active' : ''}`}
               >
                 {s}x
+              </button>
+            ))}
+          </div>
+
+          <div className="hud-divider" />
+
+          {/* Quick Scenario Time-Jump Pills */}
+          <div className="hud-timejumps">
+            <span className="hud-select-label">Jump:</span>
+            {TIME_JUMPS.map((jump) => (
+              <button
+                key={jump.label}
+                onClick={() => handleTimeJump(jump.sec)}
+                className="btn-timejump-pill"
+                title={`Jump to ${jump.label}`}
+              >
+                {jump.label}
               </button>
             ))}
           </div>
@@ -694,7 +894,7 @@ export default function SimulationPage() {
 
           <button 
             onClick={() => {
-              if (selectedTrain) setOverrideForm(prev => ({ ...prev, train_id: selectedTrain.id }));
+              if (selectedTrain) setOverrideForm(prev => ({ ...prev, vehicle_id: selectedTrain.id }));
               setShowOverrideModal(true);
             }} 
             className="btn btn-secondary btn-hud-override"
@@ -749,11 +949,11 @@ export default function SimulationPage() {
               </div>
               <div className="kpi-mini-item">
                 <span className="kpi-mini-lbl">Punctuality</span>
-                <span className="kpi-mini-val text-emerald">{(kpis.punctuality_pct || 99.4).toFixed(1)}%</span>
+                <span className="kpi-mini-val text-emerald">{(kpis.punctuality_pct ?? 100.0).toFixed(1)}%</span>
               </div>
               <div className="kpi-mini-item">
                 <span className="kpi-mini-lbl">Avg Delay</span>
-                <span className="kpi-mini-val text-amber">{(kpis.avg_delay_sec || 0).toFixed(1)}s</span>
+                <span className="kpi-mini-val text-amber">{(kpis.avg_delay_sec ?? 0).toFixed(1)}s</span>
               </div>
             </div>
           </div>
@@ -781,24 +981,24 @@ export default function SimulationPage() {
                 </div>
                 <div className="detail-row">
                   <span className="detail-lbl">Current Delay:</span>
-                  <span className={`detail-val ${selectedTrain.delay_sec > 0 ? 'text-rose' : 'text-emerald'}`}>
-                    +{Math.round(selectedTrain.delay_sec || 0)} sec
+                  <span className={`detail-val ${(selectedTrain.delay_sec || 0) > 0 ? 'text-rose' : 'text-emerald'}`}>
+                    +{(selectedTrain.delay_sec || 0).toFixed(1)} sec
                   </span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-lbl">Current Platform:</span>
-                  <span className="detail-val">{selectedTrain.current_platform || 'In-Transit'}</span>
+                  <span className="detail-lbl">Platform / Edge:</span>
+                  <span className="detail-val">{selectedTrain.scheduled_platform || selectedTrain.road_id || 'In-Transit'}</span>
                 </div>
                 <div className="detail-row">
-                  <span className="detail-lbl">Bypass Divert:</span>
-                  <span className="detail-val">{selectedTrain.bypass_divert ? 'ACTIVE (Overtake)' : 'Normal'}</span>
+                  <span className="detail-lbl">Upcoming Station:</span>
+                  <span className="detail-val text-cyan">{selectedTrain.upcoming_station || 'Terminal Line'}</span>
                 </div>
               </div>
 
               <div className="selected-train-actions">
                 <button 
                   onClick={() => {
-                    setOverrideForm(prev => ({ ...prev, train_id: selectedTrain.id }));
+                    setOverrideForm(prev => ({ ...prev, vehicle_id: selectedTrain.id }));
                     setShowOverrideModal(true);
                   }}
                   className="btn btn-secondary btn-sm"
@@ -871,26 +1071,29 @@ export default function SimulationPage() {
 
               {/* Train List */}
               <div className="trains-scroll-list">
-                {trains.length === 0 ? (
+                {filteredTrains.length === 0 ? (
                   <div className="empty-trains-notice">
-                    <span>No active trains at current simulation time.</span>
+                    <span>No active trains matching filter at current simulation time.</span>
                     <button onClick={() => sendControl('play')} className="btn btn-secondary btn-sm">
                       <Play size={14} /> Run Time Forward
                     </button>
                   </div>
                 ) : (
-                  trains.map((t) => (
+                  filteredTrains.map((t) => (
                     <div 
                       key={t.id}
                       onClick={() => {
                         setSelectedTrain(t);
                         // Center camera on train
-                        if (canvasRef.current) {
+                        if (canvasRef.current && geometry && geometry.bounds) {
+                          const [minX, minY, maxX, maxY] = geometry.bounds;
                           const cWidth = canvasRef.current.clientWidth;
                           const cHeight = canvasRef.current.clientHeight;
                           const { scale } = transformRef.current;
-                          transformRef.current.offsetX = cWidth / 2 - t.x * scale;
-                          transformRef.current.offsetY = cHeight / 2 + t.y * scale;
+                          const screenTrainX = t.x;
+                          const screenTrainY = maxY - t.y + minY;
+                          transformRef.current.offsetX = cWidth / 2 - screenTrainX * scale;
+                          transformRef.current.offsetY = cHeight / 2 - screenTrainY * scale;
                         }
                       }}
                       className={`train-row-item ${selectedTrain && selectedTrain.id === t.id ? 'active' : ''}`}
@@ -901,8 +1104,8 @@ export default function SimulationPage() {
                       </div>
                       <div className="train-row-right">
                         <span className="train-row-speed">{Math.round((t.speed || 0) * 3.6)} km/h</span>
-                        <span className={`train-row-delay ${t.delay_sec > 0 ? 'delayed' : 'ontime'}`}>
-                          {t.delay_sec > 0 ? `+${Math.round(t.delay_sec)}s` : 'ON TIME'}
+                        <span className={`train-row-delay ${(t.delay_sec || 0) > 0 ? 'delayed' : 'ontime'}`}>
+                          {(t.delay_sec || 0) > 0 ? `+${Math.round(t.delay_sec)}s` : 'ON TIME'}
                         </span>
                       </div>
                     </div>
@@ -927,7 +1130,7 @@ export default function SimulationPage() {
                         <span className="event-type">{ev.type || 'DISPATCH_ACTION'}</span>
                         <span className="event-time">{ev.timestamp || 'Now'}</span>
                       </div>
-                      <p className="event-msg">{ev.message}</p>
+                      <p className="event-msg">{ev.message || JSON.stringify(ev)}</p>
                     </div>
                   ))}
                 </div>
@@ -981,7 +1184,7 @@ export default function SimulationPage() {
                   <label>Target Train ID (Optional):</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. 68402" 
+                    placeholder="e.g. HS-Rake-01" 
                     value={disruptionForm.vehicle_id}
                     onChange={(e) => setDisruptionForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
                     className="modal-input"
@@ -994,7 +1197,7 @@ export default function SimulationPage() {
                   <label>Platform Track ID (Optional):</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. City_4_EW_plat_1_fw_0" 
+                    placeholder="e.g. City_1_plat_1_fw_0" 
                     value={disruptionForm.platform_id}
                     onChange={(e) => setDisruptionForm(prev => ({ ...prev, platform_id: e.target.value }))}
                     className="modal-input"
@@ -1033,7 +1236,7 @@ export default function SimulationPage() {
                 <input 
                   type="text" 
                   required
-                  placeholder="e.g. 68402" 
+                  placeholder="e.g. REG-C1-01" 
                   value={overrideForm.vehicle_id}
                   onChange={(e) => setOverrideForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
                   className="modal-input"
