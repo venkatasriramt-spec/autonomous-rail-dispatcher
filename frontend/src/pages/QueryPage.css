@@ -783,6 +783,13 @@
   margin-bottom: 1.5rem;
 }
 
+.station-picker-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+}
+
 .station-picker {
   display: flex;
   align-items: center;
@@ -791,21 +798,47 @@
 
 .station-picker label {
   font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .station-board-select {
-  background: rgba(10, 15, 29, 0.9);
-  border: 1px solid var(--cyan-primary);
+  background: rgba(10, 15, 29, 0.95);
+  border: 1px solid rgba(0, 240, 255, 0.4);
   border-radius: var(--radius-md);
-  padding: 0.55rem 1.25rem;
-  color: var(--cyan-primary);
-  font-size: 1rem;
-  font-weight: 700;
+  padding: 0.55rem 1.15rem;
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 600;
   outline: none;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.station-board-select:hover,
+.station-board-select:focus {
+  border-color: var(--cyan-primary);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.2);
+}
+
+.station-board-select.select-day {
+  color: var(--cyan-primary);
+  font-family: var(--font-mono);
+}
+
+.station-board-select optgroup {
+  background: #090e1c;
+  color: #94a3b8;
+  font-weight: 700;
+}
+
+.station-board-select option {
+  background: #0b1120;
+  color: #f1f5f9;
+  font-weight: 500;
 }
 
 .movement-toggle-buttons {
@@ -856,22 +889,38 @@
 .station-title-box {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 0.75rem;
 }
 
 .station-title-box h3 {
   font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   color: #ffffff;
+  margin: 0;
+}
+
+.station-board-subtitle {
+  display: block;
+  font-size: 0.775rem;
+  color: var(--text-dim);
+  margin-top: 0.2rem;
+}
+
+.station-board-subtitle strong {
+  color: var(--cyan-primary);
 }
 
 .board-update-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
   font-size: 0.75rem;
   color: var(--cyan-primary);
   background: rgba(0, 240, 255, 0.1);
-  padding: 0.25rem 0.65rem;
+  padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  border: 1px solid rgba(0, 240, 255, 0.2);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  font-family: var(--font-mono);
 }
 
 .board-table-responsive {
@@ -906,24 +955,41 @@
   color: #ffffff;
 }
 
+.board-subtime {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.725rem;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
 .movement-type-badge {
-  font-size: 0.7rem;
+  font-size: 0.675rem;
   font-weight: 700;
   text-transform: uppercase;
-  padding: 0.2rem 0.5rem;
+  letter-spacing: 0.04em;
+  padding: 0.22rem 0.55rem;
   border-radius: 4px;
+  display: inline-block;
+  white-space: nowrap;
 }
 
 .type-dep {
   background: rgba(16, 185, 129, 0.15);
   color: var(--emerald-primary);
-  border: 1px solid rgba(16, 185, 129, 0.3);
+  border: 1px solid rgba(16, 185, 129, 0.35);
 }
 
 .type-arr {
   background: rgba(59, 130, 246, 0.15);
   color: var(--blue-primary);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid rgba(59, 130, 246, 0.35);
+}
+
+.type-halt {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.35);
 }
 
 .board-train-num code {
@@ -934,10 +1000,55 @@
 
 .board-service-name strong {
   color: #ffffff;
+  display: block;
+}
+
+.board-subcorridor {
+  display: block;
+  font-size: 0.725rem;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+.board-bound-cell {
+  color: #cbd5e1;
 }
 
 .bound-tag {
-  color: #cbd5e1;
+  color: #f1f5f9;
+  font-weight: 500;
+}
+
+.board-dwell-cell {
+  white-space: nowrap;
+}
+
+.dwell-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.25);
+}
+
+.dwell-tag-origin {
+  font-size: 0.725rem;
+  color: var(--emerald-primary);
+  background: rgba(16, 185, 129, 0.08);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.dwell-tag-term {
+  font-size: 0.725rem;
+  color: var(--blue-primary);
+  background: rgba(59, 130, 246, 0.08);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
 .board-track-cell code {

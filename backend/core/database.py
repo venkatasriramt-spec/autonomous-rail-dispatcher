@@ -127,3 +127,136 @@ def get_rolling_stock_types() -> List[Dict[str, Any]]:
     types_list = [dict(r) for r in cursor.fetchall()]
     conn.close()
     return types_list
+
+
+def get_station_timetable(
+    station_name: str,
+    day: Optional[str] = None
+) -> List[Dict[str, Any]]:
+    """Fetches all scheduled train arrivals, departures, and intermediate passenger halts at a station."""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    conditions = []
+    params = []
+
+    # Handle City_3 bi-level platforms and Town_8 passing loops
+    if station_name == "City_3":
+        conditions.append("(ss.station = 'City_3' OR ss.station LIKE 'City_3%')")
+    elif station_name == "Town_8":
+        conditions.append("(ss.station = 'Town_8' OR ss.station LIKE 'Town_8%')")
+    else:
+        conditions.append("ss.station = ?")
+        params.append(station_name)
+
+    query = """
+        SELECT 
+            ss.train_number,
+            ss.stop_sequence,
+            ss.station,
+            ss.train_stop_id,
+            ss.arrival_time,
+            ss.arrival_sec,
+            ss.departure_time,
+            ss.departure_sec,
+            ss.dwell_sec,
+            ts.train_name,
+            ts.service_class,
+            ts.rolling_stock_type,
+            ts.assigned_rake,
+            ts.origin_station,
+            ts.dest_station,
+            ts.corridor,
+            (SELECT MAX(stop_sequence) FROM service_stops s2 WHERE s2.train_number = ss.train_number) AS max_seq
+        FROM service_stops ss
+        JOIN train_services ts ON ss.train_number = ts.train_number
+    """
+
+    day_val = str(day).capitalize() if (isinstance(day, str) and day and day.upper() != "ALL") else None
+    if day_val:
+        query += " INNER JOIN service_operating_days sod ON ts.train_number = sod.train_number"
+        conditions.append("sod.day_of_week = ?")
+        params.append(day_val)
+
+    if conditions:
+        query += " WHERE " + " AND ".join(conditions)
+
+    query += " ORDER BY COALESCE(ss.departure_sec, ss.arrival_sec) ASC"
+
+    cursor.execute(query, params)
+    rows = [dict(r) for r in cursor.fetchall()]
+    conn.close()
+
+    movements = []
+    for r in rows:
+        is_origin = (r["stop_sequence"] == 1)
+        is_terminus = (r["stop_sequence"] == r["max_seq"])
+
+        if is_origin:
+            move_type = "DEPARTURE"
+            display_time = r["departure_time"]
+            bound = r["dest_station"]
+        elif is_terminus:
+            move_type = "ARRIVAL"
+            display_time = r["arrival_time"]
+            bound = f"From {r['origin_station']}"
+        else:
+            move_type = "PASSENGER_HALT"
+            display_time = r["departure_time"]
+            bound = f"{r['dest_station']} (from {r['origin_station']})"
+
+        movements.append({
+            **r,
+            "movement_type": move_type,
+            "display_time": display_time,
+            "bound": bound,
+            "is_origin": is_origin,
+            "is_terminus": is_terminus
+        })
+
+    return movements
+
+
+def get_timetable_stations() -> List[Dict[str, Any]]:
+    """Fetches all station nodes from timetable stop events categorized by role."""
+    import re
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT DISTINCT station FROM service_stops ORDER BY station")
+    raw_stations = [r["station"] for r in cursor.fetchall()]
+    conn.close()
+
+    cities = []
+    towns = []
+    depots = []
+
+    has_city_3 = any("City_3" in s for s in raw_stations)
+    if has_city_3:
+        cities.append({"id": "City_3", "name": "City 3 (Central Junction - All Levels)", "category": "City"})
+
+    for s in raw_stations:
+        if s.startswith("City_"):
+            label = s.replace("_", " ")
+            if "EW" in s:
+                label = "City 3 (East-West Platform)"
+            elif "NS" in s:
+                label = "City 3 (North-South Platform)"
+            cities.append({"id": s, "name": label, "category": "City"})
+        elif s.startswith("Town_"):
+            clean_name = s.replace("_", " ")
+            if "Passing_Loop" in s:
+                clean_name = "Town 8 (Passing Loop)"
+            towns.append({"id": s, "name": clean_name, "category": "Town"})
+        elif s.startswith("Depot_"):
+            depots.append({"id": s, "name": s.replace("_", " "), "category": "Depot"})
+
+    def natural_sort_key(item):
+        parts = re.split(r'(\d+)', item["id"])
+        return [int(p) if p.isdigit() else p for p in parts]
+
+    cities.sort(key=natural_sort_key)
+    towns.sort(key=natural_sort_key)
+    depots.sort(key=natural_sort_key)
+
+    return cities + towns + depots
+

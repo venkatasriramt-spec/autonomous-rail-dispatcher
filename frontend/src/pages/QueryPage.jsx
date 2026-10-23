@@ -61,6 +61,7 @@ export default function QueryPage() {
   const [rakes, setRakes] = useState([]);
   const [rollingStock, setRollingStock] = useState([]);
   const [stations, setStations] = useState([]);
+  const [stationNodes, setStationNodes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -84,6 +85,9 @@ export default function QueryPage() {
 
   // Station Board State
   const [selectedStation, setSelectedStation] = useState('City_1');
+  const [selectedBoardDay, setSelectedBoardDay] = useState('Mon');
+  const [stationBoardData, setStationBoardData] = useState([]);
+  const [loadingStationBoard, setLoadingStationBoard] = useState(false);
   const [stationMoveFilter, setStationMoveFilter] = useState('ALL'); // 'ALL' | 'DEPARTURES' | 'ARRIVALS'
 
   // Rakes Filter State
@@ -100,7 +104,7 @@ export default function QueryPage() {
           fetch('/api/timetable/services'),
           fetch('/api/timetable/rakes'),
           fetch('/api/timetable/rolling-stock'),
-          fetch('/api/network/stations')
+          fetch('/api/timetable/stations')
         ]);
 
         if (!servicesRes.ok || !rakesRes.ok || !rsRes.ok) {
@@ -119,8 +123,8 @@ export default function QueryPage() {
           setRakes(rakesData);
           setRollingStock(rsData);
           if (stationsData && stationsData.length > 0) {
-            const stNames = Array.from(new Set(stationsData.map(s => s.station_name || s.name || s.id).filter(Boolean)));
-            setStations(stNames);
+            setStationNodes(stationsData);
+            setStations(stationsData.map(s => s.id));
           } else {
             // Fallback list of stations extracted from services
             const uniqueStations = Array.from(new Set([
@@ -128,6 +132,11 @@ export default function QueryPage() {
               ...servicesData.map(s => s.dest_station)
             ])).filter(Boolean).sort();
             setStations(uniqueStations);
+            setStationNodes(uniqueStations.map(s => ({
+              id: s,
+              name: s.replace('_', ' '),
+              category: s.startsWith('Town') ? 'Town' : 'City'
+            })));
           }
           setLoading(false);
         }
@@ -142,6 +151,30 @@ export default function QueryPage() {
     fetchAllData();
     return () => { isMounted = false; };
   }, []);
+
+  // 1b. Fetch Station Timetable Data when selectedStation or selectedBoardDay changes
+  useEffect(() => {
+    let isMounted = true;
+    if (!selectedStation) return;
+
+    const fetchStationBoard = async () => {
+      setLoadingStationBoard(true);
+      try {
+        const res = await fetch(`/api/timetable/station/${encodeURIComponent(selectedStation)}?day=${selectedBoardDay}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (isMounted) setStationBoardData(data);
+        }
+      } catch (err) {
+        console.error('Failed to load station timetable:', err);
+      } finally {
+        if (isMounted) setLoadingStationBoard(false);
+      }
+    };
+
+    fetchStationBoard();
+    return () => { isMounted = false; };
+  }, [selectedStation, selectedBoardDay]);
 
   // 2. Fetch specific train stops detail on expand
   const toggleTrainExpand = async (trainNumber) => {
@@ -247,52 +280,33 @@ export default function QueryPage() {
     return [1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages];
   };
 
-  // 4. Station Movements (Departures & Arrivals)
+  // 4. Station Movements (Departures, Arrivals, Intermediate Halts)
   const stationMovements = useMemo(() => {
-    if (!selectedStation) return [];
-    const list = [];
-
-    services.forEach(s => {
-      const isOrigin = s.origin_station === selectedStation;
-      const isDest = s.dest_station === selectedStation;
-
-      if (isOrigin) {
-        list.push({
-          type: 'DEPARTURE',
-          time: s.departure_time,
-          timeSec: s.departure_sec,
-          trainNumber: s.train_number,
-          trainName: s.train_name,
-          bound: s.dest_station,
-          track: s.origin_track,
-          serviceClass: s.service_class,
-          assignedRake: s.assigned_rake,
-          rollingStock: s.rolling_stock_type
-        });
+    if (!stationBoardData || stationBoardData.length === 0) return [];
+    return stationBoardData.filter(m => {
+      if (stationMoveFilter === 'DEPARTURES') {
+        return m.movement_type === 'DEPARTURE' || m.movement_type === 'PASSENGER_HALT';
       }
-
-      if (isDest) {
-        list.push({
-          type: 'ARRIVAL',
-          time: s.arrival_time,
-          timeSec: s.arrival_sec,
-          trainNumber: s.train_number,
-          trainName: s.train_name,
-          bound: `From ${s.origin_station}`,
-          track: s.dest_track,
-          serviceClass: s.service_class,
-          assignedRake: s.assigned_rake,
-          rollingStock: s.rolling_stock_type
-        });
+      if (stationMoveFilter === 'ARRIVALS') {
+        return m.movement_type === 'ARRIVAL' || m.movement_type === 'PASSENGER_HALT';
       }
-    });
-
-    return list.filter(m => {
-      if (stationMoveFilter === 'DEPARTURES') return m.type === 'DEPARTURE';
-      if (stationMoveFilter === 'ARRIVALS') return m.type === 'ARRIVAL';
       return true;
-    }).sort((a, b) => a.timeSec - b.timeSec);
-  }, [services, selectedStation, stationMoveFilter]);
+    });
+  }, [stationBoardData, stationMoveFilter]);
+
+  const movementCounts = useMemo(() => {
+    let deps = 0;
+    let arrs = 0;
+    (stationBoardData || []).forEach(m => {
+      if (m.movement_type === 'DEPARTURE' || m.movement_type === 'PASSENGER_HALT') deps++;
+      if (m.movement_type === 'ARRIVAL' || m.movement_type === 'PASSENGER_HALT') arrs++;
+    });
+    return {
+      all: (stationBoardData || []).length,
+      departures: deps,
+      arrivals: arrs
+    };
+  }, [stationBoardData]);
 
   // 5. Filtered Physical Rakes
   const filteredRakes = useMemo(() => {
@@ -848,17 +862,57 @@ export default function QueryPage() {
               <div className="station-board-view">
                 {/* Board Selection Header */}
                 <div className="station-board-toolbar">
-                  <div className="station-picker">
-                    <label>Select Station Hub:</label>
-                    <select 
-                      value={selectedStation} 
-                      onChange={(e) => setSelectedStation(e.target.value)}
-                      className="station-board-select"
-                    >
-                      {stations.map(st => (
-                        <option key={st} value={st}>{st}</option>
-                      ))}
-                    </select>
+                  <div className="station-picker-group">
+                    <div className="station-picker">
+                      <label>Select Station Hub:</label>
+                      <select 
+                        value={selectedStation} 
+                        onChange={(e) => setSelectedStation(e.target.value)}
+                        className="station-board-select"
+                      >
+                        {stationNodes.some(s => s.category === 'City') ? (
+                          <>
+                            <optgroup label="Intercity Hubs (Cities)">
+                              {stationNodes.filter(s => s.category === 'City').map(st => (
+                                <option key={st.id} value={st.id}>{st.name}</option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Town Stations & Passenger Halts">
+                              {stationNodes.filter(s => s.category === 'Town').map(st => (
+                                <option key={st.id} value={st.id}>{st.name}</option>
+                              ))}
+                            </optgroup>
+                            <optgroup label="Depot Maintenance Facilities">
+                              {stationNodes.filter(s => s.category === 'Depot').map(st => (
+                                <option key={st.id} value={st.id}>{st.name}</option>
+                              ))}
+                            </optgroup>
+                          </>
+                        ) : (
+                          stations.map(st => (
+                            <option key={st} value={st}>{st.replace('_', ' ')}</option>
+                          ))
+                        )}
+                      </select>
+                    </div>
+
+                    <div className="station-picker day-picker">
+                      <label>Operating Day:</label>
+                      <select 
+                        value={selectedBoardDay} 
+                        onChange={(e) => setSelectedBoardDay(e.target.value)}
+                        className="station-board-select select-day"
+                      >
+                        <option value="Mon">Monday (Weekday Trunk · 232 Runs)</option>
+                        <option value="Tue">Tuesday (233 Runs)</option>
+                        <option value="Wed">Wednesday (229 Runs)</option>
+                        <option value="Thu">Thursday (235 Runs)</option>
+                        <option value="Fri">Friday (231 Runs)</option>
+                        <option value="Sat">Saturday (Weekend Reduced · 145 Runs)</option>
+                        <option value="Sun">Sunday (Weekend Reduced · 141 Runs)</option>
+                        <option value="ALL">All Days (Master Weekly Matrix)</option>
+                      </select>
+                    </div>
                   </div>
 
                   <div className="movement-toggle-buttons">
@@ -867,21 +921,21 @@ export default function QueryPage() {
                       className={`btn-toggle-move ${stationMoveFilter === 'ALL' ? 'active' : ''}`}
                       onClick={() => setStationMoveFilter('ALL')}
                     >
-                      All Movements ({stationMovements.length})
+                      All Movements ({movementCounts.all})
                     </button>
                     <button
                       type="button"
                       className={`btn-toggle-move ${stationMoveFilter === 'DEPARTURES' ? 'active' : ''}`}
                       onClick={() => setStationMoveFilter('DEPARTURES')}
                     >
-                      Departures Only
+                      Departures & Stops ({movementCounts.departures})
                     </button>
                     <button
                       type="button"
                       className={`btn-toggle-move ${stationMoveFilter === 'ARRIVALS' ? 'active' : ''}`}
                       onClick={() => setStationMoveFilter('ARRIVALS')}
                     >
-                      Arrivals Only
+                      Arrivals & Stops ({movementCounts.arrivals})
                     </button>
                   </div>
                 </div>
@@ -890,16 +944,35 @@ export default function QueryPage() {
                 <div className="station-board-table-card">
                   <div className="board-card-header">
                     <div className="station-title-box">
-                      <Building2 size={20} className="text-cyan" />
-                      <h3>{selectedStation} Station Timetable Board</h3>
+                      <Building2 size={22} className="text-cyan" />
+                      <div>
+                        <h3>
+                          {stationNodes.find(s => s.id === selectedStation)?.name || selectedStation.replace('_', ' ')} Station Board
+                        </h3>
+                        <span className="station-board-subtitle">
+                          Operating Day: <strong>{selectedBoardDay === 'ALL' ? 'Master Full-Week Matrix' : DAYS_OF_WEEK.find(d => d.id === selectedBoardDay)?.name || selectedBoardDay}</strong>
+                          {' · '}
+                          {stationMovements.length} Movements Listed
+                        </span>
+                      </div>
                     </div>
-                    <span className="board-update-chip">Real-Time Clockface Schedule</span>
+                    <div className="board-header-badges">
+                      <span className="board-update-chip">
+                        <Clock size={12} className="inline-icon" />
+                        <span>Synchronized Taktfahrplan</span>
+                      </span>
+                    </div>
                   </div>
 
-                  {stationMovements.length === 0 ? (
+                  {loadingStationBoard ? (
+                    <div className="empty-board-box">
+                      <div className="loading-spinner-ring sm" />
+                      <p>Loading timetabled movements for {selectedStation} ({selectedBoardDay})...</p>
+                    </div>
+                  ) : stationMovements.length === 0 ? (
                     <div className="empty-board-box">
                       <Clock size={32} />
-                      <p>No scheduled movements registered for {selectedStation} in this direction.</p>
+                      <p>No scheduled movements registered for {selectedStation} on {selectedBoardDay} in this category.</p>
                     </div>
                   ) : (
                     <div className="board-table-responsive">
@@ -910,42 +983,67 @@ export default function QueryPage() {
                             <th>Type</th>
                             <th>Train #</th>
                             <th>Service Name</th>
-                            <th>Destination / Origin</th>
+                            <th>Destination / Route</th>
                             <th>Platform Track</th>
+                            <th>Dwell</th>
                             <th>Class</th>
                             <th>Assigned Rake</th>
                           </tr>
                         </thead>
                         <tbody>
                           {stationMovements.map((move, mIdx) => (
-                            <tr key={`${move.trainNumber}-${move.type}-${mIdx}`} className={`move-row move-${move.type.toLowerCase()}`}>
+                            <tr 
+                              key={`${move.train_number}-${move.stop_sequence || mIdx}-${mIdx}`} 
+                              className={`move-row move-${(move.movement_type || 'halt').toLowerCase()}`}
+                            >
                               <td className="board-time-cell">
-                                <strong>{move.time}</strong>
+                                <strong>{move.display_time || move.departure_time || move.arrival_time}</strong>
+                                {move.movement_type === 'PASSENGER_HALT' && move.arrival_time && (
+                                  <span className="board-subtime">Arr: {move.arrival_time}</span>
+                                )}
                               </td>
                               <td>
-                                <span className={`movement-type-badge ${move.type === 'DEPARTURE' ? 'type-dep' : 'type-arr'}`}>
-                                  {move.type}
-                                </span>
+                                {move.movement_type === 'DEPARTURE' && (
+                                  <span className="movement-type-badge type-dep">ORIGIN DEP</span>
+                                )}
+                                {move.movement_type === 'ARRIVAL' && (
+                                  <span className="movement-type-badge type-arr">TERMINUS ARR</span>
+                                )}
+                                {move.movement_type === 'PASSENGER_HALT' && (
+                                  <span className="movement-type-badge type-halt">PASSENGER HALT</span>
+                                )}
                               </td>
                               <td className="board-train-num">
-                                <code>#{move.trainNumber}</code>
+                                <code>#{move.train_number}</code>
                               </td>
                               <td className="board-service-name">
-                                <strong>{move.trainName}</strong>
+                                <strong>{move.train_name}</strong>
+                                {move.corridor && (
+                                  <span className="board-subcorridor">{move.corridor.replace('_', ' ')}</span>
+                                )}
                               </td>
                               <td className="board-bound-cell">
                                 <span className="bound-tag">{move.bound}</span>
                               </td>
                               <td className="board-track-cell">
-                                <code>{move.track}</code>
+                                <code>{move.train_stop_id}</code>
+                              </td>
+                              <td className="board-dwell-cell">
+                                {move.movement_type === 'PASSENGER_HALT' ? (
+                                  <span className="dwell-tag">{move.dwell_sec ? `${move.dwell_sec}s dwell` : 'Halt'}</span>
+                                ) : move.movement_type === 'DEPARTURE' ? (
+                                  <span className="dwell-tag-origin">Origin</span>
+                                ) : (
+                                  <span className="dwell-tag-term">Terminus</span>
+                                )}
                               </td>
                               <td>
-                                <span className={`service-class-badge ${getClassBadgeClass(move.serviceClass)}`}>
-                                  {move.serviceClass}
+                                <span className={`service-class-badge ${getClassBadgeClass(move.service_class)}`}>
+                                  {move.service_class}
                                 </span>
                               </td>
                               <td className="board-rake-cell">
-                                <span className="rake-pill">{move.assignedRake}</span>
+                                <span className="rake-pill">{move.assigned_rake}</span>
                               </td>
                             </tr>
                           ))}

@@ -9,10 +9,27 @@ from backend.core.database import (
     get_train_services,
     get_service_detail,
     get_physical_rakes,
-    get_rolling_stock_types
+    get_rolling_stock_types,
+    get_station_timetable,
+    get_timetable_stations
 )
 
 router = APIRouter(prefix="/api/timetable", tags=["Commercial Timetable & Fleet"])
+
+
+@router.get("/stations")
+async def list_timetable_stations():
+    """Returns all station nodes with scheduled passenger and freight services categorized by role."""
+    return get_timetable_stations()
+
+
+@router.get("/station/{station_name}")
+async def get_station_board(
+    station_name: str,
+    day: Optional[str] = Query(None, description="Filter by calendar day (e.g. Mon, Tue, ..., Sun, or ALL)")
+):
+    """Returns all scheduled departures, arrivals, and intermediate halts for a specific station hub or town."""
+    return get_station_timetable(station_name=station_name, day=day)
 
 
 @router.get("/services")
@@ -44,3 +61,4 @@ async def list_physical_rakes():
 async def list_rolling_stock_types():
     """Returns specifications for all 7 physical train consist classes."""
     return get_rolling_stock_types()
+
