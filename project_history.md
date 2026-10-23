@@ -830,6 +830,53 @@ The backend subsystem was audited end-to-end via [`backend/test_backend.py`](bac
 - **Live HTTP Server:** Tested over socket `127.0.0.1:8009` with live startup, request handling, stepping, and clean shutdown.
 - **All tests passed cleanly.**
 
+---
 
+### 23 October 2026 — Modern Full-Stack Web Application (`frontend/`), Synthetic Network Governance & Multi-Page Verification
 
+#### Milestone Objective
+Design and deploy a modern, reactive React 19 + Vite 8 frontend for the Autonomous Rail Dispatcher platform, connecting to the FastAPI backend and WebSocket telemetry streamer. Establish strict synthetic network governance (eliminating all real-world railway brand references), codify international rail engineering inspirations (Swiss *Taktfahrplan* periodic timetable, double scissors X-crossings, passing loops), and ensure all 4 application pages render reliably with zero console errors.
 
+---
+
+#### 1. Frontend Subsystem Architecture (`frontend/`)
+
+1. **Cyber-Railway Design System:**
+   - Authored high-contrast, dark-mode CSS design system in [`frontend/src/index.css`](frontend/src/index.css) utilizing CSS variables, responsive typography, glassmorphism cards, glowing status badges, and custom scrollbars.
+   - Built with modern React 19 and Vite 8, bundling cleanly without external heavyweight UI frameworks.
+
+2. **Full Multi-Page Suite (`frontend/src/pages/`):**
+   - **Overview Home Page (`/`):** Comprehensive project blueprint, headline KPIs (776 lanes, 18 stations, 99.4% punctuality, 242 services), subsystem feature cards, quick launcher, and contributor attributions.
+   - **2D Real-Time Simulation Studio (`/simulation`):** 60 FPS Canvas 2D vector renderer visualizing track lanes, train consists, platform halts, switch throats, and moving rakes. Integrated with simulation speed multipliers (1x–20x), model selector (8 AI and heuristic controllers), calendar day switcher, injection modal for physical disruptions, and manual human-in-the-loop override controls.
+   - **Interactive Timetable & PNR Search (`/query`):** Sleek station-to-station route query engine with origin/destination swap, travel class filters, date selectors, and tabular timetable departures extracted from `trains.db`.
+   - **System Architecture & Metrics Blueprint (`/about`):** Detailed formalization of the Markov Decision Process (MDP state space $S_t$, action space $A_t$, multi-objective reward $R_t$), empirical 56-run benchmark analysis across all 8 models, and real-world rail engineering foundations.
+
+3. **Resilience & Bug Resolutions:**
+   - *JSX Math Rendering:* Resolved an unescaped JSX curly-brace parsing error in LaTeX expressions on `/about` that caused blank-screen reference errors. Encapsulated all mathematical strings in safe literal expressions.
+   - *Error Boundary:* Implemented [`frontend/src/components/ErrorBoundary.jsx`](frontend/src/components/ErrorBoundary.jsx) wrapping all client routes to prevent catastrophic rendering failures.
+   - *WebSocket Lifecycle:* Enhanced `/ws/telemetry` subscription in [`frontend/src/pages/SimulationPage.jsx`](frontend/src/pages/SimulationPage.jsx) with mount tracking and safe ready-state disposal, eliminating React 19 StrictMode connection drop warnings.
+
+---
+
+#### 2. Synthetic Network Governance & Engineering Inspirations
+
+1. **Synthetic Network Purity:**
+   - Confirmed 100% elimination of all real-world country and transit authority brand names (e.g., IRCTC, Indian Railways, Vande Bharat) from code, documentation, and query templates.
+   - Standardized on the fictional synthetic network topology (`City_1..6`, `Town_1..12`, `Depot_1..3`).
+
+2. **Codified International Engineering Foundations:**
+   - **Periodic Integrated Timetable (*Taktfahrplan* Inspiration):** Grounded the 242-run timetable in Swiss *Taktfahrplan* periodic scheduling principles with repeating clockface intervals.
+   - **Scissors Crossovers (Double X-Crossings):** Station throat layouts feature paired universal crossovers enabling parallel conflicting-route dispatching.
+   - **Dynamic Passing Loops & Overtakes:** Mid-corridor passing sidings where AI dispatchers hold bulk freight consists to let high-speed express trains overtake.
+
+---
+
+#### 3. Verification & Validation Audit
+
+- **Vite Production Build:** `npm run build` executed cleanly in 327ms with zero errors.
+- **Playwright Headless Navigation & Screenshots:**
+  - `http://127.0.0.1:5173/`: Rendered cleanly, zero console errors. Captured `home_page_verified.png` and `home_footer_verified.png`.
+  - `http://127.0.0.1:5173/simulation`: Real-time canvas and simulation control panel active, zero errors/warnings. Captured `simulation_page_verified.png`.
+  - `http://127.0.0.1:5173/query`: Interactive search form and station selector confirmed, zero errors/warnings. Captured `query_page_confirmed.png`.
+  - `http://127.0.0.1:5173/about`: Architecture blueprint, MDP cards, and engineering inspirations verified, zero errors/warnings. Captured `about_page_confirmed.png`.
+- **Contributor Attribution:** Correctly credited Ayush M Singh, Venkata Sriram Topalli, and Avanish Kushwaha with their respective GitHub repository profiles across UI footer and documentation.

@@ -71,10 +71,13 @@ trains/sumo_config/days/
 .pytest_cache/
 htmlcov/
 
-# Packaging
+# Packaging & Node dependencies
 dist/
 build/
 *.egg-info/
+node_modules/
+frontend/node_modules/
+frontend/dist/
 
 # Reinforcement Learning & Dispatcher AI artifacts
 dispatcher/logs/tensorboard/

@@ -103,6 +103,15 @@ The monorepo is organized into four isolated yet tightly integrated subsystems:
 │   ├── schemas/                  # Pydantic models for REST endpoints and WebSocket frames
 │   └── README.md                 # Detailed backend documentation & API specifications
 │
+├── frontend/                     # Modern React 19 + Vite 8 Web Application
+│   ├── src/
+│   │   ├── pages/                # HomePage, SimulationPage, QueryPage, AboutPage
+│   │   ├── components/           # Navigation, ErrorBoundary, DisruptionModal, OverrideModal
+│   │   ├── App.jsx               # Client-side router & global state
+│   │   └── index.css             # High-contrast dark cyber-railway design system
+│   ├── package.json              # React 19, Lucide-React, Canvas 2D telemetry dependencies
+│   └── vite.config.js            # Port 5173 dev server & WebSocket reverse-proxy
+│
 ├── README.md                     # Monorepo architecture & quick-start guide
 ├── project_history.md             # Unified monorepo milestones & integration log
 ├── requirements.txt              # Unified monorepo Python dependencies
@@ -139,6 +148,21 @@ The monorepo is organized into four isolated yet tightly integrated subsystems:
 - **Automated Pipeline:** Full multi-wave curriculum retraining and 8-model cross-comparison verification automated via [`dispatcher/training/train_and_benchmark_all.py`](dispatcher/training/train_and_benchmark_all.py).
 
 - *For detailed AI dispatcher documentation, see [dispatcher/README.md](dispatcher/README.md).*
+
+### D. Modern Web UI & Simulation Dashboard (`frontend/`)
+- **Interactive Full-Stack Architecture:** Built with React 19 and Vite 8, featuring 4 fully functional pages:
+  - **Overview Home (`/`):** Project blueprint, KPI highlights, architecture badges, and contributor attributions.
+  - **Real-Time Simulation (`/simulation`):** High-frequency 60 FPS Canvas 2D track renderer, live WebSocket telemetry bridge (`/ws/telemetry`), 8-model dispatcher AI selector, calendar day switcher, interactive speed multipliers (1x–20x), disruption injection modal, and manual human-in-the-loop dispatch override panel.
+  - **Commercial Timetable Query & PNR (`/query`):** Multi-modal train service search, origin/destination station filtering, travel class selection, and live departure/arrival timetable lookup across all 242 daily scheduled services.
+  - **Engineering & Metrics Blueprint (`/about`):** Detailed mathematical formulation of the MDP (state, action, and multi-objective reward formulation), empirical 56-run benchmark analysis, and engineering foundations.
+- **Resilient UI Runtime:** Protected with React Error Boundaries, zero console errors, high-contrast cyber-railway dark design, and reactive telemetry reconnection.
+
+### E. Operational Foundations & Track Design Inspirations
+While the railway network graph is entirely synthetic and fictional, its scheduling philosophy and physical track engineering are directly inspired by proven gold-standard international railway practices:
+- **Periodic Integrated Timetable (*Taktfahrplan* Inspiration):** The master schedule operates on symmetrical, repeating clockface departure cadences (e.g., :00, :15, :30, :45) inspired by the Swiss *Taktfahrplan* network paradigm. This maximizes passenger interchange synchronization while creating predictable harmonic headway spacing.
+- **Scissors Crossovers (Double X-Crossings):** Station throats and inter-corridor junctions incorporate prototypical double scissors crossovers (paired universal X-crossings), permitting simultaneous parallel routing and dynamic opposite-track diversions during track maintenance or platform congestion.
+- **Dynamic Passing Loops & Overtake Sidings:** High-speed corridors feature grade-separated passing loops and alpine sidings where autonomous AI dispatchers hold slower heavy-freight consists to let express passenger trains overtake without speed degradation.
+- **Diamond Crossings & Ladder Turnouts:** Multi-track junction throat networks model physical turnout geometry and speed restrictions (diverging routes restricted to 40–80 km/h; mainline through-tracks up to 300 km/h).
 
 ---
 
@@ -241,6 +265,18 @@ python3 dispatcher/evaluation/visualize_marl.py
 sumo-gui -c trains/sumo_config/train_simulation.sumocfg
 ```
 
+### Step 9: Launch Full-Stack Web Simulation Platform
+```bash
+# Terminal 1: Start FastAPI & WebSocket Server (Port 8000)
+python3 backend/run_server.py --port 8000 --host 127.0.0.1
+
+# Terminal 2: Start Modern React 19 Frontend (Port 5173)
+cd frontend
+npm install
+npm run dev
+```
+*Open [http://127.0.0.1:5173](http://127.0.0.1:5173) in your browser to interact with the real-time simulation, timetable queries, and analytics.*
+
 ---
 
 ## 5. Subsystem Documentation Links
@@ -250,12 +286,17 @@ sumo-gui -c trains/sumo_config/train_simulation.sumocfg
 - **Train Scheduling, Rolling Stock & SQL Database:** [trains/README.md](trains/README.md)
 - **Timetable & Simulation Evolution History:** [trains/project_history.md](trains/project_history.md)
 - **Autonomous Dispatcher AI & RL System:** [dispatcher/README.md](dispatcher/README.md)
+- **Backend API & Streaming Architecture:** [backend/README.md](backend/README.md)
 - **Unified Monorepo Milestone Log:** [project_history.md](project_history.md)
 
 ---
 
-## 6. Academic Attribution & License
+## 6. Academic Attribution, Contributors & License
 
 * **Project:** Autonomous Rail Dispatcher (Project 1, Vellore Institute of Technology - VIT)
-* **Author:** Venkata Sriram Topalli ([@venkatasriramt-spec](https://github.com/venkatasriramt-spec))
+* **Contributors:**
+  * **Venkata Sriram Topalli** — Lead Developer, Core Backend & Reinforcement Learning Architecture ([@venkatasriramt-spec](https://github.com/venkatasriramt-spec))
+  * **Ayush M Singh** — SUMO Microscopic Modeling & Rail Traffic Research ([@AYUSHMSINGH2004](https://github.com/AYUSHMSINGH2004))
+  * **Avanish Kushwaha** — Timetable Optimization & Heuristic Benchmarking ([@avanish06](https://github.com/avanish06))
 * **License:** [MIT License](LICENSE)
+
