@@ -228,6 +228,12 @@
   align-items: center;
   gap: 0.65rem;
   margin-bottom: 1rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.footer-brand:hover {
+  opacity: 0.9;
 }
 
 .footer-brand-icon {

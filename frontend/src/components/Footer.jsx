@@ -37,6 +37,14 @@ const CONTRIBUTORS = [
 ];
 
 export default function Footer() {
+  const handleScrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <footer className="site-footer">
       <div className="footer-glow-divider" />
@@ -90,10 +98,10 @@ export default function Footer() {
         {/* Middle Section: Links & Tech */}
         <div className="footer-details-grid">
           <div className="footer-col brand-col">
-            <div className="footer-brand">
+            <Link to="/" onClick={handleScrollToTop} className="footer-brand">
               <Train className="footer-brand-icon" size={22} />
               <span className="footer-brand-text">Autonomous Rail Dispatcher</span>
-            </div>
+            </Link>
             <p className="footer-bio">
               A high-precision multi-agent simulation testbed and production-grade interlocking controller 
               designed to resolve dense-corridor bottlenecks, eliminate cascade delays, and guarantee zero-deadlock scheduling.
@@ -110,10 +118,10 @@ export default function Footer() {
           <div className="footer-col">
             <h4 className="footer-heading">Platform Pages</h4>
             <ul className="footer-links-list">
-              <li><Link to="/">Project Overview & Dashboard</Link></li>
-              <li><Link to="/simulation">2D Real-Time Simulation Canvas</Link></li>
-              <li><Link to="/query">Fleet & Timetable Directory</Link></li>
-              <li><Link to="/about">System Architecture & 56-Run Benchmark</Link></li>
+              <li><Link to="/" onClick={handleScrollToTop}>Project Overview & Dashboard</Link></li>
+              <li><Link to="/simulation" onClick={handleScrollToTop}>2D Real-Time Simulation Canvas</Link></li>
+              <li><Link to="/query" onClick={handleScrollToTop}>Fleet & Timetable Directory</Link></li>
+              <li><Link to="/about" onClick={handleScrollToTop}>System Architecture & 56-Run Benchmark</Link></li>
             </ul>
           </div>
 
