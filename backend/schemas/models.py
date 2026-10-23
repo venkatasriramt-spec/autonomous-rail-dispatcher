@@ -85,7 +85,7 @@ class TelemetryFrame(BaseModel):
 
 # Request Models
 class SimulationControlRequest(BaseModel):
-    action: Literal["play", "pause", "step", "reset"] = Field(..., description="'play', 'pause', 'step', or 'reset'")
+    action: Literal["play", "pause", "step", "reset", "set_speed", "speed"] = Field(..., description="'play', 'pause', 'step', 'reset', or 'set_speed'")
     speed: Optional[float] = Field(None, gt=0, description="Playback speed multiplier (e.g. 1.0, 5.0, 10.0)")
 
 

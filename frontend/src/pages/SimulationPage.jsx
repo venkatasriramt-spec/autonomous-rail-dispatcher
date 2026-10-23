@@ -124,6 +124,12 @@ export default function SimulationPage() {
   const isDraggingRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const wsRef = useRef(null);
+  const selectedSpeedRef = useRef(null);
+  const confirmedSpeedRef = useRef(1.0);
+  const speedQueueRef = useRef(Promise.resolve());
+  const speedRequestIdRef = useRef(0);
+  const latestConfirmedSpeedReqIdRef = useRef(0);
+  const lastConfirmedSpeedTimeRef = useRef(0);
 
   // Helper: compute centered transform from geometry bounds
   const getCenteredTransform = useCallback((bounds, cWidth, cHeight) => {
@@ -170,10 +176,16 @@ export default function SimulationPage() {
 
   // 2. Fetch Sim Status and Telemetry Poll Fallback
   const fetchStatus = useCallback(async () => {
+    const snapshotConfirmedId = latestConfirmedSpeedReqIdRef.current;
     try {
       const res = await fetch('/api/sim/status');
       if (res.ok) {
         const data = await res.json();
+        // Apply snapshot speeds only when they are not older than the latest successful speed request
+        const isSpeedFresh = snapshotConfirmedId >= latestConfirmedSpeedReqIdRef.current;
+        if (isSpeedFresh && data.speed_multiplier !== undefined && data.speed_multiplier !== null) {
+          confirmedSpeedRef.current = data.speed_multiplier;
+        }
         setSimStatus(prev => ({
           ...prev,
           running: data.status === 'RUNNING',
@@ -182,7 +194,9 @@ export default function SimulationPage() {
           sim_time_formatted: data.time_formatted ?? prev.sim_time_formatted,
           current_model: data.dispatcher_model ?? prev.current_model,
           current_day: data.calendar_day ?? prev.current_day,
-          speed_multiplier: data.speed_multiplier ?? prev.speed_multiplier,
+          speed_multiplier: isSpeedFresh
+            ? (selectedSpeedRef.current ?? data.speed_multiplier ?? prev.speed_multiplier)
+            : (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? prev.speed_multiplier),
           active_disruptions: data.active_disruptions ?? prev.active_disruptions
         }));
         if (data.calendar_day) setSelectedDay(data.calendar_day);
@@ -241,12 +255,13 @@ export default function SimulationPage() {
                     cat = 'Regional';
                   }
                 }
+                const speedMs = t.speed_ms ?? t.speed ?? ((t.speed_kmh ?? 0) / 3.6);
                 return {
                   ...t,
                   category: cat,
                   train_number: t.train_number || t.id,
-                  speed_kmh: t.speed_kmh ?? Math.round((t.speed || 0) * 3.6),
-                  speed: t.speed_ms ?? t.speed ?? ((t.speed_kmh || 0) / 3.6)
+                  speed_kmh: t.speed_kmh ?? Math.round(speedMs * 3.6),
+                  speed: speedMs
                 };
               }));
             }
@@ -270,17 +285,44 @@ export default function SimulationPage() {
             const statusStr = data.sim_status || data.status;
 
             if (timeFormatted || statusStr) {
-              setSimStatus(prev => ({
-                ...prev,
-                sim_time_formatted: timeFormatted || prev.sim_time_formatted,
-                sim_time_sec: timeSec ?? prev.sim_time_sec,
-                running: statusStr === 'RUNNING' || (data.running ?? prev.running),
-                paused: statusStr === 'PAUSED' || (data.paused ?? prev.paused),
-                current_model: data.dispatcher_model || data.current_model || prev.current_model,
-                current_day: data.calendar_day || data.current_day || prev.current_day,
-                speed_multiplier: data.speed_multiplier || prev.speed_multiplier,
-                active_disruptions: data.active_disruptions || prev.active_disruptions
-              }));
+              const incomingSpeed = data.speed_multiplier;
+              const hasIncomingSpeed = incomingSpeed !== undefined && incomingSpeed !== null;
+              // Ignore delayed WebSocket messages initiated before the latest successful speed change
+              const isDelayedWsSpeed = hasIncomingSpeed &&
+                latestConfirmedSpeedReqIdRef.current > 0 &&
+                (Date.now() - lastConfirmedSpeedTimeRef.current < 2000) &&
+                incomingSpeed !== confirmedSpeedRef.current;
+
+              if (hasIncomingSpeed && !isDelayedWsSpeed) {
+                confirmedSpeedRef.current = incomingSpeed;
+              }
+              setSimStatus(prev => {
+                let nextRunning;
+                let nextPaused;
+                if (statusStr) {
+                  nextRunning = statusStr === 'RUNNING';
+                  nextPaused = statusStr === 'PAUSED';
+                } else {
+                  nextRunning = data.running ?? prev.running;
+                  nextPaused = data.paused ?? prev.paused;
+                }
+
+                const resolvedSpeed = isDelayedWsSpeed
+                  ? (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? prev.speed_multiplier)
+                  : (selectedSpeedRef.current ?? incomingSpeed ?? prev.speed_multiplier);
+
+                return {
+                  ...prev,
+                  sim_time_formatted: timeFormatted || prev.sim_time_formatted,
+                  sim_time_sec: timeSec ?? prev.sim_time_sec,
+                  running: nextRunning,
+                  paused: nextPaused,
+                  current_model: data.dispatcher_model || data.current_model || prev.current_model,
+                  current_day: data.calendar_day || data.current_day || prev.current_day,
+                  speed_multiplier: resolvedSpeed,
+                  active_disruptions: data.active_disruptions || prev.active_disruptions
+                };
+              });
             }
 
             // Ingest recent AI actions
@@ -658,7 +700,7 @@ export default function SimulationPage() {
     let closest = null;
     let minDist = 35 / scale; // click tolerance in world coordinates
 
-    for (const t of trains) {
+    for (const t of filteredTrains) {
       const dist = Math.hypot(t.x - worldX, t.y - worldY);
       if (dist < minDist) {
         minDist = dist;
@@ -669,17 +711,81 @@ export default function SimulationPage() {
   };
 
   // Playback Control Handlers
-  const sendControl = async (action, speed = 1.0) => {
+  const sendControl = async (action, speed, reqId) => {
+    const targetSpeed = speed !== undefined ? speed : (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0);
+    const currentReqId = reqId !== undefined ? reqId : (action === 'set_speed' || speed !== undefined ? ++speedRequestIdRef.current : undefined);
     try {
-      await fetch('/api/sim/control', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action, speed })
-      });
+      if (action === 'set_speed') {
+        const res = await fetch('/api/sim/config', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ speed: targetSpeed })
+        });
+        if (res.ok) {
+          const data = await res.json().catch(() => null);
+          if (data && data.success !== false) {
+            const isWinning = currentReqId === undefined || currentReqId >= latestConfirmedSpeedReqIdRef.current;
+            if (isWinning) {
+              if (currentReqId !== undefined) {
+                latestConfirmedSpeedReqIdRef.current = currentReqId;
+              }
+              lastConfirmedSpeedTimeRef.current = Date.now();
+              confirmedSpeedRef.current = targetSpeed;
+            }
+            if (selectedSpeedRef.current === targetSpeed) {
+              selectedSpeedRef.current = null;
+            }
+          } else {
+            if (selectedSpeedRef.current === targetSpeed) {
+              selectedSpeedRef.current = null;
+              setSimStatus(prev => ({ ...prev, speed_multiplier: confirmedSpeedRef.current }));
+            }
+          }
+        } else {
+          if (selectedSpeedRef.current === targetSpeed) {
+            selectedSpeedRef.current = null;
+            setSimStatus(prev => ({ ...prev, speed_multiplier: confirmedSpeedRef.current }));
+          }
+        }
+      } else {
+        const res = await fetch('/api/sim/control', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ action, speed: targetSpeed })
+        });
+        if (res.ok && speed !== undefined) {
+          const isWinning = currentReqId === undefined || currentReqId >= latestConfirmedSpeedReqIdRef.current;
+          if (isWinning) {
+            if (currentReqId !== undefined) {
+              latestConfirmedSpeedReqIdRef.current = currentReqId;
+            }
+            lastConfirmedSpeedTimeRef.current = Date.now();
+            confirmedSpeedRef.current = targetSpeed;
+          }
+          if (selectedSpeedRef.current === targetSpeed) {
+            selectedSpeedRef.current = null;
+          }
+        }
+      }
       fetchStatus();
     } catch (err) {
+      if (action === 'set_speed' && selectedSpeedRef.current === targetSpeed) {
+        selectedSpeedRef.current = null;
+        setSimStatus(prev => ({ ...prev, speed_multiplier: confirmedSpeedRef.current }));
+      }
       console.error('Sim control error:', err);
     }
+  };
+
+  const handleSpeedChange = (s) => {
+    selectedSpeedRef.current = s;
+    setSimStatus(prev => ({ ...prev, speed_multiplier: s }));
+    const reqId = ++speedRequestIdRef.current;
+    speedQueueRef.current = speedQueueRef.current.then(async () => {
+      await sendControl('set_speed', s, reqId);
+    }).catch(err => {
+      console.error('Speed change error:', err);
+    });
   };
 
   const handleConfigChange = async (day, model) => {
@@ -699,18 +805,33 @@ export default function SimulationPage() {
 
   // Quick Time Jump Handler (Dawn, Morning Peak, Midday, Evening Rush)
   const handleTimeJump = async (sec) => {
+    const initialSpeed = selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0;
     try {
-      await fetch('/api/sim/config', {
+      const res = await fetch('/api/sim/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           day: selectedDay,
           model: selectedModel,
+          speed: initialSpeed,
           start_time_sec: sec
         })
       });
-      // Start playback to see trains in motion immediately
-      await sendControl('play');
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          // Re-read current speed selection after time-jump completes
+          // so any speed change made while the request was pending is preserved
+          const currentSpeed = selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0;
+          const reqId = ++speedRequestIdRef.current;
+          speedQueueRef.current = speedQueueRef.current.then(async () => {
+            await sendControl('play', currentSpeed, reqId);
+          }).catch(err => {
+            console.error('Time jump playback error:', err);
+          });
+          await speedQueueRef.current;
+        }
+      }
       fetchStatus();
     } catch (err) {
       console.error('Time jump error:', err);
@@ -821,7 +942,7 @@ export default function SimulationPage() {
             {[1, 2, 5, 10, 20].map((s) => (
               <button
                 key={s}
-                onClick={() => sendControl('set_speed', s)}
+                onClick={() => handleSpeedChange(s)}
                 className={`btn-speed-pill ${simStatus.speed_multiplier === s ? 'active' : ''}`}
               >
                 {s}x
