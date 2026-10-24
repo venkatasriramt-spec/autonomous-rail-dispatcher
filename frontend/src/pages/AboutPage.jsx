@@ -7,11 +7,9 @@ import {
   TrendingUp, 
   CheckCircle2, 
   ShieldCheck, 
-  Zap, 
   ArrowRight, 
   Activity, 
   Clock, 
-  FileCode2, 
   GitBranch, 
   Server, 
   Monitor, 
@@ -81,9 +79,9 @@ const COMPARISON_MODELS = [
 const WEEK_DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 export default function AboutPage() {
-  const [benchmarkData, setBenchmarkData] = useState(null);
+  const [_benchmarkData, setBenchmarkData] = useState(null);
   const [diurnalData, setDiurnalData] = useState(null);
-  const [loadingAnalytics, setLoadingAnalytics] = useState(true);
+  const [_loadingAnalytics, setLoadingAnalytics] = useState(true);
   const [selectedArchLayer, setSelectedArchLayer] = useState(null);
   const [selectedDay, setSelectedDay] = useState('Mon');
   const [comparisonModel, setComparisonModel] = useState('Centralized_PPO');

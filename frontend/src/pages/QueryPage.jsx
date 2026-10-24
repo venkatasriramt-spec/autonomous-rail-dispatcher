@@ -3,28 +3,20 @@ import { Link } from 'react-router-dom';
 import { 
   Train, 
   Search, 
-  Filter, 
   Clock, 
   MapPin, 
   Layers, 
   Cpu, 
   ChevronDown, 
   ChevronUp, 
-  ArrowRight, 
-  ExternalLink, 
-  ShieldCheck, 
-  CheckCircle2, 
   Activity, 
   Sparkles, 
   RotateCcw, 
   Gauge, 
-  Zap, 
-  Calendar,
-  ArrowUpDown,
-  ArrowUp,
-  ArrowDown,
-  Building2,
-  Navigation
+  ArrowUpDown, 
+  ArrowUp, 
+  ArrowDown, 
+  Building2
 } from 'lucide-react';
 import './QueryPage.css';
 
@@ -71,7 +63,6 @@ export default function QueryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCorridor, setSelectedCorridor] = useState('ALL');
   const [selectedClass, setSelectedClass] = useState('ALL');
-  const [selectedDay, setSelectedDay] = useState('ALL');
   const [selectedOrigin, setSelectedOrigin] = useState('ALL');
   const [selectedDest, setSelectedDest] = useState('ALL');
   const [sortBy, setSortBy] = useState('departure'); // 'departure' | 'arrival' | 'train_number' | 'train_name' | 'corridor' | 'service_class' | 'origin_station' | 'dest_station' | 'distance' | 'duration'

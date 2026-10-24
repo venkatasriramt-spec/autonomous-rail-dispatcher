@@ -13,6 +13,20 @@ from backend.config import PPO_MODEL_PATH, MAPPO_MODEL_PATH, DISPATCHER_MODELS
 logger = logging.getLogger("dispatcher_bridge")
 
 
+MODEL_ALIASES: Dict[str, str] = {
+    "MAPPO": "Decentralized_MAPPO",
+    "Decentralized_DQN": "Decentralized_MAPPO",
+    "Dynamic_Priority_Heuristic": "Priority_Greedy_Heuristic",
+    "Priority_Heuristic": "Priority_Greedy_Heuristic",
+    "Rule_Based_FIFO": "FIFO_Heuristic",
+    "First_Come_First_Served": "FIFO_Heuristic",
+    "FIFO": "FIFO_Heuristic",
+    "SUMO_Default": "Static_Baseline",
+    "Static": "Static_Baseline",
+    "PPO": "Centralized_PPO"
+}
+
+
 class DispatcherBridge:
     """Manages dispatcher agent instances and provides a unified prediction interface."""
 
@@ -25,10 +39,12 @@ class DispatcherBridge:
     def is_marl_model(self, model_name: Optional[str] = None) -> bool:
         """Returns True if the model runs under the Multi-Agent RL environment."""
         m = model_name or self.active_model_name
+        m = MODEL_ALIASES.get(m, m)
         return m in ("Decentralized_MAPPO", "Comm_MAPPO")
 
     def load_model(self, model_name: str) -> bool:
         """Loads or switches to the specified dispatcher model."""
+        model_name = MODEL_ALIASES.get(model_name, model_name)
         if model_name not in DISPATCHER_MODELS:
             logger.warning(f"Unknown dispatcher model '{model_name}'. Falling back to Centralized_PPO.")
             model_name = "Centralized_PPO"

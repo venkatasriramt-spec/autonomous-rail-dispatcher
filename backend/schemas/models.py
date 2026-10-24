@@ -125,6 +125,8 @@ class SimulationStatusResponse(BaseModel):
     punctuality_pct: float
     total_actions_taken: int
     active_disruptions: List[str]
+    active_disruptions_data: Optional[List[Dict[str, Any]]] = None
+    active_overrides: Optional[Dict[str, Any]] = None
 
 
 class TrackLaneGeometry(BaseModel):

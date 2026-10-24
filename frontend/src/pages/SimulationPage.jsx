@@ -4,27 +4,23 @@ import {
   Pause, 
   RotateCcw, 
   FastForward, 
-  Volume2, 
   AlertTriangle, 
   Sliders, 
-  Filter, 
   ZoomIn, 
   ZoomOut, 
   Maximize2, 
   Radio, 
-  ShieldAlert, 
-  Compass, 
   Clock, 
-  Layers, 
   Search, 
   Train, 
   X,
   ChevronRight,
   Send,
-  Eye,
-  MapPin,
   RefreshCw,
-  Gauge
+  CheckCircle2,
+  GitFork,
+  Zap,
+  ShieldCheck
 } from 'lucide-react';
 import './SimulationPage.css';
 
@@ -32,13 +28,13 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
 const MODELS = [
   { id: 'Centralized_PPO', label: 'Centralized PPO (Lead AI)' },
-  { id: 'MAPPO', label: 'MAPPO Multi-Agent' },
-  { id: 'Decentralized_DQN', label: 'Decentralized DQN' },
-  { id: 'Dynamic_Priority_Heuristic', label: 'Dynamic Priority' },
-  { id: 'Priority_Heuristic', label: 'Priority Heuristic' },
-  { id: 'Rule_Based_FIFO', label: 'Rule-Based FIFO' },
-  { id: 'First_Come_First_Served', label: 'First-Come First-Served' },
-  { id: 'SUMO_Default', label: 'SUMO Default (No Dispatcher)' }
+  { id: 'Hierarchical_Hybrid', label: 'Hierarchical Hybrid Ensemble' },
+  { id: 'Decentralized_MAPPO', label: 'Decentralized MAPPO (Multi-Agent)' },
+  { id: 'Comm_MAPPO', label: 'Comm-MAPPO (GNN Communication)' },
+  { id: 'Multi_Train_Centralized_PPO', label: 'Multi-Train Centralized PPO' },
+  { id: 'Priority_Greedy_Heuristic', label: 'Dynamic Priority Heuristic' },
+  { id: 'FIFO_Heuristic', label: 'First-Come First-Served (FIFO)' },
+  { id: 'Static_Baseline', label: 'Static Baseline (SUMO Native)' }
 ];
 
 const TIME_JUMPS = [
@@ -58,7 +54,9 @@ export default function SimulationPage() {
     current_model: 'Centralized_PPO',
     current_day: 'Mon',
     speed_multiplier: 1.0,
-    active_disruptions: []
+    active_disruptions: [],
+    active_disruptions_data: [],
+    active_overrides: {}
   });
 
   // Telemetry stream
@@ -197,7 +195,9 @@ export default function SimulationPage() {
           speed_multiplier: isSpeedFresh
             ? (selectedSpeedRef.current ?? data.speed_multiplier ?? prev.speed_multiplier)
             : (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? prev.speed_multiplier),
-          active_disruptions: data.active_disruptions ?? prev.active_disruptions
+          active_disruptions: data.active_disruptions ?? prev.active_disruptions,
+          active_disruptions_data: data.active_disruptions_data ?? prev.active_disruptions_data ?? [],
+          active_overrides: data.active_overrides ?? prev.active_overrides ?? {}
         }));
         if (data.calendar_day) setSelectedDay(data.calendar_day);
         if (data.dispatcher_model) setSelectedModel(data.dispatcher_model);
@@ -230,7 +230,7 @@ export default function SimulationPage() {
 
         ws.onopen = () => {
           if (!isMounted && ws) {
-            try { ws.close(); } catch (_) {}
+            try { ws.close(); } catch {}
           }
         };
 
@@ -320,7 +320,9 @@ export default function SimulationPage() {
                   current_model: data.dispatcher_model || data.current_model || prev.current_model,
                   current_day: data.calendar_day || data.current_day || prev.current_day,
                   speed_multiplier: resolvedSpeed,
-                  active_disruptions: data.active_disruptions || prev.active_disruptions
+                  active_disruptions: data.active_disruptions || prev.active_disruptions,
+                  active_disruptions_data: data.active_disruptions_data || prev.active_disruptions_data || [],
+                  active_overrides: data.active_overrides || prev.active_overrides || {}
                 };
               });
             }
@@ -343,7 +345,7 @@ export default function SimulationPage() {
         ws.onerror = () => {
           // Handled by onclose
         };
-      } catch (_) {
+      } catch {
         if (isMounted) {
           reconnectTimeout = setTimeout(connectWS, 2500);
         }
@@ -356,10 +358,10 @@ export default function SimulationPage() {
       if (reconnectTimeout) clearTimeout(reconnectTimeout);
       if (ws) {
         if (ws.readyState === WebSocket.OPEN) {
-          try { ws.close(); } catch (_) {}
+          try { ws.close(); } catch {}
         } else if (ws.readyState === WebSocket.CONNECTING) {
           ws.onopen = () => {
-            try { ws.close(); } catch (_) {}
+            try { ws.close(); } catch {}
           };
         }
       }
@@ -392,7 +394,7 @@ export default function SimulationPage() {
     // Grid coordinates conversion: SUMO has Y increasing UP, Canvas has Y increasing DOWN.
     // Bounds: [minX, minY, maxX, maxY].
     const bounds = geometry?.bounds || [-0.33, -0.18, 29708.16, 26683.47];
-    const [minX, minY, maxX, maxY] = bounds;
+    const [, minY, , maxY] = bounds;
     const toCanvasY = (sumoY) => maxY - sumoY + minY;
 
     // Apply viewport pan & zoom
@@ -476,6 +478,9 @@ export default function SimulationPage() {
       }
     }
 
+    const activeDisruptionsData = simStatus.active_disruptions_data || [];
+    const activeOverrides = simStatus.active_overrides || {};
+
     // 2. Draw Stations
     if (geometry && geometry.stations) {
       for (const st of geometry.stations) {
@@ -485,19 +490,82 @@ export default function SimulationPage() {
         const hubRadius = (isCity ? 14 : 9) / scale;
         const innerRadius = (isCity ? 7 : 4.5) / scale;
 
+        // Check if this station is impacted by platform blockage or compound failure
+        const isDisruptedStation = activeDisruptionsData.some(d => {
+          if (d.mode !== 'platform_blockage' && d.mode !== 'compound_failure') return false;
+          if (d.platform_id && (d.platform_id.includes(st.station_name) || st.station_name.includes(d.platform_id))) return true;
+          if (d.station_name && st.display_name && (d.station_name.toLowerCase() === st.display_name.toLowerCase())) return true;
+          if (st.platforms && st.platforms.some(p => p.platform_id === d.platform_id || p.lane === d.platform_id)) return true;
+          return false;
+        });
+
+        // If disrupted station: draw pulsating danger shockwave radar rings
+        if (isDisruptedStation) {
+          const pulse = (Math.sin(Date.now() / 150) + 1) / 2;
+          const shockRadius = hubRadius * (1.8 + pulse * 1.5);
+          ctx.beginPath();
+          ctx.arc(sx, sy, shockRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(239, 68, 68, ${0.7 + pulse * 0.3})`;
+          ctx.lineWidth = 3.5 / scale;
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(239, 68, 68, 0.22)';
+          ctx.fill();
+
+          // Expanding radar pulse ring
+          const ringProgress = (Date.now() % 1200) / 1200;
+          ctx.beginPath();
+          ctx.arc(sx, sy, hubRadius * (1.2 + ringProgress * 2.2), 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(239, 68, 68, ${1 - ringProgress})`;
+          ctx.lineWidth = 2 / scale;
+          ctx.stroke();
+
+          // Highlight blocked platform tracks directly with glowing hazard stripes
+          if (st.platforms) {
+            for (const plat of st.platforms) {
+              const isPlatTargeted = activeDisruptionsData.some(d => 
+                (d.mode === 'platform_blockage' || d.mode === 'compound_failure') &&
+                (d.platform_id === plat.platform_id || d.platform_id === plat.lane || !d.platform_id)
+              );
+              if (isPlatTargeted && plat.coordinates && plat.coordinates.length >= 2) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(plat.coordinates[0][0], toCanvasY(plat.coordinates[0][1]));
+                for (let pi = 1; pi < plat.coordinates.length; pi++) {
+                  ctx.lineTo(plat.coordinates[pi][0], toCanvasY(plat.coordinates[pi][1]));
+                }
+                ctx.strokeStyle = '#ef4444';
+                ctx.lineWidth = 14 / scale;
+                ctx.shadowColor = '#ef4444';
+                ctx.shadowBlur = 18;
+                ctx.stroke();
+                ctx.strokeStyle = '#fef08a';
+                ctx.lineWidth = 4 / scale;
+                ctx.setLineDash([14 / scale, 8 / scale]);
+                ctx.lineDashOffset = -(Date.now() / 40) % 22;
+                ctx.stroke();
+                ctx.restore();
+              }
+            }
+          }
+        }
+
         // Outer Glow Halo
         ctx.beginPath();
         ctx.arc(sx, sy, hubRadius * 1.6, 0, Math.PI * 2);
-        ctx.fillStyle = isCity ? 'rgba(0, 240, 255, 0.12)' : 'rgba(56, 189, 248, 0.08)';
+        ctx.fillStyle = isDisruptedStation 
+          ? 'rgba(239, 68, 68, 0.3)' 
+          : (isCity ? 'rgba(0, 240, 255, 0.12)' : 'rgba(56, 189, 248, 0.08)');
         ctx.fill();
 
         // Hub Disc
         ctx.beginPath();
         ctx.arc(sx, sy, hubRadius, 0, Math.PI * 2);
-        ctx.fillStyle = isCity ? 'rgba(12, 74, 110, 0.95)' : 'rgba(30, 58, 138, 0.9)';
+        ctx.fillStyle = isDisruptedStation 
+          ? 'rgba(153, 27, 27, 0.95)' 
+          : (isCity ? 'rgba(12, 74, 110, 0.95)' : 'rgba(30, 58, 138, 0.9)');
         ctx.fill();
-        ctx.strokeStyle = isCity ? '#00f0ff' : '#38bdf8';
-        ctx.lineWidth = 2.5 / scale;
+        ctx.strokeStyle = isDisruptedStation ? '#ef4444' : (isCity ? '#00f0ff' : '#38bdf8');
+        ctx.lineWidth = (isDisruptedStation ? 3.5 : 2.5) / scale;
         ctx.stroke();
 
         // Core dot
@@ -524,7 +592,9 @@ export default function SimulationPage() {
         ctx.beginPath();
         ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4 / scale);
         ctx.fill();
-        ctx.strokeStyle = isCity ? 'rgba(0, 240, 255, 0.6)' : 'rgba(56, 189, 248, 0.4)';
+        ctx.strokeStyle = isDisruptedStation 
+          ? '#ef4444' 
+          : (isCity ? 'rgba(0, 240, 255, 0.6)' : 'rgba(56, 189, 248, 0.4)');
         ctx.lineWidth = 1 / scale;
         ctx.stroke();
 
@@ -533,6 +603,33 @@ export default function SimulationPage() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(name, sx, badgeY + badgeH / 2);
+
+        // Danger Warning Tag if Disrupted
+        if (isDisruptedStation) {
+          const dLabel = '⛔ PLATFORM TRACK BLOCKED';
+          const dFontSize = (isCity ? 10.5 : 9) / scale;
+          ctx.font = `800 ${dFontSize}px Inter, system-ui, sans-serif`;
+          const dMetrics = ctx.measureText(dLabel);
+          const dPadX = 7 / scale;
+          const dPadY = 3.5 / scale;
+          const dBadgeH = dFontSize + dPadY * 2;
+          const dBadgeW = dMetrics.width + dPadX * 2;
+          const dBadgeX = sx - dBadgeW / 2;
+          const dBadgeY = badgeY - dBadgeH - (5 / scale);
+
+          ctx.fillStyle = 'rgba(185, 28, 28, 0.96)';
+          ctx.beginPath();
+          ctx.roundRect(dBadgeX, dBadgeY, dBadgeW, dBadgeH, 4 / scale);
+          ctx.fill();
+          ctx.strokeStyle = '#fca5a5';
+          ctx.lineWidth = 1.5 / scale;
+          ctx.stroke();
+
+          ctx.fillStyle = '#ffffff';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(dLabel, sx, dBadgeY + dBadgeH / 2);
+        }
       }
     }
 
@@ -540,8 +637,6 @@ export default function SimulationPage() {
     for (const train of filteredTrains) {
       const tx = train.x;
       const ty = toCanvasY(train.y);
-      // SUMO angle: 0 = North, 90 = East, 180 = South, 270 = West.
-      // Canvas coordinates with Y-inverted: ((angle - 90) * PI / 180) aligns heading directly with track vector
       const angleRad = ((train.angle ?? 90) - 90) * (Math.PI / 180);
 
       const isSelected = selectedTrain && (selectedTrain.id === train.id);
@@ -549,8 +644,49 @@ export default function SimulationPage() {
       const isFreight = train.category === 'Freight';
       const isDelayed = (train.delay_sec || 0) > 30;
 
+      // Check if train is specifically disrupted (breakdown / mechanical stall)
+      const isDisruptedTrain = activeDisruptionsData.some(d => 
+        (d.mode === 'train_delay' || d.mode === 'compound_failure') && 
+        (d.vehicle_id === train.id || train.is_stalled)
+      );
+
+      // Check if train has an active operator override
+      const activeOverride = activeOverrides[train.id];
+
       const trainLen = (isFreight ? 38 : isHighSpeed ? 34 : 26) / scale;
       const trainWidth = (isFreight ? 10 : 8) / scale;
+
+      // Active manual override: pulsating neon purple halo
+      if (activeOverride) {
+        const oPulse = (Math.sin(Date.now() / 160) + 1) / 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(tx, ty, (trainLen * 0.85) * (1.2 + oPulse * 0.35), 0, Math.PI * 2);
+        ctx.strokeStyle = '#c084fc';
+        ctx.lineWidth = 3.5 / scale;
+        ctx.shadowColor = '#a855f7';
+        ctx.shadowBlur = 18;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(168, 85, 247, 0.22)';
+        ctx.fill();
+        ctx.restore();
+      }
+
+      // Active train disruption: pulsating crimson hazard beacon
+      if (isDisruptedTrain) {
+        const dPulse = (Math.sin(Date.now() / 140) + 1) / 2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(tx, ty, (trainLen * 0.85) * (1.3 + dPulse * 0.4), 0, Math.PI * 2);
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 4 / scale;
+        ctx.shadowColor = '#dc2626';
+        ctx.shadowBlur = 22;
+        ctx.stroke();
+        ctx.fillStyle = 'rgba(239, 68, 68, 0.28)';
+        ctx.fill();
+        ctx.restore();
+      }
 
       ctx.save();
       ctx.translate(tx, ty);
@@ -566,7 +702,11 @@ export default function SimulationPage() {
       ctx.beginPath();
       ctx.roundRect(-trainLen / 2, -trainWidth / 2, trainLen, trainWidth, 3 / scale);
 
-      if (isDelayed) {
+      if (isDisruptedTrain) {
+        ctx.fillStyle = '#dc2626'; // Bright Red for stalled breakdown
+      } else if (activeOverride) {
+        ctx.fillStyle = '#7c3aed'; // Vivid Purple for overridden vehicle
+      } else if (isDelayed) {
         ctx.fillStyle = '#ef4444'; // Red for delayed
       } else if (isHighSpeed) {
         ctx.fillStyle = '#00f0ff'; // Neon Cyan for High-Speed
@@ -603,11 +743,15 @@ export default function SimulationPage() {
       const tBoxX = tx - tW / 2;
       const tBoxY = ty + (10 / scale);
 
-      ctx.fillStyle = isSelected ? 'rgba(0, 240, 255, 0.95)' : 'rgba(15, 23, 42, 0.88)';
+      ctx.fillStyle = isSelected 
+        ? 'rgba(0, 240, 255, 0.95)' 
+        : (activeOverride ? 'rgba(88, 28, 135, 0.92)' : 'rgba(15, 23, 42, 0.88)');
       ctx.beginPath();
       ctx.roundRect(tBoxX, tBoxY, tW, tH, 3 / scale);
       ctx.fill();
-      ctx.strokeStyle = isSelected ? '#ffffff' : 'rgba(255, 255, 255, 0.25)';
+      ctx.strokeStyle = isSelected 
+        ? '#ffffff' 
+        : (activeOverride ? '#c084fc' : (isDisruptedTrain ? '#ef4444' : 'rgba(255, 255, 255, 0.25)'));
       ctx.lineWidth = 1 / scale;
       ctx.stroke();
 
@@ -615,11 +759,111 @@ export default function SimulationPage() {
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(trainLabel, tx, tBoxY + tH / 2);
+
+      // Floating Badges above Train for Disruptions or Overrides
+      if (isDisruptedTrain) {
+        const disLabel = '⚠️ MECHANICAL STALL • 0 km/h';
+        const dFontSize = 9.5 / scale;
+        ctx.font = `800 ${dFontSize}px Inter, system-ui, sans-serif`;
+        const dMetrics = ctx.measureText(disLabel);
+        const dW = dMetrics.width + (8 / scale);
+        const dH = dFontSize + (6 / scale);
+        const dX = tx - dW / 2;
+        const dY = ty - (26 / scale);
+
+        ctx.fillStyle = 'rgba(185, 28, 28, 0.96)';
+        ctx.beginPath();
+        ctx.roundRect(dX, dY, dW, dH, 4 / scale);
+        ctx.fill();
+        ctx.strokeStyle = '#fca5a5';
+        ctx.lineWidth = 1.5 / scale;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(disLabel, tx, dY + dH / 2);
+      } else if (activeOverride) {
+        const ovLabel = `🎮 OVERRIDE: ${activeOverride.label || activeOverride.type}`;
+        const oFontSize = 9.5 / scale;
+        ctx.font = `800 ${oFontSize}px Inter, system-ui, sans-serif`;
+        const oMetrics = ctx.measureText(ovLabel);
+        const oW = oMetrics.width + (8 / scale);
+        const oH = oFontSize + (6 / scale);
+        const oX = tx - oW / 2;
+        const oY = ty - (26 / scale);
+
+        ctx.fillStyle = 'rgba(88, 28, 135, 0.96)';
+        ctx.beginPath();
+        ctx.roundRect(oX, oY, oW, oH, 4 / scale);
+        ctx.fill();
+        ctx.strokeStyle = '#c084fc';
+        ctx.lineWidth = 1.5 / scale;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ovLabel, tx, oY + oH / 2);
+      }
     }
 
-    ctx.restore();
-    ctx.restore();
-  }, [geometry, filteredTrains, selectedTrain]);
+    ctx.restore(); // Exit world coordinate zoom/pan transform
+
+    // 4. Screen-space HUD Overlays (Top Alert Banners on Canvas)
+    if (activeDisruptionsData.length > 0 || Object.keys(activeOverrides).length > 0) {
+      let bannerY = 16;
+      if (activeDisruptionsData.length > 0) {
+        const bannerW = Math.min(width - 32, 580);
+        const bannerH = 34;
+        const bannerX = (width - bannerW) / 2;
+        const firstD = activeDisruptionsData[0];
+        const modeLabel = firstD.mode ? firstD.mode.replace('_', ' ').toUpperCase() : 'INCIDENT';
+        const targetText = firstD.station_name || firstD.vehicle_id || firstD.platform_id || 'Network';
+        const bannerText = `🚨 ACTIVE DISRUPTION: ${modeLabel} @ ${targetText} • AI Dynamic Rerouting Engaged`;
+
+        ctx.fillStyle = 'rgba(153, 27, 27, 0.94)';
+        ctx.beginPath();
+        ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 6);
+        ctx.fill();
+        ctx.strokeStyle = '#ef4444';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.font = '700 12px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(bannerText, bannerX + bannerW / 2, bannerY + bannerH / 2);
+
+        bannerY += bannerH + 8;
+      }
+
+      if (Object.keys(activeOverrides).length > 0) {
+        const oVehs = Object.keys(activeOverrides).join(', #');
+        const bannerW = Math.min(width - 32, 500);
+        const bannerH = 30;
+        const bannerX = (width - bannerW) / 2;
+        const ovText = `🎮 MANUAL OVERRIDE ACTIVE: #${oVehs} • AI Yielding Priority Margin`;
+
+        ctx.fillStyle = 'rgba(76, 29, 149, 0.94)';
+        ctx.beginPath();
+        ctx.roundRect(bannerX, bannerY, bannerW, bannerH, 6);
+        ctx.fill();
+        ctx.strokeStyle = '#c084fc';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        ctx.font = '700 11.5px Inter, system-ui, sans-serif';
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(ovText, bannerX + bannerW / 2, bannerY + bannerH / 2);
+      }
+    }
+
+    ctx.restore(); // Exit DPR scaling
+  }, [geometry, filteredTrains, selectedTrain, simStatus.active_disruptions_data, simStatus.active_overrides]);
 
   // Request Animation Frame loop
   useEffect(() => {
@@ -692,7 +936,7 @@ export default function SimulationPage() {
 
     const { scale, offsetX, offsetY } = transformRef.current;
     const bounds = geometry.bounds || [-0.33, -0.18, 29708.16, 26683.47];
-    const [minX, minY, maxX, maxY] = bounds;
+    const [, minY, , maxY] = bounds;
 
     const worldX = (clickX - offsetX) / scale;
     const worldY = maxY + minY - (clickY - offsetY) / scale;
@@ -711,7 +955,7 @@ export default function SimulationPage() {
   };
 
   // Playback Control Handlers
-  const sendControl = async (action, speed, reqId) => {
+  const sendControl = useCallback(async (action, speed, reqId) => {
     const targetSpeed = speed !== undefined ? speed : (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0);
     const currentReqId = reqId !== undefined ? reqId : (action === 'set_speed' || speed !== undefined ? ++speedRequestIdRef.current : undefined);
     try {
@@ -775,7 +1019,7 @@ export default function SimulationPage() {
       }
       console.error('Sim control error:', err);
     }
-  };
+  }, [fetchStatus, simStatus.speed_multiplier]);
 
   const handleSpeedChange = (s) => {
     selectedSpeedRef.current = s;
@@ -842,17 +1086,30 @@ export default function SimulationPage() {
   const handleInjectDisruption = async (e) => {
     e.preventDefault();
     try {
-      await fetch('/api/disruption/inject', {
+      const payload = {
+        mode: disruptionForm.mode,
+        vehicle_id: disruptionForm.vehicle_id || undefined,
+        platform_id: disruptionForm.platform_id || undefined,
+        delay_duration_sec: Number(disruptionForm.delay_duration_sec)
+      };
+      const res = await fetch('/api/disruption/inject', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mode: disruptionForm.mode,
-          vehicle_id: disruptionForm.vehicle_id || undefined,
-          platform_id: disruptionForm.platform_id || undefined,
-          delay_duration_sec: Number(disruptionForm.delay_duration_sec)
-        })
+        body: JSON.stringify(payload)
       });
+      const data = await res.json().catch(() => null);
+      if (data?.active_disruptions_data) {
+        setSimStatus(prev => ({
+          ...prev,
+          active_disruptions: data.active_disruptions || prev.active_disruptions,
+          active_disruptions_data: data.active_disruptions_data
+        }));
+      }
+      if (data?.recent_actions) {
+        setEvents(data.recent_actions);
+      }
       setShowDisruptionModal(false);
+      setActiveSideTab('events');
       fetchStatus();
     } catch (err) {
       console.error('Disruption injection error:', err);
@@ -863,6 +1120,13 @@ export default function SimulationPage() {
   const handleClearDisruptions = async () => {
     try {
       await fetch('/api/disruption/clear', { method: 'POST' });
+      setSimStatus(prev => ({
+        ...prev,
+        active_disruptions: [],
+        active_disruptions_data: []
+      }));
+      setShowDisruptionModal(false);
+      setActiveSideTab('events');
       fetchStatus();
     } catch (err) {
       console.error('Clear disruptions error:', err);
@@ -873,21 +1137,113 @@ export default function SimulationPage() {
   const handleApplyOverride = async (e) => {
     e.preventDefault();
     try {
-      await fetch('/api/override/action', {
+      const payload = {
+        vehicle_id: overrideForm.vehicle_id,
+        override_type: overrideForm.override_type,
+        target_platform: overrideForm.target_platform ? Number(overrideForm.target_platform) : undefined,
+        hold_duration_sec: overrideForm.hold_duration_sec ? Number(overrideForm.hold_duration_sec) : undefined
+      };
+      const res = await fetch('/api/override/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          vehicle_id: overrideForm.vehicle_id,
-          override_type: overrideForm.override_type,
-          target_platform: overrideForm.target_platform ? Number(overrideForm.target_platform) : undefined,
-          hold_duration_sec: overrideForm.hold_duration_sec ? Number(overrideForm.hold_duration_sec) : undefined
-        })
+        body: JSON.stringify(payload)
       });
+      const data = await res.json().catch(() => null);
+      if (data?.active_overrides) {
+        setSimStatus(prev => ({
+          ...prev,
+          active_overrides: data.active_overrides
+        }));
+      }
+      if (data?.recent_actions) {
+        setEvents(data.recent_actions);
+      }
       setShowOverrideModal(false);
+      setActiveSideTab('events');
       fetchStatus();
     } catch (err) {
       console.error('Override action error:', err);
     }
+  };
+
+  // Human-formatted AI / Dispatcher Event Card Renderer (NO raw JSON)
+  const renderEventCard = (ev, idx) => {
+    let rawMsg = ev.details || ev.message;
+    if (typeof rawMsg === 'object' && rawMsg !== null) {
+      rawMsg = rawMsg.details || rawMsg.message || rawMsg.desc || JSON.stringify(rawMsg);
+    }
+    let cleanText = String(rawMsg || '');
+    if (cleanText.startsWith('{') && cleanText.endsWith('}')) {
+      try {
+        const parsed = JSON.parse(cleanText.replace(/'/g, '"'));
+        cleanText = parsed.details || parsed.message || parsed.desc || `${parsed.type || 'Dispatch decision'}`;
+      } catch {
+        const match = cleanText.match(/'(?:details|desc)':\s*'([^']+)'/);
+        if (match) cleanText = match[1];
+      }
+    }
+
+    const typeStr = String(ev.action_type || ev.type || 'DISPATCH_ACTION').toLowerCase();
+    const vid = ev.vehicle_id || ev.vid || '';
+
+    let severity = ev.severity || 'info';
+    let icon = <CheckCircle2 size={14} />;
+    let badgeLabel = ev.title || 'DISPATCH EVENT';
+
+    if (typeStr.includes('disruption') || typeStr.includes('incident') || typeStr.includes('stall') || typeStr.includes('blockage') || severity === 'danger') {
+      severity = 'danger';
+      icon = <AlertTriangle size={14} />;
+      badgeLabel = ev.title || 'DISRUPTION INCIDENT';
+    } else if (typeStr.includes('manual') || typeStr.includes('override') || severity === 'purple') {
+      severity = 'purple';
+      icon = <Sliders size={14} />;
+      badgeLabel = ev.title || 'OPERATOR OVERRIDE';
+    } else if (typeStr.includes('reroute') || typeStr.includes('reassigned') || typeStr.includes('divert') || typeStr.includes('switch')) {
+      severity = 'cyan';
+      icon = <GitFork size={14} />;
+      badgeLabel = ev.title || 'AI REROUTE ADVISORY';
+    } else if (typeStr.includes('hold') || typeStr.includes('delay') || severity === 'warning' || severity === 'amber') {
+      severity = 'amber';
+      icon = <Clock size={14} />;
+      badgeLabel = ev.title || 'HEADWAY HOLD';
+    } else if (typeStr.includes('speed') || typeStr.includes('bypass')) {
+      severity = 'emerald';
+      icon = <Zap size={14} />;
+      badgeLabel = ev.title || 'SPEED PROFILING';
+    } else if (typeStr.includes('headway') || typeStr.includes('nominal') || typeStr.includes('lock')) {
+      severity = 'emerald';
+      icon = <ShieldCheck size={14} />;
+      badgeLabel = ev.title || 'HEADWAY LOCK';
+    }
+
+    const timeStr = ev.timestamp || ev.time_formatted || '06:00:00';
+    const modelStr = ev.dispatcher_model || simStatus.current_model || 'Centralized PPO';
+
+    return (
+      <div key={ev.id || idx} className={`event-card event-card-${severity}`}>
+        <div className="event-card-header">
+          <div className="event-card-badge-row">
+            <span className={`event-category-badge badge-${severity}`}>
+              {icon}
+              <span>{badgeLabel}</span>
+            </span>
+            {vid && vid !== 'Fleet' && vid !== 'Infrastructure' && vid !== 'Network' && vid !== 'Signals' && (
+              <span className="event-train-tag">#{vid}</span>
+            )}
+          </div>
+          <span className="event-time-pill">{timeStr}</span>
+        </div>
+
+        <p className="event-card-body">{cleanText || 'Nominal headway synchronization verified.'}</p>
+
+        <div className="event-card-footer">
+          <span className="event-model-tag">
+            {severity === 'purple' ? '👤 ' : '🤖 '}
+            {modelStr.replace(/_/g, ' ')}
+          </span>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -1207,7 +1563,7 @@ export default function SimulationPage() {
                         setSelectedTrain(t);
                         // Center camera on train
                         if (canvasRef.current && geometry && geometry.bounds) {
-                          const [minX, minY, maxX, maxY] = geometry.bounds;
+                          const [, minY, , maxY] = geometry.bounds;
                           const cWidth = canvasRef.current.clientWidth;
                           const cHeight = canvasRef.current.clientHeight;
                           const { scale } = transformRef.current;
@@ -1239,21 +1595,23 @@ export default function SimulationPage() {
           {/* Real-Time Events Tab */}
           {activeSideTab === 'events' && (
             <div className="sidebar-tab-content events-tab-content">
+              <div className="events-header-bar">
+                <div className="events-live-pill">
+                  <span className="live-dot pulse"></span>
+                  <span>AI DECISION STREAM</span>
+                </div>
+                <span className="events-count-pill">{events.length} Actions</span>
+              </div>
+
               {events.length === 0 ? (
                 <div className="empty-events-notice">
-                  <span>Waiting for dispatcher telemetry events...</span>
+                  <Radio size={28} className="empty-events-icon pulse" />
+                  <p>Monitoring dispatcher decision feed...</p>
+                  <span>Routine AI synchronization events and disruption advisories will appear here in real time.</span>
                 </div>
               ) : (
                 <div className="events-scroll-list">
-                  {events.map((ev, idx) => (
-                    <div key={ev.id || idx} className={`event-item event-${ev.severity || 'info'}`}>
-                      <div className="event-item-header">
-                        <span className="event-type">{ev.type || 'DISPATCH_ACTION'}</span>
-                        <span className="event-time">{ev.timestamp || 'Now'}</span>
-                      </div>
-                      <p className="event-msg">{ev.message || JSON.stringify(ev)}</p>
-                    </div>
-                  ))}
+                  {events.map((ev, idx) => renderEventCard(ev, idx))}
                 </div>
               )}
             </div>
@@ -1302,28 +1660,85 @@ export default function SimulationPage() {
 
               {disruptionForm.mode === 'train_delay' && (
                 <div className="form-group">
-                  <label>Target Train ID (Optional):</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. HS-Rake-01" 
+                  <label>Target Train:</label>
+                  <select 
                     value={disruptionForm.vehicle_id}
                     onChange={(e) => setDisruptionForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
-                    className="modal-input"
-                  />
+                    className="modal-select"
+                  >
+                    <option value="">-- Auto-select leading train --</option>
+                    {filteredTrains.map(t => (
+                      <option key={t.id} value={t.id}>
+                        #{t.train_number || t.id} ({t.category} • {Math.round(t.speed_kmh || (t.speed || 0) * 3.6)} km/h)
+                      </option>
+                    ))}
+                  </select>
                 </div>
               )}
 
               {disruptionForm.mode === 'platform_blockage' && (
                 <div className="form-group">
-                  <label>Platform Track ID (Optional):</label>
-                  <input 
-                    type="text" 
-                    placeholder="e.g. City_1_plat_1_fw_0" 
+                  <label>Target Station & Platform Track:</label>
+                  <select 
                     value={disruptionForm.platform_id}
                     onChange={(e) => setDisruptionForm(prev => ({ ...prev, platform_id: e.target.value }))}
-                    className="modal-input"
-                  />
+                    className="modal-select"
+                  >
+                    <option value="">-- City 1 Central (Track 1) --</option>
+                    {geometry?.stations?.map(st => (
+                      <optgroup key={st.station_name} label={st.display_name || st.station_name}>
+                        <option value={st.station_name}>
+                          {st.display_name} - All Platforms
+                        </option>
+                        {st.platforms?.map(p => (
+                          <option key={p.platform_id} value={p.platform_id}>
+                            {st.display_name} - Track {p.track} ({p.direction.toUpperCase()})
+                          </option>
+                        ))}
+                      </optgroup>
+                    ))}
+                  </select>
                 </div>
+              )}
+
+              {disruptionForm.mode === 'compound_failure' && (
+                <>
+                  <div className="form-group">
+                    <label>Target Train (Breakdown):</label>
+                    <select 
+                      value={disruptionForm.vehicle_id}
+                      onChange={(e) => setDisruptionForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
+                      className="modal-select"
+                    >
+                      <option value="">-- Auto-select leading train --</option>
+                      {filteredTrains.map(t => (
+                        <option key={t.id} value={t.id}>
+                          #{t.train_number || t.id} ({t.category})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="form-group">
+                    <label>Target Station & Track (Closure):</label>
+                    <select 
+                      value={disruptionForm.platform_id}
+                      onChange={(e) => setDisruptionForm(prev => ({ ...prev, platform_id: e.target.value }))}
+                      className="modal-select"
+                    >
+                      <option value="">-- City 1 Central (Track 1) --</option>
+                      {geometry?.stations?.map(st => (
+                        <optgroup key={st.station_name} label={st.display_name || st.station_name}>
+                          <option value={st.station_name}>{st.display_name} - All Tracks</option>
+                          {st.platforms?.map(p => (
+                            <option key={p.platform_id} value={p.platform_id}>
+                              {st.display_name} - Track {p.track} ({p.direction.toUpperCase()})
+                            </option>
+                          ))}
+                        </optgroup>
+                      ))}
+                    </select>
+                  </div>
+                </>
               )}
 
               <div className="modal-actions">
@@ -1353,15 +1768,20 @@ export default function SimulationPage() {
 
             <form onSubmit={handleApplyOverride} className="modal-form">
               <div className="form-group">
-                <label>Target Train ID:</label>
-                <input 
-                  type="text" 
+                <label>Target Train:</label>
+                <select 
                   required
-                  placeholder="e.g. REG-C1-01" 
                   value={overrideForm.vehicle_id}
                   onChange={(e) => setOverrideForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
-                  className="modal-input"
-                />
+                  className="modal-select"
+                >
+                  <option value="">-- Select train to override --</option>
+                  {filteredTrains.map(t => (
+                    <option key={t.id} value={t.id}>
+                      #{t.train_number || t.id} ({t.category} • {Math.round(t.speed_kmh || (t.speed || 0) * 3.6)} km/h)
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="form-group">

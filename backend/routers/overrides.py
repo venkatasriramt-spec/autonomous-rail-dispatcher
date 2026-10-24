@@ -30,7 +30,8 @@ async def apply_manual_override(req: ManualOverrideRequest):
         "success": success,
         "vehicle_id": req.vehicle_id,
         "override_type": req.override_type,
-        "recent_actions": sim_manager.recent_actions[:10]
+        "active_overrides": sim_manager.active_overrides,
+        "recent_actions": sim_manager.recent_actions[:15]
     }
 
 

@@ -29,7 +29,10 @@ def inject_disruption(req: DisruptionRequest):
     return {
         "success": success,
         "mode": req.mode,
-        "active_disruptions": sim_manager.active_disruptions
+        "message": "Disruption applied successfully." if success else "Failed to inject disruption into simulation environment.",
+        "active_disruptions": sim_manager.active_disruptions,
+        "active_disruptions_data": sim_manager.active_disruptions_data,
+        "recent_actions": sim_manager.recent_actions[:15]
     }
 
 
@@ -47,5 +50,6 @@ def clear_all_disruptions():
 async def get_active_disruptions():
     """Returns currently active perturbations."""
     return {
-        "active_disruptions": sim_manager.active_disruptions
+        "active_disruptions": sim_manager.active_disruptions,
+        "active_disruptions_data": sim_manager.active_disruptions_data
     }

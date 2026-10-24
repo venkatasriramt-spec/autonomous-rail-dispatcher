@@ -4,15 +4,12 @@ import {
   Play, 
   Search, 
   Activity, 
-  ShieldCheck, 
   Cpu, 
   Zap, 
-  GitBranch, 
   Clock, 
   TrendingUp, 
   ArrowRight, 
   CheckCircle2, 
-  Radio, 
   BarChart3, 
   Layers,
   Sparkles
@@ -48,7 +45,7 @@ export default function HomePage() {
             }));
           }
         }
-      } catch (err) {
+      } catch {
         // Backend offline or reconnecting
       }
     };

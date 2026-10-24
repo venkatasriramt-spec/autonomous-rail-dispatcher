@@ -1,7 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Train, Cpu, ShieldCheck, ExternalLink, Heart, Award, ArrowUpRight } from 'lucide-react';
+import { Train, ShieldCheck, Award, ArrowUpRight } from 'lucide-react';
 import './Footer.css';
+
+const CURRENT_YEAR = new Date().getFullYear();
 
 function GithubIcon({ size = 16, className = "" }) {
   return (
@@ -141,7 +143,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="footer-bottom-bar">
           <div className="footer-copyright">
-            © {new Date().getFullYear()} Autonomous Rail Traffic Management System. Released for Academic & Research Excellence.
+            © {CURRENT_YEAR} Autonomous Rail Traffic Management System. Released for Academic & Research Excellence.
           </div>
           <div className="footer-bottom-badges">
             <span className="safety-badge">
