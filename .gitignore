@@ -63,6 +63,9 @@ trains/sumo_config/days/
 *.jpeg
 *.svg
 *.pdf
+!dispatcher/logs/visual_proofs/*.png
+!frontend/public/**
+!frontend/src/assets/**
 
 # Testing & coverage
 .tox/

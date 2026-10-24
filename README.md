@@ -151,24 +151,24 @@ The monorepo is organized into five isolated yet tightly integrated subsystems:
 
 ### D. Production FastAPI & WebSocket Simulation Server (`backend/`)
 - **Microscopic TraCI Bridge:** Thread-safe simulation manager orchestrating live Eclipse SUMO execution, step throttling, variable speed multipliers (1x–20x), and dual-mode runtime (`LIVE_SUMO` and zero-dependency `DEMO_REPLAY`).
-- **Unified Dispatcher Bridge:** Polymorphic loader and execution wrapper supporting all 8 AI, heuristic, and baseline dispatcher models with seamless in-flight switching.
+- **Unified Dispatcher Bridge:** Polymorphic loader supporting all 8 AI, heuristic, and baseline dispatcher models with seamless in-flight switching and shorthand aliasing (`MODEL_ALIASES`).
 - **2D Vector Track Geometry:** Microscopic XML parser extracting 776 track lanes with curvature coordinates, physical speed limits, and functional categories, pre-cached for sub-millisecond retrieval.
-- **High-Frequency WebSocket Telemetry:** Broadcasts 4 Hz real-time vehicle vectors, platform occupancies, recent dispatcher decisions, and simulation KPIs at `/ws/telemetry`.
+- **High-Frequency WebSocket & REST Telemetry:** Broadcasts 4 Hz real-time vehicle vectors, platform occupancies, recent dispatcher decisions, and simulation KPIs at `/ws/telemetry` alongside a dedicated `/api/sim/telemetry` snapshot endpoint.
 - **Relational Timetable Engine:** High-performance read-only SQLite queries serving the 242-run timetable, 31-rake roster, station schedule boards with multi-level platform aggregation, and 7 rolling stock specifications.
-- **Human-in-the-Loop & Perturbation Injection:** REST endpoints for injecting mechanical breakdowns, track closures, and manual platform/hold overrides.
+- **Human-in-the-Loop & Perturbation Injection:** REST endpoints for injecting mechanical breakdowns, platform track closures, fleet surge dwell jitter, compound failures, and manual platform/hold overrides with structured event logging and auto-target resolution.
 - *For detailed backend documentation, see [backend/README.md](backend/README.md).*
 
 ### E. Modern Web UI & Simulation Dashboard (`frontend/`)
 - **Interactive Full-Stack Architecture:** Built with React 19 and Vite 8, featuring 4 fully functional pages:
-  - **Overview Home (`/`):** Project blueprint, headline KPIs (776 lanes, 18 stations, 99.4% punctuality, 242 services), subsystem feature cards, quick launcher, and academic contributor attributions.
-  - **Real-Time Simulation (`/simulation`):** High-frequency 60 FPS Canvas 2D vector track renderer, live WebSocket telemetry bridge (`/ws/telemetry`), 8-model dispatcher AI selector, calendar day switcher, interactive speed multipliers (1x–20x), disruption injection modal, and manual human-in-the-loop dispatch override panel.
+  - **Overview Home (`/`):** Project blueprint, headline KPIs (776 lanes, 18 stations, 99.4% punctuality, 242 services), subsystem feature cards, quick launcher, direct benchmark deep-links, and academic contributor attributions.
+  - **Real-Time Simulation (`/simulation`):** High-frequency 60 FPS Canvas 2D vector track renderer with automatic bounds auto-centering, live WebSocket telemetry bridge (`/ws/telemetry`), real-time train filtering (Category, Delay, Search), operational time jumps (Dawn, Peak, Midday, Rush), 8-model dispatcher AI selector, calendar day switcher, de-jittered optimistic speed slider (1x–20x), dropdown incident injection modal (including compound failures), executive AI decision stream with severity badges, and manual human-in-the-loop dispatch override panel.
   - **Railway Fleet & Timetable Explorer (`/query`):** Diagnostic railway intelligence console featuring 4 interactive views:
-    1. *Services Directory:* 242 scheduled train runs with intermediate stops and client-side pagination (15/25/50/all per page).
-    2. *Station Schedule Board:* 18-station chronological movements with multi-level platform aggregation (`City_3`, `Town_8`) and pagination.
-    3. *Physical Rakes Roster:* 31 continuous physical rakes with stabling facilities and pagination.
+    1. *Services Directory:* 242 scheduled train runs with intermediate stops, advanced multi-field bidirectional sorting, and client-side pagination (15/25/50/all per page).
+    2. *Station Schedule Board:* 18-station chronological movements with multi-level platform aggregation (`City_3`, `Town_8`), day filtering, sorting, and pagination.
+    3. *Physical Rakes Roster:* 31 continuous physical rakes with stabling facilities, sorting, and pagination.
     4. *Rolling Stock Specifications:* Full engineering parameters for all 7 consist models.
-  - **System Architecture & Metrics Blueprint (`/about`):** Detailed formalization of the Markov Decision Process (MDP state space $S_t \in \mathbb{R}^{28}$, action space $A_t \in \text{MultiDiscrete}([3, 7, 4])$, multi-objective reward $R_t$), authoritative 56-run benchmark analysis, and an **Interactive Diurnal Timeline** with Fritsch-Carlson Monotone Cubic Spline curve interpolation, day/model pill selectors, morning/evening key metrics ribbon, and explanatory narrative cards.
-- **Resilient UI Runtime:** Protected with React Error Boundaries, zero console errors, high-contrast cyber-railway dark design, and reactive telemetry reconnection.
+  - **System Architecture & Metrics Blueprint (`/about`):** Detailed formalization of the Markov Decision Process (MDP state space $S_t \in \mathbb{R}^{28}$, action space $A_t \in \text{MultiDiscrete}([3, 7, 4])$, multi-objective reward $R_t$), **5-Tier Architecture Diagram** with Data & Infrastructure Persistence, deep-link hash anchor navigation (`#benchmark`, etc.), floating CSS tooltips, authoritative 56-run benchmark analysis, and an **Interactive Diurnal Timeline** with Fritsch-Carlson Monotone Cubic Spline curve interpolation, day/model pill selectors, morning/evening key metrics ribbon, and explanatory narrative cards.
+- **Resilient UI Runtime:** Protected with React Error Boundaries, `ScrollToTop` route restoration with reduced motion detection, zero console errors, high-contrast cyber-railway dark design, and reactive telemetry reconnection.
 - *For detailed frontend documentation, see [frontend/README.md](frontend/README.md).*
 
 ### F. Operational Foundations & Track Design Inspirations

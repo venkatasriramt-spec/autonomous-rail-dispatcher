@@ -52,10 +52,11 @@ frontend/
     ├── App.css                   # Global shell styling
     ├── index.css                 # Cyber-railway dark design system tokens & utilities
     ├── components/
-    │   ├── Navbar.jsx            # Top navigation bar with live simulation status badge
-    │   ├── Navbar.css            # Navigation bar layout and glowing indicator styling
-    │   ├── Footer.jsx            # Contributor attribution and academic citations
+    │   ├── Navbar.jsx            # Top navigation bar and route switcher
+    │   ├── Navbar.css            # Navigation bar layout and responsive styling
+    │   ├── Footer.jsx            # Contributor attribution, copyright, and smooth scroll links
     │   ├── Footer.css            # Footer styling and responsive link columns
+    │   ├── ScrollToTop.jsx       # Route change scroll reset and hash anchor deep-linking
     │   └── ErrorBoundary.jsx     # Fallback UI preventing blank-screen render crashes
     └── pages/
         ├── HomePage.jsx          # Overview blueprint, headline KPIs, and subsystem cards
@@ -91,7 +92,14 @@ frontend/
   * Station Platforms (Amber / Yellow)
   * Universal Crossovers (Purple)
   * Storage Yards & Depots (Slate Gray)
-* **Live WebSocket Telemetry Bridge (`/ws/telemetry`):** Streams real-time vehicle vectors at 4 Hz with heading angle, speed, current delay, upcoming station, and active platform halts.
+* **Automatic Canvas Centering:** Network bounds are evaluated on initial load and resize, smoothly fitting and centering the entire track network in the viewport.
+* **Live WebSocket Telemetry Bridge (`/ws/telemetry`):** Streams real-time vehicle vectors at 4 Hz with heading angle, speed, current delay, upcoming station, and active platform halts, with seamless 3-second fallback polling.
+* **Predefined Operational Time Jumps:** Quick-jump buttons to fast-forward simulation time to key timetable waves:
+  * **Dawn (06:00):** Initial morning fleet rollout
+  * **Peak (07:30):** High-density morning commuter rush
+  * **Midday (12:00):** Balanced base clockface traffic
+  * **Rush (17:00):** Evening commuter surge
+* **Real-Time Client-Side Train Filtering:** Instantly filters active trains by rolling stock category (`All`, `HighSpeed`, `Regional`, `Intercity`, `Freight`), delay status (`All`, `On-Time`, `Delayed > 60s`), and text search queries.
 * **Dispatcher AI Model Selector:** Dynamically switch active traffic control in-flight across all 8 supported paradigms:
   1. `Centralized_PPO` (Single-focus actor-critic)
   2. `Hierarchical_Hybrid` (15-min lookahead ensemble)
@@ -102,11 +110,13 @@ frontend/
   7. `FIFO_Heuristic` (First-in, first-out)
   8. `Static_Baseline` (Unmanaged physical baseline)
 * **Calendar Day Switcher:** Toggle operating schedules across all 7 days (`Mon` through `Sun`).
-* **Variable Speed Multiplier:** Smooth simulation speed acceleration from `1x` up to `20x`.
-* **Disruption Injection Modal:** Interactive testing tool allowing operators to inject physical incidents into the live simulation:
+* **De-Jittered Optimistic Speed Slider:** Smooth speed acceleration (`1x` to `20x`) with client-side promise queueing and monotonic request IDs to eliminate rubber-banding from network latency.
+* **Disruption Injection Modal:** Interactive operator tool with active vehicle and platform dropdown selectors, supporting:
   * Mechanical train breakdown / stall
   * Station platform blockage / closure
   * Fleet-wide dwell jitter and commuter surge
+  * Compound multi-point failure scenarios
+* **Executive AI Event Log:** Rich, color-coded event stream with severity badges (`danger`, `warning`, `info`, `purple`, `cyan`, `amber`, `emerald`), humanized incident titles, and automatic periodic 30s AI operational status checks.
 * **Human-in-the-Loop Manual Override:** Dispatcher intervention console to manually reroute trains to alternate platforms, enforce departure holds, or divert consists over bypasses.
 
 ### C. Railway Fleet & Timetable Explorer (`/query`)
@@ -114,26 +124,29 @@ A technical railway engineering and diagnostic console structured into 4 interac
 
 1. **Scheduled Services Directory (242 Runs):**
    * Multi-field search (train number, train name, corridor, origin, destination, service class).
+   * **Advanced Multi-Field Sorting:** Bidirectional sorting by Departure Time, Arrival Time, Train Number, Name, Corridor, Class, Origin, Destination, Distance, and Duration.
    * Expandable intermediate stopping schedules showing scheduled arrival, departure, and dwell durations.
    * Client-side pagination (15, 25, 50, or all items per page) with smart ellipsis navigation (`First`, `Prev`, page buttons, `Next`, `Last`).
 2. **Interactive Station Schedule Board:**
    * Station-centric perspective modeling real-world passenger departure and arrival boards.
    * Dropdown selector covering 24 station query entries with custom aggregation logic for multi-level platforms (`City_3` East-West and North-South viaducts) and passing loops (`Town_8`).
    * Chronological movement events tagged by type: `DEPARTURE`, `ARRIVAL`, or `PASSENGER_HALT`.
-   * Operating calendar day filtering and client-side pagination.
+   * Operating calendar day filtering, multi-field sorting, and client-side pagination.
 3. **Physical Rakes Roster (31 Trainsets):**
    * Rake lifecycle inspection detailing consist type, total daily revenue services, initial rollout facility, and designated overnight stabling track.
-   * Filterable by rolling stock class with client-side pagination.
+   * Filterable by rolling stock class with multi-field sorting and client-side pagination.
 4. **Rolling Stock Engineering Specifications (7 Classes):**
    * Deep technical specifications for all 7 consist models: power supply, track gauge, maximum velocity, carriage count, train length, gross weight, passenger capacity, and civil track permissions.
 
 ### D. System Architecture & Metrics Blueprint (`/about`)
+* **5-Tier System Architecture Diagram:** Expanded visual architecture encompassing the UI layer, API gateway, AI inference engines, microscopic SUMO physics, and a **5th Tier for Data & Infrastructure Persistence** (SQLite database, compiled XML definitions, TraCI socket state, and Redis/session caching).
+* **Deep-Link Hash Anchor Routing:** Seamless deep-linking across sections (e.g., `#architecture`, `#benchmark`, `#diurnal-spline`) with fixed-header scroll offset compensation and `prefers-reduced-motion` detection.
 * **Mathematical Formalization of the MDP:**
   * State space vector $\mathcal{S} \in \mathbb{R}^{28}$ with global context, focus vehicle kinetics, leading train proximity, and 6-platform occupancy matrices.
   * Action space $\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])$ governing route choice, platform allocation, and timetable holds.
   * Multi-objective reward engine $R_t$ incorporating value-of-time priority weights and secondary knock-on penalties.
 * **Authoritative 56-Run Benchmark Audit:**
-  * Side-by-side empirical performance metrics across all 8 models over 11,568 simulated train journeys.
+  * Side-by-side empirical performance metrics across all 8 models over 11,568 simulated train journeys with floating CSS tooltips for metric clarity.
 * **Interactive Diurnal Timeline Visualization:**
   * Displays 24-hour hour-by-hour fleet delay progression.
   * **Fritsch-Carlson Monotone Cubic Spline:** Custom mathematical curve interpolation guaranteeing zero unnatural overshoots/undershoots through hourly telemetry points.

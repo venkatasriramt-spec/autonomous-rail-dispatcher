@@ -110,10 +110,12 @@ Once the server is running, navigate to:
 ## 4. API Endpoints Reference
 
 ### A. Simulation Lifecycle & Controls (`/api/sim`)
-* `GET /api/sim/status`: Returns current status (`STOPPED`, `RUNNING`, `PAUSED`), mode, sim time, active trains count, mean delay, punctuality, and total actions.
-* `POST /api/sim/control`: Sends playback command:
+* `GET /api/sim/status`: Returns current status (`STOPPED`, `RUNNING`, `PAUSED`), mode, sim time, active trains count, mean delay, punctuality, active disruptions, active overrides, and total actions.
+* `GET /api/sim/telemetry`: Complete real-time snapshot alternative to WebSockets. Returns current KPIs, active trains list, platform occupancy, network status, active disruptions metadata, active overrides, and recent action event stream.
+* `POST /api/sim/control`: Sends playback or speed control commands:
   ```json
-  { "action": "play" }   // "play", "pause", "step", "reset"
+  { "action": "play" }   // "play", "pause", "step", "reset", "set_speed"
+  { "action": "set_speed", "speed": 5.0 }
   ```
 * `POST /api/sim/config`: Dynamically updates simulation parameters:
   ```json
@@ -124,7 +126,7 @@ Once the server is running, navigate to:
     "mode": "LIVE_SUMO"
   }
   ```
-* `GET /api/sim/models`: Returns list of all 8 supported AI and heuristic models.
+* `GET /api/sim/models`: Returns list of all 8 supported AI and heuristic models (supports shorthand aliases such as `MAPPO`, `FIFO`, `PPO`, `DQN`, `Hybrid` via `MODEL_ALIASES`).
 * `GET /api/sim/days`: Returns list of all 7 calendar days (`Mon` through `Sun`).
 
 ### B. Live WebSocket Telemetry (`/ws/telemetry`)
@@ -231,16 +233,18 @@ Once the server is running, navigate to:
 * `GET /api/analytics/stress-test`: Multi-scenario disruption stress test results (Phases A & B).
 
 ### F. Perturbations & Human-in-the-Loop (`/api/disruption` & `/api/override`)
-* `POST /api/disruption/inject`: Injects mechanical breakdowns, platform blockages, or dwell jitter:
+* `POST /api/disruption/inject`: Injects mechanical breakdowns, platform closures, fleet surge dwell jitter, or compound failures:
   ```json
   {
-    "mode": "train_delay",
-    "vehicle_id": "REG_C2_02",
+    "mode": "train_delay",            // "train_delay" | "platform_blockage" | "fleet_surge" | "compound_failure"
+    "vehicle_id": "REG_C2_02",        // Optional: auto-resolves to active vehicle if omitted
+    "platform_id": "City_1_plat_1_fw",// Optional: auto-resolves to hub platform if omitted
     "delay_duration_sec": 600.0
   }
   ```
-* `POST /api/disruption/clear`: Clears all active disruptions.
-* `GET /api/disruption/active`: Returns list of currently active injected disruptions and remaining durations.
+  Returns `success` boolean, `mode`, `active_disruptions`, `active_disruptions_data` (structured tracking records with timestamps, auto-expiry, and target entities), `recent_actions` audit log, and confirmation `message`.
+* `POST /api/disruption/clear`: Clears all active perturbations and restores speed limits.
+* `GET /api/disruption/active`: Returns list of currently active injected disruptions, structured metadata, and remaining durations.
 * `POST /api/override/action`: Applies manual operator intervention:
   ```json
   {

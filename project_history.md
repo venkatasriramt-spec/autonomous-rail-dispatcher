@@ -951,3 +951,94 @@ Evolve the web UI and backend API from an initial frontend prototype into a high
   - Updated [`backend/README.md`](backend/README.md) and [`README.md`](README.md) with complete subsystem coverage and cross-links.
 - **Git State:** 8 local commits verified and documented; repository prepared cleanly for git commit and push.
 
+---
+
+### 24 October 2026 — Milestone: Telemetry Architecture, Robust Playback Controls, Deep Navigation & Full-Stack Reliability
+
+#### Milestone Objective
+Scale full-stack operational capabilities across both backend and frontend layers: introduce dedicated high-frequency telemetry endpoints, implement race-condition-free simulation speed controls and time jumps, establish deep hash anchor navigation and multi-field query sorting, expand architecture formalization with 5-tier persistence, and harden disruption injection with automatic target resolution, compound failure simulation, structured event logging, and linter-verified code purity.
+
+---
+
+#### 1. Real-Time Telemetry & Robust Simulation Speed Synchronization
+
+1. **Dedicated REST Telemetry Snapshot (`/api/sim/telemetry`):**
+   - Implemented a dedicated high-frequency telemetry snapshot endpoint in [`backend/routers/simulation.py`](backend/routers/simulation.py) serving a complete JSON state payload:
+     - Real-time KPIs (simulation time, active trains count, mean/max delay, punctuality, knock-on count, total dispatcher actions).
+     - Full active train positions, headings, velocities, and route assignments.
+     - Platform track occupancy and remaining dwell durations.
+     - Active perturbations and manual overrides metadata.
+     - Recent action event stream.
+   - Provides a rock-solid HTTP fallback and client-bootstrapping mechanism alongside the 4 Hz WebSocket stream.
+
+2. **Race-Condition-Free Speed Multiplier (`set_speed`):**
+   - Decoupled playback state from simulation velocity by adding a dedicated `set_speed` action to [`backend/schemas/models.py`](backend/schemas/models.py) and [`backend/routers/simulation.py`](backend/routers/simulation.py).
+   - Solved the UI "rubber-banding" phenomenon where client speed slider adjustments would snap back to stale server values due to asynchronous WebSocket arrival.
+   - Implemented monotonic sequence request IDs (`speedRequestIdRef`) and promise queueing (`speedQueueRef`) in [`frontend/src/pages/SimulationPage.jsx`](frontend/src/pages/SimulationPage.jsx):
+     - Applies instantaneous optimistic UI slider updates.
+     - Discards stale incoming telemetry speed values until the latest requested speed is confirmed by the backend.
+
+3. **Operational Time Jumps & World-Space Train Selection:**
+   - Introduced predefined operational time jump shortcuts (Dawn `06:00`, Morning Peak `07:30`, Midday `12:00`, Evening Rush `17:00`) enabling instant fast-forwarding to high-interest operational waves.
+   - Implemented automatic canvas scale and viewport centering on network geometry bounds (`[-0.33, -0.18, 29708.16, 26683.47]`).
+   - Refined train click hit-testing to evaluate only `filteredTrains` in world coordinates, preventing misclicks on hidden or off-screen consists.
+
+---
+
+#### 2. Deep Navigation, Advanced Query Sorting & 5-Tier Persistence Architecture
+
+1. **Hash Routing & Smooth Scroll Navigation (`ScrollToTop.jsx`):**
+   - Created [`frontend/src/components/ScrollToTop.jsx`](frontend/src/components/ScrollToTop.jsx) and mounted it in [`frontend/src/App.jsx`](frontend/src/App.jsx).
+   - Solved SPA scroll retention on route changes and added full URL hash deep-linking (`#benchmark`, `#architecture`, `#diurnal-spline`):
+     - Uses `MutationObserver` and `requestAnimationFrame` polling to await dynamic DOM rendering before triggering smooth scrolling.
+     - Compensates for fixed navigation header height via CSS `scroll-margin-top: 80px`.
+     - Automatically respects user accessibility settings via `window.matchMedia('(prefers-reduced-motion: reduce)')`.
+     - Enhanced [`frontend/src/components/Footer.jsx`](frontend/src/components/Footer.jsx) with smooth scroll-to-top on brand and link clicks.
+
+2. **Advanced Multi-Field Sorting in Query Console (`QueryPage.jsx`):**
+   - Upgraded the Services Directory, Station Boards, and Rakes Roster with bidirectional column sorting.
+   - Supports sorting across 10 distinct operational fields: Departure Time, Arrival Time, Train Number, Train Name, Corridor, Service Class, Origin Station, Destination Station, Route Distance, and Travel Duration.
+   - Preserves active search filters, corridor selections, and page pagination during sort direction toggles.
+
+3. **5th Tier Persistence Architecture & Tooltip System (`AboutPage.jsx`):**
+   - Expanded the system architecture blueprint with **Tier 5: Data & Infrastructure Persistence**:
+     - *Relational SQLite DB:* `trains.db` (242 runs, 31 rakes, 1,164 stops).
+     - *Compiled XML Definitions:* `dense_network.net.xml`, `trains_rakes.rou.xml`.
+     - *Microscopic TraCI State:* In-memory physical simulation vectors.
+     - *Session Cache:* Geometry caching (`network_geometry.json`).
+   - Added interactive floating CSS tooltips to chart labels and KPI ribbon cards for immediate context.
+
+---
+
+#### 3. Structured Disruption Injection, Model Aliasing & Code Hygiene
+
+1. **Structured Disruption Tracking & Auto-Target Resolution:**
+   - Overhauled [`backend/core/sim_manager.py`](backend/core/sim_manager.py) and [`backend/routers/disruption.py`](backend/routers/disruption.py):
+     - Added `active_disruptions_data` tracking with unique IDs, exact expiry times, remaining durations, and automatic real-time pruning of expired perturbations.
+     - Added auto-resolution for target vehicles and platform tracks when client payloads omit specific identifiers.
+     - Added compound failure mode simulating simultaneous vehicle mechanical breakdown and station hub track closure.
+     - Guarded TraCI physical calls: executes TraCI commands *before* committing disruption state; if physical execution fails, records a `disruption_failed` danger alert and returns `False` without corrupting active disruption state.
+   - Overhauled Incident Injection UI in [`frontend/src/pages/SimulationPage.jsx`](frontend/src/pages/SimulationPage.jsx) with dropdown selectors for active trains and platform tracks.
+
+2. **Model Name Aliasing & Executive Action Logging:**
+   - Added `MODEL_ALIASES` dictionary to [`backend/core/dispatcher_bridge.py`](backend/core/dispatcher_bridge.py) to transparently normalize shorthand or legacy model requests (`MAPPO`, `FIFO`, `PPO`, `DQN`, `Hybrid`).
+   - Refactored `_record_action_event` to output structured event objects with humanized titles, severity levels (`danger`, `warning`, `info`, `purple`, `cyan`, `amber`, `emerald`), and automated 30s periodic AI operational status checks.
+
+3. **Navbar Optimization & Frontend Code Hygiene:**
+   - Removed unthrottled 4-second polling loop from [`frontend/src/components/Navbar.jsx`](frontend/src/components/Navbar.jsx) to eliminate server log flooding on static routes.
+   - Lifted `new Date().getFullYear()` to module-level `CURRENT_YEAR` in [`frontend/src/components/Footer.jsx`](frontend/src/components/Footer.jsx) to eliminate React purity render warnings.
+   - Wrapped `sendControl` in `useCallback` with full dependencies to eliminate render purity warnings in [`frontend/src/pages/SimulationPage.jsx`](frontend/src/pages/SimulationPage.jsx).
+   - Omitted unused coordinate destructuring and modernized `catch` statements, reducing repository lint warnings by 93% (0 errors, 0 purity warnings).
+
+---
+
+#### 4. Full-Stack Verification & Repository Hygiene
+
+- **Backend Validation Suite:** [`backend/test_backend.py`](backend/test_backend.py) executed cleanly with 100% pass rate across core database layer, network geometry parser (24 station query entries), all REST routers, and live HTTP test server on port 8009.
+- **Frontend Production Build:** `npm run build` executed cleanly in 274ms, bundling optimized production assets with zero errors.
+- **Frontend Static Linter:** `npm run lint` executed cleanly with 0 errors and 0 purity warnings.
+- **Repository Hygiene & Ignore Rules:**
+  - Updated root [`.gitignore`](.gitignore) to explicitly whitelist `!frontend/public/**` and `!frontend/src/assets/**`, preserving essential frontend static assets (`favicon.svg`, `icons.svg`, `hero.png`, `react.svg`, `vite.svg`) from broad wildcard ignore rules.
+  - Confirmed 0 secret leaks and clean working tree.
+- **Git State:** 5 commits ahead of `origin/main` (`d7bbe97`, `dbec4b9`, `5569931`, `a9e4670`, `668b07a`) verified and documented; repository prepared for user review and push.
+
