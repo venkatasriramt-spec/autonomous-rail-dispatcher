@@ -21,6 +21,8 @@ import {
   Zap, 
   Calendar,
   ArrowUpDown,
+  ArrowUp,
+  ArrowDown,
   Building2,
   Navigation
 } from 'lucide-react';
@@ -72,7 +74,8 @@ export default function QueryPage() {
   const [selectedDay, setSelectedDay] = useState('ALL');
   const [selectedOrigin, setSelectedOrigin] = useState('ALL');
   const [selectedDest, setSelectedDest] = useState('ALL');
-  const [sortBy, setSortBy] = useState('departure'); // 'departure' | 'train_number' | 'distance' | 'duration'
+  const [sortBy, setSortBy] = useState('departure'); // 'departure' | 'arrival' | 'train_number' | 'train_name' | 'corridor' | 'service_class' | 'origin_station' | 'dest_station' | 'distance' | 'duration'
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' | 'desc'
 
   // Pagination State for Services Directory
   const [currentPage, setCurrentPage] = useState(1);
@@ -88,12 +91,14 @@ export default function QueryPage() {
   const [selectedBoardDay, setSelectedBoardDay] = useState('Mon');
   const [stationBoardData, setStationBoardData] = useState([]);
   const [loadingStationBoard, setLoadingStationBoard] = useState(false);
-  const [stationMoveFilter, setStationMoveFilter] = useState('ALL'); // 'ALL' | 'DEPARTURES' | 'ARRIVALS'
+  const [stationMoveFilter, setStationMoveFilter] = useState('ALL'); // 'ALL' | 'DEPARTURES' | 'ARRIVALS' | 'HALTS'
   const [boardCurrentPage, setBoardCurrentPage] = useState(1);
   const [boardPageSize, setBoardPageSize] = useState(15); // 15 | 25 | 50 | 'all'
 
   // Rakes Filter & Pagination State
   const [rakeTypeFilter, setRakeTypeFilter] = useState('ALL');
+  const [rakeSortBy, setRakeSortBy] = useState('rake_id'); // 'rake_id' | 'type' | 'depot' | 'services'
+  const [rakeSortOrder, setRakeSortOrder] = useState('asc'); // 'asc' | 'desc'
   const [rakeCurrentPage, setRakeCurrentPage] = useState(1);
   const [rakePageSize, setRakePageSize] = useState(12); // 12 | 24 | 'all'
 
@@ -241,22 +246,61 @@ export default function QueryPage() {
 
       return true;
     }).sort((a, b) => {
-      if (sortBy === 'departure') return a.departure_sec - b.departure_sec;
-      if (sortBy === 'train_number') return a.train_number.localeCompare(b.train_number);
-      if (sortBy === 'distance') return (b.total_distance_km || 0) - (a.total_distance_km || 0);
-      if (sortBy === 'duration') {
-        const durA = (a.arrival_sec || 0) - (a.departure_sec || 0);
-        const durB = (b.arrival_sec || 0) - (b.departure_sec || 0);
-        return durA - durB;
+      let comparison = 0;
+      switch (sortBy) {
+        case 'departure':
+          comparison = (a.departure_sec || 0) - (b.departure_sec || 0);
+          break;
+        case 'arrival':
+          comparison = (a.arrival_sec || 0) - (b.arrival_sec || 0);
+          break;
+        case 'corridor':
+          comparison = (a.corridor || '').localeCompare(b.corridor || '');
+          break;
+        case 'service_class':
+          comparison = (a.service_class || '').localeCompare(b.service_class || '');
+          break;
+        case 'origin_station':
+          comparison = (a.origin_station || '').localeCompare(b.origin_station || '');
+          break;
+        case 'dest_station':
+          comparison = (a.dest_station || '').localeCompare(b.dest_station || '');
+          break;
+        case 'train_number':
+          comparison = (a.train_number || '').localeCompare(b.train_number || '', undefined, { numeric: true });
+          break;
+        case 'train_name':
+          comparison = (a.train_name || '').localeCompare(b.train_name || '');
+          break;
+        case 'distance':
+          comparison = (a.total_distance_km || 0) - (b.total_distance_km || 0);
+          break;
+        case 'duration': {
+          const durA = (a.arrival_sec || 0) - (a.departure_sec || 0);
+          const durB = (b.arrival_sec || 0) - (b.departure_sec || 0);
+          comparison = durA - durB;
+          break;
+        }
+        default:
+          comparison = (a.departure_sec || 0) - (b.departure_sec || 0);
       }
-      return 0;
-    });
-  }, [services, searchQuery, selectedCorridor, selectedClass, selectedOrigin, selectedDest, sortBy]);
 
-  // Reset to first page when search or filters change
+      // Consistent tie-breaker
+      if (comparison === 0 && sortBy !== 'departure') {
+        comparison = (a.departure_sec || 0) - (b.departure_sec || 0);
+      }
+      if (comparison === 0) {
+        comparison = (a.train_number || '').localeCompare(b.train_number || '', undefined, { numeric: true });
+      }
+
+      return sortOrder === 'desc' ? -comparison : comparison;
+    });
+  }, [services, searchQuery, selectedCorridor, selectedClass, selectedOrigin, selectedDest, sortBy, sortOrder]);
+
+  // Reset to first page when search, filters, or sort change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedCorridor, selectedClass, selectedOrigin, selectedDest, sortBy, pageSize]);
+  }, [searchQuery, selectedCorridor, selectedClass, selectedOrigin, selectedDest, sortBy, sortOrder, pageSize]);
 
   // Paginated Sliced Services
   const totalPages = useMemo(() => {
@@ -289,10 +333,13 @@ export default function QueryPage() {
     if (!stationBoardData || stationBoardData.length === 0) return [];
     return stationBoardData.filter(m => {
       if (stationMoveFilter === 'DEPARTURES') {
-        return m.movement_type === 'DEPARTURE' || m.movement_type === 'PASSENGER_HALT';
+        return m.movement_type === 'DEPARTURE';
       }
       if (stationMoveFilter === 'ARRIVALS') {
-        return m.movement_type === 'ARRIVAL' || m.movement_type === 'PASSENGER_HALT';
+        return m.movement_type === 'ARRIVAL';
+      }
+      if (stationMoveFilter === 'HALTS') {
+        return m.movement_type === 'PASSENGER_HALT';
       }
       return true;
     });
@@ -301,14 +348,17 @@ export default function QueryPage() {
   const movementCounts = useMemo(() => {
     let deps = 0;
     let arrs = 0;
+    let halts = 0;
     (stationBoardData || []).forEach(m => {
-      if (m.movement_type === 'DEPARTURE' || m.movement_type === 'PASSENGER_HALT') deps++;
-      if (m.movement_type === 'ARRIVAL' || m.movement_type === 'PASSENGER_HALT') arrs++;
+      if (m.movement_type === 'DEPARTURE') deps++;
+      else if (m.movement_type === 'ARRIVAL') arrs++;
+      else if (m.movement_type === 'PASSENGER_HALT') halts++;
     });
     return {
       all: (stationBoardData || []).length,
       departures: deps,
-      arrivals: arrs
+      arrivals: arrs,
+      halts: halts
     };
   }, [stationBoardData]);
 
@@ -344,14 +394,29 @@ export default function QueryPage() {
 
   // 5. Filtered Physical Rakes
   const filteredRakes = useMemo(() => {
-    if (rakeTypeFilter === 'ALL') return rakes;
-    return rakes.filter(r => r.rolling_stock_type === rakeTypeFilter);
-  }, [rakes, rakeTypeFilter]);
+    let list = rakes;
+    if (rakeTypeFilter !== 'ALL') {
+      list = list.filter(r => r.rolling_stock_type === rakeTypeFilter);
+    }
+    return [...list].sort((a, b) => {
+      let comp = 0;
+      if (rakeSortBy === 'rake_id') {
+        comp = (a.rake_id || '').localeCompare(b.rake_id || '', undefined, { numeric: true });
+      } else if (rakeSortBy === 'type') {
+        comp = (a.rolling_stock_type || '').localeCompare(b.rolling_stock_type || '');
+      } else if (rakeSortBy === 'depot') {
+        comp = (a.home_depot || '').localeCompare(b.home_depot || '');
+      } else if (rakeSortBy === 'services') {
+        comp = (a.assigned_services_count || 0) - (b.assigned_services_count || 0);
+      }
+      return rakeSortOrder === 'desc' ? -comp : comp;
+    });
+  }, [rakes, rakeTypeFilter, rakeSortBy, rakeSortOrder]);
 
-  // Reset Rakes page when filter changes
+  // Reset Rakes page when filter or sort changes
   useEffect(() => {
     setRakeCurrentPage(1);
-  }, [rakeTypeFilter, rakePageSize]);
+  }, [rakeTypeFilter, rakeSortBy, rakeSortOrder, rakePageSize]);
 
   // Paginated Sliced Rakes
   const rakeTotalPages = useMemo(() => {
@@ -394,6 +459,17 @@ export default function QueryPage() {
       case 'freight': return 'badge-freight';
       default: return 'badge-default';
     }
+  };
+
+  // Helper to extract platform number directly from track/stop ID (e.g. "City_6_p1_fw" -> "1")
+  const getPlatformNumber = (stopId) => {
+    if (!stopId) return '1';
+    const match = String(stopId).match(/_p(\d+)/i);
+    if (match) return match[1];
+    const pMatch = String(stopId).match(/p(\d+)/i);
+    if (pMatch) return pMatch[1];
+    const digitMatch = String(stopId).match(/\d+/);
+    return digitMatch ? digitMatch[0] : '1';
   };
 
   return (
@@ -551,44 +627,119 @@ export default function QueryPage() {
                     </div>
 
                     {/* Corridor Dropdown */}
-                    <div className="filter-select-group">
+                    <div className="filter-select-group has-quick-sort">
                       <select 
                         value={selectedCorridor} 
                         onChange={(e) => setSelectedCorridor(e.target.value)}
                         className="directory-select"
+                        aria-label="Filter by Corridor"
                       >
                         {CORRIDORS.map(c => (
                           <option key={c.id} value={c.id}>{c.name}</option>
                         ))}
                       </select>
+                      <button
+                        type="button"
+                        className={`filter-quick-sort-btn ${sortBy === 'corridor' ? 'active' : ''}`}
+                        onClick={() => {
+                          if (sortBy === 'corridor') {
+                            setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
+                          } else {
+                            setSortBy('corridor');
+                            setSortOrder('asc');
+                          }
+                        }}
+                        title={sortBy === 'corridor' 
+                          ? `Sorted by Corridor (${sortOrder.toUpperCase()}). Click to toggle order.` 
+                          : 'Sort by Corridor'}
+                        aria-label="Sort by Corridor"
+                      >
+                        {sortBy === 'corridor' ? (sortOrder === 'asc' ? <ArrowUp size={13} /> : <ArrowDown size={13} />) : <ArrowUpDown size={13} />}
+                      </button>
                     </div>
 
                     {/* Service Class Dropdown */}
-                    <div className="filter-select-group">
+                    <div className="filter-select-group has-quick-sort">
                       <select 
                         value={selectedClass} 
                         onChange={(e) => setSelectedClass(e.target.value)}
                         className="directory-select"
+                        aria-label="Filter by Service Class"
                       >
                         {SERVICE_CLASSES.map(sc => (
                           <option key={sc.id} value={sc.id}>{sc.name}</option>
                         ))}
                       </select>
+                      <button
+                        type="button"
+                        className={`filter-quick-sort-btn ${sortBy === 'service_class' ? 'active' : ''}`}
+                        onClick={() => {
+                          if (sortBy === 'service_class') {
+                            setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
+                          } else {
+                            setSortBy('service_class');
+                            setSortOrder('asc');
+                          }
+                        }}
+                        title={sortBy === 'service_class' 
+                          ? `Sorted by Service Class (${sortOrder.toUpperCase()}). Click to toggle order.` 
+                          : 'Sort by Service Class'}
+                        aria-label="Sort by Service Class"
+                      >
+                        {sortBy === 'service_class' ? (sortOrder === 'asc' ? <ArrowUp size={13} /> : <ArrowDown size={13} />) : <ArrowUpDown size={13} />}
+                      </button>
                     </div>
 
-                    {/* Sort Selector */}
-                    <div className="filter-select-group sort-group">
-                      <ArrowUpDown size={15} className="sort-icon" />
-                      <select 
-                        value={sortBy} 
-                        onChange={(e) => setSortBy(e.target.value)}
-                        className="directory-select"
-                      >
-                        <option value="departure">Sort: Departure Time</option>
-                        <option value="train_number">Sort: Train Number</option>
-                        <option value="distance">Sort: Total Distance</option>
-                        <option value="duration">Sort: Travel Duration</option>
-                      </select>
+                    {/* Sort Selector & ASC/DESC Toggle */}
+                    <div className="filter-sort-controls">
+                      <div className="filter-select-group sort-group">
+                        <ArrowUpDown size={15} className="sort-icon" />
+                        <select 
+                          value={sortBy} 
+                          onChange={(e) => setSortBy(e.target.value)}
+                          className="directory-select directory-sort-select"
+                          aria-label="Sort by attribute"
+                        >
+                          <optgroup label="Filter Attributes">
+                            <option value="corridor">Sort: Corridor</option>
+                            <option value="service_class">Sort: Service Class</option>
+                            <option value="origin_station">Sort: Origin Station</option>
+                            <option value="dest_station">Sort: Destination Station</option>
+                          </optgroup>
+                          <optgroup label="Schedule & Fleet Metrics">
+                            <option value="departure">Sort: Departure Time</option>
+                            <option value="arrival">Sort: Arrival Time</option>
+                            <option value="duration">Sort: Travel Duration</option>
+                            <option value="distance">Sort: Total Distance</option>
+                            <option value="train_number">Sort: Train Number</option>
+                            <option value="train_name">Sort: Train Name</option>
+                          </optgroup>
+                        </select>
+                      </div>
+
+                      {/* Ascending / Descending Toggle Buttons */}
+                      <div className="sort-direction-toggle" role="group" aria-label="Sort Order">
+                        <button
+                          type="button"
+                          className={`btn-sort-dir ${sortOrder === 'asc' ? 'active' : ''}`}
+                          onClick={() => setSortOrder('asc')}
+                          title="Sort in Ascending Order (A→Z, Lowest First, Earliest First)"
+                          aria-label="Ascending order"
+                        >
+                          <ArrowUp size={13} />
+                          <span>ASC</span>
+                        </button>
+                        <button
+                          type="button"
+                          className={`btn-sort-dir ${sortOrder === 'desc' ? 'active' : ''}`}
+                          onClick={() => setSortOrder('desc')}
+                          title="Sort in Descending Order (Z→A, Highest First, Latest First)"
+                          aria-label="Descending order"
+                        >
+                          <ArrowDown size={13} />
+                          <span>DESC</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
 
@@ -607,6 +758,25 @@ export default function QueryPage() {
                             <option key={st} value={st}>{st}</option>
                           ))}
                         </select>
+                        <button
+                          type="button"
+                          className={`filter-quick-sort-btn sm ${sortBy === 'origin_station' ? 'active' : ''}`}
+                          onClick={() => {
+                            if (sortBy === 'origin_station') {
+                              setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setSortBy('origin_station');
+                              setSortOrder('asc');
+                            }
+                          }}
+                          title={sortBy === 'origin_station' 
+                            ? `Sorted by Origin Station (${sortOrder.toUpperCase()}). Click to toggle order.` 
+                            : 'Sort by Origin Station'}
+                          aria-label="Sort by Origin Station"
+                        >
+                          {sortBy === 'origin_station' ? (sortOrder === 'asc' ? <ArrowUp size={12} /> : <ArrowDown size={12} />) : <ArrowUpDown size={12} />}
+                          <span>Sort</span>
+                        </button>
                       </div>
 
                       <div className="station-select-box">
@@ -621,14 +791,52 @@ export default function QueryPage() {
                             <option key={st} value={st}>{st}</option>
                           ))}
                         </select>
+                        <button
+                          type="button"
+                          className={`filter-quick-sort-btn sm ${sortBy === 'dest_station' ? 'active' : ''}`}
+                          onClick={() => {
+                            if (sortBy === 'dest_station') {
+                              setSortOrder(o => o === 'asc' ? 'desc' : 'asc');
+                            } else {
+                              setSortBy('dest_station');
+                              setSortOrder('asc');
+                            }
+                          }}
+                          title={sortBy === 'dest_station' 
+                            ? `Sorted by Destination Station (${sortOrder.toUpperCase()}). Click to toggle order.` 
+                            : 'Sort by Destination Station'}
+                          aria-label="Sort by Destination Station"
+                        >
+                          {sortBy === 'dest_station' ? (sortOrder === 'asc' ? <ArrowUp size={12} /> : <ArrowDown size={12} />) : <ArrowUpDown size={12} />}
+                          <span>Sort</span>
+                        </button>
                       </div>
                     </div>
 
                     <div className="filter-actions-right">
+                      <span className="active-sort-indicator">
+                        <ArrowUpDown size={12} />
+                        <span>
+                          Sorted by <strong>{
+                            sortBy === 'corridor' ? 'Corridor' :
+                            sortBy === 'service_class' ? 'Service Class' :
+                            sortBy === 'origin_station' ? 'Origin' :
+                            sortBy === 'dest_station' ? 'Destination' :
+                            sortBy === 'departure' ? 'Departure Time' :
+                            sortBy === 'arrival' ? 'Arrival Time' :
+                            sortBy === 'train_number' ? 'Train #' :
+                            sortBy === 'train_name' ? 'Train Name' :
+                            sortBy === 'distance' ? 'Distance' :
+                            sortBy === 'duration' ? 'Duration' : sortBy
+                          }</strong> ({sortOrder.toUpperCase()})
+                        </span>
+                      </span>
+
                       <span className="results-counter">
                         Showing <strong>{filteredServices.length}</strong> of {services.length} services
                       </span>
-                      {(searchQuery || selectedCorridor !== 'ALL' || selectedClass !== 'ALL' || selectedOrigin !== 'ALL' || selectedDest !== 'ALL') && (
+
+                      {(searchQuery || selectedCorridor !== 'ALL' || selectedClass !== 'ALL' || selectedOrigin !== 'ALL' || selectedDest !== 'ALL' || sortBy !== 'departure' || sortOrder !== 'asc') && (
                         <button 
                           type="button"
                           className="btn-reset-filters"
@@ -638,6 +846,8 @@ export default function QueryPage() {
                             setSelectedClass('ALL');
                             setSelectedOrigin('ALL');
                             setSelectedDest('ALL');
+                            setSortBy('departure');
+                            setSortOrder('asc');
                           }}
                         >
                           <RotateCcw size={14} />
@@ -756,7 +966,7 @@ export default function QueryPage() {
                                       <tr>
                                         <th>#</th>
                                         <th>Station Node</th>
-                                        <th>Platform Track</th>
+                                        <th>Platform</th>
                                         <th>Scheduled Arrival</th>
                                         <th>Scheduled Departure</th>
                                         <th>Calibrated Dwell</th>
@@ -770,7 +980,9 @@ export default function QueryPage() {
                                             <strong>{stop.station}</strong>
                                           </td>
                                           <td className="stop-track-col">
-                                            <code>{stop.train_stop_id}</code>
+                                            <span className="platform-badge" title={`Internal Track: ${stop.train_stop_id || 'N/A'}`}>
+                                              {getPlatformNumber(stop.train_stop_id)}
+                                            </span>
                                           </td>
                                           <td className="stop-time-col">{stop.arrival_time || '--'}</td>
                                           <td className="stop-time-col">{stop.departure_time || '--'}</td>
@@ -992,14 +1204,21 @@ export default function QueryPage() {
                       className={`btn-toggle-move ${stationMoveFilter === 'DEPARTURES' ? 'active' : ''}`}
                       onClick={() => setStationMoveFilter('DEPARTURES')}
                     >
-                      Departures & Stops ({movementCounts.departures})
+                      Origin Departures ({movementCounts.departures})
                     </button>
                     <button
                       type="button"
                       className={`btn-toggle-move ${stationMoveFilter === 'ARRIVALS' ? 'active' : ''}`}
                       onClick={() => setStationMoveFilter('ARRIVALS')}
                     >
-                      Arrivals & Stops ({movementCounts.arrivals})
+                      Terminus Arrivals ({movementCounts.arrivals})
+                    </button>
+                    <button
+                      type="button"
+                      className={`btn-toggle-move ${stationMoveFilter === 'HALTS' ? 'active' : ''}`}
+                      onClick={() => setStationMoveFilter('HALTS')}
+                    >
+                      Passenger Halts ({movementCounts.halts})
                     </button>
                   </div>
                 </div>
@@ -1047,8 +1266,7 @@ export default function QueryPage() {
                             <th>Type</th>
                             <th>Train #</th>
                             <th>Service Name</th>
-                            <th>Destination / Route</th>
-                            <th>Platform Track</th>
+                            <th>Platform</th>
                             <th>Dwell</th>
                             <th>Class</th>
                             <th>Assigned Rake</th>
@@ -1086,11 +1304,10 @@ export default function QueryPage() {
                                   <span className="board-subcorridor">{move.corridor.replace('_', ' ')}</span>
                                 )}
                               </td>
-                              <td className="board-bound-cell">
-                                <span className="bound-tag">{move.bound}</span>
-                              </td>
                               <td className="board-track-cell">
-                                <code>{move.train_stop_id}</code>
+                                <span className="platform-badge" title={`Internal Track: ${move.train_stop_id || 'N/A'}`}>
+                                  {getPlatformNumber(move.train_stop_id)}
+                                </span>
                               </td>
                               <td className="board-dwell-cell">
                                 {move.movement_type === 'PASSENGER_HALT' ? (
@@ -1237,18 +1454,56 @@ export default function QueryPage() {
                     </p>
                   </div>
 
-                  <div className="roster-filter-box">
-                    <label>Filter Consist Model:</label>
-                    <select 
-                      value={rakeTypeFilter} 
-                      onChange={(e) => setRakeTypeFilter(e.target.value)}
-                      className="directory-select"
-                    >
-                      <option value="ALL">All 7 Consist Types ({rakes.length})</option>
-                      {rollingStock.map(rs => (
-                        <option key={rs.type_id} value={rs.type_id}>{rs.name}</option>
-                      ))}
-                    </select>
+                  <div className="roster-filter-controls">
+                    <div className="roster-filter-box">
+                      <label>Filter Consist Model:</label>
+                      <select 
+                        value={rakeTypeFilter} 
+                        onChange={(e) => setRakeTypeFilter(e.target.value)}
+                        className="directory-select"
+                      >
+                        <option value="ALL">All 7 Consist Types ({rakes.length})</option>
+                        {rollingStock.map(rs => (
+                          <option key={rs.type_id} value={rs.type_id}>{rs.name}</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div className="roster-sort-box">
+                      <label>Sort Fleet:</label>
+                      <div className="filter-sort-controls">
+                        <select 
+                          value={rakeSortBy} 
+                          onChange={(e) => setRakeSortBy(e.target.value)}
+                          className="directory-select directory-sort-select"
+                        >
+                          <option value="rake_id">Sort: Rake ID</option>
+                          <option value="type">Sort: Consist Model (Filter)</option>
+                          <option value="services">Sort: Daily Service Count</option>
+                          <option value="depot">Sort: Home Depot</option>
+                        </select>
+                        <div className="sort-direction-toggle" role="group" aria-label="Rake Sort Order">
+                          <button
+                            type="button"
+                            className={`btn-sort-dir ${rakeSortOrder === 'asc' ? 'active' : ''}`}
+                            onClick={() => setRakeSortOrder('asc')}
+                            title="Sort in Ascending Order"
+                          >
+                            <ArrowUp size={13} />
+                            <span>ASC</span>
+                          </button>
+                          <button
+                            type="button"
+                            className={`btn-sort-dir ${rakeSortOrder === 'desc' ? 'active' : ''}`}
+                            onClick={() => setRakeSortOrder('desc')}
+                            title="Sort in Descending Order"
+                          >
+                            <ArrowDown size={13} />
+                            <span>DESC</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 

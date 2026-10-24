@@ -50,6 +50,7 @@
 /* Sections */
 .about-section {
   padding: 3rem 0;
+  scroll-margin-top: 80px;
 }
 
 .section-header-left {
@@ -64,6 +65,7 @@
   color: #ffffff;
   letter-spacing: -0.02em;
   margin-bottom: 0.75rem;
+  scroll-margin-top: 88px;
 }
 
 .section-lead-text {
@@ -314,9 +316,17 @@
   margin-bottom: 2rem;
 }
 
-@media (max-width: 500px) {
+@media (max-width: 540px) {
   .benchmark-charts-grid {
     grid-template-columns: 1fr;
+  }
+  .chart-card {
+    padding: 1.25rem;
+  }
+  .chart-row-label {
+    width: 145px;
+    min-width: 145px;
+    font-size: 0.74rem;
   }
 }
 
@@ -357,18 +367,97 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  position: relative;
 }
 
 .chart-row-label {
-  width: 140px;
-  font-size: 0.8rem;
+  width: 175px;
+  min-width: 175px;
+  font-size: 0.82rem;
   font-weight: 600;
   color: #cbd5e1;
   text-align: right;
   flex-shrink: 0;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  position: relative;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.chart-row-label:hover {
+  color: #ffffff;
+}
+
+.chart-row-label .label-text {
+  display: inline-block;
+  max-width: 100%;
+  white-space: nowrap;
+}
+
+/* Polished Floating Hover Tooltip */
+.chart-label-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  background: rgba(10, 15, 29, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.75), 0 0 14px rgba(56, 189, 248, 0.2);
+  color: #ffffff;
+  padding: 0.45rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(4px);
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1), transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.2s;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  text-align: left;
+}
+
+.chart-label-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  right: 20px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: rgba(10, 15, 29, 0.96) transparent transparent transparent;
+}
+
+.chart-row:first-child .chart-label-tooltip {
+  bottom: auto;
+  top: calc(100% + 8px);
+}
+
+.chart-row:first-child .chart-label-tooltip::after {
+  top: auto;
+  bottom: 100%;
+  border-color: transparent transparent rgba(10, 15, 29, 0.96) transparent;
+}
+
+.chart-row-label:hover .chart-label-tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.chart-label-tooltip strong {
+  color: #38bdf8;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.chart-label-tooltip .tooltip-meta {
+  color: #94a3b8;
+  font-size: 0.72rem;
 }
 
 .chart-row-bar-track {

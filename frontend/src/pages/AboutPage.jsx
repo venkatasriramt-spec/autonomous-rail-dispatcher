@@ -445,17 +445,41 @@ export default function AboutPage() {
                   <span>10 Hz Step Rate</span>
                 </div>
               </div>
+
+              <div className="arch-flow-arrow">↓ Schema Deserialization & Relational Timetable Queries ↓</div>
+
+              {/* Layer 5: Data & Infrastructure Persistence */}
+              <div 
+                className={`arch-layer-card ${selectedArchLayer === 5 ? 'selected' : ''}`}
+                onMouseEnter={() => setSelectedArchLayer(5)}
+              >
+                <div className="layer-badge">Tier 5: Data & Infrastructure Persistence</div>
+                <div className="layer-title-row">
+                  <Database size={20} className="layer-icon" />
+                  <h4>Commercial Rail Database & Topology Graph</h4>
+                </div>
+                <p className="layer-desc">
+                  Structured SQLite relational database backing 1,446 weekly commercial passenger services, 
+                  station timetable schedules, rake consist rosters, and XML-compiled macroscopic track network topology.
+                </p>
+                <div className="layer-tags">
+                  <span>SQLite 3 (trains.db)</span>
+                  <span>1,446 Weekly Trains</span>
+                  <span>Network XML Topology</span>
+                  <span>JSON Timetable & Rosters</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* 4. Authoritative Evaluation Metrics & Benchmark Graphs */}
-      <section className="about-section">
+      <section className="about-section" id="benchmark-matrix">
         <div className="section-container">
           <div className="section-header-left">
             <span className="section-subtitle">Empirical Validation</span>
-            <h2 className="section-heading">56-Run Benchmark & Diurnal Evaluation</h2>
+            <h2 className="section-heading" id="56-run-benchmark">56-Run Benchmark & Diurnal Evaluation</h2>
             <p className="section-lead-text">
               Rigorous cross-comparison evaluating all 8 dispatching paradigms across 7 operating days (Mon–Sun) 
               under identical microscopic traffic conditions.
@@ -477,8 +501,15 @@ export default function AboutPage() {
               <div className="bar-chart-visual">
                 {modelStats.map((m) => (
                   <div key={m.name} className="chart-row">
-                    <div className="chart-row-label">
-                      <span>{m.name}</span>
+                    <div 
+                      className="chart-row-label"
+                      title={`${m.name} (${m.type})`}
+                    >
+                      <span className="label-text">{m.name}</span>
+                      <span className="chart-label-tooltip">
+                        <strong>{m.name}</strong>
+                        <span className="tooltip-meta">{m.type} • {m.punct}% Punctual</span>
+                      </span>
                     </div>
                     <div className="chart-row-bar-track">
                       <div 
@@ -509,8 +540,15 @@ export default function AboutPage() {
               <div className="bar-chart-visual">
                 {modelStats.map((m) => (
                   <div key={m.name} className="chart-row">
-                    <div className="chart-row-label">
-                      <span>{m.name}</span>
+                    <div 
+                      className="chart-row-label"
+                      title={`${m.name} (${m.type})`}
+                    >
+                      <span className="label-text">{m.name}</span>
+                      <span className="chart-label-tooltip">
+                        <strong>{m.name}</strong>
+                        <span className="tooltip-meta">{m.type} • {m.delay}s Mean Delay</span>
+                      </span>
                     </div>
                     <div className="chart-row-bar-track">
                       <div 

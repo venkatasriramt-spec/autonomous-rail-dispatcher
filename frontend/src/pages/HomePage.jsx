@@ -241,7 +241,7 @@ export default function HomePage() {
                 <span className="section-subtitle">Authoritative Benchmark</span>
                 <h3 className="models-headline">8 Dispatcher Paradigms Cross-Evaluated</h3>
               </div>
-              <Link to="/about" className="btn btn-secondary">
+              <Link to="/about#56-run-benchmark" className="btn btn-secondary">
                 <span>View Full 56-Run Matrix</span>
                 <ArrowRight size={14} />
               </Link>

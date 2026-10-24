@@ -242,11 +242,11 @@
 
 .filter-row-primary {
   display: grid;
-  grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr;
-  gap: 1rem;
+  grid-template-columns: 1.8fr 1.15fr 1.15fr 1.6fr;
+  gap: 0.85rem;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .filter-row-primary {
     grid-template-columns: 1fr 1fr;
   }
@@ -334,6 +334,129 @@
 
 .sort-group .directory-select {
   padding-left: 2.2rem;
+}
+
+.filter-select-group.has-quick-sort {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.filter-select-group.has-quick-sort .directory-select {
+  flex: 1;
+  min-width: 0;
+}
+
+/* Sort controls wrapper in primary filter row */
+.filter-sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.filter-sort-controls .sort-group {
+  flex: 1;
+  min-width: 0;
+}
+
+.directory-sort-select {
+  padding-left: 2.2rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sort-direction-toggle {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(10, 15, 29, 0.95);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 2px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.btn-sort-dir {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-dim);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.45rem 0.65rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.04em;
+  line-height: 1;
+}
+
+.btn-sort-dir:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.btn-sort-dir.active {
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--cyan-primary);
+  border-color: rgba(0, 240, 255, 0.45);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
+}
+
+.filter-quick-sort-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  padding: 0.55rem 0.65rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.filter-quick-sort-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.filter-quick-sort-btn.active {
+  background: rgba(0, 240, 255, 0.18);
+  color: var(--cyan-primary);
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+}
+
+.filter-quick-sort-btn.sm {
+  padding: 0.35rem 0.55rem;
+  font-size: 0.75rem;
+}
+
+.active-sort-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: var(--cyan-primary);
+  font-size: 0.775rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-weight: 500;
+}
+
+.active-sort-indicator strong {
+  color: #ffffff;
 }
 
 /* Secondary Filter Row */
@@ -843,6 +966,8 @@
 
 .movement-toggle-buttons {
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
   gap: 0.5rem;
 }
 
@@ -1051,6 +1176,10 @@
   border: 1px solid rgba(59, 130, 246, 0.2);
 }
 
+.board-track-cell {
+  white-space: nowrap;
+}
+
 .board-track-cell code {
   font-family: var(--font-mono);
   font-size: 0.8rem;
@@ -1058,6 +1187,30 @@
   background: rgba(255, 255, 255, 0.04);
   padding: 0.15rem 0.4rem;
   border-radius: 4px;
+}
+
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 24px;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #38bdf8;
+  background: rgba(56, 189, 248, 0.1);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  padding: 0 0.5rem;
+  border-radius: 5px;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+}
+
+.platform-badge:hover {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.25);
 }
 
 .rake-pill {
@@ -1099,15 +1252,25 @@
   max-width: 650px;
 }
 
-.roster-filter-box {
+.roster-filter-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.roster-filter-box,
+.roster-sort-box {
   display: flex;
   align-items: center;
   gap: 0.75rem;
 }
 
-.roster-filter-box label {
+.roster-filter-box label,
+.roster-sort-box label {
   font-size: 0.85rem;
   color: var(--text-dim);
+  white-space: nowrap;
 }
 
 .rakes-cards-grid {
