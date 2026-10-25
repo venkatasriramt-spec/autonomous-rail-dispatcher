@@ -30,7 +30,8 @@ import {
   Layers,
   Navigation,
   Flame,
-  Crosshair
+  Crosshair,
+  GripHorizontal
 } from 'lucide-react';
 import './SimulationPage.css';
 
@@ -47,12 +48,7 @@ const MODELS = [
   { id: 'Static_Baseline', label: 'Static Baseline (SUMO Native)' }
 ];
 
-const TIME_JUMPS = [
-  { label: '06:00 Dawn', sec: 21600 },
-  { label: '07:30 Peak', sec: 27000 },
-  { label: '12:00 Midday', sec: 43200 },
-  { label: '17:30 Rush', sec: 63000 }
-];
+
 
 export default function SimulationPage() {
   // Sim state
@@ -93,6 +89,14 @@ export default function SimulationPage() {
   const [delayOnlyFilter, setDelayOnlyFilter] = useState(false);
   const [selectedTrain, setSelectedTrain] = useState(null);
   const [selectedStation, setSelectedStation] = useState(null);
+  const [stationCardPos, setStationCardPos] = useState({ x: 20, y: 145 });
+  const [isDraggingStationCard, setIsDraggingStationCard] = useState(false);
+  const dragCardRef = useRef({ startX: 0, startY: 0, origX: 20, origY: 145 });
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarWidth, setSidebarWidth] = useState(380);
+  const [isResizingSidebar, setIsResizingSidebar] = useState(false);
+  const resizeStartXRef = useRef(0);
+  const resizeStartWidthRef = useRef(380);
   const [showDisruptionModal, setShowDisruptionModal] = useState(false);
   const [showOverrideModal, setShowOverrideModal] = useState(false);
   const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'station' | 'disruptions' | 'events'
@@ -339,6 +343,86 @@ export default function SimulationPage() {
     };
     requestAnimationFrame(animate);
   }, [geometry]);
+
+  // Draggable Station Focus Card Handlers
+  const handleCardPointerDown = useCallback((e) => {
+    if (e.target.closest('button')) return;
+    setIsDraggingStationCard(true);
+    dragCardRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      origX: stationCardPos.x,
+      origY: stationCardPos.y
+    };
+  }, [stationCardPos]);
+
+  useEffect(() => {
+    if (!isDraggingStationCard) return;
+
+    const handlePointerMove = (e) => {
+      const dx = e.clientX - dragCardRef.current.startX;
+      const dy = e.clientY - dragCardRef.current.startY;
+      const cardW = 290;
+      const cardH = 110;
+      const maxX = Math.max(10, window.innerWidth - cardW - 10);
+      const maxY = Math.max(10, window.innerHeight - cardH - 10);
+      const nextX = Math.min(Math.max(10, dragCardRef.current.origX + dx), maxX);
+      const nextY = Math.min(Math.max(10, dragCardRef.current.origY + dy), maxY);
+      setStationCardPos({ x: nextX, y: nextY });
+    };
+
+    const handlePointerUp = () => {
+      setIsDraggingStationCard(false);
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [isDraggingStationCard]);
+
+  // Resizable Right Sidebar Handler (cursor drag to the left/right)
+  const handleResizePointerDown = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizingSidebar(true);
+    resizeStartXRef.current = e.clientX;
+    resizeStartWidthRef.current = sidebarWidth;
+  }, [sidebarWidth]);
+
+  useEffect(() => {
+    if (!isResizingSidebar) return;
+
+    document.body.style.userSelect = 'none';
+    document.body.style.cursor = 'col-resize';
+
+    const handlePointerMove = (e) => {
+      // Dragging cursor to the left (smaller clientX) expands the sidebar width
+      const deltaX = resizeStartXRef.current - e.clientX;
+      const nextW = Math.min(
+        Math.max(260, resizeStartWidthRef.current + deltaX),
+        Math.floor(window.innerWidth * 0.72)
+      );
+      setSidebarWidth(nextW);
+    };
+
+    const handlePointerUp = () => {
+      setIsResizingSidebar(false);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    };
+
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+      document.body.style.userSelect = '';
+      document.body.style.cursor = '';
+    };
+  }, [isResizingSidebar]);
 
   // Smooth animated zoom to a train
   const zoomToTrain = useCallback((t) => {
@@ -2074,7 +2158,43 @@ export default function SimulationPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ action, speed: targetSpeed })
         });
-        if (res.ok && speed !== undefined) {
+        if (action === 'reset') {
+          setSelectedTrain(null);
+          setSelectedStation(null);
+          setSelectedFeature(null);
+          setSelectedDisruption(null);
+          if (res.ok) {
+            const data = await res.json().catch(() => null);
+            const status = data?.current_status || {};
+            setSimStatus(prev => ({
+              ...prev,
+              running: false,
+              paused: false,
+              sim_time_sec: status.sim_time_sec ?? 21600.0,
+              sim_time_formatted: status.time_formatted ?? '06:00:00',
+              active_disruptions: [],
+              active_disruptions_data: [],
+              active_overrides: {}
+            }));
+            setKpis(prev => ({
+              ...prev,
+              avg_delay_sec: 0.0,
+              punctuality_pct: 100.0,
+              active_trains: status.active_trains_count ?? 0
+            }));
+            if (!status.active_trains_count) {
+              setTrains([]);
+            }
+          } else {
+            setSimStatus(prev => ({
+              ...prev,
+              running: false,
+              paused: false,
+              sim_time_sec: 21600.0,
+              sim_time_formatted: '06:00:00'
+            }));
+          }
+        } else if (res.ok && speed !== undefined) {
           const isWinning = currentReqId === undefined || currentReqId >= latestConfirmedSpeedReqIdRef.current;
           if (isWinning) {
             if (currentReqId !== undefined) {
@@ -2124,40 +2244,7 @@ export default function SimulationPage() {
     }
   };
 
-  // Quick Time Jump Handler (Dawn, Morning Peak, Midday, Evening Rush)
-  const handleTimeJump = async (sec) => {
-    const initialSpeed = selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0;
-    try {
-      const res = await fetch('/api/sim/config', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          day: selectedDay,
-          model: selectedModel,
-          speed: initialSpeed,
-          start_time_sec: sec
-        })
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (data && data.success) {
-          // Re-read current speed selection after time-jump completes
-          // so any speed change made while the request was pending is preserved
-          const currentSpeed = selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0;
-          const reqId = ++speedRequestIdRef.current;
-          speedQueueRef.current = speedQueueRef.current.then(async () => {
-            await sendControl('play', currentSpeed, reqId);
-          }).catch(err => {
-            console.error('Time jump playback error:', err);
-          });
-          await speedQueueRef.current;
-        }
-      }
-      fetchStatus();
-    } catch (err) {
-      console.error('Time jump error:', err);
-    }
-  };
+
 
   // Inject Disruption Handler
   const handleInjectDisruption = async (e) => {
@@ -2386,15 +2473,6 @@ export default function SimulationPage() {
             )}
 
             <button 
-              onClick={() => sendControl('step')} 
-              className="btn btn-hud" 
-              title="Step Single Tick (15s)"
-            >
-              <ChevronRight size={18} />
-              <span>Step</span>
-            </button>
-
-            <button 
               onClick={() => sendControl('reset')} 
               className="btn btn-hud" 
               title="Reset Simulation Day"
@@ -2407,30 +2485,13 @@ export default function SimulationPage() {
           {/* Speed Multiplier */}
           <div className="hud-speed-group">
             <FastForward size={14} className="speed-icon" />
-            {[1, 2, 5, 10, 20].map((s) => (
+            {[1, 2, 5, 10, 20, 30, 40, 50].map((s) => (
               <button
                 key={s}
                 onClick={() => handleSpeedChange(s)}
                 className={`btn-speed-pill ${simStatus.speed_multiplier === s ? 'active' : ''}`}
               >
                 {s}x
-              </button>
-            ))}
-          </div>
-
-          <div className="hud-divider" />
-
-          {/* Quick Scenario Time-Jump Pills */}
-          <div className="hud-timejumps">
-            <span className="hud-select-label">Jump:</span>
-            {TIME_JUMPS.map((jump) => (
-              <button
-                key={jump.label}
-                onClick={() => handleTimeJump(jump.sec)}
-                className="btn-timejump-pill"
-                title={`Jump to ${jump.label}`}
-              >
-                {jump.label}
               </button>
             ))}
           </div>
@@ -2598,60 +2659,39 @@ export default function SimulationPage() {
               </div>
             </div>
           )}
-          {/* Floating Station Inspector HUD Card */}
+          {/* Draggable Floating Station Traffic HUD Card */}
           {selectedStation && (
-            <div className="canvas-station-focus-card glass-panel">
-              <div className="station-focus-header">
+            <div 
+              className={`canvas-station-focus-card glass-panel ${isDraggingStationCard ? 'is-dragging' : ''}`}
+              style={{
+                left: `${stationCardPos.x}px`,
+                top: `${stationCardPos.y}px`,
+              }}
+              onPointerDown={handleCardPointerDown}
+            >
+              <div 
+                className="station-focus-header drag-handle"
+                onDoubleClick={() => setStationCardPos({ x: 20, y: 145 })}
+                title="Drag to move anywhere • Double-click to reset"
+              >
                 <div className="station-focus-title">
-                  <MapPin size={18} className="text-cyan animate-pulse" />
-                  <div>
-                    <h4>{selectedStation.display_name || selectedStation.station_name}</h4>
-                    <span className="station-focus-subtitle">
-                      {selectedStation.station_name?.includes('City_1') ? 'Primary Metropolitan Hub' : 
-                       selectedStation.station_name?.includes('City_2') ? 'Regional Junction Terminal' : 
-                       'Corridor Interlocking Yard'} • {selectedStation.platforms?.length || 2} Platform Tracks
-                    </span>
-                  </div>
+                  <GripHorizontal size={15} className="drag-grip-icon" />
+                  <MapPin size={15} className="text-cyan animate-pulse" />
+                  <h4>{selectedStation.display_name || selectedStation.station_name}</h4>
                 </div>
-                <button onClick={() => setSelectedStation(null)} className="btn-close-train" title="Close Focus">
-                  <X size={16} />
+                <button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedStation(null);
+                  }} 
+                  className="btn-close-train" 
+                  title="Close Focus Card"
+                >
+                  <X size={15} />
                 </button>
               </div>
 
-              {/* Station Disruption Badge if any */}
-              {simStatus.active_disruptions_data?.some(d => 
-                d.station_name === selectedStation.display_name || 
-                d.station_id === selectedStation.station_name ||
-                d.mode === 'fleet_surge'
-              ) && (
-                <div className="station-focus-disruption-alert">
-                  <Flame size={14} className="text-amber animate-bounce" />
-                  <span>
-                    DISRUPTION ACTIVE: {simStatus.active_disruptions_data[0]?.title || 'Traffic Throttling'}
-                  </span>
-                </div>
-              )}
-
-              {/* Station Track Topology Stats */}
-              <div className="station-focus-stats">
-                <div className="station-stat-chip inbound">
-                  <ArrowDownRight size={13} className="text-cyan" />
-                  <span className="stat-label">Converging:</span>
-                  <span className="stat-value">{selectedStationTopology.converging.length} Inbound</span>
-                </div>
-                <div className="station-stat-chip outbound">
-                  <ArrowUpRight size={13} className="text-emerald" />
-                  <span className="stat-label">Diverging:</span>
-                  <span className="stat-value">{selectedStationTopology.diverging.length} Outbound</span>
-                </div>
-                <div className="station-stat-chip platforms">
-                  <Layers size={13} className="text-blue" />
-                  <span className="stat-label">Platforms:</span>
-                  <span className="stat-value">{selectedStationTopology.platforms.length || selectedStation.platforms?.length || 2} Bays</span>
-                </div>
-              </div>
-
-              {/* Live Trains on Station Tracks */}
+              {/* Live Trains on Station Tracks: Approaching, Dwelling, Departing */}
               <div className="station-focus-traffic-row">
                 <div className="traffic-metric">
                   <span className="traffic-num text-cyan">{selectedStationTrains.approaching.length}</span>
@@ -2665,41 +2705,6 @@ export default function SimulationPage() {
                   <span className="traffic-num text-emerald">{selectedStationTrains.departing.length}</span>
                   <span className="traffic-lbl">Departing</span>
                 </div>
-              </div>
-
-              <div className="station-focus-actions">
-                <button 
-                  onClick={() => zoomToStation(selectedStation, 2.5)} 
-                  className="btn btn-primary btn-sm"
-                  title="Zoom into Individual Platform Lines"
-                >
-                  <Layers size={14} />
-                  <span>Platform Lines (2.5x)</span>
-                </button>
-                <button 
-                  onClick={() => zoomToStation(selectedStation, 1.2)} 
-                  className="btn btn-secondary btn-sm"
-                  title="View Approach Network & Switch Throats"
-                >
-                  <GitFork size={14} />
-                  <span>Approaches (1.2x)</span>
-                </button>
-                <button 
-                  onClick={() => setActiveSideTab('station')} 
-                  className="btn btn-secondary btn-sm"
-                  title="Open Station Details in Sidebar"
-                >
-                  <Eye size={14} />
-                  <span>Sidebar</span>
-                </button>
-                <button 
-                  onClick={resetViewAnimated} 
-                  className="btn btn-secondary btn-sm"
-                  title="Zoom Out to Full Network"
-                >
-                  <Maximize2 size={14} />
-                  <span>Reset</span>
-                </button>
               </div>
             </div>
           )}
@@ -3205,96 +3210,121 @@ export default function SimulationPage() {
           )}
         </div>
 
-        {/* Right Dispatcher Control Panel */}
-        <aside className="sim-sidebar glass-panel">
-          {/* Active Disruption Emergency Banner */}
-          {simStatus.active_disruptions_data && simStatus.active_disruptions_data.length > 0 && (
-            <div className="sidebar-incident-alert-banner">
-              <div className="incident-banner-top">
-                <div className="incident-banner-title">
-                  <Flame size={16} className="text-rose animate-pulse" />
-                  <span className="incident-badge">ACTIVE NETWORK INCIDENT</span>
+        {/* Right Dispatcher Control Panel (Collapsible & Resizable) */}
+        <aside 
+          className={`sim-sidebar glass-panel ${!sidebarOpen ? 'sidebar-collapsed' : ''} ${isResizingSidebar ? 'is-resizing' : ''}`}
+          style={{
+            width: sidebarOpen ? `${sidebarWidth}px` : '0px',
+            minWidth: sidebarOpen ? `${sidebarWidth}px` : '0px',
+          }}
+        >
+          {sidebarOpen && (
+            <>
+              {/* Left Edge Cursor Drag Resize Handle */}
+              <div 
+                className={`sidebar-resize-handle ${isResizingSidebar ? 'resizing' : ''}`}
+                onPointerDown={handleResizePointerDown}
+                title="Drag left or right to expand/resize sidebar"
+              >
+                <div className="resize-handle-bar" />
+              </div>
+
+              {/* Active Disruption Emergency Banner */}
+              {simStatus.active_disruptions_data && simStatus.active_disruptions_data.length > 0 && (
+                <div className="sidebar-incident-alert-banner">
+                  <div className="incident-banner-top">
+                    <div className="incident-banner-title">
+                      <Flame size={16} className="text-rose animate-pulse" />
+                      <span className="incident-badge">ACTIVE NETWORK INCIDENT</span>
+                    </div>
+                    <button 
+                      onClick={handleClearDisruptions}
+                      className="btn-clear-incident"
+                      title="Clear Disruption"
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  {simStatus.active_disruptions_data.map((d, i) => (
+                    <div key={i} className="incident-item">
+                      <div className="incident-item-header">
+                        <span className="incident-type-tag">{d.title || d.mode?.replace(/_/g, ' ').toUpperCase()}</span>
+                        <span className="incident-delay-tag">+{d.delay_duration_sec || 180}s DELAY</span>
+                      </div>
+                      <p className="incident-item-desc">{d.description || d.impact || 'Service throttling in progress.'}</p>
+                      <div className="incident-actions-row">
+                        <button 
+                          onClick={() => {
+                            const stName = d.station_name || d.station_id || 'City 1 Central';
+                            const st = geometry?.stations?.find(s => 
+                              s.station_name === stName || 
+                              s.display_name === stName ||
+                              s.display_name?.includes(stName) ||
+                              s.station_name === 'City_1'
+                            ) || geometry?.stations?.[0];
+                            if (st) {
+                              zoomToStation(st);
+                              setActiveSideTab('station');
+                            }
+                          }}
+                          className="btn btn-incident-action btn-xs"
+                        >
+                          <MapPin size={12} /> Zoom to Station
+                        </button>
+                        {d.vehicle_id && (
+                          <button 
+                            onClick={() => {
+                              const t = trains.find(tr => tr.id === d.vehicle_id);
+                              if (t) zoomToTrain(t);
+                            }}
+                            className="btn btn-incident-action btn-xs"
+                          >
+                            <Train size={12} /> Focus Train #{d.vehicle_id}
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              )}
+
+              {/* Tabs */}
+              <div className="sidebar-tabs">
                 <button 
-                  onClick={handleClearDisruptions}
-                  className="btn-clear-incident"
-                  title="Clear Disruption"
+                  className={`sidebar-tab ${activeSideTab === 'trains' ? 'active' : ''}`}
+                  onClick={() => setActiveSideTab('trains')}
                 >
-                  Clear
+                  <Train size={15} />
+                  <span>Trains ({trains.length})</span>
+                </button>
+                <button 
+                  className={`sidebar-tab ${activeSideTab === 'station' ? 'active' : ''}`}
+                  onClick={() => {
+                    setActiveSideTab('station');
+                    if (!selectedStation && geometry?.stations?.length > 0) {
+                      zoomToStation(geometry.stations[0]);
+                    }
+                  }}
+                >
+                  <MapPin size={15} />
+                  <span>Station {selectedStation ? `(${selectedStation.display_name?.split(' ')[0]})` : ''}</span>
+                </button>
+                <button 
+                  className={`sidebar-tab ${activeSideTab === 'events' ? 'active' : ''}`}
+                  onClick={() => setActiveSideTab('events')}
+                >
+                  <Activity size={15} />
+                  <span>AI Events ({events.length})</span>
+                </button>
+                <button 
+                  onClick={() => setSidebarOpen(false)}
+                  className="sidebar-collapse-btn"
+                  title="Close Sidebar to the Right"
+                >
+                  <ChevronRight size={16} />
                 </button>
               </div>
-              {simStatus.active_disruptions_data.map((d, i) => (
-                <div key={i} className="incident-item">
-                  <div className="incident-item-header">
-                    <span className="incident-type-tag">{d.title || d.mode?.replace(/_/g, ' ').toUpperCase()}</span>
-                    <span className="incident-delay-tag">+{d.delay_duration_sec || 180}s DELAY</span>
-                  </div>
-                  <p className="incident-item-desc">{d.description || d.impact || 'Service throttling in progress.'}</p>
-                  <div className="incident-actions-row">
-                    <button 
-                      onClick={() => {
-                        const stName = d.station_name || d.station_id || 'City 1 Central';
-                        const st = geometry?.stations?.find(s => 
-                          s.station_name === stName || 
-                          s.display_name === stName ||
-                          s.display_name?.includes(stName) ||
-                          s.station_name === 'City_1'
-                        ) || geometry?.stations?.[0];
-                        if (st) {
-                          zoomToStation(st);
-                          setActiveSideTab('station');
-                        }
-                      }}
-                      className="btn btn-incident-action btn-xs"
-                    >
-                      <MapPin size={12} /> Zoom to Station
-                    </button>
-                    {d.vehicle_id && (
-                      <button 
-                        onClick={() => {
-                          const t = trains.find(tr => tr.id === d.vehicle_id);
-                          if (t) zoomToTrain(t);
-                        }}
-                        className="btn btn-incident-action btn-xs"
-                      >
-                        <Train size={12} /> Focus Train #{d.vehicle_id}
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
 
-          {/* Tabs */}
-          <div className="sidebar-tabs">
-            <button 
-              className={`sidebar-tab ${activeSideTab === 'trains' ? 'active' : ''}`}
-              onClick={() => setActiveSideTab('trains')}
-            >
-              <Train size={15} />
-              <span>Trains ({trains.length})</span>
-            </button>
-            <button 
-              className={`sidebar-tab ${activeSideTab === 'station' ? 'active' : ''}`}
-              onClick={() => {
-                setActiveSideTab('station');
-                if (!selectedStation && geometry?.stations?.length > 0) {
-                  zoomToStation(geometry.stations[0]);
-                }
-              }}
-            >
-              <MapPin size={15} />
-              <span>Station {selectedStation ? `(${selectedStation.display_name?.split(' ')[0]})` : ''}</span>
-            </button>
-            <button 
-              className={`sidebar-tab ${activeSideTab === 'events' ? 'active' : ''}`}
-              onClick={() => setActiveSideTab('events')}
-            >
-              <Radio size={15} />
-              <span>AI Events ({events.length})</span>
-            </button>
-          </div>
 
           {/* Active Trains Tab */}
           {activeSideTab === 'trains' && (
@@ -3439,6 +3469,25 @@ export default function SimulationPage() {
                         <Layers size={12} className="text-blue" />
                         {selectedStationTopology.platforms.length || selectedStation.platforms?.length || 2} Platform Tracks
                       </span>
+                    </div>
+
+                    {/* Live Train Traffic Counts in Sidebar */}
+                    <div className="sidebar-traffic-status-strip">
+                      <div className="sidebar-traffic-stat">
+                        <span className="traffic-dot dot-cyan"></span>
+                        <span className="stat-count text-cyan">{selectedStationTrains.approaching.length}</span>
+                        <span className="stat-name">Approaching</span>
+                      </div>
+                      <div className="sidebar-traffic-stat">
+                        <span className="traffic-dot dot-amber"></span>
+                        <span className="stat-count text-amber">{selectedStationTrains.dwelling.length}</span>
+                        <span className="stat-name">Dwelling</span>
+                      </div>
+                      <div className="sidebar-traffic-stat">
+                        <span className="traffic-dot dot-emerald"></span>
+                        <span className="stat-count text-emerald">{selectedStationTrains.departing.length}</span>
+                        <span className="stat-name">Departing</span>
+                      </div>
                     </div>
                   </div>
 
@@ -3659,7 +3708,21 @@ export default function SimulationPage() {
               )}
             </div>
           )}
+          </>
+          )}
         </aside>
+
+        {/* Floating Sidebar Reopen Tab on Canvas Right Edge */}
+        {!sidebarOpen && (
+          <button 
+            onClick={() => setSidebarOpen(true)}
+            className="floating-sidebar-reopen-btn glass-panel"
+            title="Expand Dispatcher Sidebar"
+          >
+            <ChevronLeft size={16} className="text-cyan animate-pulse" />
+            <span>Sidebar</span>
+          </button>
+        )}
       </div>
 
       {/* Disruption Injection Modal */}

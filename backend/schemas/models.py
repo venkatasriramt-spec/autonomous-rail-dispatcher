@@ -87,6 +87,7 @@ class TelemetryFrame(BaseModel):
 class SimulationControlRequest(BaseModel):
     action: Literal["play", "pause", "step", "reset", "set_speed", "speed"] = Field(..., description="'play', 'pause', 'step', 'reset', or 'set_speed'")
     speed: Optional[float] = Field(None, gt=0, description="Playback speed multiplier (e.g. 1.0, 5.0, 10.0)")
+    start_time_sec: Optional[float] = Field(None, ge=0.0, lt=86400.0, description="Optional start time in seconds from 00:00 (defaults to 21600.0 / 06:00:00)")
 
 
 class SimulationConfigRequest(BaseModel):

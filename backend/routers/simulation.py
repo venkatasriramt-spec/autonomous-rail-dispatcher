@@ -58,7 +58,7 @@ def control_simulation(req: SimulationControlRequest):
     elif action == "step":
         success = sim_manager.step()
     elif action == "reset":
-        success = sim_manager.reset()
+        success = sim_manager.reset(start_time_sec=req.start_time_sec)
     elif action in ("set_speed", "speed"):
         success = True
     else:

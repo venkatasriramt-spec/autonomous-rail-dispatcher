@@ -66,6 +66,9 @@ def format_sim_time(sim_sec: float) -> str:
     return f"{h:02d}:{m:02d}:{s:02d}"
 
 
+DEFAULT_START_TIME_SEC: float = 21600.0  # Default 06:00 AM (Dawn / morning start of revenue timetable)
+
+
 class SimulationManager:
     """Coordinates the railway simulation lifecycle, AI dispatching, and streaming."""
 
@@ -73,8 +76,8 @@ class SimulationManager:
         self.state: SimulationState = SimulationState.STOPPED
         self.mode: SimulationMode = SimulationMode.LIVE_SUMO
         self.day: str = "Mon"
-        self.sim_time_sec: float = 21600.0  # Default 06:00 AM (morning start)
-        self.start_time_sec: float = 21600.0
+        self.sim_time_sec: float = DEFAULT_START_TIME_SEC
+        self.start_time_sec: float = DEFAULT_START_TIME_SEC
         self.speed_multiplier: float = DEFAULT_SIM_SPEED
         self.macro_step_sec: float = DEFAULT_MACRO_STEP_SEC
 
@@ -146,16 +149,18 @@ class SimulationManager:
                 return True
 
             if self.state == SimulationState.PAUSED:
-                self.state = SimulationState.RUNNING
-                self._pause_event.clear()
-                logger.info("Simulation resumed.")
-                return True
+                if self._thread and self._thread.is_alive():
+                    self.state = SimulationState.RUNNING
+                    self._pause_event.clear()
+                    logger.info("Simulation resumed.")
+                    return True
+                # Worker thread not running; fall through to start worker thread
 
             if self._thread and self._thread.is_alive():
                 logger.warning("Cannot start simulation: previous worker thread is still alive.")
                 return False
 
-            # Start fresh from STOPPED
+            # Start fresh from STOPPED or unthreaded PAUSED
             self.state = SimulationState.RUNNING
             self._stop_event.clear()
             self._pause_event.clear()
@@ -185,18 +190,22 @@ class SimulationManager:
             return True
 
     def reset(self, start_time_sec: Optional[float] = None) -> bool:
-        """Stops and resets simulation state."""
+        """Stops and resets simulation state to the start of the passenger revenue timetable."""
         self._stop_current_worker()
 
         with self._lock:
+            target_start = float(start_time_sec) if start_time_sec is not None else DEFAULT_START_TIME_SEC
+            self.start_time_sec = target_start
+            self.sim_time_sec = target_start
             self.state = SimulationState.STOPPED
-            if start_time_sec is not None:
-                self.start_time_sec = start_time_sec
-            self.sim_time_sec = self.start_time_sec
+            self._pause_event.clear()
+
             self.trains_cache.clear()
             self.platforms_cache.clear()
             self.recent_actions.clear()
             self.active_disruptions.clear()
+            self.active_disruptions_data.clear()
+            self.active_overrides.clear()
             self._applied_perturbations.clear()
             self._demo_overrides.clear()
             self.total_actions_count = 0
@@ -209,7 +218,28 @@ class SimulationManager:
                     pass
                 self.env = None
 
-            logger.info("Simulation reset.")
+            # Re-initialize environment / seed state at target start time
+            try:
+                self._init_env()
+                if self.mode == SimulationMode.LIVE_SUMO and self.env is not None:
+                    self._extract_live_trains()
+                    self._extract_live_platforms()
+                elif self.mode == SimulationMode.DEMO_REPLAY:
+                    self.sim_time_sec = target_start - self.macro_step_sec
+                    self._step_demo_replay()
+            except Exception as e:
+                logger.warning(f"Could not pre-populate environment on reset: {e}")
+
+            # Record system reset action event
+            self._record_action_event({
+                "type": "timetable_reset",
+                "vid": "Network",
+                "severity": "emerald",
+                "title": "Timetable Reset",
+                "details": f"Simulation reset to {format_sim_time(self.sim_time_sec)} (Dawn Service). Network ready."
+            })
+
+            logger.info(f"Simulation reset to {format_sim_time(self.sim_time_sec)} ({self.sim_time_sec}s).")
             self._broadcast_frame()
             return True
 
@@ -270,6 +300,8 @@ class SimulationManager:
     def _init_env(self):
         """Initializes the RailwayDispatchEnv or MultiAgentRailwayEnv."""
         if self.mode != SimulationMode.LIVE_SUMO:
+            return
+        if self.env is not None:
             return
 
         cfg_path = self._get_sumocfg_path(self.day)
