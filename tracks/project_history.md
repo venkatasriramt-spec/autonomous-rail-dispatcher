@@ -257,3 +257,45 @@ A chronological log of how this abstract SUMO railway network evolved, from init
   - Validated physical track connectivity and reachability (`findRoute`) against all 19 stations, 8 universal crossovers, the Alpine passing loop, and terminal pockets under dynamic AI dispatcher platform swaps.
   - Confirmed 0 topology errors, 0 switch angle conflicts, 0 collisions, and 0 emergency teleports across continuous 24-hour multi-day simulation stress testing.
   - Preserved standalone track compilation pipelines (`generate_sumo_network.py`, `netconvert`) while seamlessly feeding compiled network XMLs into downstream `trains/` and `dispatcher/` subsystems.
+
+---
+
+### 25 October 2026 — Google Maps-Style Microscopic Railway Geometry & Infrastructure Visualization
+
+#### Phase 19: Scale-Adaptive Track Geometry, X Crossovers, Passing Loops & Buffer Stops
+- **Motivation:** Prior frontend canvas rendering flattened complex track topology and clamped stroke width so severely that crossovers, loops, and dead-ends became sub-pixel invisible or overlapped at various zoom levels.
+- **Architectural & Visualization Enhancements:**
+  1. *Microscopic Geometry Parsing (`backend/core/network_geometry.py`, `backend/schemas/models.py`):*
+     - Extracted 23 buffer stops with orientation angles (`angle_deg` via `math.atan2(dy, dx)`), 268 interlocking signals (`rail_signal` junctions), and 31 high-level track feature complexes (8 Double Diamond X Crossovers, 12 Dynamic Passing Loops and Express Thru Bypasses).
+     - Serialized all 2,742 lanes into `frontend/public/network_geometry.json` for zero-latency browser rendering.
+  2. *Scale-Adaptive Canvas Rendering (`frontend/src/pages/SimulationPage.jsx`):*
+     - Replaced hard gauge clamping with scale-adaptive minimum screen pixel widths (`minScreenPx = scale < 0.12 ? 1.6 : (scale < 0.5 ? 1.8 : 2.2)`), guaranteeing tracks never disappear at overview zoom and never bloat or overlap at platform zoom.
+     - Implemented authentic railway graphics:
+       - **Double-Diamond X Crossovers:** Rendered in vivid Amber/Coral (`#f59e0b` / `#fbbf24`) with switch diamond frogs and intersection points.
+       - **Dynamic Passing Loops & Express Thrus:** Highlighted in Emerald Teal (`#14b8a6`) and Electric Cyan (`#00f0ff`).
+       - **Buffer Stop Terminating Points:** Authentic hydraulic bumper crossbars with alternating red/white hazard stripes, twin red warning reflectors, and perpendicular orientation.
+       - **Railway Signals:** Multi-aspect signal plates with luminous aspect lenses along station throats and crossovers.
+  3. *Google Maps Infrastructure Bar & Directory Explorer (`SimulationPage.jsx`, `SimulationPage.css`):*
+     - Centered floating glassmorphic infrastructure toolbar with one-click layer filters and real-time element counters (`X Crossovers (488)`, `Passing Loops (76)`, `Buffer Stops (23)`, `Signals (268)`).
+     - Railway Infrastructure Directory drawer allowing instant search and smooth camera flight (`zoomToFeature`) directly to any crossover, loop, or dead-end terminus across the network.
+     - Floating Feature Inspector HUD card displaying operational specifications (design speed, turnout count, coordinates, and dispatcher operational guidance).
+     - Zoom tools upgraded to zoom smoothly around the canvas viewport center.
+
+#### Phase 20: Deep Microscopic Zoom (60x), Dual Parallel Steel Rails & Network Topology Accuracy Clean-Up
+- **Deflection Angle & Path Filtering (`backend/core/network_geometry.py`):**
+  - Identified 329 internal turnaround/loopback connection lanes synthesized by SUMO `netconvert` with severe deflection angles ($> 42^\circ$, up to $112.7^\circ$) inside station switch throats, which produced jagged polygonal loop artifacts across junctions.
+  - Implemented deflection angle threshold ($\le 42^\circ$) and path-length ratio filtering ($< 1.35\times$ chord distance), pruning artificial loops from 1,966 to 1,637 authentic forward turnouts and crossings.
+  - Regenerated clean network geometry: exactly 2,413 lanes, 23 buffer stops, 268 signals, and 31 key track features.
+- **Ultra-Deep Microscopic Zoom (Up to 60.0x) (`frontend/src/pages/SimulationPage.jsx`):**
+  - Expanded canvas zoom scale limits from previous 4.0/6.0 cap up to 60.0 (10x-15x increase), allowing 1 real-world meter to equal 60 screen pixels.
+  - Calibrated quick-zoom presets for passing loops (14.0x), crossovers (12.0x), and buffer stops (24.0x).
+- **Photorealistic Track Bed & UIC Dual-Rail Infrastructure:**
+  - Standard UIC dual parallel steel rails ($1.435\text{ m}$ gauge offset by $\pm 0.7175\text{ m}$ perpendicular to tangents) with gleaming silver railhead strokes (`#f8fafc`).
+  - Dark slate ballast bed ($3.2\text{ m}$ physical width) with ballast shoulder borders.
+  - Individual railroad cross-ties (sleepers) placed periodically along track segments ($0.75\text{ m} - 1.2\text{ m}$ step).
+  - Switch diamond frog plates with gold intersection points at crossover points.
+  - Real-world metric scaling for buffer stop bumpers ($2.6\text{ m}$) squarely spanning both rails, and signals ($0.7\text{ m} \times 1.8\text{ m}$).
+- **Viewport Bounding-Box Culling:**
+  - Implemented real-time geometric viewport culling (`vpMinX`, `vpMaxX`, `vpMinY`, `vpMaxY`) for high frame rate (60 FPS) rendering during rapid panning and deep zoom.
+
+

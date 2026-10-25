@@ -24,6 +24,7 @@ def inject_disruption(req: DisruptionRequest):
         mode=req.mode,
         vehicle_id=req.vehicle_id,
         platform_id=req.platform_id,
+        station_id=req.station_id,
         duration=req.delay_duration_sec or 600.0
     )
     return {

@@ -101,6 +101,7 @@ class DisruptionRequest(BaseModel):
     mode: str = Field(..., description="'train_delay', 'platform_blockage', 'fleet_surge', or 'compound_failure'")
     vehicle_id: Optional[str] = Field(None, description="Target vehicle ID for mechanical stall")
     platform_id: Optional[str] = Field(None, description="Platform lane ID to shut down (e.g. City_3_EW_plat_1_fw_0)")
+    station_id: Optional[str] = Field(None, description="Target station ID (e.g. City_1, City_3)")
     delay_duration_sec: Optional[float] = Field(600.0, description="Duration of stall or platform closure in seconds")
 
 
@@ -136,6 +137,7 @@ class TrackLaneGeometry(BaseModel):
     speed_kmh: float
     length_m: float
     allow: str
+    is_internal: Optional[bool] = False
     coordinates: List[List[float]]
 
 
@@ -148,11 +150,43 @@ class StationMetadata(BaseModel):
     platforms: List[Dict[str, Any]]
 
 
+class BufferStopGeometry(BaseModel):
+    id: str
+    name: str
+    station_name: Optional[str] = None
+    x: float
+    y: float
+    angle_deg: Optional[float] = 0.0
+    lane_id: Optional[str] = None
+
+
+class SignalGeometry(BaseModel):
+    id: str
+    name: str
+    x: float
+    y: float
+    signal_type: str = "block_signal"
+
+
+class TrackFeatureItem(BaseModel):
+    id: str
+    type: str  # "crossover", "passing_loop", "express_thru", "buffer_stop"
+    name: str
+    x: float
+    y: float
+    speed_kmh: Optional[float] = None
+    lane_count: Optional[int] = 1
+    description: Optional[str] = None
+
+
 class NetworkGeometryResponse(BaseModel):
     bounds: List[float]  # [min_x, min_y, max_x, max_y]
     lanes: List[TrackLaneGeometry]
     stations: List[StationMetadata]
     signals_count: int
     buffer_stops_count: int
+    buffer_stops: Optional[List[BufferStopGeometry]] = []
+    signals: Optional[List[SignalGeometry]] = []
+    track_features: Optional[List[TrackFeatureItem]] = []
     net_file: Optional[str] = None
     add_file: Optional[str] = None

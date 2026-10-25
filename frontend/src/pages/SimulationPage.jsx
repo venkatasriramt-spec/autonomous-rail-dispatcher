@@ -20,7 +20,16 @@ import {
   CheckCircle2,
   GitFork,
   Zap,
-  ShieldCheck
+  ShieldCheck,
+  MapPin,
+  ArrowUpRight,
+  ArrowDownRight,
+  Eye,
+  Activity,
+  Layers,
+  Navigation,
+  Flame,
+  Crosshair
 } from 'lucide-react';
 import './SimulationPage.css';
 
@@ -82,16 +91,25 @@ export default function SimulationPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [delayOnlyFilter, setDelayOnlyFilter] = useState(false);
   const [selectedTrain, setSelectedTrain] = useState(null);
+  const [selectedStation, setSelectedStation] = useState(null);
   const [showDisruptionModal, setShowDisruptionModal] = useState(false);
   const [showOverrideModal, setShowOverrideModal] = useState(false);
-  const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'events'
+  const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'station' | 'disruptions' | 'events'
+
+  // Google Maps Railway Feature Navigation & Overlays
+  const [activeFeatureLayer, setActiveFeatureLayer] = useState('all'); // 'all' | 'crossovers' | 'loops' | 'buffer_stops' | 'signals'
+  const [selectedFeature, setSelectedFeature] = useState(null);
+  const [showFeatureMenu, setShowFeatureMenu] = useState(false);
+  const [showSignalHeads, setShowSignalHeads] = useState(true);
 
   // Disruption Form
   const [disruptionForm, setDisruptionForm] = useState({
     mode: 'fleet_surge',
     vehicle_id: '',
     platform_id: '',
-    delay_duration_sec: 180
+    station_id: 'City_1',
+    delay_duration_sec: 180,
+    auto_zoom: true
   });
 
   // Override Form
@@ -101,6 +119,121 @@ export default function SimulationPage() {
     target_platform: 1,
     hold_duration_sec: 60
   });
+
+  // Compute Selected Station Topology (Platforms, Converging Inbound, Diverging Outbound, Crossovers, Switches)
+  const selectedStationTopology = React.useMemo(() => {
+    if (!selectedStation || !geometry || !geometry.lanes) {
+      return { 
+        platforms: [], 
+        converging: [], 
+        diverging: [], 
+        crossovers: [], 
+        switches: [], 
+        platEdgeIds: new Set(), 
+        convEdgeIds: new Set(), 
+        divEdgeIds: new Set(),
+        switchEdgeIds: new Set() 
+      };
+    }
+    const stX = selectedStation.x;
+    const stY = selectedStation.y;
+    const platforms = [];
+    const converging = [];
+    const diverging = [];
+    const crossovers = [];
+    const switches = [];
+    const radius = 3200;
+
+    for (const lane of geometry.lanes) {
+      const coords = lane.coordinates || lane.shape;
+      if (!coords || coords.length < 2) continue;
+
+      let near = false;
+      for (let i = 0; i < coords.length; i++) {
+        const dx = coords[i][0] - stX;
+        const dy = coords[i][1] - stY;
+        if (dx * dx + dy * dy <= radius * radius) {
+          near = true;
+          break;
+        }
+      }
+      if (!near) continue;
+
+      const cat = lane.category || '';
+      const isPlat = cat === 'platform' || (lane.edge_id && lane.edge_id.includes('plat'));
+      if (isPlat) {
+        platforms.push(lane);
+        continue;
+      }
+
+      if (cat === 'switch' || lane.is_internal || (lane.edge_id && (lane.edge_id.startsWith(':') || lane.edge_id.includes('Throat')))) {
+        switches.push(lane);
+        continue;
+      }
+
+      if (cat === 'yard') {
+        continue; // Yard staging tracks are not mainline connecting corridors
+      }
+
+      const cStart = coords[0];
+      const cEnd = coords[coords.length - 1];
+      const dStart = Math.hypot(cStart[0] - stX, cStart[1] - stY);
+      const dEnd = Math.hypot(cEnd[0] - stX, cEnd[1] - stY);
+
+      if (dStart - dEnd > 25) {
+        converging.push(lane);
+      } else if (dEnd - dStart > 25) {
+        diverging.push(lane);
+      } else {
+        crossovers.push(lane);
+      }
+    }
+
+    return {
+      platforms,
+      converging,
+      diverging,
+      crossovers,
+      switches,
+      platEdgeIds: new Set(platforms.map(l => l.edge_id)),
+      convEdgeIds: new Set(converging.map(l => l.edge_id)),
+      divEdgeIds: new Set(diverging.map(l => l.edge_id)),
+      switchEdgeIds: new Set(switches.map(l => l.edge_id))
+    };
+  }, [selectedStation, geometry]);
+
+  // Compute Trains Active on Converging, Platform, or Diverging Tracks for Selected Station
+  const selectedStationTrains = React.useMemo(() => {
+    if (!selectedStation) {
+      return { approaching: [], dwelling: [], departing: [] };
+    }
+    const stX = selectedStation.x;
+    const stY = selectedStation.y;
+    const approaching = [];
+    const dwelling = [];
+    const departing = [];
+
+    const { platEdgeIds, convEdgeIds, divEdgeIds } = selectedStationTopology;
+
+    for (const t of trains) {
+      const dist = Math.hypot(t.x - stX, t.y - stY);
+      if (dist > 3500) continue;
+
+      const road = t.road_id || '';
+      const upcoming = t.upcoming_station || '';
+      const isTarget = upcoming === selectedStation.station_name || upcoming.includes(selectedStation.station_name);
+
+      if (platEdgeIds.has(road) || (dist < 800 && t.is_at_stop)) {
+        dwelling.push(t);
+      } else if (convEdgeIds.has(road) || (isTarget && dist < 3200)) {
+        approaching.push(t);
+      } else if (divEdgeIds.has(road) || dist < 3000) {
+        departing.push(t);
+      }
+    }
+
+    return { approaching, dwelling, departing };
+  }, [selectedStation, selectedStationTopology, trains]);
 
   // Filtered Trains computed for both Canvas & Sidebar
   const filteredTrains = React.useMemo(() => {
@@ -120,6 +253,7 @@ export default function SimulationPage() {
   const canvasRef = useRef(null);
   const transformRef = useRef({ scale: 0.03, offsetX: 100, offsetY: 100 });
   const isDraggingRef = useRef(false);
+  const didDragRef = useRef(false);
   const dragStartRef = useRef({ x: 0, y: 0 });
   const wsRef = useRef(null);
   const selectedSpeedRef = useRef(null);
@@ -144,12 +278,173 @@ export default function SimulationPage() {
     return { scale, offsetX, offsetY };
   }, []);
 
+  // Smooth animated zoom to a station
+  const zoomToStation = useCallback((station, customScale) => {
+    if (!station || !canvasRef.current || !geometry || !geometry.bounds) return;
+    const canvas = canvasRef.current;
+    const cWidth = canvas.clientWidth;
+    const cHeight = canvas.clientHeight;
+    const [, minY, , maxY] = geometry.bounds;
+    const screenStationX = station.x;
+    const screenStationY = maxY - station.y + minY;
+
+    // Zoom deep into the station yard so every individual track line and switch connection is distinct
+    const targetScale = customScale || ((station.platform_count && station.platform_count > 6) ? 1.5 : 2.0);
+    const targetOffsetX = cWidth / 2 - screenStationX * targetScale;
+    const targetOffsetY = cHeight / 2 - screenStationY * targetScale;
+
+    const startScale = transformRef.current.scale;
+    const startOffsetX = transformRef.current.offsetX;
+    const startOffsetY = transformRef.current.offsetY;
+    const startTime = performance.now();
+    const duration = 500;
+
+    setSelectedStation(station);
+    setSelectedTrain(null);
+    setActiveSideTab('station');
+
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      transformRef.current.scale = startScale + (targetScale - startScale) * ease;
+      transformRef.current.offsetX = startOffsetX + (targetOffsetX - startOffsetX) * ease;
+      transformRef.current.offsetY = startOffsetY + (targetOffsetY - startOffsetY) * ease;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [geometry]);
+
+  // Smooth animated zoom to a train
+  const zoomToTrain = useCallback((t) => {
+    if (!t || !canvasRef.current || !geometry || !geometry.bounds) return;
+    const canvas = canvasRef.current;
+    const cWidth = canvas.clientWidth;
+    const cHeight = canvas.clientHeight;
+    const [, minY, , maxY] = geometry.bounds;
+    const screenTrainX = t.x;
+    const screenTrainY = maxY - t.y + minY;
+
+    const targetScale = 0.95;
+    const targetOffsetX = cWidth / 2 - screenTrainX * targetScale;
+    const targetOffsetY = cHeight / 2 - screenTrainY * targetScale;
+
+    const startScale = transformRef.current.scale;
+    const startOffsetX = transformRef.current.offsetX;
+    const startOffsetY = transformRef.current.offsetY;
+    const startTime = performance.now();
+    const duration = 450;
+
+    setSelectedTrain(t);
+
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      transformRef.current.scale = startScale + (targetScale - startScale) * ease;
+      transformRef.current.offsetX = startOffsetX + (targetOffsetX - startOffsetX) * ease;
+      transformRef.current.offsetY = startOffsetY + (targetOffsetY - startOffsetY) * ease;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [geometry]);
+
+  // Smooth animated zoom to a railway track feature (Crossover, Passing Loop, Buffer Stop, Signal)
+  const zoomToFeature = useCallback((feature, overrideScale) => {
+    if (!feature || !canvasRef.current || !geometry || !geometry.bounds) return;
+    const canvas = canvasRef.current;
+    const cWidth = canvas.clientWidth;
+    const cHeight = canvas.clientHeight;
+    const [, minY, , maxY] = geometry.bounds;
+    const screenX = feature.x;
+    const screenY = maxY - feature.y + minY;
+
+    let targetScale = overrideScale || 2.5;
+    if (!overrideScale) {
+      if (feature.type === 'crossover') targetScale = 2.5;
+      else if (feature.type === 'passing_loop' || feature.type === 'express_thru') targetScale = 3.2;
+      else if (feature.type === 'buffer_stop') targetScale = 5.5;
+      else if (feature.signal_type) targetScale = 4.0;
+    }
+
+    const targetOffsetX = cWidth / 2 - screenX * targetScale;
+    const targetOffsetY = cHeight / 2 - screenY * targetScale;
+
+    const startScale = transformRef.current.scale;
+    const startOffsetX = transformRef.current.offsetX;
+    const startOffsetY = transformRef.current.offsetY;
+    const startTime = performance.now();
+    const duration = 500;
+
+    setSelectedFeature(feature);
+    setSelectedTrain(null);
+    setSelectedStation(null);
+
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      transformRef.current.scale = startScale + (targetScale - startScale) * ease;
+      transformRef.current.offsetX = startOffsetX + (targetOffsetX - startOffsetX) * ease;
+      transformRef.current.offsetY = startOffsetY + (targetOffsetY - startOffsetY) * ease;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [geometry]);
+
+  // Smooth animated reset to full network view
+  const resetViewAnimated = useCallback(() => {
+    if (!geometry?.bounds || !canvasRef.current) return;
+    const canvas = canvasRef.current;
+    const cWidth = canvas.clientWidth || 1000;
+    const cHeight = canvas.clientHeight || 700;
+    const target = getCenteredTransform(geometry.bounds, cWidth, cHeight);
+
+    const startScale = transformRef.current.scale;
+    const startOffsetX = transformRef.current.offsetX;
+    const startOffsetY = transformRef.current.offsetY;
+    const startTime = performance.now();
+    const duration = 500;
+
+    setSelectedStation(null);
+
+    const animate = (now) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(1, elapsed / duration);
+      const ease = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+
+      transformRef.current.scale = startScale + (target.scale - startScale) * ease;
+      transformRef.current.offsetX = startOffsetX + (target.offsetX - startOffsetX) * ease;
+      transformRef.current.offsetY = startOffsetY + (target.offsetY - startOffsetY) * ease;
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    requestAnimationFrame(animate);
+  }, [geometry, getCenteredTransform]);
+
   // 1. Fetch Network Geometry on Mount
   useEffect(() => {
     let mounted = true;
     const fetchGeometry = async () => {
       try {
-        const res = await fetch('/api/network/geometry');
+        let res = await fetch('/network_geometry.json');
+        if (!res.ok) {
+          res = await fetch('/api/network/geometry');
+        }
         if (res.ok) {
           const data = await res.json();
           if (mounted) {
@@ -403,77 +698,560 @@ export default function SimulationPage() {
     ctx.translate(offsetX, offsetY);
     ctx.scale(scale, scale);
 
-    // 1. Draw Track Lanes
+    // 1. Draw Track Lanes (Google Maps Style: Scale-Adaptive & Visible at all Zoom Levels)
     if (geometry && geometry.lanes) {
+      const { convEdgeIds, divEdgeIds, platEdgeIds, switchEdgeIds } = selectedStationTopology;
+      const isStationSelected = Boolean(selectedStation);
+
+      // Viewport bounds in world coordinates (with 40m margin)
+      const vpMinX = -offsetX / scale - 40;
+      const vpMaxX = (width - offsetX) / scale + 40;
+      const vpMinY = maxY + minY - (height - offsetY) / scale - 40;
+      const vpMaxY = maxY + minY - (-offsetY) / scale + 40;
+
+      // Scale-adaptive line width for overview/medium zoom
+      const minScreenPx = scale < 0.12 ? 1.6 : (scale < 0.5 ? 1.8 : 2.2);
+      const wNetwork = Math.max(minScreenPx / scale, 1.0);
+      const wPlatform = Math.min(1.2, minScreenPx / scale);
+
+      // Fast parallel rail offset calculation for standard gauge (1.435m)
+      const getRailOffsets = (pts, gauge = 1.435) => {
+        const halfG = gauge / 2;
+        const left = [];
+        const right = [];
+        const n = pts.length;
+        for (let k = 0; k < n; k++) {
+          let nx = 0, ny = 0;
+          if (k === 0) {
+            const dx = pts[1][0] - pts[0][0];
+            const dy = pts[1][1] - pts[0][1];
+            const L = Math.hypot(dx, dy) || 1;
+            nx = -dy / L;
+            ny = dx / L;
+          } else if (k === n - 1) {
+            const dx = pts[n - 1][0] - pts[n - 2][0];
+            const dy = pts[n - 1][1] - pts[n - 2][1];
+            const L = Math.hypot(dx, dy) || 1;
+            nx = -dy / L;
+            ny = dx / L;
+          } else {
+            const dx1 = pts[k][0] - pts[k - 1][0];
+            const dy1 = pts[k][1] - pts[k - 1][1];
+            const L1 = Math.hypot(dx1, dy1) || 1;
+            const dx2 = pts[k + 1][0] - pts[k][0];
+            const dy2 = pts[k + 1][1] - pts[k][1];
+            const L2 = Math.hypot(dx2, dy2) || 1;
+            nx = (-dy1 / L1 + -dy2 / L2) / 2;
+            ny = (dx1 / L1 + dx2 / L2) / 2;
+            const L = Math.hypot(nx, ny) || 1;
+            nx /= L;
+            ny /= L;
+          }
+          left.push([pts[k][0] + nx * halfG, pts[k][1] + ny * halfG]);
+          right.push([pts[k][0] - nx * halfG, pts[k][1] - ny * halfG]);
+        }
+        return { left, right };
+      };
+
       for (let i = 0; i < geometry.lanes.length; i++) {
         const lane = geometry.lanes[i];
         const coords = lane.coordinates || lane.shape;
         if (!coords || coords.length < 2) continue;
 
-        const cat = lane.category || 'connector';
-        const isHighSpeed = cat === 'high_speed';
-        const isPlatform = cat === 'platform';
-        const isCrossover = cat === 'crossover';
-        const isPassingLoop = cat === 'passing_loop' || cat === 'pocket';
-        const isYard = cat === 'yard' || cat === 'depot';
-
-        ctx.beginPath();
-        ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
-        for (let j = 1; j < coords.length; j++) {
-          ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+        // Filter out any internal loopback/hairpin turns generated by netconvert
+        if (lane.is_internal && coords.length >= 2) {
+          const p0 = coords[0];
+          const p1 = coords[1];
+          const pN1 = coords[coords.length - 2];
+          const pN = coords[coords.length - 1];
+          const a0 = Math.atan2(p1[1] - p0[1], p1[0] - p0[0]);
+          const aN = Math.atan2(pN[1] - pN1[1], pN[1] - pN1[0]);
+          let diff = Math.abs(a0 - aN);
+          if (diff > Math.PI) diff = 2 * Math.PI - diff;
+          if (diff > (42 * Math.PI) / 180) continue;
         }
 
-        if (isPlatform) {
-          // Amber Platform Track
-          ctx.strokeStyle = '#291800';
-          ctx.lineWidth = 14 / scale;
+        // Viewport bounding box culling
+        let lMinX = coords[0][0], lMaxX = coords[0][0];
+        let lMinY = coords[0][1], lMaxY = coords[0][1];
+        for (let k = 1; k < coords.length; k++) {
+          if (coords[k][0] < lMinX) lMinX = coords[k][0];
+          if (coords[k][0] > lMaxX) lMaxX = coords[k][0];
+          if (coords[k][1] < lMinY) lMinY = coords[k][1];
+          if (coords[k][1] > lMaxY) lMaxY = coords[k][1];
+        }
+        if (lMaxX < vpMinX || lMinX > vpMaxX || lMaxY < vpMinY || lMinY > vpMaxY) {
+          continue; // Outside viewport
+        }
+
+        const cat = lane.category || 'connector';
+        const isHighSpeed = cat === 'high_speed';
+        const isPlatform = cat === 'platform' || platEdgeIds.has(lane.edge_id) || (lane.edge_id && lane.edge_id.includes('plat'));
+        const isSwitch = cat === 'switch' || lane.is_internal || (lane.edge_id && (lane.edge_id.startsWith(':') || lane.edge_id.includes('Throat')));
+        const isCrossover = cat === 'crossover' || (lane.edge_id && lane.edge_id.includes('xov'));
+        const isPassingLoop = cat === 'passing_loop' || cat === 'pocket' || (lane.edge_id && (lane.edge_id.includes('pocket') || lane.edge_id.includes('siding')));
+        const isExpressThru = cat === 'express_thru' || (lane.edge_id && lane.edge_id.includes('thru'));
+        const isYard = cat === 'yard' || cat === 'depot';
+
+        const isSelectedConv = convEdgeIds.has(lane.edge_id);
+        const isSelectedDiv = divEdgeIds.has(lane.edge_id);
+        const isSelectedSwitch = switchEdgeIds ? switchEdgeIds.has(lane.edge_id) : false;
+
+        // If a station is selected, check if this lane belongs to the station topology
+        const isConnectedToStation = isPlatform || isSelectedConv || isSelectedDiv || isSelectedSwitch || isCrossover;
+
+        // Determine feature color theme
+        let featureColor = '#0284c7';
+        if (isPlatform) featureColor = '#f59e0b';
+        else if (isCrossover) featureColor = '#f59e0b';
+        else if (isExpressThru) featureColor = '#38bdf8';
+        else if (isPassingLoop) featureColor = '#14b8a6';
+        else if (isSwitch || isSelectedSwitch) featureColor = '#818cf8';
+        else if (isYard) featureColor = '#64748b';
+        else if (isHighSpeed) featureColor = '#00f0ff';
+
+        if (isStationSelected && !isConnectedToStation) {
+          featureColor = 'rgba(71, 85, 105, 0.25)';
+        }
+
+        // =====================================================================
+        // MODE A: DEEP MICROSCOPIC RAILWAY GEOMETRY (scale >= 1.4 up to 60.0)
+        // Renders authentic dual parallel steel rails, cross-ties (sleepers), 
+        // ballast bed, and check rails (guard rails) at diamond switches!
+        // =====================================================================
+        if (scale >= 1.4) {
+          // 1. Ballast Bed
+          ctx.beginPath();
+          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+          for (let j = 1; j < coords.length; j++) {
+            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          }
+          ctx.strokeStyle = '#090e17';
+          ctx.lineWidth = 3.2; // 3.2m real-world ballast bed
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
           ctx.stroke();
+
+          ctx.strokeStyle = '#1e293b'; // Ballast shoulder edge
+          ctx.lineWidth = 3.5;
+          ctx.stroke();
+
+          // 2. Cross-Ties (Sleepers) when scale >= 2.2
+          if (scale >= 2.2) {
+            ctx.strokeStyle = '#334155'; // Concrete / hardwood railway tie
+            ctx.lineWidth = Math.max(0.24, 0.8 / scale);
+            ctx.beginPath();
+            const step = scale >= 8.0 ? 0.75 : (scale >= 4.0 ? 1.2 : 1.8);
+            for (let j = 0; j < coords.length - 1; j++) {
+              const x0 = coords[j][0], y0 = coords[j][1];
+              const x1 = coords[j + 1][0], y1 = coords[j + 1][1];
+              const dx = x1 - x0, dy = y1 - y0;
+              const segL = Math.hypot(dx, dy);
+              if (segL < 0.1) continue;
+              const ux = dx / segL, uy = dy / segL;
+              const nx = -uy, ny = ux;
+              for (let s = 0.4; s < segL; s += step) {
+                const cx = x0 + ux * s;
+                const cy = y0 + uy * s;
+                ctx.moveTo(cx + nx * 1.25, toCanvasY(cy + ny * 1.25));
+                ctx.lineTo(cx - nx * 1.25, toCanvasY(cy - ny * 1.25));
+              }
+            }
+            ctx.stroke();
+          }
+
+          // 3. Dual Parallel Steel Rails (1.435m Standard Gauge)
+          const { left, right } = getRailOffsets(coords, 1.435);
+
+          // Left Rail
+          ctx.beginPath();
+          ctx.moveTo(left[0][0], toCanvasY(left[0][1]));
+          for (let j = 1; j < left.length; j++) {
+            ctx.lineTo(left[j][0], toCanvasY(left[j][1]));
+          }
+          ctx.strokeStyle = '#475569';
+          ctx.lineWidth = Math.max(0.14, 1.2 / scale);
+          ctx.stroke();
+          ctx.strokeStyle = '#f8fafc'; // Gleaming silver railhead
+          ctx.lineWidth = Math.max(0.06, 0.6 / scale);
+          ctx.stroke();
+
+          // Right Rail
+          ctx.beginPath();
+          ctx.moveTo(right[0][0], toCanvasY(right[0][1]));
+          for (let j = 1; j < right.length; j++) {
+            ctx.lineTo(right[j][0], toCanvasY(right[j][1]));
+          }
+          ctx.strokeStyle = '#475569';
+          ctx.lineWidth = Math.max(0.14, 1.2 / scale);
+          ctx.stroke();
+          ctx.strokeStyle = '#f8fafc'; // Gleaming silver railhead
+          ctx.lineWidth = Math.max(0.06, 0.6 / scale);
+          ctx.stroke();
+
+          // 4. Subtle Centerline Color-Coded Functional Glow
+          ctx.beginPath();
+          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+          for (let j = 1; j < coords.length; j++) {
+            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          }
+          ctx.strokeStyle = featureColor;
+          ctx.lineWidth = Math.max(0.2, 0.9 / scale);
+          ctx.stroke();
+
+          // 5. Crossover Frogs & Diamond Intersections at Deep Zoom
+          if (isCrossover && coords.length >= 2) {
+            const pStart = coords[0];
+            const pEnd = coords[coords.length - 1];
+            const dSize = Math.max(1.8, 3.5 / scale);
+
+            // Frog Switch Plates
+            ctx.save();
+            ctx.translate(pStart[0], toCanvasY(pStart[1]));
+            ctx.rotate(Math.PI / 4);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(-dSize / 2, -dSize / 2, dSize, dSize);
+            ctx.restore();
+
+            ctx.save();
+            ctx.translate(pEnd[0], toCanvasY(pEnd[1]));
+            ctx.rotate(Math.PI / 4);
+            ctx.fillStyle = '#fbbf24';
+            ctx.fillRect(-dSize / 2, -dSize / 2, dSize, dSize);
+            ctx.restore();
+          }
+
+          // 6. Platform Track Labels at Deep Zoom
+          if (isPlatform && coords.length >= 2) {
+            const midIdx = Math.floor(coords.length / 2);
+            const mx = coords[midIdx][0];
+            const my = toCanvasY(coords[midIdx][1]);
+            const platLabel = lane.edge_id.replace(/^.*plat_/, 'Track ').replace(/_fw.*/, ' [FW]').replace(/_bw.*/, ' [BW]');
+            ctx.save();
+            ctx.font = `700 ${Math.min(9.5 / scale, 12)}px Inter, sans-serif`;
+            ctx.fillStyle = '#fbbf24';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'bottom';
+            ctx.fillText(platLabel, mx, my - Math.min(2.5, 3.5 / scale));
+            ctx.restore();
+          }
+        } 
+        // =====================================================================
+        // MODE B: OVERVIEW & MEDIUM ZOOM (scale < 1.4)
+        // High-contrast scale-adaptive lines with guaranteed minimum visibility
+        // =====================================================================
+        else {
+          ctx.beginPath();
+          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+          for (let j = 1; j < coords.length; j++) {
+            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          }
+
+          if (isPlatform) {
+            ctx.strokeStyle = '#020617';
+            ctx.lineWidth = Math.min(1.6, wPlatform * 1.4);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = wPlatform;
+            ctx.stroke();
+
+            ctx.strokeStyle = '#fef08a';
+            ctx.lineWidth = Math.min(0.5, wPlatform * 0.45);
+            ctx.stroke();
+          } else if (isCrossover) {
+            const isHighlighted = activeFeatureLayer === 'crossovers' || selectedFeature?.type === 'crossover';
+            ctx.strokeStyle = isHighlighted ? '#f43f5e' : (isStationSelected ? 'rgba(245, 158, 11, 0.4)' : '#f59e0b');
+            ctx.lineWidth = wNetwork * (isHighlighted ? 1.35 : 1.15);
+            ctx.stroke();
+
+            ctx.strokeStyle = '#fef08a';
+            ctx.lineWidth = Math.max(0.6 / scale, wNetwork * 0.4);
+            ctx.stroke();
+
+            if (scale >= 0.1 && coords.length >= 2) {
+              const pStart = coords[0];
+              const pEnd = coords[coords.length - 1];
+              const diamondSize = Math.max(2.5 / scale, 3.5);
+
+              ctx.save();
+              ctx.translate(pStart[0], toCanvasY(pStart[1]));
+              ctx.rotate(Math.PI / 4);
+              ctx.fillStyle = '#fbbf24';
+              ctx.fillRect(-diamondSize / 2, -diamondSize / 2, diamondSize, diamondSize);
+              ctx.restore();
+
+              ctx.save();
+              ctx.translate(pEnd[0], toCanvasY(pEnd[1]));
+              ctx.rotate(Math.PI / 4);
+              ctx.fillStyle = '#fbbf24';
+              ctx.fillRect(-diamondSize / 2, -diamondSize / 2, diamondSize, diamondSize);
+              ctx.restore();
+            }
+          } else if (isExpressThru) {
+            const isHighlighted = activeFeatureLayer === 'loops' || selectedFeature?.type === 'express_thru';
+            ctx.strokeStyle = isHighlighted ? '#38bdf8' : (isStationSelected && !isConnectedToStation ? 'rgba(2, 132, 199, 0.3)' : '#0284c7');
+            ctx.lineWidth = wNetwork * 1.2;
+            ctx.stroke();
+
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = Math.max(0.7 / scale, wNetwork * 0.45);
+            ctx.stroke();
+          } else if (isPassingLoop) {
+            const isHighlighted = activeFeatureLayer === 'loops' || selectedFeature?.type === 'passing_loop';
+            ctx.strokeStyle = isHighlighted ? '#10b981' : (isStationSelected && !isConnectedToStation ? 'rgba(20, 184, 166, 0.35)' : '#14b8a6');
+            ctx.lineWidth = wNetwork * 1.15;
+            ctx.stroke();
+
+            ctx.strokeStyle = '#99f6e4';
+            ctx.lineWidth = Math.max(0.6 / scale, wNetwork * 0.4);
+            ctx.stroke();
+
+            if (scale >= 0.12 && coords.length >= 2) {
+              const p0 = coords[0];
+              const pEnd = coords[coords.length - 1];
+              ctx.fillStyle = '#2dd4bf';
+              ctx.beginPath();
+              ctx.arc(p0[0], toCanvasY(p0[1]), Math.max(2 / scale, 3), 0, Math.PI * 2);
+              ctx.arc(pEnd[0], toCanvasY(pEnd[1]), Math.max(2 / scale, 3), 0, Math.PI * 2);
+              ctx.fill();
+            }
+          } else if (isSelectedSwitch || (isSwitch && isStationSelected && isConnectedToStation)) {
+            ctx.strokeStyle = '#818cf8';
+            ctx.lineWidth = Math.min(1.2, wPlatform * 1.15);
+            ctx.stroke();
+          } else if (isSwitch) {
+            ctx.strokeStyle = isStationSelected ? 'rgba(129, 140, 248, 0.22)' : '#818cf8';
+            ctx.lineWidth = wNetwork;
+            ctx.stroke();
+          } else if (isYard) {
+            ctx.strokeStyle = isStationSelected ? 'rgba(71, 85, 105, 0.2)' : 'rgba(100, 116, 139, 0.45)';
+            ctx.lineWidth = Math.min(0.8, 1.0 / scale);
+            ctx.stroke();
+          } else if (isHighSpeed) {
+            ctx.strokeStyle = isStationSelected && !isConnectedToStation ? 'rgba(14, 116, 144, 0.22)' : '#0284c7';
+            ctx.lineWidth = wNetwork;
+            ctx.stroke();
+
+            if (!isStationSelected || isConnectedToStation) {
+              ctx.strokeStyle = '#38bdf8';
+              ctx.lineWidth = Math.max(0.6 / scale, wNetwork * 0.45);
+              ctx.stroke();
+            }
+          } else {
+            ctx.strokeStyle = isStationSelected && !isConnectedToStation ? 'rgba(30, 41, 59, 0.22)' : '#0284c7';
+            ctx.lineWidth = wNetwork;
+            ctx.stroke();
+          }
+        }
+
+        // Active Station Converging Track (Inbound Flow): Animated Neon Cyan pulse towards station
+        if (isSelectedConv) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+          for (let j = 1; j < coords.length; j++) {
+            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          }
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = Math.min(1.8, 2.2 / scale);
+          ctx.setLineDash([Math.min(8, 12 / scale), Math.min(12, 16 / scale)]);
+          ctx.lineDashOffset = -(Date.now() / 30) % (28 / scale);
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 10;
+          ctx.stroke();
+
+          // Outer endpoint tag if zoomed in
+          if (scale >= 0.25 && coords.length >= 2) {
+            const startPt = coords[0];
+            ctx.font = `700 ${Math.min(8.5 / scale, 11)}px Inter, sans-serif`;
+            ctx.fillStyle = '#22d3ee';
+            ctx.textAlign = 'center';
+            ctx.fillText('↗ INBOUND', startPt[0], toCanvasY(startPt[1]) - Math.min(4, 5 / scale));
+          }
+          ctx.restore();
+        }
+
+        // Active Station Diverging Track (Outbound Flow): Animated Emerald pulse away from station
+        if (isSelectedDiv) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+          for (let j = 1; j < coords.length; j++) {
+            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          }
+          ctx.strokeStyle = '#10b981';
+          ctx.lineWidth = Math.min(1.8, 2.2 / scale);
+          ctx.setLineDash([Math.min(8, 12 / scale), Math.min(12, 16 / scale)]);
+          ctx.lineDashOffset = (Date.now() / 30) % (28 / scale);
+          ctx.shadowColor = '#10b981';
+          ctx.shadowBlur = 10;
+          ctx.stroke();
+
+          // Outer endpoint tag if zoomed in
+          if (scale >= 0.25 && coords.length >= 2) {
+            const endPt = coords[coords.length - 1];
+            ctx.font = `700 ${Math.min(8.5 / scale, 11)}px Inter, sans-serif`;
+            ctx.fillStyle = '#34d399';
+            ctx.textAlign = 'center';
+            ctx.fillText('↘ OUTBOUND', endPt[0], toCanvasY(endPt[1]) - Math.min(4, 5 / scale));
+          }
+          ctx.restore();
+        }
+      }
+    }
+
+    // 2. Draw Terminating Points & Buffer Stops (Hydraulic Bumper Blocks)
+    if (geometry && geometry.buffer_stops) {
+      for (const buf of geometry.buffer_stops) {
+        const bx = buf.x;
+        const by = toCanvasY(buf.y);
+        const angleRad = -((buf.angle_deg || 0) * Math.PI) / 180;
+        const isBufSelected = selectedFeature?.id === buf.id || activeFeatureLayer === 'buffer_stops';
+
+        ctx.save();
+        ctx.translate(bx, by);
+        ctx.rotate(angleRad);
+
+        // Bumper block crossbar dimensions (physical 2.6m width spanning 1.435m track gauge)
+        const barWidth = Math.max(2.6, 10 / scale);
+        const barThickness = Math.max(0.7, 3.5 / scale);
+
+        // Terminating stop posts
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(-barThickness, -barWidth / 2, barThickness, barWidth);
+
+        // Red/white striped hydraulic bumper crossbar
+        ctx.fillStyle = '#ef4444';
+        ctx.fillRect(-barThickness / 2, -barWidth / 2, barThickness, barWidth);
+
+        // White hazard diagonal stripes
+        ctx.strokeStyle = '#ffffff';
+        ctx.lineWidth = Math.max(1.4 / scale, 1.8);
+        ctx.beginPath();
+        ctx.moveTo(-barThickness / 2, -barWidth / 4);
+        ctx.lineTo(barThickness / 2, -barWidth / 2);
+        ctx.moveTo(-barThickness / 2, barWidth / 4);
+        ctx.lineTo(barThickness / 2, 0);
+        ctx.stroke();
+
+        // Twin Red Warning Marker Lights
+        const lightRadius = Math.max(2 / scale, 2.8);
+        ctx.beginPath();
+        ctx.arc(0, -barWidth / 2 + lightRadius + 1, lightRadius, 0, Math.PI * 2);
+        ctx.arc(0, barWidth / 2 - lightRadius - 1, lightRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#ef4444';
+        ctx.shadowColor = '#ef4444';
+        ctx.shadowBlur = isBufSelected ? 16 : 8;
+        ctx.fill();
+
+        ctx.restore();
+
+        // Pulsing selection radar ring if buffer stop selected
+        if (isBufSelected) {
+          const bPulse = (Math.sin(Date.now() / 150) + 1) / 2;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(bx, by, (16 / scale) * (1.2 + bPulse * 0.4), 0, Math.PI * 2);
+          ctx.strokeStyle = '#ef4444';
+          ctx.lineWidth = 2.5 / scale;
+          ctx.shadowColor = '#ef4444';
+          ctx.shadowBlur = 14;
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // Buffer stop label if zoomed in (scale >= 0.15) or buffer layer active
+        if (scale >= 0.15 || isBufSelected) {
+          ctx.save();
+          const fontSize = Math.min(9.5 / scale, 12);
+          ctx.font = `700 ${fontSize}px Inter, sans-serif`;
+          ctx.fillStyle = '#f87171';
+          ctx.textAlign = 'center';
+          ctx.fillText(`🛑 ${buf.name || 'Buffer Stop'}`, bx, by - Math.min(10 / scale, 15));
+          ctx.restore();
+        }
+      }
+    }
+
+    // 3. Draw Railway Signals (Signal Target Plates & Luminous Lenses)
+    if (showSignalHeads && geometry && geometry.signals && (scale >= 0.08 || activeFeatureLayer === 'signals')) {
+      for (const sig of geometry.signals) {
+        const sx = sig.x;
+        const sy = toCanvasY(sig.y);
+        const isSigSelected = selectedFeature?.id === sig.id;
+
+        // Signal target plate (physical ~0.7m x 1.8m head with min screen size)
+        const sigW = Math.max(0.7, 4.5 / scale);
+        const sigH = Math.max(1.8, 11 / scale);
+
+        ctx.save();
+        ctx.fillStyle = '#090d16';
+        ctx.strokeStyle = isSigSelected ? '#00f0ff' : 'rgba(255, 255, 255, 0.35)';
+        ctx.lineWidth = Math.max(0.8 / scale, 1);
+        ctx.beginPath();
+        ctx.roundRect(sx - sigW / 2, sy - sigH / 2, sigW, sigH, 2 / scale);
+        ctx.fill();
+        ctx.stroke();
+
+        // Luminous Signal Aspect Lens (Default Clear Green #10b981)
+        const lensR = Math.max(1.6 / scale, 2.0);
+        ctx.beginPath();
+        ctx.arc(sx, sy + sigH / 4, lensR, 0, Math.PI * 2);
+        ctx.fillStyle = '#10b981';
+        ctx.shadowColor = '#10b981';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+
+        ctx.restore();
+      }
+    }
+
+    // 4. Draw High-Level Track Feature Markers (When Zoomed Out, so Crossovers & Loops are instantly visible)
+    if (geometry && geometry.track_features && scale < 0.25) {
+      for (const feat of geometry.track_features) {
+        const fx = feat.x;
+        const fy = toCanvasY(feat.y);
+        const isFeatSelected = selectedFeature?.id === feat.id || activeFeatureLayer === feat.type || (activeFeatureLayer === 'loops' && (feat.type === 'passing_loop' || feat.type === 'express_thru'));
+
+        if (feat.type === 'crossover' && (activeFeatureLayer === 'all' || activeFeatureLayer === 'crossovers')) {
+          // High-Speed Diamond Crossover Zone Marker
+          ctx.save();
+          const pillW = 160 / scale;
+          const pillH = 18 / scale;
+          ctx.fillStyle = isFeatSelected ? 'rgba(245, 158, 11, 0.95)' : 'rgba(15, 23, 42, 0.88)';
           ctx.strokeStyle = '#f59e0b';
-          ctx.lineWidth = 5.5 / scale;
+          ctx.lineWidth = 1.5 / scale;
+          ctx.beginPath();
+          ctx.roundRect(fx - pillW / 2, fy - pillH / 2, pillW, pillH, 4 / scale);
+          ctx.fill();
           ctx.stroke();
-          ctx.strokeStyle = '#fef08a';
-          ctx.lineWidth = 1.8 / scale;
+
+          ctx.font = `700 ${10 / scale}px Inter, sans-serif`;
+          ctx.fillStyle = isFeatSelected ? '#020617' : '#fbbf24';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(`🔀 Crossover (${feat.speed_kmh} km/h)`, fx, fy);
+          ctx.restore();
+        } else if ((feat.type === 'express_thru' || feat.type === 'passing_loop') && (activeFeatureLayer === 'all' || activeFeatureLayer === 'loops')) {
+          // Dynamic Passing Loop / Bypass Marker
+          ctx.save();
+          const pillW = 140 / scale;
+          const pillH = 18 / scale;
+          ctx.fillStyle = isFeatSelected ? 'rgba(20, 184, 166, 0.95)' : 'rgba(15, 23, 42, 0.88)';
+          ctx.strokeStyle = '#14b8a6';
+          ctx.lineWidth = 1.5 / scale;
+          ctx.beginPath();
+          ctx.roundRect(fx - pillW / 2, fy - pillH / 2, pillW, pillH, 4 / scale);
+          ctx.fill();
           ctx.stroke();
-        } else if (isHighSpeed) {
-          // Electric Neon Cyan High-Speed Mainline
-          ctx.strokeStyle = '#07162c';
-          ctx.lineWidth = 10 / scale;
-          ctx.stroke();
-          ctx.strokeStyle = '#0284c7';
-          ctx.lineWidth = 5 / scale;
-          ctx.stroke();
-          ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 2.2 / scale;
-          ctx.stroke();
-        } else if (isCrossover) {
-          // Scissors X-Crossover (Indigo/Violet)
-          ctx.strokeStyle = '#1e1b4b';
-          ctx.lineWidth = 7 / scale;
-          ctx.stroke();
-          ctx.strokeStyle = '#818cf8';
-          ctx.lineWidth = 3 / scale;
-          ctx.stroke();
-        } else if (isPassingLoop) {
-          // Siding / Overtake Loop (Teal)
-          ctx.strokeStyle = '#042f2e';
-          ctx.lineWidth = 7 / scale;
-          ctx.stroke();
-          ctx.strokeStyle = '#2dd4bf';
-          ctx.lineWidth = 2.8 / scale;
-          ctx.stroke();
-        } else if (isYard) {
-          // Staging Yard / Siding (Muted Slate)
-          ctx.strokeStyle = '#334155';
-          ctx.lineWidth = 2.5 / scale;
-          ctx.stroke();
-        } else {
-          // Standard Mainline / Intercity Trunk (Deep Blue/Cyan)
-          ctx.strokeStyle = '#0a101d';
-          ctx.lineWidth = 7 / scale;
-          ctx.stroke();
-          ctx.strokeStyle = '#0369a1';
-          ctx.lineWidth = 2.5 / scale;
-          ctx.stroke();
+
+          ctx.font = `700 ${10 / scale}px Inter, sans-serif`;
+          ctx.fillStyle = isFeatSelected ? '#020617' : '#2dd4bf';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(feat.type === 'express_thru' ? `⚡ Express Thru` : `🔄 Passing Loop`, fx, fy);
+          ctx.restore();
         }
       }
     }
@@ -490,14 +1268,51 @@ export default function SimulationPage() {
         const hubRadius = (isCity ? 14 : 9) / scale;
         const innerRadius = (isCity ? 7 : 4.5) / scale;
 
-        // Check if this station is impacted by platform blockage or compound failure
+        // Check if this station is selected for microscopic inspection
+        const isSelectedSt = selectedStation && (selectedStation.station_name === st.station_name);
+
+        // Check if this station is impacted by platform blockage, breakdown, or compound failure
         const isDisruptedStation = activeDisruptionsData.some(d => {
-          if (d.mode !== 'platform_blockage' && d.mode !== 'compound_failure') return false;
-          if (d.platform_id && (d.platform_id.includes(st.station_name) || st.station_name.includes(d.platform_id))) return true;
-          if (d.station_name && st.display_name && (d.station_name.toLowerCase() === st.display_name.toLowerCase())) return true;
-          if (st.platforms && st.platforms.some(p => p.platform_id === d.platform_id || p.lane === d.platform_id)) return true;
+          if (d.mode === 'platform_blockage' || d.mode === 'compound_failure') {
+            if (d.station_id === st.station_name) return true;
+            if (d.platform_id && (d.platform_id.includes(st.station_name) || st.station_name.includes(d.platform_id))) return true;
+            if (d.station_name && st.display_name && (d.station_name.toLowerCase() === st.display_name.toLowerCase())) return true;
+            if (st.platforms && st.platforms.some(p => p.platform_id === d.platform_id || p.lane === d.platform_id)) return true;
+          }
           return false;
         });
+
+        const isSurgeStation = activeDisruptionsData.some(d => 
+          d.mode === 'fleet_surge' && (!d.station_id || d.station_id === st.station_name || d.station_name === st.display_name)
+        );
+
+        // If selected station: draw spinning high-tech focus brackets & cyan radar halo
+        if (isSelectedSt) {
+          const sPulse = (Math.sin(Date.now() / 180) + 1) / 2;
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(sx, sy, hubRadius * (2.1 + sPulse * 0.4), 0, Math.PI * 2);
+          ctx.strokeStyle = '#00f0ff';
+          ctx.lineWidth = 3 / scale;
+          ctx.shadowColor = '#00f0ff';
+          ctx.shadowBlur = 18;
+          ctx.setLineDash([10 / scale, 8 / scale]);
+          ctx.lineDashOffset = -(Date.now() / 45) % (18 / scale);
+          ctx.stroke();
+          ctx.restore();
+        }
+
+        // If fleet surge active: draw pulsating amber boarding wave
+        if (isSurgeStation && !isDisruptedStation) {
+          const sPulse = (Math.sin(Date.now() / 160) + 1) / 2;
+          ctx.beginPath();
+          ctx.arc(sx, sy, hubRadius * (1.8 + sPulse * 0.8), 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(245, 158, 11, ${0.8 + sPulse * 0.2})`;
+          ctx.lineWidth = 3 / scale;
+          ctx.stroke();
+          ctx.fillStyle = 'rgba(245, 158, 11, 0.2)';
+          ctx.fill();
+        }
 
         // If disrupted station: draw pulsating danger shockwave radar rings
         if (isDisruptedStation) {
@@ -549,34 +1364,44 @@ export default function SimulationPage() {
           }
         }
 
-        // Outer Glow Halo
-        ctx.beginPath();
-        ctx.arc(sx, sy, hubRadius * 1.6, 0, Math.PI * 2);
-        ctx.fillStyle = isDisruptedStation 
-          ? 'rgba(239, 68, 68, 0.3)' 
-          : (isCity ? 'rgba(0, 240, 255, 0.12)' : 'rgba(56, 189, 248, 0.08)');
-        ctx.fill();
+        // When zoomed in to inspect tracks (scale >= 0.22), fade out the giant hub disc so it does not obscure individual tracks!
+        const discAlpha = Math.max(0, 1 - (scale - 0.16) / 0.16);
 
-        // Hub Disc
-        ctx.beginPath();
-        ctx.arc(sx, sy, hubRadius, 0, Math.PI * 2);
-        ctx.fillStyle = isDisruptedStation 
-          ? 'rgba(153, 27, 27, 0.95)' 
-          : (isCity ? 'rgba(12, 74, 110, 0.95)' : 'rgba(30, 58, 138, 0.9)');
-        ctx.fill();
-        ctx.strokeStyle = isDisruptedStation ? '#ef4444' : (isCity ? '#00f0ff' : '#38bdf8');
-        ctx.lineWidth = (isDisruptedStation ? 3.5 : 2.5) / scale;
-        ctx.stroke();
+        if (discAlpha > 0) {
+          ctx.save();
+          ctx.globalAlpha = discAlpha;
 
-        // Core dot
-        ctx.beginPath();
-        ctx.arc(sx, sy, innerRadius, 0, Math.PI * 2);
-        ctx.fillStyle = '#ffffff';
-        ctx.fill();
+          // Outer Glow Halo
+          ctx.beginPath();
+          ctx.arc(sx, sy, hubRadius * 1.6, 0, Math.PI * 2);
+          ctx.fillStyle = isDisruptedStation 
+            ? 'rgba(239, 68, 68, 0.3)' 
+            : (isCity ? 'rgba(0, 240, 255, 0.12)' : 'rgba(56, 189, 248, 0.08)');
+          ctx.fill();
 
-        // Station Name Pill Badge
+          // Hub Disc
+          ctx.beginPath();
+          ctx.arc(sx, sy, hubRadius, 0, Math.PI * 2);
+          ctx.fillStyle = isDisruptedStation 
+            ? 'rgba(153, 27, 27, 0.95)' 
+            : (isCity ? 'rgba(12, 74, 110, 0.95)' : 'rgba(30, 58, 138, 0.9)');
+          ctx.fill();
+          ctx.strokeStyle = isDisruptedStation ? '#ef4444' : (isCity ? '#00f0ff' : '#38bdf8');
+          ctx.lineWidth = (isDisruptedStation ? 3.5 : 2.5) / scale;
+          ctx.stroke();
+
+          // Core dot
+          ctx.beginPath();
+          ctx.arc(sx, sy, innerRadius, 0, Math.PI * 2);
+          ctx.fillStyle = '#ffffff';
+          ctx.fill();
+
+          ctx.restore();
+        }
+
+        // Station Name Pill Badge (placed safely above yard so it never covers tracks)
         const name = st.display_name || st.station_name || 'Station';
-        const fontSize = (isCity ? 11 : 9.5) / scale;
+        const fontSize = Math.min((isCity ? 11 : 9.5) / scale, 13);
         ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
         const textMetrics = ctx.measureText(name);
         const textWidth = textMetrics.width;
@@ -585,7 +1410,9 @@ export default function SimulationPage() {
         const badgeH = fontSize + padY * 2;
         const badgeW = textWidth + padX * 2;
         const badgeX = sx - badgeW / 2;
-        const badgeY = sy - hubRadius * 1.6 - badgeH - (4 / scale);
+        const badgeY = scale >= 0.22 
+          ? sy - Math.max(hubRadius * 1.6, 65 / scale) 
+          : sy - hubRadius * 1.6 - badgeH - (4 / scale);
 
         // Badge background
         ctx.fillStyle = 'rgba(6, 11, 24, 0.9)';
@@ -653,8 +1480,11 @@ export default function SimulationPage() {
       // Check if train has an active operator override
       const activeOverride = activeOverrides[train.id];
 
-      const trainLen = (isFreight ? 38 : isHighSpeed ? 34 : 26) / scale;
-      const trainWidth = (isFreight ? 10 : 8) / scale;
+      // Physical train dimensions in meters: 3.0m - 3.4m wide, 85m - 240m long, with minimum screen visibility
+      const physLen = isFreight ? 240.0 : isHighSpeed ? 160.0 : 85.0;
+      const physWidth = isFreight ? 3.4 : 3.0;
+      const trainLen = Math.max(physLen, (isFreight ? 38 : isHighSpeed ? 34 : 26) / scale);
+      const trainWidth = Math.max(physWidth, (isFreight ? 10 : 8) / scale);
 
       // Active manual override: pulsating neon purple halo
       if (activeOverride) {
@@ -760,9 +1590,10 @@ export default function SimulationPage() {
       ctx.textBaseline = 'middle';
       ctx.fillText(trainLabel, tx, tBoxY + tH / 2);
 
-      // Floating Badges above Train for Disruptions or Overrides
+      // Floating Badges above Train for Disruptions, Surges, Reroutes, or Overrides
       if (isDisruptedTrain) {
-        const disLabel = '⚠️ MECHANICAL STALL • 0 km/h';
+        const delaySec = Math.round(train.delay_sec || 0);
+        const disLabel = `🚨 BREAKDOWN (0 km/h) • DELAY: +${delaySec}s`;
         const dFontSize = 9.5 / scale;
         ctx.font = `800 ${dFontSize}px Inter, system-ui, sans-serif`;
         const dMetrics = ctx.measureText(disLabel);
@@ -783,6 +1614,72 @@ export default function SimulationPage() {
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(disLabel, tx, dY + dH / 2);
+      } else if (train.surge_active) {
+        const sLabel = '⚡ PASSENGER DWELL SURGE (+40%)';
+        const sFontSize = 9 / scale;
+        ctx.font = `800 ${sFontSize}px Inter, system-ui, sans-serif`;
+        const sMetrics = ctx.measureText(sLabel);
+        const sW = sMetrics.width + (8 / scale);
+        const sH = sFontSize + (6 / scale);
+        const sX = tx - sW / 2;
+        const sY = ty - (26 / scale);
+
+        ctx.fillStyle = 'rgba(180, 83, 9, 0.96)';
+        ctx.beginPath();
+        ctx.roundRect(sX, sY, sW, sH, 4 / scale);
+        ctx.fill();
+        ctx.strokeStyle = '#fcd34d';
+        ctx.lineWidth = 1.5 / scale;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(sLabel, tx, sY + sH / 2);
+      } else if (train.bypass_divert) {
+        const divLabel = '🔄 AI DIVERSION: ALTERNATE PLATFORM';
+        const divFontSize = 9 / scale;
+        ctx.font = `800 ${divFontSize}px Inter, system-ui, sans-serif`;
+        const divMetrics = ctx.measureText(divLabel);
+        const divW = divMetrics.width + (8 / scale);
+        const divH = divFontSize + (6 / scale);
+        const divX = tx - divW / 2;
+        const divY = ty - (26 / scale);
+
+        ctx.fillStyle = 'rgba(67, 56, 202, 0.96)';
+        ctx.beginPath();
+        ctx.roundRect(divX, divY, divW, divH, 4 / scale);
+        ctx.fill();
+        ctx.strokeStyle = '#a5b4fc';
+        ctx.lineWidth = 1.5 / scale;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(divLabel, tx, divY + divH / 2);
+      } else if (train.is_holding || (train.speed_kmh === 0 && (train.delay_sec || 0) > 20)) {
+        const holdLabel = '⚠️ APPROACH HOLD [HEADWAY SIGNAL]';
+        const hFontSize = 9 / scale;
+        ctx.font = `800 ${hFontSize}px Inter, system-ui, sans-serif`;
+        const hMetrics = ctx.measureText(holdLabel);
+        const hW = hMetrics.width + (8 / scale);
+        const hH = hFontSize + (6 / scale);
+        const hX = tx - hW / 2;
+        const hY = ty - (26 / scale);
+
+        ctx.fillStyle = 'rgba(180, 83, 9, 0.92)';
+        ctx.beginPath();
+        ctx.roundRect(hX, hY, hW, hH, 4 / scale);
+        ctx.fill();
+        ctx.strokeStyle = '#fde68a';
+        ctx.lineWidth = 1.2 / scale;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(holdLabel, tx, hY + hH / 2);
       } else if (activeOverride) {
         const ovLabel = `🎮 OVERRIDE: ${activeOverride.label || activeOverride.type}`;
         const oFontSize = 9.5 / scale;
@@ -814,13 +1711,13 @@ export default function SimulationPage() {
     if (activeDisruptionsData.length > 0 || Object.keys(activeOverrides).length > 0) {
       let bannerY = 16;
       if (activeDisruptionsData.length > 0) {
-        const bannerW = Math.min(width - 32, 580);
+        const bannerW = Math.min(width - 32, 600);
         const bannerH = 34;
         const bannerX = (width - bannerW) / 2;
         const firstD = activeDisruptionsData[0];
         const modeLabel = firstD.mode ? firstD.mode.replace('_', ' ').toUpperCase() : 'INCIDENT';
         const targetText = firstD.station_name || firstD.vehicle_id || firstD.platform_id || 'Network';
-        const bannerText = `🚨 ACTIVE DISRUPTION: ${modeLabel} @ ${targetText} • AI Dynamic Rerouting Engaged`;
+        const bannerText = `🚨 ACTIVE DISRUPTION: ${modeLabel} @ ${targetText} • Click Station to Inspect Tracks`;
 
         ctx.fillStyle = 'rgba(153, 27, 27, 0.94)';
         ctx.beginPath();
@@ -863,7 +1760,7 @@ export default function SimulationPage() {
     }
 
     ctx.restore(); // Exit DPR scaling
-  }, [geometry, filteredTrains, selectedTrain, simStatus.active_disruptions_data, simStatus.active_overrides]);
+  }, [geometry, filteredTrains, selectedTrain, selectedStation, selectedStationTopology, simStatus.active_disruptions_data, simStatus.active_overrides]);
 
   // Request Animation Frame loop
   useEffect(() => {
@@ -879,6 +1776,7 @@ export default function SimulationPage() {
   // Pan & Zoom Controls
   const handleMouseDown = (e) => {
     isDraggingRef.current = true;
+    didDragRef.current = false;
     dragStartRef.current = { x: e.clientX, y: e.clientY };
   };
 
@@ -886,6 +1784,9 @@ export default function SimulationPage() {
     if (!isDraggingRef.current) return;
     const dx = e.clientX - dragStartRef.current.x;
     const dy = e.clientY - dragStartRef.current.y;
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      didDragRef.current = true;
+    }
     dragStartRef.current = { x: e.clientX, y: e.clientY };
     transformRef.current.offsetX += dx;
     transformRef.current.offsetY += dy;
@@ -905,7 +1806,7 @@ export default function SimulationPage() {
     const mouseY = e.clientY - rect.top;
 
     const currentScale = transformRef.current.scale;
-    const newScale = Math.min(Math.max(currentScale * zoomFactor, 0.005), 0.5);
+    const newScale = Math.min(Math.max(currentScale * zoomFactor, 0.005), 60.0);
 
     transformRef.current.offsetX = mouseX - (mouseX - transformRef.current.offsetX) * (newScale / currentScale);
     transformRef.current.offsetY = mouseY - (mouseY - transformRef.current.offsetY) * (newScale / currentScale);
@@ -913,21 +1814,36 @@ export default function SimulationPage() {
   };
 
   const zoomIn = () => {
-    transformRef.current.scale = Math.min(transformRef.current.scale * 1.3, 0.5);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const cx = canvas.clientWidth / 2;
+    const cy = canvas.clientHeight / 2;
+    const currentScale = transformRef.current.scale;
+    const newScale = Math.min(currentScale * 1.35, 60.0);
+    const factor = newScale / currentScale;
+    transformRef.current.offsetX = cx - (cx - transformRef.current.offsetX) * factor;
+    transformRef.current.offsetY = cy - (cy - transformRef.current.offsetY) * factor;
+    transformRef.current.scale = newScale;
   };
   const zoomOut = () => {
-    transformRef.current.scale = Math.max(transformRef.current.scale * 0.7, 0.005);
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const cx = canvas.clientWidth / 2;
+    const cy = canvas.clientHeight / 2;
+    const currentScale = transformRef.current.scale;
+    const newScale = Math.max(currentScale * 0.75, 0.005);
+    const factor = newScale / currentScale;
+    transformRef.current.offsetX = cx - (cx - transformRef.current.offsetX) * factor;
+    transformRef.current.offsetY = cy - (cy - transformRef.current.offsetY) * factor;
+    transformRef.current.scale = newScale;
   };
   const resetView = () => {
-    if (geometry && geometry.bounds && canvasRef.current) {
-      const cWidth = canvasRef.current.clientWidth || 1000;
-      const cHeight = canvasRef.current.clientHeight || 700;
-      transformRef.current = getCenteredTransform(geometry.bounds, cWidth, cHeight);
-    }
+    resetViewAnimated();
   };
 
   // Click on Canvas to Select Nearest Train or Station
   const handleCanvasClick = (e) => {
+    if (didDragRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas || !geometry) return;
     const rect = canvas.getBoundingClientRect();
@@ -941,6 +1857,58 @@ export default function SimulationPage() {
     const worldX = (clickX - offsetX) / scale;
     const worldY = maxY + minY - (clickY - offsetY) / scale;
 
+    // 1. Check if user clicked on a Station (prioritize station zoom)
+    if (geometry && geometry.stations) {
+      let closestStation = null;
+      let minStationDist = Math.max(50 / scale, 850); // screen click radius ~50px
+      for (const st of geometry.stations) {
+        const dist = Math.hypot(st.x - worldX, st.y - worldY);
+        if (dist < minStationDist) {
+          minStationDist = dist;
+          closestStation = st;
+        }
+      }
+      if (closestStation) {
+        zoomToStation(closestStation);
+        return;
+      }
+    }
+
+    // 2. Check if user clicked on a Buffer Stop (Dead-End Terminus)
+    if (geometry && geometry.buffer_stops) {
+      let closestBuf = null;
+      let minBufDist = 32 / scale; // ~32 screen pixels
+      for (const buf of geometry.buffer_stops) {
+        const dist = Math.hypot(buf.x - worldX, buf.y - worldY);
+        if (dist < minBufDist) {
+          minBufDist = dist;
+          closestBuf = buf;
+        }
+      }
+      if (closestBuf) {
+        zoomToFeature({ ...closestBuf, type: 'buffer_stop' });
+        return;
+      }
+    }
+
+    // 3. Check if user clicked on a Track Feature Complex (Crossover / Loop / Bypass)
+    if (geometry && geometry.track_features) {
+      let closestFeat = null;
+      let minFeatDist = 45 / scale; // ~45 screen pixels
+      for (const feat of geometry.track_features) {
+        const dist = Math.hypot(feat.x - worldX, feat.y - worldY);
+        if (dist < minFeatDist) {
+          minFeatDist = dist;
+          closestFeat = feat;
+        }
+      }
+      if (closestFeat) {
+        zoomToFeature(closestFeat);
+        return;
+      }
+    }
+
+    // 4. Check if user clicked on a Train
     let closest = null;
     let minDist = 35 / scale; // click tolerance in world coordinates
 
@@ -951,7 +1919,10 @@ export default function SimulationPage() {
         closest = t;
       }
     }
-    setSelectedTrain(closest);
+    if (closest) {
+      zoomToTrain(closest);
+      return;
+    }
   };
 
   // Playback Control Handlers
@@ -1090,6 +2061,7 @@ export default function SimulationPage() {
         mode: disruptionForm.mode,
         vehicle_id: disruptionForm.vehicle_id || undefined,
         platform_id: disruptionForm.platform_id || undefined,
+        station_id: disruptionForm.station_id || undefined,
         delay_duration_sec: Number(disruptionForm.delay_duration_sec)
       };
       const res = await fetch('/api/disruption/inject', {
@@ -1109,7 +2081,41 @@ export default function SimulationPage() {
         setEvents(data.recent_actions);
       }
       setShowDisruptionModal(false);
-      setActiveSideTab('events');
+
+      // Auto-zoom to affected station or train
+      if (disruptionForm.auto_zoom && geometry?.stations) {
+        let targetStation = null;
+        if (disruptionForm.station_id) {
+          targetStation = geometry.stations.find(s => s.station_name === disruptionForm.station_id);
+        }
+        if (!targetStation && disruptionForm.platform_id) {
+          targetStation = geometry.stations.find(s => 
+            s.station_name === disruptionForm.platform_id || 
+            s.platforms?.some(p => p.platform_id === disruptionForm.platform_id)
+          );
+        }
+        if (!targetStation && disruptionForm.vehicle_id) {
+          const t = trains.find(tr => tr.id === disruptionForm.vehicle_id);
+          if (t) {
+            targetStation = geometry.stations.find(s => s.station_name === t.upcoming_station);
+            if (!targetStation) {
+              zoomToTrain(t);
+            }
+          }
+        }
+        if (!targetStation) {
+          // Default to City 1 Central
+          targetStation = geometry.stations.find(s => s.station_name === 'City_1') || geometry.stations[0];
+        }
+
+        if (targetStation) {
+          zoomToStation(targetStation);
+          setActiveSideTab('station');
+        }
+      } else {
+        setActiveSideTab('station');
+      }
+
       fetchStatus();
     } catch (err) {
       console.error('Disruption injection error:', err);
@@ -1486,10 +2492,433 @@ export default function SimulationPage() {
               </div>
             </div>
           )}
+          {/* Floating Station Inspector HUD Card */}
+          {selectedStation && (
+            <div className="canvas-station-focus-card glass-panel">
+              <div className="station-focus-header">
+                <div className="station-focus-title">
+                  <MapPin size={18} className="text-cyan animate-pulse" />
+                  <div>
+                    <h4>{selectedStation.display_name || selectedStation.station_name}</h4>
+                    <span className="station-focus-subtitle">
+                      {selectedStation.station_name?.includes('City_1') ? 'Primary Metropolitan Hub' : 
+                       selectedStation.station_name?.includes('City_2') ? 'Regional Junction Terminal' : 
+                       'Corridor Interlocking Yard'} • {selectedStation.platforms?.length || 2} Platform Tracks
+                    </span>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedStation(null)} className="btn-close-train" title="Close Focus">
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Station Disruption Badge if any */}
+              {simStatus.active_disruptions_data?.some(d => 
+                d.station_name === selectedStation.display_name || 
+                d.station_id === selectedStation.station_name ||
+                d.mode === 'fleet_surge'
+              ) && (
+                <div className="station-focus-disruption-alert">
+                  <Flame size={14} className="text-amber animate-bounce" />
+                  <span>
+                    DISRUPTION ACTIVE: {simStatus.active_disruptions_data[0]?.title || 'Traffic Throttling'}
+                  </span>
+                </div>
+              )}
+
+              {/* Station Track Topology Stats */}
+              <div className="station-focus-stats">
+                <div className="station-stat-chip inbound">
+                  <ArrowDownRight size={13} className="text-cyan" />
+                  <span className="stat-label">Converging:</span>
+                  <span className="stat-value">{selectedStationTopology.converging.length} Inbound</span>
+                </div>
+                <div className="station-stat-chip outbound">
+                  <ArrowUpRight size={13} className="text-emerald" />
+                  <span className="stat-label">Diverging:</span>
+                  <span className="stat-value">{selectedStationTopology.diverging.length} Outbound</span>
+                </div>
+                <div className="station-stat-chip platforms">
+                  <Layers size={13} className="text-blue" />
+                  <span className="stat-label">Platforms:</span>
+                  <span className="stat-value">{selectedStationTopology.platforms.length || selectedStation.platforms?.length || 2} Bays</span>
+                </div>
+              </div>
+
+              {/* Live Trains on Station Tracks */}
+              <div className="station-focus-traffic-row">
+                <div className="traffic-metric">
+                  <span className="traffic-num text-cyan">{selectedStationTrains.approaching.length}</span>
+                  <span className="traffic-lbl">Approaching</span>
+                </div>
+                <div className="traffic-metric">
+                  <span className="traffic-num text-amber">{selectedStationTrains.dwelling.length}</span>
+                  <span className="traffic-lbl">Dwelling</span>
+                </div>
+                <div className="traffic-metric">
+                  <span className="traffic-num text-emerald">{selectedStationTrains.departing.length}</span>
+                  <span className="traffic-lbl">Departing</span>
+                </div>
+              </div>
+
+              <div className="station-focus-actions">
+                <button 
+                  onClick={() => zoomToStation(selectedStation, 2.5)} 
+                  className="btn btn-primary btn-sm"
+                  title="Zoom into Individual Platform Lines"
+                >
+                  <Layers size={14} />
+                  <span>Platform Lines (2.5x)</span>
+                </button>
+                <button 
+                  onClick={() => zoomToStation(selectedStation, 1.2)} 
+                  className="btn btn-secondary btn-sm"
+                  title="View Approach Network & Switch Throats"
+                >
+                  <GitFork size={14} />
+                  <span>Approaches (1.2x)</span>
+                </button>
+                <button 
+                  onClick={() => setActiveSideTab('station')} 
+                  className="btn btn-secondary btn-sm"
+                  title="Open Station Details in Sidebar"
+                >
+                  <Eye size={14} />
+                  <span>Sidebar</span>
+                </button>
+                <button 
+                  onClick={resetViewAnimated} 
+                  className="btn btn-secondary btn-sm"
+                  title="Zoom Out to Full Network"
+                >
+                  <Maximize2 size={14} />
+                  <span>Reset</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Google Maps Railway Infrastructure Layer Control Bar */}
+          <div className="google-maps-feature-bar glass-panel">
+            <div className="feature-bar-label">
+              <Layers size={13} className="text-cyan" />
+              <span>INFRASTRUCTURE</span>
+            </div>
+            
+            <button 
+              className={`feature-tab ${activeFeatureLayer === 'all' ? 'active' : ''}`}
+              onClick={() => setActiveFeatureLayer('all')}
+              title="Show all track features & network corridors"
+            >
+              <span>All Tracks</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-crossover ${activeFeatureLayer === 'crossovers' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveFeatureLayer(activeFeatureLayer === 'crossovers' ? 'all' : 'crossovers');
+                if (activeFeatureLayer !== 'crossovers' && geometry?.track_features) {
+                  const firstXov = geometry.track_features.find(f => f.type === 'crossover');
+                  if (firstXov) zoomToFeature(firstXov);
+                }
+              }}
+              title="Highlight 488 Double-Diamond X Crossovers & Frog Points"
+            >
+              <span className="dot dot-amber"></span>
+              <span>X Crossovers</span>
+              <span className="feature-count-badge">488</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-loop ${activeFeatureLayer === 'loops' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveFeatureLayer(activeFeatureLayer === 'loops' ? 'all' : 'loops');
+                if (activeFeatureLayer !== 'loops' && geometry?.track_features) {
+                  const firstLoop = geometry.track_features.find(f => f.type === 'passing_loop' || f.type === 'express_thru');
+                  if (firstLoop) zoomToFeature(firstLoop);
+                }
+              }}
+              title="Highlight 76 Dynamic Passing Loops & Express Bypasses"
+            >
+              <span className="dot dot-teal"></span>
+              <span>Passing Loops</span>
+              <span className="feature-count-badge">76</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-buffer ${activeFeatureLayer === 'buffer_stops' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveFeatureLayer(activeFeatureLayer === 'buffer_stops' ? 'all' : 'buffer_stops');
+                if (activeFeatureLayer !== 'buffer_stops' && geometry?.buffer_stops && geometry.buffer_stops.length > 0) {
+                  zoomToFeature({ ...geometry.buffer_stops[0], type: 'buffer_stop' });
+                }
+              }}
+              title="Highlight 23 Dead-End Terminus Buffer Stops & Hydraulic Bumpers"
+            >
+              <span className="dot dot-rose"></span>
+              <span>Buffer Stops</span>
+              <span className="feature-count-badge">23</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-signals ${activeFeatureLayer === 'signals' || showSignalHeads ? 'active' : ''}`}
+              onClick={() => {
+                setShowSignalHeads(prev => !prev);
+                setActiveFeatureLayer(prev => prev === 'signals' ? 'all' : 'signals');
+              }}
+              title="Toggle 268 Multi-Aspect Interlocking Railway Signals"
+            >
+              <span className="dot dot-emerald"></span>
+              <span>Signals</span>
+              <span className="feature-count-badge">268</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-explorer ${showFeatureMenu ? 'active' : ''}`}
+              onClick={() => setShowFeatureMenu(prev => !prev)}
+              title="Explore Infrastructure Elements & Fly-To Any Feature"
+            >
+              <Crosshair size={13} className="text-cyan" />
+              <span>Explorer</span>
+            </button>
+          </div>
+
+          {/* Floating Feature Inspector HUD Card */}
+          {selectedFeature && (
+            <div className="canvas-feature-focus-card glass-panel">
+              <div className="feature-focus-header">
+                <div className="feature-focus-title">
+                  <div className={`feature-icon-box ${selectedFeature.type || (selectedFeature.signal_type ? 'signal' : 'crossover')}`}>
+                    {selectedFeature.type === 'crossover' && <GitFork size={18} className="text-amber" />}
+                    {(selectedFeature.type === 'passing_loop' || selectedFeature.type === 'express_thru') && <Activity size={18} className="text-teal" />}
+                    {selectedFeature.type === 'buffer_stop' && <AlertTriangle size={18} className="text-rose" />}
+                    {selectedFeature.signal_type && <Zap size={18} className="text-emerald" />}
+                  </div>
+                  <div>
+                    <h4>{selectedFeature.name || selectedFeature.id}</h4>
+                    <span className="feature-focus-subtitle">
+                      {selectedFeature.type === 'crossover' && 'High-Speed Double Diamond X-Crossover Complex'}
+                      {selectedFeature.type === 'passing_loop' && 'Dynamic Siding / Passing Loop'}
+                      {selectedFeature.type === 'express_thru' && 'Express Center Thru-Line Bypass'}
+                      {selectedFeature.type === 'buffer_stop' && `Dead-End Bay Terminus • ${selectedFeature.station_name || 'Terminal'}`}
+                      {selectedFeature.signal_type && `Railway Interlocking Signal • ${selectedFeature.signal_type}`}
+                    </span>
+                  </div>
+                </div>
+                <button onClick={() => setSelectedFeature(null)} className="btn-close-train" title="Close Focus">
+                  <X size={16} />
+                </button>
+              </div>
+
+              <div className="feature-focus-specs">
+                <div className="spec-item">
+                  <span className="spec-lbl">Feature Type</span>
+                  <span className="spec-val highlight">
+                    {selectedFeature.type === 'crossover' ? 'X Diamond Switch' :
+                     selectedFeature.type === 'passing_loop' ? 'Passing Loop' :
+                     selectedFeature.type === 'express_thru' ? 'Express Bypass' :
+                     selectedFeature.type === 'buffer_stop' ? 'Buffer Stop (Dead End)' : 'Signal Post'}
+                  </span>
+                </div>
+                {selectedFeature.speed_kmh && (
+                  <div className="spec-item">
+                    <span className="spec-lbl">Design Speed</span>
+                    <span className="spec-val text-amber">{selectedFeature.speed_kmh} km/h</span>
+                  </div>
+                )}
+                {selectedFeature.lane_count && (
+                  <div className="spec-item">
+                    <span className="spec-lbl">Turnout Lanes</span>
+                    <span className="spec-val text-cyan">{selectedFeature.lane_count} Tracks</span>
+                  </div>
+                )}
+                {selectedFeature.station_name && (
+                  <div className="spec-item">
+                    <span className="spec-lbl">Station / Yard</span>
+                    <span className="spec-val text-blue">{selectedFeature.station_name}</span>
+                  </div>
+                )}
+                <div className="spec-item">
+                  <span className="spec-lbl">Coordinates</span>
+                  <span className="spec-val font-mono">X: {Math.round(selectedFeature.x)}m, Y: {Math.round(selectedFeature.y)}m</span>
+                </div>
+              </div>
+
+              {selectedFeature.description && (
+                <div className="feature-focus-desc">
+                  <p>{selectedFeature.description}</p>
+                </div>
+              )}
+
+              <div className="feature-focus-actions">
+                <button 
+                  onClick={() => zoomToFeature(selectedFeature, selectedFeature.type === 'buffer_stop' ? 24.0 : selectedFeature.type === 'crossover' ? 12.0 : 14.0)} 
+                  className="btn btn-primary btn-sm"
+                  title="Fly to and Focus Feature"
+                >
+                  <Crosshair size={14} />
+                  <span>Inspect Close-Up</span>
+                </button>
+                <button 
+                  onClick={resetViewAnimated} 
+                  className="btn btn-secondary btn-sm"
+                  title="Reset to Full Network"
+                >
+                  <Maximize2 size={14} />
+                  <span>Network Overview</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Infrastructure Explorer Drawer */}
+          {showFeatureMenu && (
+            <div className="feature-explorer-drawer glass-panel">
+              <div className="drawer-header">
+                <div className="drawer-title">
+                  <Layers size={16} className="text-cyan" />
+                  <h4>Railway Infrastructure Directory</h4>
+                </div>
+                <button onClick={() => setShowFeatureMenu(false)} className="btn-close-train">
+                  <X size={15} />
+                </button>
+              </div>
+
+              <div className="drawer-tabs">
+                <button 
+                  className={`drawer-tab-btn ${activeFeatureLayer === 'crossovers' ? 'active' : ''}`}
+                  onClick={() => setActiveFeatureLayer('crossovers')}
+                >
+                  🔀 X Crossovers ({geometry?.track_features?.filter(f => f.type === 'crossover')?.length || 8})
+                </button>
+                <button 
+                  className={`drawer-tab-btn ${activeFeatureLayer === 'loops' ? 'active' : ''}`}
+                  onClick={() => setActiveFeatureLayer('loops')}
+                >
+                  🔄 Loops & Bypasses ({geometry?.track_features?.filter(f => f.type === 'passing_loop' || f.type === 'express_thru')?.length || 12})
+                </button>
+                <button 
+                  className={`drawer-tab-btn ${activeFeatureLayer === 'buffer_stops' ? 'active' : ''}`}
+                  onClick={() => setActiveFeatureLayer('buffer_stops')}
+                >
+                  🛑 Buffer Stops ({geometry?.buffer_stops?.length || 23})
+                </button>
+              </div>
+
+              <div className="drawer-items-list">
+                {activeFeatureLayer === 'buffer_stops' ? (
+                  (geometry?.buffer_stops || []).map((buf) => (
+                    <div 
+                      key={buf.id} 
+                      className={`drawer-feature-item ${selectedFeature?.id === buf.id ? 'active' : ''}`}
+                      onClick={() => zoomToFeature({ ...buf, type: 'buffer_stop' })}
+                    >
+                      <div className="item-icon-col text-rose">🛑</div>
+                      <div className="item-info-col">
+                        <div className="item-name">{buf.name}</div>
+                        <div className="item-sub">Terminus at {buf.station_name || 'Terminal'} • Heading {Math.round(buf.angle_deg)}°</div>
+                      </div>
+                      <button className="btn-item-fly" title="Zoom to Buffer Stop">
+                        <Crosshair size={13} />
+                      </button>
+                    </div>
+                  ))
+                ) : (
+                  (geometry?.track_features || [])
+                    .filter(f => {
+                      if (activeFeatureLayer === 'crossovers') return f.type === 'crossover';
+                      if (activeFeatureLayer === 'loops') return f.type === 'passing_loop' || f.type === 'express_thru';
+                      return true;
+                    })
+                    .map((feat) => (
+                      <div 
+                        key={feat.id} 
+                        className={`drawer-feature-item ${selectedFeature?.id === feat.id ? 'active' : ''}`}
+                        onClick={() => zoomToFeature(feat)}
+                      >
+                        <div className="item-icon-col">
+                          {feat.type === 'crossover' ? '🔀' : feat.type === 'express_thru' ? '⚡' : '🔄'}
+                        </div>
+                        <div className="item-info-col">
+                          <div className="item-name">{feat.name}</div>
+                          <div className="item-sub">
+                            {feat.type === 'crossover' ? `Diamond Switch • ${feat.lane_count} turnouts • ${feat.speed_kmh} km/h` :
+                             feat.type === 'express_thru' ? `Express Bypass • ${feat.speed_kmh} km/h` :
+                             `Passing Loop • ${feat.lane_count} siding tracks • ${feat.speed_kmh} km/h`}
+                          </div>
+                        </div>
+                        <button className="btn-item-fly" title="Fly to Feature">
+                          <Crosshair size={13} />
+                        </button>
+                      </div>
+                    ))
+                )}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Right Dispatcher Control Panel */}
         <aside className="sim-sidebar glass-panel">
+          {/* Active Disruption Emergency Banner */}
+          {simStatus.active_disruptions_data && simStatus.active_disruptions_data.length > 0 && (
+            <div className="sidebar-incident-alert-banner">
+              <div className="incident-banner-top">
+                <div className="incident-banner-title">
+                  <Flame size={16} className="text-rose animate-pulse" />
+                  <span className="incident-badge">ACTIVE NETWORK INCIDENT</span>
+                </div>
+                <button 
+                  onClick={handleClearDisruptions}
+                  className="btn-clear-incident"
+                  title="Clear Disruption"
+                >
+                  Clear
+                </button>
+              </div>
+              {simStatus.active_disruptions_data.map((d, i) => (
+                <div key={i} className="incident-item">
+                  <div className="incident-item-header">
+                    <span className="incident-type-tag">{d.title || d.mode?.replace(/_/g, ' ').toUpperCase()}</span>
+                    <span className="incident-delay-tag">+{d.delay_duration_sec || 180}s DELAY</span>
+                  </div>
+                  <p className="incident-item-desc">{d.description || d.impact || 'Service throttling in progress.'}</p>
+                  <div className="incident-actions-row">
+                    <button 
+                      onClick={() => {
+                        const stName = d.station_name || d.station_id || 'City 1 Central';
+                        const st = geometry?.stations?.find(s => 
+                          s.station_name === stName || 
+                          s.display_name === stName ||
+                          s.display_name?.includes(stName) ||
+                          s.station_name === 'City_1'
+                        ) || geometry?.stations?.[0];
+                        if (st) {
+                          zoomToStation(st);
+                          setActiveSideTab('station');
+                        }
+                      }}
+                      className="btn btn-incident-action btn-xs"
+                    >
+                      <MapPin size={12} /> Zoom to Station
+                    </button>
+                    {d.vehicle_id && (
+                      <button 
+                        onClick={() => {
+                          const t = trains.find(tr => tr.id === d.vehicle_id);
+                          if (t) zoomToTrain(t);
+                        }}
+                        className="btn btn-incident-action btn-xs"
+                      >
+                        <Train size={12} /> Focus Train #{d.vehicle_id}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Tabs */}
           <div className="sidebar-tabs">
             <button 
@@ -1498,6 +2927,18 @@ export default function SimulationPage() {
             >
               <Train size={15} />
               <span>Trains ({trains.length})</span>
+            </button>
+            <button 
+              className={`sidebar-tab ${activeSideTab === 'station' ? 'active' : ''}`}
+              onClick={() => {
+                setActiveSideTab('station');
+                if (!selectedStation && geometry?.stations?.length > 0) {
+                  zoomToStation(geometry.stations[0]);
+                }
+              }}
+            >
+              <MapPin size={15} />
+              <span>Station {selectedStation ? `(${selectedStation.display_name?.split(' ')[0]})` : ''}</span>
             </button>
             <button 
               className={`sidebar-tab ${activeSideTab === 'events' ? 'active' : ''}`}
@@ -1561,17 +3002,7 @@ export default function SimulationPage() {
                       key={t.id}
                       onClick={() => {
                         setSelectedTrain(t);
-                        // Center camera on train
-                        if (canvasRef.current && geometry && geometry.bounds) {
-                          const [, minY, , maxY] = geometry.bounds;
-                          const cWidth = canvasRef.current.clientWidth;
-                          const cHeight = canvasRef.current.clientHeight;
-                          const { scale } = transformRef.current;
-                          const screenTrainX = t.x;
-                          const screenTrainY = maxY - t.y + minY;
-                          transformRef.current.offsetX = cWidth / 2 - screenTrainX * scale;
-                          transformRef.current.offsetY = cHeight / 2 - screenTrainY * scale;
-                        }
+                        zoomToTrain(t);
                       }}
                       className={`train-row-item ${selectedTrain && selectedTrain.id === t.id ? 'active' : ''}`}
                     >
@@ -1589,6 +3020,271 @@ export default function SimulationPage() {
                   ))
                 )}
               </div>
+            </div>
+          )}
+
+          {/* Station Tracks & Disruption Inspector Tab */}
+          {activeSideTab === 'station' && (
+            <div className="sidebar-tab-content station-tab-content">
+              {/* Station Picker Dropdown */}
+              <div className="station-selector-box">
+                <label className="sidebar-field-label">
+                  <Navigation size={13} className="text-cyan" />
+                  <span>Select Network Station:</span>
+                </label>
+                <select 
+                  value={selectedStation?.station_name || ''} 
+                  onChange={(e) => {
+                    const st = geometry?.stations?.find(s => s.station_name === e.target.value);
+                    if (st) zoomToStation(st);
+                  }}
+                  className="sidebar-station-select"
+                >
+                  <option value="" disabled>-- Select Station to Inspect --</option>
+                  {geometry?.stations?.map(st => (
+                    <option key={st.station_name} value={st.station_name}>
+                      {st.display_name || st.station_name} ({st.platforms?.length || 2} Platforms)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {!selectedStation ? (
+                <div className="empty-trains-notice">
+                  <MapPin size={32} className="text-cyan animate-pulse" />
+                  <span>Click any station on the map or select from above to zoom into its converging & diverging tracks.</span>
+                  {geometry?.stations?.length > 0 && (
+                    <button 
+                      onClick={() => zoomToStation(geometry.stations[0])} 
+                      className="btn btn-primary btn-sm"
+                    >
+                      <Eye size={14} /> Zoom into {geometry.stations[0].display_name}
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <div className="station-inspector-scroll">
+                  {/* Station Banner Header */}
+                  <div className="station-detail-banner glass-panel">
+                    <div className="banner-station-name-row">
+                      <div className="banner-title-box">
+                        <span className="station-id-tag">STATION {selectedStation.station_name}</span>
+                        <h3>{selectedStation.display_name || selectedStation.station_name}</h3>
+                      </div>
+                      <button 
+                        onClick={() => zoomToStation(selectedStation)} 
+                        className="btn-rezoom" 
+                        title="Re-center Camera"
+                      >
+                        <Crosshair size={14} />
+                      </button>
+                    </div>
+                    <div className="banner-topology-summary">
+                      <span className="topo-tag">
+                        <ArrowDownRight size={12} className="text-cyan" />
+                        {selectedStationTopology.converging.length} Converging Inbound
+                      </span>
+                      <span className="topo-tag">
+                        <ArrowUpRight size={12} className="text-emerald" />
+                        {selectedStationTopology.diverging.length} Diverging Outbound
+                      </span>
+                      <span className="topo-tag">
+                        <Layers size={12} className="text-blue" />
+                        {selectedStationTopology.platforms.length || selectedStation.platforms?.length || 2} Platform Tracks
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Disruption Abnormal Impact Diagnosis */}
+                  {(() => {
+                    const activeDisruptions = simStatus.active_disruptions_data || [];
+                    const isStationAffected = activeDisruptions.some(d => 
+                      d.station_name === selectedStation.display_name || 
+                      d.station_id === selectedStation.station_name ||
+                      d.mode === 'fleet_surge'
+                    );
+
+                    return (
+                      <div className={`station-disruption-impact-box ${isStationAffected ? 'active-disruption-impact' : 'nominal-impact'}`}>
+                        <div className="impact-box-header">
+                          {isStationAffected ? (
+                            <>
+                              <Flame size={16} className="text-rose animate-pulse" />
+                              <span className="impact-header-title text-rose">ABNORMAL IMPACT DIAGNOSIS</span>
+                            </>
+                          ) : (
+                            <>
+                              <Activity size={16} className="text-emerald" />
+                              <span className="impact-header-title text-emerald">INTERLOCKING NOMINAL STATUS</span>
+                            </>
+                          )}
+                        </div>
+
+                        {activeDisruptions.find(d => d.mode === 'fleet_surge') && (
+                          <div className="impact-scenario-item">
+                            <span className="scenario-pill pill-amber">FLEET SURGE ACTIVE</span>
+                            <p className="scenario-detail">
+                              Heavy passenger crowding adds +40% dwell jitter (+75s to +180s) to platform stops. Platforms turn over sluggishly, forcing converging inbound trains to brake early and hold at throat approach signals.
+                            </p>
+                          </div>
+                        )}
+
+                        {activeDisruptions.find(d => d.mode === 'platform_blockage') && (
+                          <div className="impact-scenario-item">
+                            <span className="scenario-pill pill-rose">PLATFORM CLOSURE ACTIVE</span>
+                            <p className="scenario-detail">
+                              Platform 1 is locked with red interlocking stop signals. AI Dispatcher is dynamically rerouting converging inbound trains across switch ladders to open platforms.
+                            </p>
+                          </div>
+                        )}
+
+                        {activeDisruptions.find(d => d.mode === 'train_delay') && (
+                          <div className="impact-scenario-item">
+                            <span className="scenario-pill pill-rose">MECHANICAL BREAKDOWN ACTIVE</span>
+                            <p className="scenario-detail">
+                              Train is stalled at 0 km/h with an emergency brake lock. Trailing trains on converging tracks are throttled to maintain safety headways.
+                            </p>
+                          </div>
+                        )}
+
+                        {!isStationAffected && (
+                          <p className="scenario-detail nominal-text">
+                            Interlocking throat signals green. All converging tracks (↗ Inbound) and diverging tracks (↘ Outbound) operating at full design timetable velocity.
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })()}
+
+                  {/* Platform Bays Status */}
+                  <div className="station-section-card">
+                    <div className="section-card-title">
+                      <Layers size={14} className="text-blue" />
+                      <span>Platform Bays ({selectedStation.platforms?.length || 2})</span>
+                    </div>
+                    <div className="platforms-grid">
+                      {(selectedStation.platforms || [
+                        { platform_id: `${selectedStation.station_name}_P1`, track: 1, direction: 'fw' },
+                        { platform_id: `${selectedStation.station_name}_P2`, track: 2, direction: 'bw' }
+                      ]).map((p, idx) => {
+                        const isBlocked = simStatus.active_disruptions_data?.some(d => 
+                          d.mode === 'platform_blockage' && (d.platform_id === p.platform_id || d.platform_id === selectedStation.station_name)
+                        ) || (simStatus.active_disruptions_data?.some(d => d.mode === 'compound_failure') && idx === 0);
+
+                        const dwellingTrain = selectedStationTrains.dwelling.find(t => 
+                          t.scheduled_platform === p.platform_id || t.road_id === p.platform_id || idx === 0
+                        );
+
+                        return (
+                          <div key={p.platform_id || idx} className={`platform-status-card ${isBlocked ? 'platform-blocked' : dwellingTrain ? 'platform-occupied' : 'platform-clear'}`}>
+                            <div className="platform-card-top">
+                              <span className="platform-name">Track {p.track || idx + 1}</span>
+                              <span className={`platform-badge ${isBlocked ? 'badge-blocked' : dwellingTrain ? 'badge-occupied' : 'badge-clear'}`}>
+                                {isBlocked ? 'BLOCKED' : dwellingTrain ? 'DWELLING' : 'OPEN'}
+                              </span>
+                            </div>
+                            <div className="platform-card-body">
+                              {isBlocked ? (
+                                <span className="platform-subtext text-rose">⛔ Barricaded / Rerouting Traffic</span>
+                              ) : dwellingTrain ? (
+                                <span className="platform-subtext text-amber">
+                                  🚆 Train #{dwellingTrain.train_number || dwellingTrain.id} ({Math.round(dwellingTrain.speed_kmh || (dwellingTrain.speed || 0) * 3.6)} km/h • +{Math.round(dwellingTrain.delay_sec || 0)}s)
+                                </span>
+                              ) : (
+                                <span className="platform-subtext text-emerald">Ready for Incoming Train</span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Converging Tracks (Inbound ↗) */}
+                  <div className="station-section-card">
+                    <div className="section-card-title">
+                      <ArrowDownRight size={14} className="text-cyan" />
+                      <span>↗ Converging Inbound Tracks ({selectedStationTopology.converging.length})</span>
+                      <span className="section-pill cyan-pill">APPROACH THROAT</span>
+                    </div>
+                    <div className="tracks-traffic-list">
+                      {selectedStationTrains.approaching.length === 0 ? (
+                        <span className="empty-subtext">No trains currently on inbound converging approach blocks.</span>
+                      ) : (
+                        selectedStationTrains.approaching.map(t => (
+                          <div 
+                            key={t.id} 
+                            onClick={() => zoomToTrain(t)}
+                            className="station-train-row converging-row"
+                          >
+                            <div className="row-left">
+                              <span className="row-tag-inbound">↗ INBOUND</span>
+                              <span className="row-train-num">#{t.train_number || t.id}</span>
+                              <span className="row-cat">{t.category}</span>
+                            </div>
+                            <div className="row-right">
+                              <span className="row-speed">{Math.round(t.speed_kmh || (t.speed || 0) * 3.6)} km/h</span>
+                              <span className={`row-delay ${(t.delay_sec || 0) > 30 ? 'delay-bad' : 'delay-ok'}`}>
+                                {(t.delay_sec || 0) > 0 ? `+${Math.round(t.delay_sec)}s` : 'ON TIME'}
+                              </span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Diverging Tracks (Outbound ↘) */}
+                  <div className="station-section-card">
+                    <div className="section-card-title">
+                      <ArrowUpRight size={14} className="text-emerald" />
+                      <span>↘ Diverging Outbound Tracks ({selectedStationTopology.diverging.length})</span>
+                      <span className="section-pill emerald-pill">DEPARTURE THROAT</span>
+                    </div>
+                    <div className="tracks-traffic-list">
+                      {selectedStationTrains.departing.length === 0 ? (
+                        <span className="empty-subtext">No trains currently on outbound diverging departure blocks.</span>
+                      ) : (
+                        selectedStationTrains.departing.map(t => (
+                          <div 
+                            key={t.id} 
+                            onClick={() => zoomToTrain(t)}
+                            className="station-train-row diverging-row"
+                          >
+                            <div className="row-left">
+                              <span className="row-tag-outbound">↘ OUTBOUND</span>
+                              <span className="row-train-num">#{t.train_number || t.id}</span>
+                              <span className="row-cat">{t.category}</span>
+                            </div>
+                            <div className="row-right">
+                              <span className="row-speed">{Math.round(t.speed_kmh || (t.speed || 0) * 3.6)} km/h</span>
+                              <span className={`row-delay ${(t.delay_sec || 0) > 30 ? 'delay-bad' : 'delay-ok'}`}>
+                                {(t.delay_sec || 0) > 0 ? `+${Math.round(t.delay_sec)}s` : 'ON TIME'}
+                              </span>
+                            </div>
+                          </div>
+                        ))
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Quick Station Switcher */}
+                  <div className="quick-stations-box">
+                    <span className="quick-stations-title">Quick Jump to Major Hubs:</span>
+                    <div className="quick-stations-chips">
+                      {geometry?.stations?.slice(0, 6).map(st => (
+                        <button
+                          key={st.station_name}
+                          onClick={() => zoomToStation(st)}
+                          className={`quick-chip ${selectedStation?.station_name === st.station_name ? 'active' : ''}`}
+                        >
+                          {st.display_name?.split(' ')[0] || st.station_name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
@@ -1622,7 +3318,7 @@ export default function SimulationPage() {
       {/* Disruption Injection Modal */}
       {showDisruptionModal && (
         <div className="modal-backdrop">
-          <div className="modal-content glass-panel">
+          <div className="modal-content glass-panel disruption-modal-enhanced">
             <div className="modal-header">
               <div className="modal-title-row">
                 <AlertTriangle size={20} className="modal-icon-alert" />
@@ -1658,9 +3354,26 @@ export default function SimulationPage() {
                 />
               </div>
 
+              {disruptionForm.mode === 'fleet_surge' && (
+                <div className="form-group">
+                  <label>Target Station (Passenger Surge Hub):</label>
+                  <select 
+                    value={disruptionForm.station_id || 'City_1'}
+                    onChange={(e) => setDisruptionForm(prev => ({ ...prev, station_id: e.target.value }))}
+                    className="modal-select"
+                  >
+                    {geometry?.stations?.map(st => (
+                      <option key={st.station_name} value={st.station_name}>
+                        {st.display_name || st.station_name} ({st.platforms?.length || 2} Platforms)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               {disruptionForm.mode === 'train_delay' && (
                 <div className="form-group">
-                  <label>Target Train:</label>
+                  <label>Target Train (Breakdown):</label>
                   <select 
                     value={disruptionForm.vehicle_id}
                     onChange={(e) => setDisruptionForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
@@ -1740,6 +3453,46 @@ export default function SimulationPage() {
                   </div>
                 </>
               )}
+
+              {/* Disruption Behavior Explanation Card */}
+              <div className="disruption-explanation-card">
+                <div className="disruption-explanation-title">
+                  <Activity size={14} className="text-cyan" />
+                  <span>Abnormal Changes You Will Observe:</span>
+                </div>
+                {disruptionForm.mode === 'fleet_surge' && (
+                  <p>
+                    <strong>⚡ Fleet Surge (Dwell Jitter):</strong> Injects unexpected passenger surge (+40% dwell time, +75s to +180s) at the selected station. Platform tracks remain occupied longer; approaching trains on converging inbound tracks will crawl or hold at throat signals.
+                  </p>
+                )}
+                {disruptionForm.mode === 'train_delay' && (
+                  <p>
+                    <strong>🚨 Mechanical Stall:</strong> Drops train speed immediately to <strong>0 km/h</strong>. Follower trains on the same corridor track will automatically decelerate to maintain safety headways or divert across crossovers.
+                  </p>
+                )}
+                {disruptionForm.mode === 'platform_blockage' && (
+                  <p>
+                    <strong>🛑 Platform Track Closure:</strong> Selected platform track is locked with red interlocking stop aspect. Converging inbound trains scheduled for this track are dynamically rerouted by the AI dispatcher to alternate platforms.
+                  </p>
+                )}
+                {disruptionForm.mode === 'compound_failure' && (
+                  <p>
+                    <strong>⚠️ Compound Failure:</strong> Mainline propulsion failure stalls a train while a key station platform is locked out simultaneously. High congestion spreads across converging tracks.
+                  </p>
+                )}
+              </div>
+
+              {/* Auto-zoom Checkbox */}
+              <div className="form-group checkbox-group">
+                <label className="modal-checkbox-label">
+                  <input 
+                    type="checkbox"
+                    checked={disruptionForm.auto_zoom}
+                    onChange={(e) => setDisruptionForm(prev => ({ ...prev, auto_zoom: e.target.checked }))}
+                  />
+                  <span>Auto-zoom camera into affected station & track network upon injection</span>
+                </label>
+              </div>
 
               <div className="modal-actions">
                 <button type="button" onClick={handleClearDisruptions} className="btn btn-secondary">

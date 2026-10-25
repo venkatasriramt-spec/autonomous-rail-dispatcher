@@ -602,6 +602,39 @@ class SimulationManager:
                     train_entry[k] = v
             active_demo.append(train_entry)
 
+        # Apply active disruptions dynamically to demo vehicles
+        for d in self.active_disruptions_data:
+            d_mode = d.get("mode")
+            d_vid = d.get("vehicle_id")
+            d_pid = d.get("platform_id")
+            d_sid = d.get("station_id")
+
+            if d_mode in ("train_delay", "compound_failure") and d_vid:
+                for t_entry in active_demo:
+                    if t_entry.get("id") == d_vid:
+                        t_entry["speed_kmh"] = 0.0
+                        t_entry["speed_ms"] = 0.0
+                        t_entry["is_stalled"] = True
+                        elapsed = max(0.0, self.sim_time_sec - d.get("start_time", self.sim_time_sec))
+                        t_entry["delay_sec"] = max(180.0, 180.0 + elapsed)
+
+            if d_mode in ("platform_blockage", "compound_failure") and d_pid:
+                for t_entry in active_demo:
+                    sched = str(t_entry.get("scheduled_platform", ""))
+                    if sched == d_pid or d_pid in sched:
+                        t_entry["bypass_divert"] = True
+                        t_entry["scheduled_platform"] = sched.replace("_plat_1_", "_plat_2_").replace("_p1_", "_p2_")
+                        t_entry["delay_sec"] = max(45.0, t_entry.get("delay_sec", 0.0) + 15.0)
+
+            if d_mode == "fleet_surge":
+                for t_entry in active_demo:
+                    if not d_sid or t_entry.get("upcoming_station") == d_sid or d_sid in str(t_entry.get("upcoming_station", "")):
+                        t_entry["surge_active"] = True
+                        t_entry["delay_sec"] = max(75.0, t_entry.get("delay_sec", 0.0) + 30.0)
+                        if t_entry.get("is_at_stop"):
+                            t_entry["speed_kmh"] = 0.0
+                            t_entry["speed_ms"] = 0.0
+
         self.trains_cache = active_demo
 
         # Simulate platform occupancies
@@ -610,15 +643,23 @@ class SimulationManager:
             st_name = st["station_name"]
             for p in st.get("platforms", [])[:4]:
                 occ = random.random() < 0.25
-                mock_plats.append({
+                plat_item = {
                     "platform_id": p["platform_id"],
                     "station_name": st_name,
                     "track": p.get("track", "p1"),
                     "direction": p.get("direction", "fw"),
                     "is_occupied": occ,
                     "occupying_train_id": f"REG_{random.randint(10, 99)}" if occ else None,
-                    "dwell_rem_sec": random.randint(10, 60) if occ else 0.0
-                })
+                    "dwell_rem_sec": random.randint(10, 60) if occ else 0.0,
+                    "is_blocked": False
+                }
+                for d in self.active_disruptions_data:
+                    if d.get("mode") in ("platform_blockage", "compound_failure"):
+                        t_pid = d.get("platform_id")
+                        if t_pid and (t_pid == p["platform_id"] or t_pid == p.get("lane") or t_pid in p["platform_id"]):
+                            plat_item["is_blocked"] = True
+                            plat_item["is_occupied"] = False
+                mock_plats.append(plat_item)
         self.platforms_cache = mock_plats
 
         # Occasionally add an AI decision event for demo realism
@@ -691,35 +732,62 @@ class SimulationManager:
         if len(self.recent_actions) > 50:
             self.recent_actions.pop()
 
-    def inject_disruption(self, mode: str, vehicle_id: Optional[str] = None, platform_id: Optional[str] = None, duration: float = 600.0) -> bool:
+    def inject_disruption(self, mode: str, vehicle_id: Optional[str] = None, platform_id: Optional[str] = None, station_id: Optional[str] = None, duration: float = 600.0) -> bool:
         """Injects a physical disruption into the running simulation under lock with structured tracking."""
         with self._lock:
             # Auto-resolve target vehicle if train delay or compound failure
             resolved_vid = vehicle_id
             if not resolved_vid and mode in ("train_delay", "compound_failure") and self.trains_cache:
                 resolved_vid = self.trains_cache[0].get("id", "REG_120_01")
+            elif not resolved_vid and mode in ("train_delay", "compound_failure"):
+                resolved_vid = "REG_120_01"
 
-            # Auto-resolve target platform if platform closure or compound failure
+            # Auto-resolve target platform and station
             resolved_pid = platform_id
-            station_name = "City 1 Central"
+            resolved_sid = station_id
+            station_name = "City 1 Metropolis"
+
+            if resolved_sid:
+                for st in self.geometry.get("stations", []):
+                    if st.get("station_name") == resolved_sid:
+                        station_name = st.get("display_name", st.get("station_name"))
+                        if not resolved_pid and st.get("platforms"):
+                            resolved_pid = st["platforms"][0].get("platform_id")
+                        break
+
             if not resolved_pid and mode in ("platform_blockage", "compound_failure"):
                 resolved_pid = "City_1_plat_1_fw"
-                station_name = "City 1 Central"
+                resolved_sid = "City_1"
+                station_name = "City 1 Metropolis"
             elif resolved_pid:
                 for st in self.geometry.get("stations", []):
                     if st.get("station_name") == resolved_pid:
+                        resolved_sid = st.get("station_name")
                         station_name = st.get("display_name", st.get("station_name"))
                         break
                     for p in st.get("platforms", []):
                         if p.get("platform_id") == resolved_pid or p.get("lane") == resolved_pid:
+                            resolved_sid = st.get("station_name")
                             station_name = st.get("display_name", st.get("station_name"))
                             break
+
+            if not resolved_sid:
+                if resolved_vid and self.trains_cache:
+                    for t in self.trains_cache:
+                        if t.get("id") == resolved_vid:
+                            resolved_sid = t.get("upcoming_station", "City_1")
+                            break
+                if not resolved_sid:
+                    resolved_sid = "City_1"
+                    station_name = "City 1 Metropolis"
 
             desc = f"{mode}: duration {duration}s"
             if resolved_vid:
                 desc += f" on {resolved_vid}"
             if resolved_pid:
                 desc += f" on {resolved_pid}"
+            if resolved_sid and mode == "fleet_surge":
+                desc += f" at {station_name}"
 
             expiry = self.sim_time_sec + duration
             disrupt_id = f"disrupt_{int(time.time()*1000)}"
@@ -729,6 +797,7 @@ class SimulationManager:
                 "mode": mode,
                 "vehicle_id": resolved_vid,
                 "platform_id": resolved_pid,
+                "station_id": resolved_sid,
                 "station_name": station_name,
                 "duration": duration,
                 "start_time": self.sim_time_sec,
