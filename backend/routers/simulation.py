@@ -67,7 +67,9 @@ def control_simulation(req: SimulationControlRequest):
     return {
         "success": success,
         "action": action,
-        "current_status": sim_manager.get_status()
+        "current_status": sim_manager.get_status(),
+        "trains": sim_manager.trains_cache,
+        "platforms": sim_manager.platforms_cache
     }
 
 

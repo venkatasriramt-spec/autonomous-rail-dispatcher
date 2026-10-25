@@ -9,7 +9,6 @@ import {
   ZoomIn, 
   ZoomOut, 
   Maximize2, 
-  Radio, 
   Clock, 
   Search, 
   Train, 
@@ -18,10 +17,8 @@ import {
   ChevronRight,
   Send,
   RefreshCw,
-  CheckCircle2,
   GitFork,
   Zap,
-  ShieldCheck,
   MapPin,
   ArrowUpRight,
   ArrowDownRight,
@@ -31,7 +28,9 @@ import {
   Navigation,
   Flame,
   Crosshair,
-  GripHorizontal
+  GripHorizontal,
+  CheckCircle2,
+  ArrowRight
 } from 'lucide-react';
 import './SimulationPage.css';
 
@@ -45,10 +44,14 @@ const MODELS = [
   { id: 'Multi_Train_Centralized_PPO', label: 'Multi-Train Centralized PPO' },
   { id: 'Priority_Greedy_Heuristic', label: 'Dynamic Priority Heuristic' },
   { id: 'FIFO_Heuristic', label: 'First-Come First-Served (FIFO)' },
-  { id: 'Static_Baseline', label: 'Static Baseline (SUMO Native)' }
 ];
 
-
+const TIME_JUMPS = [
+  { label: 'Dawn (06:00)', sec: 21600 },
+  { label: 'Peak (07:30)', sec: 27000 },
+  { label: 'Midday (12:00)', sec: 43200 },
+  { label: 'Rush (17:00)', sec: 61200 },
+];
 
 export default function SimulationPage() {
   // Sim state
@@ -62,8 +65,11 @@ export default function SimulationPage() {
     speed_multiplier: 1.0,
     active_disruptions: [],
     active_disruptions_data: [],
-    active_overrides: {}
+    active_overrides: {},
+    day_completed: false
   });
+
+  const [dayCompletionDismissed, setDayCompletionDismissed] = useState(false);
 
   // Telemetry stream
   const [trains, setTrains] = useState([]);
@@ -75,7 +81,6 @@ export default function SimulationPage() {
     platform_utilization_pct: 28.5,
     throughput_tph: 18.0
   });
-  const [events, setEvents] = useState([]);
 
   // Network Geometry cache
   const [geometry, setGeometry] = useState(null);
@@ -99,7 +104,7 @@ export default function SimulationPage() {
   const resizeStartWidthRef = useRef(380);
   const [showDisruptionModal, setShowDisruptionModal] = useState(false);
   const [showOverrideModal, setShowOverrideModal] = useState(false);
-  const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'station' | 'disruptions' | 'events'
+  const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'station'
 
   // Google Maps Railway Feature Navigation & Overlays
   const [activeFeatureLayer, setActiveFeatureLayer] = useState('none'); // 'none' | 'all' | 'crossovers' | 'loops' | 'buffer_stops' | 'signals'
@@ -266,9 +271,11 @@ export default function SimulationPage() {
       if (categoryFilter !== 'ALL' && t.category !== categoryFilter) return false;
       if (delayOnlyFilter && (!t.delay_sec || t.delay_sec <= 0)) return false;
       if (searchQuery) {
-        const q = searchQuery.toLowerCase();
+        const q = searchQuery.toLowerCase().trim();
         const num = String(t.train_number || t.id).toLowerCase();
-        if (!num.includes(q)) return false;
+        const name = String(t.train_name || '').toLowerCase();
+        const route = String(t.route_desc || '').toLowerCase();
+        if (!num.includes(q) && !name.includes(q) && !route.includes(q)) return false;
       }
       return true;
     });
@@ -627,8 +634,25 @@ export default function SimulationPage() {
             : (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? prev.speed_multiplier),
           active_disruptions: data.active_disruptions ?? prev.active_disruptions,
           active_disruptions_data: data.active_disruptions_data ?? prev.active_disruptions_data ?? [],
-          active_overrides: data.active_overrides ?? prev.active_overrides ?? {}
+          active_overrides: data.active_overrides ?? prev.active_overrides ?? {},
+          day_completed: Boolean(data.day_completed)
         }));
+        if (data.daily_summary) {
+          setKpis(prev => ({
+            ...prev,
+            daily_summary: data.daily_summary,
+            avg_delay_sec: data.daily_summary.mean_delay_sec ?? prev.avg_delay_sec,
+            punctuality_pct: data.daily_summary.punctuality_pct ?? prev.punctuality_pct,
+            total_actions_taken: data.daily_summary.total_actions_taken ?? prev.total_actions_taken
+          }));
+        } else if (data.mean_delay_sec !== undefined) {
+          setKpis(prev => ({
+            ...prev,
+            avg_delay_sec: data.mean_delay_sec,
+            punctuality_pct: data.punctuality_pct ?? prev.punctuality_pct,
+            total_actions_taken: data.total_actions_taken ?? prev.total_actions_taken
+          }));
+        }
         if (data.calendar_day) setSelectedDay(data.calendar_day);
         if (data.dispatcher_model) setSelectedModel(data.dispatcher_model);
       }
@@ -699,14 +723,17 @@ export default function SimulationPage() {
             // Ingest KPIs
             const incomingKpis = data.kpis || data.kpi;
             if (incomingKpis) {
-              setKpis({
+              setKpis(prev => ({
+                ...prev,
                 active_trains: incomingKpis.active_trains_count ?? incomingKpis.active_trains ?? 0,
                 punctuality_pct: incomingKpis.punctuality_pct ?? 100.0,
                 avg_delay_sec: incomingKpis.mean_delay_sec ?? incomingKpis.avg_delay_sec ?? 0.0,
                 max_delay_sec: incomingKpis.max_delay_sec ?? 0.0,
                 platform_utilization_pct: incomingKpis.platform_utilization_pct ?? 28.5,
-                throughput_tph: incomingKpis.throughput_tph ?? 18.0
-              });
+                throughput_tph: incomingKpis.throughput_tph ?? 18.0,
+                total_actions_taken: incomingKpis.total_actions_taken ?? data.total_actions_taken ?? prev.total_actions_taken ?? 0,
+                daily_summary: incomingKpis.daily_summary || data.daily_summary || prev.daily_summary || null
+              }));
             }
 
             // Ingest clock and sim state
@@ -752,16 +779,12 @@ export default function SimulationPage() {
                   speed_multiplier: resolvedSpeed,
                   active_disruptions: data.active_disruptions || prev.active_disruptions,
                   active_disruptions_data: data.active_disruptions_data || prev.active_disruptions_data || [],
-                  active_overrides: data.active_overrides || prev.active_overrides || {}
+                  active_overrides: data.active_overrides || prev.active_overrides || {},
+                  day_completed: Boolean(data.day_completed ?? data.kpis?.day_completed ?? prev.day_completed)
                 };
               });
             }
 
-            // Ingest recent AI actions
-            const incomingActions = data.recent_actions || data.recent_events;
-            if (Array.isArray(incomingActions) && incomingActions.length > 0) {
-              setEvents(incomingActions);
-            }
           } catch (err) {
             console.error('WebSocket parse error:', err);
           }
@@ -1754,7 +1777,8 @@ export default function SimulationPage() {
 
       // Train Label Pill (non-rotated)
       const speedKmh = Math.round(train.speed_kmh ?? ((train.speed || 0) * 3.6));
-      const trainLabel = `${train.id} • ${speedKmh} km/h`;
+      const trainDisplayId = train.train_number ? `Train #${train.train_number}` : `Train #${train.id}`;
+      const trainLabel = `${trainDisplayId} • ${speedKmh} km/h`;
       const tFontSize = 9.5 / scale;
       ctx.font = `600 ${tFontSize}px Inter, system-ui, sans-serif`;
       const tMetrics = ctx.measureText(trainLabel);
@@ -1950,7 +1974,7 @@ export default function SimulationPage() {
     }
 
     ctx.restore(); // Exit DPR scaling
-  }, [geometry, filteredTrains, selectedTrain, selectedStation, selectedStationTopology, simStatus.active_disruptions_data, simStatus.active_overrides]);
+  }, [geometry, filteredTrains, selectedTrain, selectedStation, selectedStationTopology, simStatus.active_disruptions_data, simStatus.active_overrides, selectedFeature, showSignalHeads, activeFeatureLayer, showOverlayLabels]);
 
   // Request Animation Frame loop
   useEffect(() => {
@@ -2116,7 +2140,7 @@ export default function SimulationPage() {
   };
 
   // Playback Control Handlers
-  const sendControl = useCallback(async (action, speed, reqId) => {
+  const sendControl = useCallback(async (action, speed, reqId, startTimeSec) => {
     const targetSpeed = speed !== undefined ? speed : (selectedSpeedRef.current ?? confirmedSpeedRef.current ?? simStatus.speed_multiplier ?? 1.0);
     const currentReqId = reqId !== undefined ? reqId : (action === 'set_speed' || speed !== undefined ? ++speedRequestIdRef.current : undefined);
     try {
@@ -2153,16 +2177,22 @@ export default function SimulationPage() {
           }
         }
       } else {
+        const payload = { action, speed: targetSpeed };
+        if (action === 'reset' && startTimeSec !== undefined) {
+          payload.start_time_sec = startTimeSec;
+        }
         const res = await fetch('/api/sim/control', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ action, speed: targetSpeed })
+          body: JSON.stringify(payload)
         });
         if (action === 'reset') {
           setSelectedTrain(null);
           setSelectedStation(null);
           setSelectedFeature(null);
-          setSelectedDisruption(null);
+          setShowDisruptionModal(false);
+          setShowOverrideModal(false);
+          setDayCompletionDismissed(false);
           if (res.ok) {
             const data = await res.json().catch(() => null);
             const status = data?.current_status || {};
@@ -2170,28 +2200,56 @@ export default function SimulationPage() {
               ...prev,
               running: false,
               paused: false,
-              sim_time_sec: status.sim_time_sec ?? 21600.0,
-              sim_time_formatted: status.time_formatted ?? '06:00:00',
+              sim_time_sec: status.sim_time_sec ?? (startTimeSec !== undefined ? startTimeSec : 21600.0),
+              sim_time_formatted: status.time_formatted ?? (startTimeSec !== undefined ? `${String(Math.floor(startTimeSec / 3600)).padStart(2, '0')}:${String(Math.floor((startTimeSec % 3600) / 60)).padStart(2, '0')}:00` : '06:00:00'),
               active_disruptions: [],
               active_disruptions_data: [],
-              active_overrides: {}
+              active_overrides: {},
+              day_completed: false
             }));
             setKpis(prev => ({
               ...prev,
               avg_delay_sec: 0.0,
+              max_delay_sec: 0.0,
               punctuality_pct: 100.0,
-              active_trains: status.active_trains_count ?? 0
+              active_trains: status.active_trains_count ?? 0,
+              total_actions_taken: 0
             }));
-            if (!status.active_trains_count) {
-              setTrains([]);
+            if (Array.isArray(data?.trains)) {
+              setTrains(data.trains.map(t => {
+                let cat = t.category;
+                if (!cat) {
+                  const vid = t.id || '';
+                  const vtype = t.vtype || '';
+                  if (vid.startsWith('HS') || vtype.includes('high_speed')) {
+                    cat = 'HighSpeed';
+                  } else if (vid.startsWith('FRT') || vtype.includes('freight')) {
+                    cat = 'Freight';
+                  } else {
+                    cat = 'Regional';
+                  }
+                }
+                const speedMs = t.speed_ms ?? t.speed ?? ((t.speed_kmh ?? 0) / 3.6);
+                return {
+                  ...t,
+                  category: cat,
+                  train_number: t.train_number || t.id,
+                  speed_kmh: t.speed_kmh ?? Math.round(speedMs * 3.6),
+                  speed: speedMs
+                };
+              }));
             }
           } else {
             setSimStatus(prev => ({
               ...prev,
               running: false,
               paused: false,
-              sim_time_sec: 21600.0,
-              sim_time_formatted: '06:00:00'
+              sim_time_sec: startTimeSec !== undefined ? startTimeSec : 21600.0,
+              sim_time_formatted: startTimeSec !== undefined ? `${String(Math.floor(startTimeSec / 3600)).padStart(2, '0')}:${String(Math.floor((startTimeSec % 3600) / 60)).padStart(2, '0')}:00` : '06:00:00',
+              active_disruptions: [],
+              active_disruptions_data: [],
+              active_overrides: {},
+              day_completed: false
             }));
           }
         } else if (res.ok && speed !== undefined) {
@@ -2218,6 +2276,10 @@ export default function SimulationPage() {
     }
   }, [fetchStatus, simStatus.speed_multiplier]);
 
+  const handleTimeJump = useCallback((sec) => {
+    sendControl('reset', undefined, undefined, sec);
+  }, [sendControl]);
+
   const handleSpeedChange = (s) => {
     selectedSpeedRef.current = s;
     setSimStatus(prev => ({ ...prev, speed_multiplier: s }));
@@ -2231,13 +2293,39 @@ export default function SimulationPage() {
 
   const handleConfigChange = async (day, model) => {
     try {
-      await fetch('/api/sim/config', {
+      const modelChanged = model !== selectedModel;
+      if (modelChanged) {
+        setKpis(prev => ({ ...prev, total_actions_taken: 0 }));
+      }
+      const res = await fetch('/api/sim/config', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ day, model })
       });
       setSelectedDay(day);
       setSelectedModel(model);
+      setDayCompletionDismissed(false);
+      if (res.ok) {
+        const data = await res.json().catch(() => null);
+        if (data?.updated_status) {
+          const s = data.updated_status;
+          setSimStatus(prev => ({
+            ...prev,
+            current_model: s.dispatcher_model || model,
+            current_day: s.calendar_day || day,
+            day_completed: Boolean(s.day_completed)
+          }));
+          if (s.daily_summary) {
+            setKpis(prev => ({
+              ...prev,
+              daily_summary: s.daily_summary,
+              avg_delay_sec: s.daily_summary.mean_delay_sec ?? prev.avg_delay_sec,
+              punctuality_pct: s.daily_summary.punctuality_pct ?? prev.punctuality_pct,
+              total_actions_taken: s.daily_summary.total_actions_taken ?? 0
+            }));
+          }
+        }
+      }
       fetchStatus();
     } catch (err) {
       console.error('Config change error:', err);
@@ -2269,9 +2357,6 @@ export default function SimulationPage() {
           active_disruptions: data.active_disruptions || prev.active_disruptions,
           active_disruptions_data: data.active_disruptions_data
         }));
-      }
-      if (data?.recent_actions) {
-        setEvents(data.recent_actions);
       }
       setShowDisruptionModal(false);
 
@@ -2325,7 +2410,6 @@ export default function SimulationPage() {
         active_disruptions_data: []
       }));
       setShowDisruptionModal(false);
-      setActiveSideTab('events');
       fetchStatus();
     } catch (err) {
       console.error('Clear disruptions error:', err);
@@ -2354,96 +2438,13 @@ export default function SimulationPage() {
           active_overrides: data.active_overrides
         }));
       }
-      if (data?.recent_actions) {
-        setEvents(data.recent_actions);
-      }
       setShowOverrideModal(false);
-      setActiveSideTab('events');
       fetchStatus();
     } catch (err) {
       console.error('Override action error:', err);
     }
   };
 
-  // Human-formatted AI / Dispatcher Event Card Renderer (NO raw JSON)
-  const renderEventCard = (ev, idx) => {
-    let rawMsg = ev.details || ev.message;
-    if (typeof rawMsg === 'object' && rawMsg !== null) {
-      rawMsg = rawMsg.details || rawMsg.message || rawMsg.desc || JSON.stringify(rawMsg);
-    }
-    let cleanText = String(rawMsg || '');
-    if (cleanText.startsWith('{') && cleanText.endsWith('}')) {
-      try {
-        const parsed = JSON.parse(cleanText.replace(/'/g, '"'));
-        cleanText = parsed.details || parsed.message || parsed.desc || `${parsed.type || 'Dispatch decision'}`;
-      } catch {
-        const match = cleanText.match(/'(?:details|desc)':\s*'([^']+)'/);
-        if (match) cleanText = match[1];
-      }
-    }
-
-    const typeStr = String(ev.action_type || ev.type || 'DISPATCH_ACTION').toLowerCase();
-    const vid = ev.vehicle_id || ev.vid || '';
-
-    let severity = ev.severity || 'info';
-    let icon = <CheckCircle2 size={14} />;
-    let badgeLabel = ev.title || 'DISPATCH EVENT';
-
-    if (typeStr.includes('disruption') || typeStr.includes('incident') || typeStr.includes('stall') || typeStr.includes('blockage') || severity === 'danger') {
-      severity = 'danger';
-      icon = <AlertTriangle size={14} />;
-      badgeLabel = ev.title || 'DISRUPTION INCIDENT';
-    } else if (typeStr.includes('manual') || typeStr.includes('override') || severity === 'purple') {
-      severity = 'purple';
-      icon = <Sliders size={14} />;
-      badgeLabel = ev.title || 'OPERATOR OVERRIDE';
-    } else if (typeStr.includes('reroute') || typeStr.includes('reassigned') || typeStr.includes('divert') || typeStr.includes('switch')) {
-      severity = 'cyan';
-      icon = <GitFork size={14} />;
-      badgeLabel = ev.title || 'AI REROUTE ADVISORY';
-    } else if (typeStr.includes('hold') || typeStr.includes('delay') || severity === 'warning' || severity === 'amber') {
-      severity = 'amber';
-      icon = <Clock size={14} />;
-      badgeLabel = ev.title || 'HEADWAY HOLD';
-    } else if (typeStr.includes('speed') || typeStr.includes('bypass')) {
-      severity = 'emerald';
-      icon = <Zap size={14} />;
-      badgeLabel = ev.title || 'SPEED PROFILING';
-    } else if (typeStr.includes('headway') || typeStr.includes('nominal') || typeStr.includes('lock')) {
-      severity = 'emerald';
-      icon = <ShieldCheck size={14} />;
-      badgeLabel = ev.title || 'HEADWAY LOCK';
-    }
-
-    const timeStr = ev.timestamp || ev.time_formatted || '06:00:00';
-    const modelStr = ev.dispatcher_model || simStatus.current_model || 'Centralized PPO';
-
-    return (
-      <div key={ev.id || idx} className={`event-card event-card-${severity}`}>
-        <div className="event-card-header">
-          <div className="event-card-badge-row">
-            <span className={`event-category-badge badge-${severity}`}>
-              {icon}
-              <span>{badgeLabel}</span>
-            </span>
-            {vid && vid !== 'Fleet' && vid !== 'Infrastructure' && vid !== 'Network' && vid !== 'Signals' && (
-              <span className="event-train-tag">#{vid}</span>
-            )}
-          </div>
-          <span className="event-time-pill">{timeStr}</span>
-        </div>
-
-        <p className="event-card-body">{cleanText || 'Nominal headway synchronization verified.'}</p>
-
-        <div className="event-card-footer">
-          <span className="event-model-tag">
-            {severity === 'purple' ? '👤 ' : '🤖 '}
-            {modelStr.replace(/_/g, ' ')}
-          </span>
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="simulation-page">
@@ -2492,6 +2493,22 @@ export default function SimulationPage() {
                 className={`btn-speed-pill ${simStatus.speed_multiplier === s ? 'active' : ''}`}
               >
                 {s}x
+              </button>
+            ))}
+          </div>
+
+          <div className="hud-divider" />
+
+          {/* Operational Time Jumps */}
+          <div className="hud-timejumps">
+            {TIME_JUMPS.map((tj) => (
+              <button
+                key={tj.sec}
+                onClick={() => handleTimeJump(tj.sec)}
+                className={`btn-timejump-pill ${Math.abs((simStatus.sim_time_sec || 0) - tj.sec) < 60 ? 'active' : ''}`}
+                title={`Jump simulation clock to ${tj.label}`}
+              >
+                {tj.label}
               </button>
             ))}
           </div>
@@ -2551,6 +2568,11 @@ export default function SimulationPage() {
           >
             <Sliders size={15} />
             <span>Manual Override</span>
+            {Object.keys(simStatus.active_overrides || {}).length > 0 && (
+              <span className="badge badge-count">
+                {Object.keys(simStatus.active_overrides).length}
+              </span>
+            )}
           </button>
         </div>
       </div>
@@ -2562,7 +2584,7 @@ export default function SimulationPage() {
           {loadingGeometry && (
             <div className="canvas-loader-overlay">
               <RefreshCw size={36} className="loader-spin" />
-              <span>Parsing 776 Network Lanes & Platform Topology...</span>
+              <span>Parsing 2,413 Network Lanes & Platform Topology...</span>
             </div>
           )}
 
@@ -2588,8 +2610,8 @@ export default function SimulationPage() {
             <div className="clock-time-row">
               <Clock size={16} className="clock-icon" />
               <span className="clock-digits">{simStatus.sim_time_formatted || '06:00:00'}</span>
-              <span className={`sim-state-chip ${simStatus.running && !simStatus.paused ? 'chip-live' : 'chip-paused'}`}>
-                {simStatus.running && !simStatus.paused ? 'RUNNING' : 'PAUSED'}
+              <span className={`sim-state-chip ${simStatus.day_completed ? 'chip-completed' : (simStatus.running && !simStatus.paused ? 'chip-live' : 'chip-paused')}`}>
+                {simStatus.day_completed ? 'DAY COMPLETE' : (simStatus.running && !simStatus.paused ? 'RUNNING' : 'PAUSED')}
               </span>
             </div>
             <div className="kpi-mini-grid">
@@ -2608,57 +2630,7 @@ export default function SimulationPage() {
             </div>
           </div>
 
-          {/* Selected Train Inspector Modal/Card */}
-          {selectedTrain && (
-            <div className="selected-train-card glass-panel">
-              <div className="selected-train-header">
-                <div className="selected-train-title">
-                  <Train size={18} className="selected-train-icon" />
-                  <h4>Train #{selectedTrain.train_number || selectedTrain.id}</h4>
-                  <span className={`badge badge-category-${selectedTrain.category === 'HighSpeed' ? 'hs' : selectedTrain.category === 'Regional' ? 'reg' : 'frt'}`}>
-                    {selectedTrain.category || 'Train'}
-                  </span>
-                </div>
-                <button onClick={() => setSelectedTrain(null)} className="btn-close-train">
-                  <X size={16} />
-                </button>
-              </div>
 
-              <div className="selected-train-details">
-                <div className="detail-row">
-                  <span className="detail-lbl">Current Speed:</span>
-                  <span className="detail-val">{Math.round((selectedTrain.speed || 0) * 3.6)} km/h</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-lbl">Current Delay:</span>
-                  <span className={`detail-val ${(selectedTrain.delay_sec || 0) > 0 ? 'text-rose' : 'text-emerald'}`}>
-                    +{(selectedTrain.delay_sec || 0).toFixed(1)} sec
-                  </span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-lbl">Platform / Edge:</span>
-                  <span className="detail-val">{selectedTrain.scheduled_platform || selectedTrain.road_id || 'In-Transit'}</span>
-                </div>
-                <div className="detail-row">
-                  <span className="detail-lbl">Upcoming Station:</span>
-                  <span className="detail-val text-cyan">{selectedTrain.upcoming_station || 'Terminal Line'}</span>
-                </div>
-              </div>
-
-              <div className="selected-train-actions">
-                <button 
-                  onClick={() => {
-                    setOverrideForm(prev => ({ ...prev, vehicle_id: selectedTrain.id }));
-                    setShowOverrideModal(true);
-                  }}
-                  className="btn btn-secondary btn-sm"
-                >
-                  <Sliders size={14} />
-                  <span>Override Train</span>
-                </button>
-              </div>
-            </div>
-          )}
           {/* Draggable Floating Station Traffic HUD Card */}
           {selectedStation && (
             <div 
@@ -2682,10 +2654,10 @@ export default function SimulationPage() {
                 <button 
                   onClick={(e) => {
                     e.stopPropagation();
-                    setSelectedStation(null);
+                    resetViewAnimated();
                   }} 
                   className="btn-close-train" 
-                  title="Close Focus Card"
+                  title="Close Focus Card & Reset View"
                 >
                   <X size={15} />
                 </button>
@@ -2979,7 +2951,7 @@ export default function SimulationPage() {
                   </div>
                   <div>
                     <h4>Railway Network Legend</h4>
-                    <span className="legend-subtitle">Standard UIC 1435mm • Speed & Functionality</span>
+                    <span className="legend-subtitle">Rolling Stock, Corridors & Safety Hardware</span>
                   </div>
                 </div>
                 <button 
@@ -2992,7 +2964,77 @@ export default function SimulationPage() {
               </div>
 
               <div className="map-legend-scroll">
-                {/* 1. Mainline & High-Speed */}
+                {/* 1. Train Fleet & Rolling Stock */}
+                <div className="legend-section">
+                  <div className="legend-section-title">TRAIN FLEET & STATUS COLORS</div>
+                  <div className="legend-row">
+                    <div className="legend-train-marker high-speed"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">High-Speed Express (ICE)</span>
+                        <span className="legend-speed-badge cyan">300 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Neon Cyan • 160m EMU express on Corridor 1</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-train-marker regional"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Regional Passenger (RE/RB)</span>
+                        <span className="legend-speed-badge mint">160 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Emerald Green • 85m frequent-stop passenger service</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-train-marker freight"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Heavy Freight Cargo</span>
+                        <span className="legend-speed-badge orange">100 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Vivid Orange • 240m long consist; yields at loops</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-train-marker delayed"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Delayed Service</span>
+                        <span className="legend-speed-badge rose">&gt; 30s Delay</span>
+                      </div>
+                      <span className="legend-track-desc">Warning Red • Schedule delay; prioritized for recovery</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-train-marker breakdown"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Mechanical Breakdown / Stall</span>
+                        <span className="legend-speed-badge rose">0 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Crimson Hazard Beacon • Emergency stop; auto-reroutes traffic</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-train-marker override"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Manual Operator Override</span>
+                        <span className="legend-speed-badge purple">Manual</span>
+                      </div>
+                      <span className="legend-track-desc">Pulsing Purple • Train under active human intervention</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Mainline & High-Speed */}
                 <div className="legend-section">
                   <div className="legend-section-title">MAINLINE CORRIDORS</div>
                   <div className="legend-row">
@@ -3002,7 +3044,7 @@ export default function SimulationPage() {
                         <span className="legend-track-name">High-Speed Express Trunk</span>
                         <span className="legend-speed-badge cyan">300 km/h</span>
                       </div>
-                      <span className="legend-track-desc">Corridor 1 East–West Mainline & Diagonal Bypass</span>
+                      <span className="legend-track-desc">Corridor 1 East–West Mainline &amp; Diagonal Bypass</span>
                     </div>
                   </div>
 
@@ -3299,23 +3341,12 @@ export default function SimulationPage() {
                 </button>
                 <button 
                   className={`sidebar-tab ${activeSideTab === 'station' ? 'active' : ''}`}
-                  onClick={() => {
-                    setActiveSideTab('station');
-                    if (!selectedStation && geometry?.stations?.length > 0) {
-                      zoomToStation(geometry.stations[0]);
-                    }
-                  }}
+                  onClick={() => setActiveSideTab('station')}
                 >
                   <MapPin size={15} />
                   <span>Station {selectedStation ? `(${selectedStation.display_name?.split(' ')[0]})` : ''}</span>
                 </button>
-                <button 
-                  className={`sidebar-tab ${activeSideTab === 'events' ? 'active' : ''}`}
-                  onClick={() => setActiveSideTab('events')}
-                >
-                  <Activity size={15} />
-                  <span>AI Events ({events.length})</span>
-                </button>
+
                 <button 
                   onClick={() => setSidebarOpen(false)}
                   className="sidebar-collapse-btn"
@@ -3348,7 +3379,7 @@ export default function SimulationPage() {
                   <Search size={14} className="search-input-icon" />
                   <input 
                     type="text" 
-                    placeholder="Search train ID..." 
+                    placeholder="Search train # or name..." 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="sidebar-search-input"
@@ -3369,9 +3400,6 @@ export default function SimulationPage() {
                 {filteredTrains.length === 0 ? (
                   <div className="empty-trains-notice">
                     <span>No active trains matching filter at current simulation time.</span>
-                    <button onClick={() => sendControl('play')} className="btn btn-secondary btn-sm">
-                      <Play size={14} /> Run Time Forward
-                    </button>
                   </div>
                 ) : (
                   filteredTrains.map((t) => (
@@ -3384,8 +3412,14 @@ export default function SimulationPage() {
                       className={`train-row-item ${selectedTrain && selectedTrain.id === t.id ? 'active' : ''}`}
                     >
                       <div className="train-row-left">
-                        <span className="train-row-number">#{t.train_number || t.id}</span>
-                        <span className="train-row-cat">{t.category}</span>
+                        <div className="train-row-id-stack">
+                          <span className="train-row-number">
+                            {t.train_number ? `Train #${t.train_number}` : `Train #${t.id}`}
+                          </span>
+                        </div>
+                        <span className="train-row-cat">
+                          {t.train_name ? `${t.train_name} • ${t.category}` : t.category}
+                        </span>
                       </div>
                       <div className="train-row-right">
                         <span className="train-row-speed">{Math.round((t.speed || 0) * 3.6)} km/h</span>
@@ -3412,12 +3446,17 @@ export default function SimulationPage() {
                 <select 
                   value={selectedStation?.station_name || ''} 
                   onChange={(e) => {
-                    const st = geometry?.stations?.find(s => s.station_name === e.target.value);
+                    const val = e.target.value;
+                    if (!val) {
+                      resetViewAnimated();
+                      return;
+                    }
+                    const st = geometry?.stations?.find(s => s.station_name === val);
                     if (st) zoomToStation(st);
                   }}
                   className="sidebar-station-select"
                 >
-                  <option value="" disabled>-- Select Station to Inspect --</option>
+                  <option value="">-- Select Station to Inspect --</option>
                   {geometry?.stations?.map(st => (
                     <option key={st.station_name} value={st.station_name}>
                       {st.display_name || st.station_name} ({st.platforms?.length || 2} Platforms)
@@ -3429,15 +3468,7 @@ export default function SimulationPage() {
               {!selectedStation ? (
                 <div className="empty-trains-notice">
                   <MapPin size={32} className="text-cyan animate-pulse" />
-                  <span>Click any station on the map or select from above to zoom into its converging & diverging tracks.</span>
-                  {geometry?.stations?.length > 0 && (
-                    <button 
-                      onClick={() => zoomToStation(geometry.stations[0])} 
-                      className="btn btn-primary btn-sm"
-                    >
-                      <Eye size={14} /> Zoom into {geometry.stations[0].display_name}
-                    </button>
-                  )}
+                  <span>Select a station from the dropdown above or click any station circle on the map to inspect its tracks &amp; platforms.</span>
                 </div>
               ) : (
                 <div className="station-inspector-scroll">
@@ -3448,13 +3479,22 @@ export default function SimulationPage() {
                         <span className="station-id-tag">STATION {selectedStation.station_name}</span>
                         <h3>{selectedStation.display_name || selectedStation.station_name}</h3>
                       </div>
-                      <button 
-                        onClick={() => zoomToStation(selectedStation)} 
-                        className="btn-rezoom" 
-                        title="Re-center Camera"
-                      >
-                        <Crosshair size={14} />
-                      </button>
+                      <div className="banner-action-buttons">
+                        <button 
+                          onClick={() => zoomToStation(selectedStation)} 
+                          className="btn-rezoom" 
+                          title="Re-center Camera"
+                        >
+                          <Crosshair size={14} />
+                        </button>
+                        <button 
+                          onClick={() => resetViewAnimated()} 
+                          className="btn-rezoom" 
+                          title="Clear Station Selection & Reset View"
+                        >
+                          <X size={14} />
+                        </button>
+                      </div>
                     </div>
                     <div className="banner-topology-summary">
                       <span className="topo-tag">
@@ -3615,7 +3655,7 @@ export default function SimulationPage() {
                           >
                             <div className="row-left">
                               <span className="row-tag-inbound">↗ INBOUND</span>
-                              <span className="row-train-num">#{t.train_number || t.id}</span>
+                              <span className="row-train-num">Train #{t.train_number || t.id}</span>
                               <span className="row-cat">{t.category}</span>
                             </div>
                             <div className="row-right">
@@ -3649,7 +3689,7 @@ export default function SimulationPage() {
                           >
                             <div className="row-left">
                               <span className="row-tag-outbound">↘ OUTBOUND</span>
-                              <span className="row-train-num">#{t.train_number || t.id}</span>
+                              <span className="row-train-num">Train #{t.train_number || t.id}</span>
                               <span className="row-cat">{t.category}</span>
                             </div>
                             <div className="row-right">
@@ -3684,30 +3724,7 @@ export default function SimulationPage() {
             </div>
           )}
 
-          {/* Real-Time Events Tab */}
-          {activeSideTab === 'events' && (
-            <div className="sidebar-tab-content events-tab-content">
-              <div className="events-header-bar">
-                <div className="events-live-pill">
-                  <span className="live-dot pulse"></span>
-                  <span>AI DECISION STREAM</span>
-                </div>
-                <span className="events-count-pill">{events.length} Actions</span>
-              </div>
 
-              {events.length === 0 ? (
-                <div className="empty-events-notice">
-                  <Radio size={28} className="empty-events-icon pulse" />
-                  <p>Monitoring dispatcher decision feed...</p>
-                  <span>Routine AI synchronization events and disruption advisories will appear here in real time.</span>
-                </div>
-              ) : (
-                <div className="events-scroll-list">
-                  {events.map((ev, idx) => renderEventCard(ev, idx))}
-                </div>
-              )}
-            </div>
-          )}
           </>
           )}
         </aside>
@@ -3724,6 +3741,106 @@ export default function SimulationPage() {
           </button>
         )}
       </div>
+
+
+
+      {/* Day Completion Summary Modal */}
+      {simStatus.day_completed && !dayCompletionDismissed && (
+        <div className="modal-backdrop day-completed-backdrop">
+          <div className="modal-content glass-panel day-completed-card">
+            <div className="modal-header day-completed-header">
+              <div className="day-completed-title-box">
+                <CheckCircle2 size={24} className="text-emerald animate-pulse" />
+                <div>
+                  <span className="day-completed-badge">24-HOUR OPERATIONAL CYCLE COMPLETE</span>
+                  <h3>
+                    {simStatus.current_day === 'Mon' ? 'Monday' : 
+                     simStatus.current_day === 'Tue' ? 'Tuesday' :
+                     simStatus.current_day === 'Wed' ? 'Wednesday' :
+                     simStatus.current_day === 'Thu' ? 'Thursday' :
+                     simStatus.current_day === 'Fri' ? 'Friday' :
+                     simStatus.current_day === 'Sat' ? 'Saturday' : 'Sunday'} Timetable Finished
+                  </h3>
+                </div>
+              </div>
+              <button 
+                onClick={() => setDayCompletionDismissed(true)} 
+                className="btn-modal-close"
+                title="Dismiss & Inspect Finished Network"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="day-completed-body">
+              <p className="day-completed-desc">
+                The simulation has reached the end of the 24-hour service timetable (<strong>06:00:00 → 06:00:00</strong>) and automatically paused. Here is the operational performance summary for the day:
+              </p>
+
+              <div className="day-completed-stats-grid">
+                <div className="day-stat-box glass-panel">
+                  <span className="day-stat-lbl">Network Punctuality</span>
+                  <span className="day-stat-val text-emerald">
+                    {(kpis.daily_summary?.punctuality_pct ?? kpis.punctuality_pct ?? 100.0).toFixed(1)}%
+                  </span>
+                  <span className="day-stat-sub">Arrived within 3 min tolerance</span>
+                </div>
+                <div className="day-stat-box glass-panel">
+                  <span className="day-stat-lbl">Average Fleet Delay</span>
+                  <span className="day-stat-val text-amber">
+                    {(kpis.daily_summary?.mean_delay_sec ?? kpis.avg_delay_sec ?? 0.0).toFixed(1)}s
+                  </span>
+                  <span className="day-stat-sub">Across all corridors</span>
+                </div>
+                <div className="day-stat-box glass-panel">
+                  <span className="day-stat-lbl">Active Dispatcher</span>
+                  <span className="day-stat-val text-cyan">
+                    {(kpis.daily_summary?.dispatcher_model || simStatus.current_model || 'Centralized PPO').replace(/_/g, ' ')}
+                  </span>
+                  <span className="day-stat-sub">Lead Decision Agent</span>
+                </div>
+                <div className="day-stat-box glass-panel">
+                  <span className="day-stat-lbl">AI Interventions</span>
+                  <span className="day-stat-val text-blue">
+                    {kpis.daily_summary?.total_actions_taken ?? kpis.total_actions_taken ?? 0}
+                  </span>
+                  <span className="day-stat-sub">Routing & headway locks</span>
+                </div>
+              </div>
+
+              <div className="day-completed-actions-row">
+                <button 
+                  onClick={() => {
+                    setDayCompletionDismissed(false);
+                    sendControl('reset');
+                  }} 
+                  className="btn btn-secondary"
+                >
+                  <RotateCcw size={15} />
+                  <span>Replay Same Day (06:00)</span>
+                </button>
+                <button 
+                  onClick={() => {
+                    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    const idx = days.indexOf(simStatus.current_day || 'Mon');
+                    const nextDay = days[(idx + 1) % days.length];
+                    setDayCompletionDismissed(false);
+                    handleConfigChange(nextDay, simStatus.current_model);
+                  }} 
+                  className="btn btn-primary"
+                >
+                  <span>Advance to Next Day ({(() => {
+                    const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+                    const idx = days.indexOf(simStatus.current_day || 'Mon');
+                    return days[(idx + 1) % days.length];
+                  })()})</span>
+                  <ArrowRight size={15} />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Disruption Injection Modal */}
       {showDisruptionModal && (

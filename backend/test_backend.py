@@ -106,6 +106,14 @@ def test_routers_direct():
         assert ctrl_res["success"] is True
         print("  ✓ control_simulation (step): OK")
 
+        ctrl_reset = control_simulation(SimulationControlRequest(action="reset", start_time_sec=27000.0))
+        assert ctrl_reset["success"] is True
+        assert ctrl_reset["current_status"]["sim_time_sec"] == 27000.0
+        assert ctrl_reset["current_status"]["time_formatted"] == "07:30:00"
+        assert "trains" in ctrl_reset
+        assert "platforms" in ctrl_reset
+        print("  ✓ control_simulation (reset to 07:30:00): OK")
+
         # Network
         b = await get_bounds()
         assert "bounds" in b
@@ -207,6 +215,15 @@ def test_live_http_server():
         r = requests.post("http://127.0.0.1:8009/api/sim/control", json={"action": "step"}, timeout=HTTP_TIMEOUT)
         assert r.status_code == 200
         print("  ✓ HTTP POST /api/sim/control (step): 200 OK")
+
+        r = requests.post("http://127.0.0.1:8009/api/sim/control", json={"action": "reset", "start_time_sec": 27000.0}, timeout=HTTP_TIMEOUT)
+        assert r.status_code == 200
+        reset_res = r.json()
+        assert reset_res.get("current_status", {}).get("sim_time_sec") == 27000.0
+        assert reset_res.get("current_status", {}).get("time_formatted") == "07:30:00"
+        assert "trains" in reset_res
+        assert "platforms" in reset_res
+        print("  ✓ HTTP POST /api/sim/control (reset to 07:30:00): 200 OK")
 
         r = requests.post("http://127.0.0.1:8009/api/sim/config", json={"speed": 1.5}, timeout=HTTP_TIMEOUT)
         assert r.status_code == 200

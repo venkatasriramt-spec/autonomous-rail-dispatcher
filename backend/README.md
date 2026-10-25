@@ -30,7 +30,7 @@ Welcome to the **Autonomous Railway Traffic Management Backend API** subsystem. 
 │  [Core Engine]                                                                         │
 │  ├── SimulationManager   - Thread-safe SUMO/TraCI lifecycle & Step Controller          │
 │  ├── DispatcherBridge    - Model Factory (Centralized PPO, MAPPO, Comm-MAPPO, Hybrid)  │
-│  ├── NetworkGeometry     - XML-to-Vector Parser & Cache (776 lanes, 18 stations)       │
+│  ├── NetworkGeometry     - XML-to-Vector Parser & Cache (2,413 lanes, 18 stations)     │
 │  ├── DatabaseEngine      - Normalized SQLite Query Engine (trains.db)                  │
 │  └── TelemetryStreamer   - Async WebSocket Client Hub                                  │
 └────────────────────────┬─────────────────────────────────────┬─────────────────────────┘
@@ -59,7 +59,7 @@ backend/
 ├── core/
 │   ├── sim_manager.py        # Master SimulationManager thread orchestrating SUMO & AI
 │   ├── dispatcher_bridge.py  # Model loader & inference wrapper for all 8 paradigms
-│   ├── network_geometry.py   # XML parser extracting 776 track lanes and 116 platforms
+│   ├── network_geometry.py   # XML parser extracting 2,413 track lanes, 116 platforms, 23 buffers, 268 signals
 │   ├── database.py           # Read-only SQLite query engine for trains.db
 │   └── telemetry_streamer.py # Real-time WebSocket connection hub & broadcaster
 ├── routers/
@@ -95,7 +95,7 @@ python3 backend/run_server.py --day Sat --model Hierarchical_Hybrid
 
 ### 2. Run Comprehensive Test Suite
 ```bash
-# Validates database queries, geometry parser, all REST endpoints, and live HTTP server
+# Validates database queries, 2,413-lane geometry parser, all REST endpoints, and live HTTP server
 python3 backend/test_backend.py
 ```
 
@@ -110,13 +110,15 @@ Once the server is running, navigate to:
 ## 4. API Endpoints Reference
 
 ### A. Simulation Lifecycle & Controls (`/api/sim`)
-* `GET /api/sim/status`: Returns current status (`STOPPED`, `RUNNING`, `PAUSED`), mode, sim time, active trains count, mean delay, punctuality, active disruptions, active overrides, and total actions.
-* `GET /api/sim/telemetry`: Complete real-time snapshot alternative to WebSockets. Returns current KPIs, active trains list, platform occupancy, network status, active disruptions metadata, active overrides, and recent action event stream.
-* `POST /api/sim/control`: Sends playback or speed control commands:
+* `GET /api/sim/status`: Returns current status (`STOPPED`, `RUNNING`, `PAUSED`), mode, sim time, active trains count, mean delay, punctuality, active disruptions, active overrides, total actions, `day_completed` boolean, and cumulative `daily_summary` (when complete).
+* `GET /api/sim/telemetry`: Complete real-time snapshot alternative to WebSockets. Returns current KPIs, active trains list, platform occupancy, network status, active disruptions metadata, active overrides, recent action event stream, `day_completed` flag, and cumulative `daily_summary`.
+* `POST /api/sim/control`: Sends playback, reset, or speed control commands:
   ```json
   { "action": "play" }   // "play", "pause", "step", "reset", "set_speed"
   { "action": "set_speed", "speed": 5.0 }
+  { "action": "reset", "start_time_sec": 21600.0 }  // Resets to custom time (default 06:00:00)
   ```
+  Returns `success`, `action`, `current_status`, and instant cached `trains` and `platforms` snapshots.
 * `POST /api/sim/config`: Dynamically updates simulation parameters:
   ```json
   {
@@ -143,11 +145,17 @@ Once the server is running, navigate to:
       "max_delay_sec": 84.0,
       "punctuality_pct": 98.4,
       "total_knock_on_events": 0,
-      "total_actions_taken": 42
+      "total_actions_taken": 42,
+      "day_completed": false,
+      "daily_summary": null
     },
     "trains": [
       {
         "id": "HS_300_01",
+        "rake_id": "HS-Rake-01",
+        "train_number": "12001",
+        "train_name": "Express Sunrise",
+        "route_desc": "City_1 -> City_4",
         "x": 12450.5,
         "y": 18230.1,
         "angle": 88.5,
@@ -182,19 +190,22 @@ Once the server is running, navigate to:
     "sim_status": "RUNNING",
     "dispatcher_model": "Centralized_PPO",
     "calendar_day": "Mon",
-    "speed_multiplier": 2.0
+    "speed_multiplier": 2.0,
+    "day_completed": false,
+    "daily_summary": null
   }
   ```
 
 ### C. Network Infrastructure (`/api/network`)
-* `GET /api/network/geometry`: Complete 2D vector geometry for all 776 track lanes categorized into:
+* `GET /api/network/geometry`: Complete 2D vector geometry for all 2,413 microscopic track lanes categorized into:
   - `high_speed`: Main line and High-Speed Bypass chords
-  - `regional`: Standard trunk lines
+  - `regional`: Standard trunk lines and Corridor 4
   - `passing_loop`: 1,200m Alpine freight passing loop
   - `pocket`: Terminal buffer turnaround tracks
   - `platform`: Station platform loops
   - `crossover`: Universal turnout crossovers
   - `yard`: Stabling yards and freight depots
+  - `spur`: Maintenance depot branch connections
 * `GET /api/network/stations`: 18 stations with geographic centroids and platform counts.
 * `GET /api/network/platforms`: All 116 microscopic platform tracks with physical lengths.
 * `GET /api/network/bounds`: Coordinate bounding box `[min_x, min_y, max_x, max_y]`.

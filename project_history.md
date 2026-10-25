@@ -1062,5 +1062,80 @@ Scale full-stack operational capabilities across both backend and frontend layer
 - **Corridor 4 & Spur Categorization:** Fixed categorization in `backend/core/network_geometry.py` ensuring Corridor 4 (`c4_`) and dedicated maintenance depot branches (`spur_`) connect continuously with zero visual gaps.
 - **Interactive Map Legend:** Introduced floating `canvas-map-legend-card` and `Legend` toolbar button, detailing speeds, swatches, and operational classifications across all 9 track and hardware types.
 
+---
 
+### 25 October 2026 — Phase 22: Custom Timetable Initialization, Spatial UI Workbench, 24-Hour Operational Cycle Analytics & Commercial Service Resolution
 
+#### 1. Custom Timetable Initialization & Environment Reset (`backend/core/sim_manager.py`, `backend/routers/simulation.py`, `backend/schemas/models.py`)
+- **Custom Reset Time Support:**
+  - Extended `SimulationControlRequest` with `start_time_sec: Optional[float] = 21600.0` (defaults to 06:00:00 AM).
+  - Updated `sim_manager.reset(start_time_sec)` to dynamically accept and enforce custom start timestamps (e.g. Dawn `21600.0`, Peak `27000.0`, Midday `43200.0`, Rush `61200.0`).
+  - Upon reset, cleanly re-initializes internal simulation time, clears all active perturbations (`active_disruptions_data = []`), resets manual interventions (`active_overrides = {}`), clears daily sampling buffers, and records a structured `system_reset` timeline event.
+- **Instant Client Synchronization:**
+  - Updated `POST /api/sim/control` to immediately return fresh snapshots of `trains` and `platforms` caches alongside `current_status`, eliminating one-cycle stale UI flashes on client resets.
+
+#### 2. 24-Hour Operational Cycle Lifecycle & Daily Summary Analytics (`backend/core/sim_manager.py`)
+- **Automated Cycle Completion Detection:**
+  - Formulated continuous 24-hour operational tracking: `day_end_sec = self.start_time_sec + 86400.0`.
+  - When `sim_time_sec >= day_end_sec`, the simulation automatically pauses, asserts `day_completed = True`, and computes the definitive cumulative 24-hour `daily_summary`.
+- **Cumulative Performance Computation (`_compute_daily_summary`):**
+  - Synthesizes mean fleet delay, peak maximum delay, overall punctuality percentage ($\le 180\text{s}$ tolerance), active trains count, secondary knock-on events, and total true dispatcher actions.
+  - Aligns with authoritative 56-run benchmark evaluation standards when running under any of the 8 dispatcher paradigms.
+- **Intervention Count Sanitization:**
+  - Excluded informational background syncs (`model_switched`, `disruptions_cleared`, `headway_nominal`, `platform_nominal`, `speed_profile_nominal`, `signals_nominal`, `routine_sync`) from `total_actions_count`, ensuring the metric strictly reflects genuine tactical AI interventions and manual operator overrides.
+- **State Preservation in Parameter Configuration:**
+  - Preserves completed day status and summary when toggling simulation parameters post-cycle, broadcasting updated state over WebSockets without resetting simulation metrics prematurely.
+
+#### 3. Commercial Service Metadata Resolution (`backend/core/sim_manager.py`, `backend/schemas/models.py`)
+- **Relational Timetable Enrichment (`_resolve_active_service`):**
+  - Integrated real-time query against SQLite `trains.db` linking physical consist IDs (`vid`) to commercial timetable records (`train_services`, `physical_rakes`, `service_operating_days`).
+  - Resolves active train numbers (`train_number`), commercial service names (`train_name`, e.g. *Express Sunrise*, *Regional Commuter*), and route descriptors (`route_desc`, e.g. `City_1 -> City_4`) corresponding to the active calendar day and simulation timestamp.
+- **Enriched Telemetry Schema:**
+  - Extended `TrainTelemetry` Pydantic model with `rake_id`, `train_number`, `train_name`, and `route_desc`.
+  - Propagated enriched fields across `GET /api/sim/status`, `GET /api/sim/telemetry`, and high-frequency WebSocket frames (`/ws/telemetry`).
+
+#### 4. Spatial UI Workbench, Draggable Cards & 24-Hour Cycle Modal (`frontend/src/pages/SimulationPage.jsx`, `SimulationPage.css`)
+- **Resizable & Collapsible Simulation Sidebar:**
+  - Replaced rigid sidebar layout with a resizable workbench featuring an interactive drag handle (`.sidebar-resize-handle`).
+  - Added full collapse toggle (`isSidebarCollapsed`), allowing operators to maximize the Canvas 2D viewport to 100% width for detailed track inspection.
+- **Fully Draggable Station Focus Card:**
+  - Enabled freeform dragging for the Station Focus HUD card via screen-coordinate tracking (`stationCardPos`), preventing the card from obscuring active train movements or switch throats.
+- **24-Hour Operational Cycle Completion Modal:**
+  - Designed an executive modal dialog (`.day-completion-modal-backdrop`, `.day-completion-card`) triggered automatically upon 24-hour cycle completion.
+  - Displays cumulative daily statistics: 24-Hour Punctuality %, Mean Fleet Delay, Max Recorded Delay, AI Interventions Count, and Total Active Trains.
+  - Provides dual workflow actions:
+    - *Replay Same Day (06:00):* Resets timetable to 06:00:00 for the current operating day with fresh metrics.
+    - *Advance to Next Day:* Steps calendar forward (e.g. `Mon` $\to$ `Tue`) and initializes fresh dawn rollout.
+- **Canvas Screen-Space Alert Banners:**
+  - Added floating HUD warning banners (`.canvas-hud-alerts-container`) directly overlaid on the canvas for active disruptions and manual overrides, providing immediate visual awareness without cluttering the control sidebar.
+- **Commercial Train Details Display:**
+  - Updated train inspection card to display commercial train name, train number, origin-destination corridor route, and physical rake ID.
+- **Query Page Drawer Cleanup (`frontend/src/pages/QueryPage.jsx`):**
+  - Removed unused router links in intermediate stop drawers, maintaining pristine code cleanliness.
+
+---
+
+#### 5. Session Review & Flaw Rectifications
+- **Simulated Model State Tracking (`backend/core/sim_manager.py`):**
+  - Explicitly initialized and tracked `self._simulated_model` across `__init__`, `reset()`, and `configure()` on engine switches, ensuring dynamic 24-hour cycle summaries accurately reflect real-time collected delay/punctuality samples for the active model.
+  - Hardened commercial service resolution in `_resolve_active_service()` with robust default fallback (`Train #{t_num}`) when train name is unspecified.
+  - Added `max_delay_sec` and `active_trains_total` fields to dynamic daily summaries.
+- **Restored Disruption & HITL Override Modals (`frontend/src/pages/SimulationPage.jsx`, `SimulationPage.css`):**
+  - Re-anchored `.hud-right-group` in the top HUD containing `Inject Disruption` and `Manual Override` action buttons with dynamic active-count badges.
+  - Restored full interactive modal markup for Disruption Injection (Fleet Surge, Train Breakdown, Platform Track Closure, Compound Failure) and Human-in-the-Loop Operator Overrides (Hold, Platform Switch, Passing Loop Divert, Release).
+- **Operational Time Jumps (`frontend/src/pages/SimulationPage.jsx`):**
+  - Implemented one-click timetable time jump buttons (`Dawn (06:00)`, `Peak (07:30)`, `Midday (12:00)`, `Rush (17:00)`) in the top HUD bar, wired to `POST /api/sim/control` with custom `start_time_sec`.
+- **Canvas Viewport & Dependency Corrections (`frontend/src/pages/SimulationPage.jsx`):**
+  - Updated loader overlay text to accurately reflect parsing 2,413 network lanes and platform topologies.
+  - Added missing dependencies (`selectedFeature`, `showSignalHeads`, `activeFeatureLayer`, `showOverlayLabels`) to `renderCanvas` `useCallback` array.
+  - Removed unused imports (`Link`, `Activity`) in `frontend/src/pages/QueryPage.jsx`.
+- **Comprehensive Test Suite Extension (`backend/test_backend.py`):**
+  - Added direct router and live HTTP test assertions verifying custom `start_time_sec` resets to 07:30:00, checking return time format and pre-populated trains/platforms caches.
+
+---
+
+#### 6. Full-Stack Verification & Repository Hygiene
+- **Backend Validation Suite:** [`backend/test_backend.py`](backend/test_backend.py) executed cleanly with 100% pass rate across database layer, 2,413 track lanes, 18 stations, bounds, all 7 API routers, custom time resets, and live HTTP test server on port 8009.
+- **Frontend Production Build:** `npm run build` executed cleanly in 264ms, generating optimized Vite 8 bundles with zero errors.
+- **Frontend Static Linter:** `npm run lint` executed cleanly with 0 errors.
+- **Repository Hygiene:** All caches, models, and test screenshots verified clean; zero credentials, secrets, or untracked artifacts present.

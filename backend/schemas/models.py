@@ -21,6 +21,10 @@ class SimulationMode(str, Enum):
 
 class TrainTelemetry(BaseModel):
     id: str
+    rake_id: Optional[str] = None
+    train_number: Optional[str] = None
+    train_name: Optional[str] = None
+    route_desc: Optional[str] = None
     x: float
     y: float
     angle: float
@@ -69,6 +73,8 @@ class FleetKPIs(BaseModel):
     total_actions_taken: int
     collisions: int = 0
     teleports: int = 0
+    day_completed: Optional[bool] = False
+    daily_summary: Optional[Dict[str, Any]] = None
 
 
 class TelemetryFrame(BaseModel):
@@ -81,6 +87,8 @@ class TelemetryFrame(BaseModel):
     calendar_day: str
     speed_multiplier: float
     mode: SimulationMode
+    day_completed: Optional[bool] = False
+    daily_summary: Optional[Dict[str, Any]] = None
 
 
 # Request Models
@@ -129,6 +137,8 @@ class SimulationStatusResponse(BaseModel):
     active_disruptions: List[str]
     active_disruptions_data: Optional[List[Dict[str, Any]]] = None
     active_overrides: Optional[Dict[str, Any]] = None
+    day_completed: Optional[bool] = False
+    daily_summary: Optional[Dict[str, Any]] = None
 
 
 class TrackLaneGeometry(BaseModel):

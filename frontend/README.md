@@ -76,7 +76,7 @@ frontend/
 ### A. Overview Home (`/`)
 * **Project Blueprint:** High-level executive overview of the autonomous rail dispatching platform.
 * **Headline KPI Ribbon:** Highlights verified scale metrics:
-  * **776 Track Lanes** across 4 corridors, bypasses, crossovers, and alpine sidings.
+  * **2,413 Track Lanes** across 4 corridors, microscopic switch throats, bypasses, crossovers, and alpine sidings.
   * **18 Station Nodes** (6 intercity hubs, 12 regional town stations).
   * **242 Scheduled Services** with calibrated dwell times.
   * **31 Continuous Physical Rakes** with 1-to-1 stabling track assignments.
@@ -85,15 +85,29 @@ frontend/
 * **Academic Attribution:** Formal credits for project contributors and institutional affiliation.
 
 ### B. Real-Time Simulation Studio (`/simulation`)
-* **60 FPS Canvas 2D Vector Map:** High-performance HTML5 Canvas renderer drawing all 776 track lanes with functional color coding:
-  * High-Speed Mainline (Cyan)
-  * Regional Trunk (Steel Blue)
-  * Alpine Passing Loop (Emerald Green)
-  * Station Platforms (Amber / Yellow)
-  * Universal Crossovers (Purple)
-  * Storage Yards & Depots (Slate Gray)
-* **Automatic Canvas Centering:** Network bounds are evaluated on initial load and resize, smoothly fitting and centering the entire track network in the viewport.
-* **Live WebSocket Telemetry Bridge (`/ws/telemetry`):** Streams real-time vehicle vectors at 4 Hz with heading angle, speed, current delay, upcoming station, and active platform halts, with seamless 3-second fallback polling.
+* **60 FPS Canvas 2D Vector Map:** High-performance HTML5 Canvas renderer drawing all 2,413 microscopic track lanes with authentic railway graphics:
+  * UIC dual parallel steel rails with gleaming silver railheads (`#f8fafc`).
+  * Dark ballast bed with borders and periodic cross-ties (sleepers isolated strictly to running tracks to keep complex station throats pristine).
+  * Clean steel switch blades (`#94a3b8`) bridging turnout departure points without ballast bloating.
+  * Scale-adaptive non-clamping formulas (`wYard`, `wPlatform`, `wPocket`, `wSpur`, `wSwitch`) preventing sub-pixel dropouts at overview zoom.
+  * Double-Diamond X Crossovers (Amber/Coral `#f59e0b`), Dynamic Passing Loops (Emerald Teal `#14b8a6`), High-Speed Bypasses (Cyan `#00f0ff`), Buffer Stops with alternating red/white hazard stripes, and Multi-Aspect Signal plates.
+* **Google Maps-Style Infrastructure Toolbar & Peer Navigation:**
+  * Top floating toolbar with element counters: *Passing Loops (23)*, *X Crossovers (8)*, *Buffer Stops (23)*, *Signals (268)*.
+  * Cyclic Feature Peer Navigation (`[ < Prev ] Feature X of Y [ Next > ]`) with keyboard arrow bindings (`ArrowLeft`/`ArrowRight`/`ArrowUp`/`ArrowDown`) and smooth camera flight.
+  * `Clean Map` filter mode and `🏷️ Labels ON / OFF` toggle to eliminate map clutter.
+  * Interactive **Railway Network Legend** HUD card detailing design speeds, swatches, and track roles.
+* **Spatial UI Workbench (Resizable & Draggable):**
+  * **Resizable & Collapsible Sidebar:** Features an interactive drag handle (`.sidebar-resize-handle`) and full collapse button, allowing operators to maximize the Canvas 2D map to full viewport width.
+  * **Draggable Station Focus Card:** Freeform draggable HUD card with live departures, arrivals, and real-time platform occupancy.
+* **24-Hour Operational Cycle Completion Modal:**
+  * Automatically triggers when simulation reaches cycle end (`start_time_sec + 86400.0s`).
+  * Displays cumulative 24-hour performance: Punctuality %, Mean Fleet Delay, Max Delay, AI Interventions Count, and Active Trains.
+  * Dual operational workflows: "Replay Same Day (06:00)" and "Advance to Next Day" (e.g. `Mon` $\to$ `Tue`).
+* **Canvas Screen-Space Alert Banners:**
+  * Overlaid warning banners (`.canvas-hud-alerts-container`) on the canvas alerting operators to active disruptions and manual overrides.
+* **Rich Commercial Train Telemetry:**
+  * Real-time train inspection panel displaying commercial train name (e.g. *Express Sunrise*), train number, origin-to-destination corridor route, and physical rake ID.
+* **Live WebSocket Telemetry Bridge (`/ws/telemetry`):** Streams real-time vehicle vectors at 4 Hz with heading angle, speed, delay, upcoming station, and active platform halts, with seamless 3-second fallback polling.
 * **Predefined Operational Time Jumps:** Quick-jump buttons to fast-forward simulation time to key timetable waves:
   * **Dawn (06:00):** Initial morning fleet rollout
   * **Peak (07:30):** High-density morning commuter rush

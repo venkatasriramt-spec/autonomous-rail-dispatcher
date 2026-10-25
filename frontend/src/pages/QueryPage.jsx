@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
 import { 
   Train, 
   Search, 
@@ -9,7 +8,6 @@ import {
   Cpu, 
   ChevronDown, 
   ChevronUp, 
-  Activity, 
   Sparkles, 
   RotateCcw, 
   Gauge, 
@@ -934,15 +932,7 @@ export default function QueryPage() {
                                   <h4>Microscopic Itinerary & Station Stop Halts</h4>
                                 </div>
 
-                                <div className="drawer-actions">
-                                  <Link 
-                                    to="/simulation" 
-                                    className="btn btn-sm btn-outline-cyan"
-                                  >
-                                    <Activity size={14} />
-                                    <span>Track Live in Simulator</span>
-                                  </Link>
-                                </div>
+
                               </div>
 
                               {loadingDetail && !detail ? (
