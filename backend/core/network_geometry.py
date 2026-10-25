@@ -62,8 +62,10 @@ def categorize_edge(edge_id: str) -> str:
         return "yard"
     elif "c1_" in eid or "bypass" in eid:
         return "high_speed"
-    elif "c2_" in eid or "c3_" in eid:
+    elif "c2_" in eid or "c3_" in eid or "c4_" in eid:
         return "regional"
+    elif "spur" in eid:
+        return "spur"
     elif "depot" in eid:
         return "depot"
     return "connector"
@@ -109,6 +111,15 @@ def parse_network_geometry(force_reparse: bool = False) -> Dict[str, Any]:
     net_tree = ET.parse(str(NET_FILE))
     net_root = net_tree.getroot()
 
+    # Pre-index turnaround connections (dir="t") to eliminate reverse loops and U-turns
+    turnaround_vias = set()
+    for conn in net_root.findall("connection"):
+        if conn.get("dir") == "t":
+            via = conn.get("via")
+            if via:
+                turnaround_vias.add(via.rsplit("_", 1)[0])
+                turnaround_vias.add(via)
+
     lanes_data: List[Dict[str, Any]] = []
     lane_coords_map: Dict[str, List[List[float]]] = {}
 
@@ -121,8 +132,14 @@ def parse_network_geometry(force_reparse: bool = False) -> Dict[str, Any]:
         cat = categorize_edge(eid)
         is_internal = edge.get("function") == "internal"
 
+        # Drop turnaround internal edges immediately
+        if is_internal and (eid in turnaround_vias):
+            continue
+
         for lane in edge.findall("lane"):
             lid = lane.get("id", "")
+            if is_internal and (lid in turnaround_vias):
+                continue
             shape_str = lane.get("shape", "")
             if not shape_str:
                 continue

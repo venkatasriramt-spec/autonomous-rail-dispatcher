@@ -2228,4 +2228,373 @@
   }
 }
 
+/* ==========================================================================
+   Infrastructure Peer Feature Navigator (Next/Previous Cycle)
+   ========================================================================== */
+.feature-focus-nav-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-sm);
+  padding: 0.35rem 0.55rem;
+  margin-top: 0.15rem;
+}
+
+.btn-peer-cycle {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #f8fafc;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.3rem 0.65rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-peer-cycle:hover:not(:disabled) {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--cyan-primary);
+  color: var(--cyan-primary);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-peer-cycle:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.peer-step-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.08rem;
+}
+
+.peer-type-name {
+  font-size: 0.62rem;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+.peer-index-txt {
+  font-size: 0.76rem;
+  color: var(--cyan-primary);
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.feature-tab.tab-labels {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.feature-tab.tab-labels.active {
+  background: rgba(0, 240, 255, 0.22);
+  border-color: var(--cyan-primary);
+  color: var(--cyan-primary);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+/* ==========================================================================
+   Railway Network Track Legend & Speed Profile Guide
+   ========================================================================== */
+.canvas-map-legend-card {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  z-index: 15;
+  width: 345px;
+  max-height: 450px;
+  background: rgba(9, 16, 28, 0.94);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7), 0 0 20px rgba(0, 240, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  animation: slideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.canvas-map-legend-card.with-feature-card {
+  left: 25.5rem;
+}
+
+.map-legend-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.65rem;
+}
+
+.map-legend-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.legend-icon-badge {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 240, 255, 0.12);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.map-legend-title h4 {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f8fafc;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.legend-subtitle {
+  font-size: 0.64rem;
+  color: var(--text-dim);
+  display: block;
+}
+
+.btn-legend-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition-fast);
+}
+
+.btn-legend-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-bright);
+}
+
+.map-legend-scroll {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  overflow-y: auto;
+  max-height: 350px;
+  padding-right: 0.3rem;
+}
+
+.legend-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.42rem;
+}
+
+.legend-section-title {
+  font-size: 0.58rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding-left: 0.2rem;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.15s ease;
+}
+
+.legend-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.legend-track-line {
+  width: 32px;
+  height: 5px;
+  border-radius: 3px;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.legend-track-line.high-speed {
+  background: #00f0ff;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+.legend-track-line.regional {
+  background: #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+}
+
+.legend-track-line.spur {
+  background: #8b5cf6;
+  box-shadow: 0 0 8px rgba(139, 92, 246, 0.5);
+}
+
+.legend-track-line.platform {
+  background: #fef08a;
+  border: 1px solid #f59e0b;
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
+.legend-track-line.yard {
+  background: #64748b;
+  border: 1px solid #475569;
+}
+
+.legend-track-line.pocket {
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+}
+
+.legend-track-line.passing-loop {
+  background: #14b8a6;
+  box-shadow: 0 0 8px rgba(20, 184, 166, 0.5);
+}
+
+.legend-track-line.crossover {
+  background: #f59e0b;
+  position: relative;
+}
+
+.legend-track-line.crossover .frog-diamond {
+  position: absolute;
+  top: -2px;
+  left: 12px;
+  width: 8px;
+  height: 8px;
+  background: #fbbf24;
+  transform: rotate(45deg);
+}
+
+.legend-hardware-icon {
+  width: 32px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.buffer-stop-icon .buf-stripe {
+  width: 22px;
+  height: 6px;
+  background: repeating-linear-gradient(45deg, #ef4444, #ef4444 4px, #ffffff 4px, #ffffff 8px);
+  border-radius: 2px;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+}
+
+.signal-icon .sig-lens {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+.legend-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+}
+
+.legend-name-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.legend-track-name {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #e2e8f0;
+}
+
+.legend-speed-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-family: var(--font-mono);
+}
+
+.legend-speed-badge.cyan {
+  background: rgba(0, 240, 255, 0.15);
+  color: #38bdf8;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+}
+
+.legend-speed-badge.amber {
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.legend-speed-badge.purple {
+  background: rgba(139, 92, 246, 0.15);
+  color: #c4b5fd;
+  border: 1px solid rgba(139, 92, 246, 0.3);
+}
+
+.legend-speed-badge.gold {
+  background: rgba(251, 191, 36, 0.18);
+  color: #fde047;
+  border: 1px solid rgba(251, 191, 36, 0.35);
+}
+
+.legend-speed-badge.slate {
+  background: rgba(100, 116, 139, 0.18);
+  color: #94a3b8;
+  border: 1px solid rgba(100, 116, 139, 0.3);
+}
+
+.legend-speed-badge.mint {
+  background: rgba(16, 185, 129, 0.15);
+  color: #6ee7b7;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.legend-speed-badge.teal {
+  background: rgba(20, 184, 166, 0.15);
+  color: #5eead4;
+  border: 1px solid rgba(20, 184, 166, 0.3);
+}
+
+.legend-speed-badge.rose {
+  background: rgba(244, 63, 94, 0.15);
+  color: #f43f5e;
+  border: 1px solid rgba(244, 63, 94, 0.3);
+}
+
+.legend-speed-badge.emerald {
+  background: rgba(16, 185, 129, 0.15);
+  color: #10b981;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.legend-track-desc {
+  font-size: 0.62rem;
+  color: #94a3b8;
+  line-height: 1.25;
+}
 

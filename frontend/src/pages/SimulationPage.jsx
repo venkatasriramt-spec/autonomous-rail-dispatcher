@@ -14,6 +14,7 @@ import {
   Search, 
   Train, 
   X,
+  ChevronLeft,
   ChevronRight,
   Send,
   RefreshCw,
@@ -97,10 +98,30 @@ export default function SimulationPage() {
   const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'station' | 'disruptions' | 'events'
 
   // Google Maps Railway Feature Navigation & Overlays
-  const [activeFeatureLayer, setActiveFeatureLayer] = useState('all'); // 'all' | 'crossovers' | 'loops' | 'buffer_stops' | 'signals'
+  const [activeFeatureLayer, setActiveFeatureLayer] = useState('none'); // 'none' | 'all' | 'crossovers' | 'loops' | 'buffer_stops' | 'signals'
   const [selectedFeature, setSelectedFeature] = useState(null);
   const [showFeatureMenu, setShowFeatureMenu] = useState(false);
-  const [showSignalHeads, setShowSignalHeads] = useState(true);
+  const [showSignalHeads, setShowSignalHeads] = useState(false);
+  const [showOverlayLabels, setShowOverlayLabels] = useState(false); // Toggle to disable names & text crowding the screen
+  const [showMapLegend, setShowMapLegend] = useState(true); // Interactive Track Legend & Speed Profile Guide
+
+  // Get peer features for cyclical previous/next navigation
+  const getPeerFeatures = useCallback((feat) => {
+    if (!feat || !geometry) return [];
+    if (feat.type === 'crossover') {
+      return (geometry.track_features || []).filter(f => f.type === 'crossover');
+    }
+    if (feat.type === 'passing_loop' || feat.type === 'express_thru') {
+      return (geometry.track_features || []).filter(f => f.type === 'passing_loop' || f.type === 'express_thru');
+    }
+    if (feat.type === 'buffer_stop') {
+      return (geometry.buffer_stops || []).map(b => ({ ...b, type: 'buffer_stop' }));
+    }
+    if (feat.signal_type || feat.type === 'signal') {
+      return (geometry.signals || []).map(s => ({ ...s, type: 'signal' }));
+    }
+    return geometry.track_features || [];
+  }, [geometry]);
 
   // Disruption Form
   const [disruptionForm, setDisruptionForm] = useState({
@@ -436,6 +457,36 @@ export default function SimulationPage() {
     requestAnimationFrame(animate);
   }, [geometry, getCenteredTransform]);
 
+  // Keyboard arrow navigation for infrastructure features
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (!selectedFeature) return;
+      if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.target.tagName)) return;
+
+      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+        const peerList = getPeerFeatures(selectedFeature);
+        if (peerList.length > 1) {
+          e.preventDefault();
+          const curIdx = peerList.findIndex(f => f.id === selectedFeature.id);
+          const nextIdx = (curIdx + 1) % peerList.length;
+          zoomToFeature(peerList[nextIdx]);
+        }
+      } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+        const peerList = getPeerFeatures(selectedFeature);
+        if (peerList.length > 1) {
+          e.preventDefault();
+          const curIdx = peerList.findIndex(f => f.id === selectedFeature.id);
+          const prevIdx = (curIdx - 1 + peerList.length) % peerList.length;
+          zoomToFeature(peerList[prevIdx]);
+        }
+      } else if (e.key === 'Escape') {
+        setSelectedFeature(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [selectedFeature, getPeerFeatures, zoomToFeature]);
+
   // 1. Fetch Network Geometry on Mount
   useEffect(() => {
     let mounted = true;
@@ -709,10 +760,14 @@ export default function SimulationPage() {
       const vpMinY = maxY + minY - (height - offsetY) / scale - 40;
       const vpMaxY = maxY + minY - (-offsetY) / scale + 40;
 
-      // Scale-adaptive line width for overview/medium zoom
+      // Scale-adaptive line width for overview/medium zoom (guarantees zero dropouts across all zoom levels)
       const minScreenPx = scale < 0.12 ? 1.6 : (scale < 0.5 ? 1.8 : 2.2);
       const wNetwork = Math.max(minScreenPx / scale, 1.0);
-      const wPlatform = Math.min(1.2, minScreenPx / scale);
+      const wPlatform = Math.max((minScreenPx * 1.1) / scale, 1.2);
+      const wSpur = Math.max((minScreenPx * 1.0) / scale, 1.0);
+      const wPocket = Math.max((minScreenPx * 1.0) / scale, 1.0);
+      const wYard = Math.max((minScreenPx * 0.75) / scale, 0.8);
+      const wSwitch = Math.max((minScreenPx * 0.85) / scale, 0.8);
 
       // Fast parallel rail offset calculation for standard gauge (1.435m)
       const getRailOffsets = (pts, gauge = 1.435) => {
@@ -786,19 +841,22 @@ export default function SimulationPage() {
 
         const cat = lane.category || 'connector';
         const isHighSpeed = cat === 'high_speed';
+        const isRegional = cat === 'regional';
+        const isSpur = cat === 'spur' || (lane.edge_id && lane.edge_id.includes('spur'));
         const isPlatform = cat === 'platform' || platEdgeIds.has(lane.edge_id) || (lane.edge_id && lane.edge_id.includes('plat'));
         const isSwitch = cat === 'switch' || lane.is_internal || (lane.edge_id && (lane.edge_id.startsWith(':') || lane.edge_id.includes('Throat')));
         const isCrossover = cat === 'crossover' || (lane.edge_id && lane.edge_id.includes('xov'));
-        const isPassingLoop = cat === 'passing_loop' || cat === 'pocket' || (lane.edge_id && (lane.edge_id.includes('pocket') || lane.edge_id.includes('siding')));
+        const isPocket = cat === 'pocket' || (lane.edge_id && (lane.edge_id.includes('pocket') || lane.edge_id.includes('tail')));
+        const isPassingLoop = cat === 'passing_loop' || (lane.edge_id && (lane.edge_id.includes('siding') || lane.edge_id.includes('loop')));
         const isExpressThru = cat === 'express_thru' || (lane.edge_id && lane.edge_id.includes('thru'));
-        const isYard = cat === 'yard' || cat === 'depot';
+        const isYard = cat === 'yard' || (lane.edge_id && lane.edge_id.includes('yard'));
 
         const isSelectedConv = convEdgeIds.has(lane.edge_id);
         const isSelectedDiv = divEdgeIds.has(lane.edge_id);
         const isSelectedSwitch = switchEdgeIds ? switchEdgeIds.has(lane.edge_id) : false;
 
         // If a station is selected, check if this lane belongs to the station topology
-        const isConnectedToStation = isPlatform || isSelectedConv || isSelectedDiv || isSelectedSwitch || isCrossover;
+        const isConnectedToStation = isPlatform || isSelectedConv || isSelectedDiv || isSelectedSwitch || isCrossover || isPocket;
 
         // Determine feature color theme
         let featureColor = '#0284c7';
@@ -806,9 +864,12 @@ export default function SimulationPage() {
         else if (isCrossover) featureColor = '#f59e0b';
         else if (isExpressThru) featureColor = '#38bdf8';
         else if (isPassingLoop) featureColor = '#14b8a6';
+        else if (isPocket) featureColor = '#10b981';
+        else if (isSpur) featureColor = '#8b5cf6';
         else if (isSwitch || isSelectedSwitch) featureColor = '#818cf8';
         else if (isYard) featureColor = '#64748b';
         else if (isHighSpeed) featureColor = '#00f0ff';
+        else if (isRegional) featureColor = '#f59e0b';
 
         if (isStationSelected && !isConnectedToStation) {
           featureColor = 'rgba(71, 85, 105, 0.25)';
@@ -820,24 +881,28 @@ export default function SimulationPage() {
         // ballast bed, and check rails (guard rails) at diamond switches!
         // =====================================================================
         if (scale >= 1.4) {
-          // 1. Ballast Bed
-          ctx.beginPath();
-          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
-          for (let j = 1; j < coords.length; j++) {
-            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          // 1. Ballast Bed (Continuous physical tracks only, never internal switch lines)
+          if (!lane.is_internal) {
+            ctx.beginPath();
+            ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+            for (let j = 1; j < coords.length; j++) {
+              ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+            }
+            // Stroke shoulder border FIRST
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 3.6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.stroke();
+
+            // Stroke dark inner ballast SECOND
+            ctx.strokeStyle = '#090e17';
+            ctx.lineWidth = 2.8;
+            ctx.stroke();
           }
-          ctx.strokeStyle = '#090e17';
-          ctx.lineWidth = 3.2; // 3.2m real-world ballast bed
-          ctx.lineCap = 'round';
-          ctx.lineJoin = 'round';
-          ctx.stroke();
 
-          ctx.strokeStyle = '#1e293b'; // Ballast shoulder edge
-          ctx.lineWidth = 3.5;
-          ctx.stroke();
-
-          // 2. Cross-Ties (Sleepers) when scale >= 2.2
-          if (scale >= 2.2) {
+          // 2. Cross-Ties (Sleepers) when scale >= 2.2 (Physical continuous tracks only)
+          if (scale >= 2.2 && !lane.is_internal) {
             ctx.strokeStyle = '#334155'; // Concrete / hardwood railway tie
             ctx.lineWidth = Math.max(0.24, 0.8 / scale);
             ctx.beginPath();
@@ -861,43 +926,62 @@ export default function SimulationPage() {
           }
 
           // 3. Dual Parallel Steel Rails (1.435m Standard Gauge)
-          const { left, right } = getRailOffsets(coords, 1.435);
+          // For internal 2-point chords: draw as a clean steel turnout switch connector
+          const isInternalChord = lane.is_internal && coords.length === 2;
+          if (!isInternalChord) {
+            const { left, right } = getRailOffsets(coords, 1.435);
 
-          // Left Rail
-          ctx.beginPath();
-          ctx.moveTo(left[0][0], toCanvasY(left[0][1]));
-          for (let j = 1; j < left.length; j++) {
-            ctx.lineTo(left[j][0], toCanvasY(left[j][1]));
-          }
-          ctx.strokeStyle = '#475569';
-          ctx.lineWidth = Math.max(0.14, 1.2 / scale);
-          ctx.stroke();
-          ctx.strokeStyle = '#f8fafc'; // Gleaming silver railhead
-          ctx.lineWidth = Math.max(0.06, 0.6 / scale);
-          ctx.stroke();
+            // Left Rail
+            ctx.beginPath();
+            ctx.moveTo(left[0][0], toCanvasY(left[0][1]));
+            for (let j = 1; j < left.length; j++) {
+              ctx.lineTo(left[j][0], toCanvasY(left[j][1]));
+            }
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = Math.max(0.14, 1.2 / scale);
+            ctx.stroke();
+            ctx.strokeStyle = '#f8fafc'; // Gleaming silver railhead
+            ctx.lineWidth = Math.max(0.06, 0.6 / scale);
+            ctx.stroke();
 
-          // Right Rail
-          ctx.beginPath();
-          ctx.moveTo(right[0][0], toCanvasY(right[0][1]));
-          for (let j = 1; j < right.length; j++) {
-            ctx.lineTo(right[j][0], toCanvasY(right[j][1]));
+            // Right Rail
+            ctx.beginPath();
+            ctx.moveTo(right[0][0], toCanvasY(right[0][1]));
+            for (let j = 1; j < right.length; j++) {
+              ctx.lineTo(right[j][0], toCanvasY(right[j][1]));
+            }
+            ctx.strokeStyle = '#475569';
+            ctx.lineWidth = Math.max(0.14, 1.2 / scale);
+            ctx.stroke();
+            ctx.strokeStyle = '#f8fafc'; // Gleaming silver railhead
+            ctx.lineWidth = Math.max(0.06, 0.6 / scale);
+            ctx.stroke();
+          } else {
+            // Clean single switch blade line connecting turnouts
+            ctx.beginPath();
+            ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+            ctx.lineTo(coords[1][0], toCanvasY(coords[1][1]));
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = Math.max(0.2, 1.0 / scale);
+            ctx.stroke();
           }
-          ctx.strokeStyle = '#475569';
-          ctx.lineWidth = Math.max(0.14, 1.2 / scale);
-          ctx.stroke();
-          ctx.strokeStyle = '#f8fafc'; // Gleaming silver railhead
-          ctx.lineWidth = Math.max(0.06, 0.6 / scale);
-          ctx.stroke();
 
           // 4. Subtle Centerline Color-Coded Functional Glow
-          ctx.beginPath();
-          ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
-          for (let j = 1; j < coords.length; j++) {
-            ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+          const shouldShowCenterline = isPlatform || isCrossover || isPocket || isSpur ||
+            (isPassingLoop && activeFeatureLayer === 'loops') ||
+            (isExpressThru && activeFeatureLayer === 'loops') ||
+            (isSelectedSwitch || (isSwitch && isStationSelected && isConnectedToStation));
+
+          if (shouldShowCenterline) {
+            ctx.beginPath();
+            ctx.moveTo(coords[0][0], toCanvasY(coords[0][1]));
+            for (let j = 1; j < coords.length; j++) {
+              ctx.lineTo(coords[j][0], toCanvasY(coords[j][1]));
+            }
+            ctx.strokeStyle = featureColor;
+            ctx.lineWidth = Math.max(0.2, 0.9 / scale);
+            ctx.stroke();
           }
-          ctx.strokeStyle = featureColor;
-          ctx.lineWidth = Math.max(0.2, 0.9 / scale);
-          ctx.stroke();
 
           // 5. Crossover Frogs & Diamond Intersections at Deep Zoom
           if (isCrossover && coords.length >= 2) {
@@ -921,8 +1005,8 @@ export default function SimulationPage() {
             ctx.restore();
           }
 
-          // 6. Platform Track Labels at Deep Zoom
-          if (isPlatform && coords.length >= 2) {
+          // 6. Platform Track Labels at Deep Zoom (Only if labels enabled)
+          if (showOverlayLabels && isPlatform && coords.length >= 2) {
             const midIdx = Math.floor(coords.length / 2);
             const mx = coords[midIdx][0];
             const my = toCanvasY(coords[midIdx][1]);
@@ -949,7 +1033,7 @@ export default function SimulationPage() {
 
           if (isPlatform) {
             ctx.strokeStyle = '#020617';
-            ctx.lineWidth = Math.min(1.6, wPlatform * 1.4);
+            ctx.lineWidth = wPlatform * 1.35;
             ctx.stroke();
 
             ctx.strokeStyle = '#f59e0b';
@@ -957,7 +1041,7 @@ export default function SimulationPage() {
             ctx.stroke();
 
             ctx.strokeStyle = '#fef08a';
-            ctx.lineWidth = Math.min(0.5, wPlatform * 0.45);
+            ctx.lineWidth = wPlatform * 0.45;
             ctx.stroke();
           } else if (isCrossover) {
             const isHighlighted = activeFeatureLayer === 'crossovers' || selectedFeature?.type === 'crossover';
@@ -1006,27 +1090,37 @@ export default function SimulationPage() {
             ctx.strokeStyle = '#99f6e4';
             ctx.lineWidth = Math.max(0.6 / scale, wNetwork * 0.4);
             ctx.stroke();
+          } else if (isPocket) {
+            // Reversal pocket and tail tracks directly feeding buffer stops
+            const isHighlighted = activeFeatureLayer === 'loops' || selectedFeature?.type === 'passing_loop';
+            ctx.strokeStyle = isHighlighted ? '#10b981' : (isStationSelected && !isConnectedToStation ? 'rgba(16, 185, 129, 0.35)' : '#10b981');
+            ctx.lineWidth = wPocket;
+            ctx.stroke();
 
-            if (scale >= 0.12 && coords.length >= 2) {
-              const p0 = coords[0];
-              const pEnd = coords[coords.length - 1];
-              ctx.fillStyle = '#2dd4bf';
-              ctx.beginPath();
-              ctx.arc(p0[0], toCanvasY(p0[1]), Math.max(2 / scale, 3), 0, Math.PI * 2);
-              ctx.arc(pEnd[0], toCanvasY(pEnd[1]), Math.max(2 / scale, 3), 0, Math.PI * 2);
-              ctx.fill();
-            }
+            ctx.strokeStyle = '#a7f3d0';
+            ctx.lineWidth = Math.max(0.5 / scale, wPocket * 0.35);
+            ctx.stroke();
+          } else if (isSpur) {
+            // Dedicated electrified maintenance depot branch spurs (linking cities to depots)
+            ctx.strokeStyle = isStationSelected && !isConnectedToStation ? 'rgba(139, 92, 246, 0.3)' : '#8b5cf6';
+            ctx.lineWidth = wSpur;
+            ctx.stroke();
+
+            ctx.strokeStyle = '#c4b5fd';
+            ctx.lineWidth = Math.max(0.6 / scale, wSpur * 0.4);
+            ctx.stroke();
+          } else if (isYard) {
+            // Stabling, layover and freight classification yard tracks
+            ctx.strokeStyle = isStationSelected && !isConnectedToStation ? 'rgba(100, 116, 139, 0.25)' : '#64748b';
+            ctx.lineWidth = wYard;
+            ctx.stroke();
           } else if (isSelectedSwitch || (isSwitch && isStationSelected && isConnectedToStation)) {
             ctx.strokeStyle = '#818cf8';
-            ctx.lineWidth = Math.min(1.2, wPlatform * 1.15);
+            ctx.lineWidth = wSwitch;
             ctx.stroke();
           } else if (isSwitch) {
             ctx.strokeStyle = isStationSelected ? 'rgba(129, 140, 248, 0.22)' : '#818cf8';
-            ctx.lineWidth = wNetwork;
-            ctx.stroke();
-          } else if (isYard) {
-            ctx.strokeStyle = isStationSelected ? 'rgba(71, 85, 105, 0.2)' : 'rgba(100, 116, 139, 0.45)';
-            ctx.lineWidth = Math.min(0.8, 1.0 / scale);
+            ctx.lineWidth = wSwitch;
             ctx.stroke();
           } else if (isHighSpeed) {
             ctx.strokeStyle = isStationSelected && !isConnectedToStation ? 'rgba(14, 116, 144, 0.22)' : '#0284c7';
@@ -1034,8 +1128,18 @@ export default function SimulationPage() {
             ctx.stroke();
 
             if (!isStationSelected || isConnectedToStation) {
-              ctx.strokeStyle = '#38bdf8';
+              ctx.strokeStyle = '#00f0ff';
               ctx.lineWidth = Math.max(0.6 / scale, wNetwork * 0.45);
+              ctx.stroke();
+            }
+          } else if (isRegional) {
+            ctx.strokeStyle = isStationSelected && !isConnectedToStation ? 'rgba(217, 119, 6, 0.22)' : '#d97706';
+            ctx.lineWidth = wNetwork;
+            ctx.stroke();
+
+            if (!isStationSelected || isConnectedToStation) {
+              ctx.strokeStyle = '#fbbf24';
+              ctx.lineWidth = Math.max(0.6 / scale, wNetwork * 0.4);
               ctx.stroke();
             }
           } else {
@@ -1162,7 +1266,7 @@ export default function SimulationPage() {
         }
 
         // Buffer stop label if zoomed in (scale >= 0.15) or buffer layer active
-        if (scale >= 0.15 || isBufSelected) {
+        if ((showOverlayLabels && scale >= 0.15) || isBufSelected) {
           ctx.save();
           const fontSize = Math.min(9.5 / scale, 12);
           ctx.font = `700 ${fontSize}px Inter, sans-serif`;
@@ -1207,14 +1311,14 @@ export default function SimulationPage() {
       }
     }
 
-    // 4. Draw High-Level Track Feature Markers (When Zoomed Out, so Crossovers & Loops are instantly visible)
-    if (geometry && geometry.track_features && scale < 0.25) {
+    // 4. Draw High-Level Track Feature Markers (Only when labels enabled or layer active, to prevent crowding)
+    if (showOverlayLabels && geometry && geometry.track_features && scale < 0.25) {
       for (const feat of geometry.track_features) {
         const fx = feat.x;
         const fy = toCanvasY(feat.y);
-        const isFeatSelected = selectedFeature?.id === feat.id || activeFeatureLayer === feat.type || (activeFeatureLayer === 'loops' && (feat.type === 'passing_loop' || feat.type === 'express_thru'));
+        const isFeatSelected = selectedFeature?.id === feat.id;
 
-        if (feat.type === 'crossover' && (activeFeatureLayer === 'all' || activeFeatureLayer === 'crossovers')) {
+        if (feat.type === 'crossover' && (activeFeatureLayer === 'crossovers' || isFeatSelected)) {
           // High-Speed Diamond Crossover Zone Marker
           ctx.save();
           const pillW = 160 / scale;
@@ -1233,7 +1337,7 @@ export default function SimulationPage() {
           ctx.textBaseline = 'middle';
           ctx.fillText(`🔀 Crossover (${feat.speed_kmh} km/h)`, fx, fy);
           ctx.restore();
-        } else if ((feat.type === 'express_thru' || feat.type === 'passing_loop') && (activeFeatureLayer === 'all' || activeFeatureLayer === 'loops')) {
+        } else if ((feat.type === 'express_thru' || feat.type === 'passing_loop') && (activeFeatureLayer === 'loops' || isFeatSelected)) {
           // Dynamic Passing Loop / Bypass Marker
           ctx.save();
           const pillW = 140 / scale;
@@ -1399,37 +1503,39 @@ export default function SimulationPage() {
           ctx.restore();
         }
 
-        // Station Name Pill Badge (placed safely above yard so it never covers tracks)
-        const name = st.display_name || st.station_name || 'Station';
-        const fontSize = Math.min((isCity ? 11 : 9.5) / scale, 13);
-        ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
-        const textMetrics = ctx.measureText(name);
-        const textWidth = textMetrics.width;
-        const padX = 6 / scale;
-        const padY = 3 / scale;
-        const badgeH = fontSize + padY * 2;
-        const badgeW = textWidth + padX * 2;
-        const badgeX = sx - badgeW / 2;
-        const badgeY = scale >= 0.22 
-          ? sy - Math.max(hubRadius * 1.6, 65 / scale) 
-          : sy - hubRadius * 1.6 - badgeH - (4 / scale);
+        // Station Name Pill Badge (Only when labels enabled, or when this station is selected/disrupted)
+        if (showOverlayLabels || isSelectedSt || isDisruptedStation) {
+          const name = st.display_name || st.station_name || 'Station';
+          const fontSize = Math.min((isCity ? 11 : 9.5) / scale, 13);
+          ctx.font = `600 ${fontSize}px Inter, system-ui, sans-serif`;
+          const textMetrics = ctx.measureText(name);
+          const textWidth = textMetrics.width;
+          const padX = 6 / scale;
+          const padY = 3 / scale;
+          const badgeH = fontSize + padY * 2;
+          const badgeW = textWidth + padX * 2;
+          const badgeX = sx - badgeW / 2;
+          const badgeY = scale >= 0.22 
+            ? sy - Math.max(hubRadius * 1.6, 65 / scale) 
+            : sy - hubRadius * 1.6 - badgeH - (4 / scale);
 
-        // Badge background
-        ctx.fillStyle = 'rgba(6, 11, 24, 0.9)';
-        ctx.beginPath();
-        ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4 / scale);
-        ctx.fill();
-        ctx.strokeStyle = isDisruptedStation 
-          ? '#ef4444' 
-          : (isCity ? 'rgba(0, 240, 255, 0.6)' : 'rgba(56, 189, 248, 0.4)');
-        ctx.lineWidth = 1 / scale;
-        ctx.stroke();
+          // Badge background
+          ctx.fillStyle = 'rgba(6, 11, 24, 0.9)';
+          ctx.beginPath();
+          ctx.roundRect(badgeX, badgeY, badgeW, badgeH, 4 / scale);
+          ctx.fill();
+          ctx.strokeStyle = isDisruptedStation 
+            ? '#ef4444' 
+            : (isCity ? 'rgba(0, 240, 255, 0.6)' : 'rgba(56, 189, 248, 0.4)');
+          ctx.lineWidth = 1 / scale;
+          ctx.stroke();
 
-        // Badge text
-        ctx.fillStyle = '#f8fafc';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(name, sx, badgeY + badgeH / 2);
+          // Badge text
+          ctx.fillStyle = '#f8fafc';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(name, sx, badgeY + badgeH / 2);
+        }
 
         // Danger Warning Tag if Disrupted
         if (isDisruptedStation) {
@@ -2606,54 +2712,71 @@ export default function SimulationPage() {
             </div>
             
             <button 
-              className={`feature-tab ${activeFeatureLayer === 'all' ? 'active' : ''}`}
-              onClick={() => setActiveFeatureLayer('all')}
-              title="Show all track features & network corridors"
+              className={`feature-tab ${activeFeatureLayer === 'none' && !selectedFeature ? 'active' : ''}`}
+              onClick={() => {
+                setActiveFeatureLayer('none');
+                setSelectedFeature(null);
+                setShowOverlayLabels(false);
+              }}
+              title="Clean Map: Hide all active overlays, markers, and badges"
             >
-              <span>All Tracks</span>
+              <span>Clean Map</span>
             </button>
 
             <button 
               className={`feature-tab tab-crossover ${activeFeatureLayer === 'crossovers' ? 'active' : ''}`}
               onClick={() => {
-                setActiveFeatureLayer(activeFeatureLayer === 'crossovers' ? 'all' : 'crossovers');
-                if (activeFeatureLayer !== 'crossovers' && geometry?.track_features) {
-                  const firstXov = geometry.track_features.find(f => f.type === 'crossover');
-                  if (firstXov) zoomToFeature(firstXov);
+                const xovList = (geometry?.track_features || []).filter(f => f.type === 'crossover');
+                if (activeFeatureLayer === 'crossovers' && selectedFeature && xovList.length > 0) {
+                  const curIdx = xovList.findIndex(f => f.id === selectedFeature.id);
+                  const nextXov = xovList[(curIdx + 1) % xovList.length];
+                  zoomToFeature(nextXov);
+                } else {
+                  setActiveFeatureLayer('crossovers');
+                  if (xovList.length > 0) zoomToFeature(xovList[0]);
                 }
               }}
-              title="Highlight 488 Double-Diamond X Crossovers & Frog Points"
+              title="Highlight & Cycle through 8 High-Speed Double-Diamond X Crossovers"
             >
               <span className="dot dot-amber"></span>
               <span>X Crossovers</span>
-              <span className="feature-count-badge">488</span>
+              <span className="feature-count-badge">8</span>
             </button>
 
             <button 
               className={`feature-tab tab-loop ${activeFeatureLayer === 'loops' ? 'active' : ''}`}
               onClick={() => {
-                setActiveFeatureLayer(activeFeatureLayer === 'loops' ? 'all' : 'loops');
-                if (activeFeatureLayer !== 'loops' && geometry?.track_features) {
-                  const firstLoop = geometry.track_features.find(f => f.type === 'passing_loop' || f.type === 'express_thru');
-                  if (firstLoop) zoomToFeature(firstLoop);
+                const loopList = (geometry?.track_features || []).filter(f => f.type === 'passing_loop' || f.type === 'express_thru');
+                if (activeFeatureLayer === 'loops' && selectedFeature && loopList.length > 0) {
+                  const curIdx = loopList.findIndex(f => f.id === selectedFeature.id);
+                  const nextLoop = loopList[(curIdx + 1) % loopList.length];
+                  zoomToFeature(nextLoop);
+                } else {
+                  setActiveFeatureLayer('loops');
+                  if (loopList.length > 0) zoomToFeature(loopList[0]);
                 }
               }}
-              title="Highlight 76 Dynamic Passing Loops & Express Bypasses"
+              title="Highlight & Cycle through 12 Dynamic Passing Loops & Express Bypasses"
             >
               <span className="dot dot-teal"></span>
               <span>Passing Loops</span>
-              <span className="feature-count-badge">76</span>
+              <span className="feature-count-badge">12</span>
             </button>
 
             <button 
               className={`feature-tab tab-buffer ${activeFeatureLayer === 'buffer_stops' ? 'active' : ''}`}
               onClick={() => {
-                setActiveFeatureLayer(activeFeatureLayer === 'buffer_stops' ? 'all' : 'buffer_stops');
-                if (activeFeatureLayer !== 'buffer_stops' && geometry?.buffer_stops && geometry.buffer_stops.length > 0) {
-                  zoomToFeature({ ...geometry.buffer_stops[0], type: 'buffer_stop' });
+                const bufList = (geometry?.buffer_stops || []).map(b => ({ ...b, type: 'buffer_stop' }));
+                if (activeFeatureLayer === 'buffer_stops' && selectedFeature && bufList.length > 0) {
+                  const curIdx = bufList.findIndex(f => f.id === selectedFeature.id);
+                  const nextBuf = bufList[(curIdx + 1) % bufList.length];
+                  zoomToFeature(nextBuf);
+                } else {
+                  setActiveFeatureLayer('buffer_stops');
+                  if (bufList.length > 0) zoomToFeature(bufList[0]);
                 }
               }}
-              title="Highlight 23 Dead-End Terminus Buffer Stops & Hydraulic Bumpers"
+              title="Highlight & Cycle through 23 Dead-End Terminus Buffer Stops"
             >
               <span className="dot dot-rose"></span>
               <span>Buffer Stops</span>
@@ -2663,14 +2786,31 @@ export default function SimulationPage() {
             <button 
               className={`feature-tab tab-signals ${activeFeatureLayer === 'signals' || showSignalHeads ? 'active' : ''}`}
               onClick={() => {
-                setShowSignalHeads(prev => !prev);
-                setActiveFeatureLayer(prev => prev === 'signals' ? 'all' : 'signals');
+                const sigList = (geometry?.signals || []).map(s => ({ ...s, type: 'signal' }));
+                if (activeFeatureLayer === 'signals' && selectedFeature && sigList.length > 0) {
+                  const curIdx = sigList.findIndex(f => f.id === selectedFeature.id);
+                  const nextSig = sigList[(curIdx + 1) % sigList.length];
+                  zoomToFeature(nextSig);
+                } else {
+                  setShowSignalHeads(true);
+                  setActiveFeatureLayer('signals');
+                  if (sigList.length > 0) zoomToFeature(sigList[0]);
+                }
               }}
-              title="Toggle 268 Multi-Aspect Interlocking Railway Signals"
+              title="Toggle & Cycle through 268 Multi-Aspect Railway Signals"
             >
               <span className="dot dot-emerald"></span>
               <span>Signals</span>
               <span className="feature-count-badge">268</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-labels ${showOverlayLabels ? 'active' : ''}`}
+              onClick={() => setShowOverlayLabels(prev => !prev)}
+              title={showOverlayLabels ? "Hide map text labels & floating badges (Clean View)" : "Show map feature labels & station tags"}
+            >
+              <Eye size={13} className={showOverlayLabels ? "text-cyan" : "text-muted"} />
+              <span>{showOverlayLabels ? 'Labels ON' : 'Labels OFF'}</span>
             </button>
 
             <button 
@@ -2679,7 +2819,16 @@ export default function SimulationPage() {
               title="Explore Infrastructure Elements & Fly-To Any Feature"
             >
               <Crosshair size={13} className="text-cyan" />
-              <span>Explorer</span>
+              <span>Directory</span>
+            </button>
+
+            <button 
+              className={`feature-tab tab-legend ${showMapLegend ? 'active' : ''}`}
+              onClick={() => setShowMapLegend(prev => !prev)}
+              title="Toggle Railway Track Classification & Operational Speed Legend"
+            >
+              <Layers size={13} className={showMapLegend ? "text-cyan" : "text-muted"} />
+              <span>Legend</span>
             </button>
           </div>
 
@@ -2709,6 +2858,50 @@ export default function SimulationPage() {
                   <X size={16} />
                 </button>
               </div>
+
+              {/* Arrow Buttons Navigator to cycle across all features */}
+              {(() => {
+                const peerList = getPeerFeatures(selectedFeature);
+                const peerIndex = peerList.findIndex(f => f.id === selectedFeature.id);
+                const totalPeers = peerList.length;
+
+                return totalPeers > 1 ? (
+                  <div className="feature-focus-nav-strip">
+                    <button 
+                      className="btn-peer-cycle"
+                      onClick={() => {
+                        const prevIdx = (peerIndex - 1 + totalPeers) % totalPeers;
+                        zoomToFeature(peerList[prevIdx]);
+                      }}
+                      title="View Previous Feature (← Arrow)"
+                    >
+                      <ChevronLeft size={16} />
+                      <span>Prev</span>
+                    </button>
+
+                    <div className="peer-step-badge">
+                      <span className="peer-type-name">
+                        {selectedFeature.type === 'crossover' ? 'Crossover' : 
+                         (selectedFeature.type === 'passing_loop' || selectedFeature.type === 'express_thru') ? 'Loop / Siding' : 
+                         selectedFeature.type === 'buffer_stop' ? 'Buffer Stop' : 'Signal'}
+                      </span>
+                      <span className="peer-index-txt">{peerIndex + 1} of {totalPeers}</span>
+                    </div>
+
+                    <button 
+                      className="btn-peer-cycle"
+                      onClick={() => {
+                        const nextIdx = (peerIndex + 1) % totalPeers;
+                        zoomToFeature(peerList[nextIdx]);
+                      }}
+                      title="View Next Feature (→ Arrow)"
+                    >
+                      <span>Next</span>
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                ) : null;
+              })()}
 
               <div className="feature-focus-specs">
                 <div className="spec-item">
@@ -2767,6 +2960,160 @@ export default function SimulationPage() {
                   <Maximize2 size={14} />
                   <span>Network Overview</span>
                 </button>
+              </div>
+            </div>
+          )}
+
+          {/* Railway Network Track Legend & Speed Profiles */}
+          {showMapLegend && (
+            <div className={`canvas-map-legend-card glass-panel ${selectedFeature ? 'with-feature-card' : ''}`}>
+              <div className="map-legend-header">
+                <div className="map-legend-title">
+                  <div className="legend-icon-badge">
+                    <Layers size={15} className="text-cyan" />
+                  </div>
+                  <div>
+                    <h4>Railway Network Legend</h4>
+                    <span className="legend-subtitle">Standard UIC 1435mm • Speed & Functionality</span>
+                  </div>
+                </div>
+                <button 
+                  onClick={() => setShowMapLegend(false)} 
+                  className="btn-legend-close"
+                  title="Close Legend (Reopen via toolbar anytime)"
+                >
+                  <X size={15} />
+                </button>
+              </div>
+
+              <div className="map-legend-scroll">
+                {/* 1. Mainline & High-Speed */}
+                <div className="legend-section">
+                  <div className="legend-section-title">MAINLINE CORRIDORS</div>
+                  <div className="legend-row">
+                    <div className="legend-track-line high-speed"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">High-Speed Express Trunk</span>
+                        <span className="legend-speed-badge cyan">300 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Corridor 1 East–West Mainline & Diagonal Bypass</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-track-line regional"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Regional Passenger Spine</span>
+                        <span className="legend-speed-badge amber">120 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Corridors 2 (N–S), 3 (Alpine), and 4 (Southern Arc)</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-track-line spur"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Maintenance Depot Spurs</span>
+                        <span className="legend-speed-badge purple">80 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Dedicated electrified branch links connecting to Depots 1–4</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2. Station & Operational Lines */}
+                <div className="legend-section">
+                  <div className="legend-section-title">STATION & YARD TRACKS</div>
+                  <div className="legend-row">
+                    <div className="legend-track-line platform"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Passenger Platform Bays</span>
+                        <span className="legend-speed-badge gold">50 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Commercial boarding bays with trainStop passenger platforms</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-track-line yard"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Stabling & Storage Yards</span>
+                        <span className="legend-speed-badge slate">20 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Overnight EMU parking, maintenance sidings & freight staging</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-track-line pocket"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Reversal Pockets & Tail Tracks</span>
+                        <span className="legend-speed-badge mint">50 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Dead-end reversal spurs leading to buffer stops (*Kopfmachen*)</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-track-line passing-loop"></div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Passing Loops & Overtaking</span>
+                        <span className="legend-speed-badge teal">60 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Alpine dynamic passing sidings & intermediate bypass loops</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* 3. Interlocking & Safety Hardware */}
+                <div className="legend-section">
+                  <div className="legend-section-title">INTERLOCKING & HARDWARE</div>
+                  <div className="legend-row">
+                    <div className="legend-track-line crossover">
+                      <span className="frog-diamond"></span>
+                    </div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Double Diamond X Crossover</span>
+                        <span className="legend-speed-badge amber">160 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Universal 4-switch high-speed crossovers (*Überleitstellen*)</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-hardware-icon buffer-stop-icon">
+                      <span className="buf-stripe"></span>
+                    </div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Buffer Stop (Dead End)</span>
+                        <span className="legend-speed-badge rose">0 km/h</span>
+                      </div>
+                      <span className="legend-track-desc">Hydraulic bumper track arrestors & terminal reversing points</span>
+                    </div>
+                  </div>
+
+                  <div className="legend-row">
+                    <div className="legend-hardware-icon signal-icon">
+                      <span className="sig-lens"></span>
+                    </div>
+                    <div className="legend-meta">
+                      <div className="legend-name-line">
+                        <span className="legend-track-name">Interlocking Block Signals</span>
+                        <span className="legend-speed-badge emerald">Signal</span>
+                      </div>
+                      <span className="legend-track-desc">Multi-aspect optical signals controlling block headway & routing</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}

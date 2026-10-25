@@ -298,4 +298,48 @@ A chronological log of how this abstract SUMO railway network evolved, from init
 - **Viewport Bounding-Box Culling:**
   - Implemented real-time geometric viewport culling (`vpMinX`, `vpMaxX`, `vpMinY`, `vpMaxY`) for high frame rate (60 FPS) rendering during rapid panning and deep zoom.
 
+#### Phase 21: Junction Throat Substructure Isolation, HUD Card Peer Navigation & Clean Map Filter
+- **Junction Throat Substructure Isolation (`frontend/src/pages/SimulationPage.jsx`):**
+  - *Problem:* In high-density station throats (e.g. `City_1_Throat1`), drawing 3.5m ballast beds and cross-ties (sleepers) for every internal connector lane (`lane.is_internal`) created a massive overlapping grey/slate polygon slab and an unnatural carpet of criss-crossing sleeper hashes pointing in conflicting directions.
+  - *Fix:* Restricted ballast beds (dark bed `#090e17` and shoulder borders `#1e293b`) and periodic cross-ties (`#334155`) strictly to continuous running tracks (`!lane.is_internal`).
+  - *Clean Switch Turnouts:* Internal switch turnouts now render as clean steel blade connector lines (`#94a3b8`, width $0.2\text{ m}$) bridging switch departure points cleanly without overlapping ballast slabs or redundant railhead fragments.
+  - *Passing Loop Endpoint Cleanup:* Eliminated artificial multi-meter green circles (`ctx.arc`) rendered at passing loop switch nodes, restoring clean turnout geometry.
+- **Turnaround Connection Pruning (`backend/core/network_geometry.py`):**
+  - Discovered 291 SUMO `netconvert` turnaround connections (`<connection dir="t">`) generating U-turns inside junction throats.
+  - Indexed all `dir="t"` connection vias and dropped internal turnaround lanes from the parsed network model, ensuring only physical, forward-branching turnouts and crossings are passed to the frontend.
+  - Synchronized `frontend/public/network_geometry.json` (773 KB).
+- **Infrastructure Card Peer Navigation (`SimulationPage.jsx`, `SimulationPage.css`):**
+  - Added dynamic peer group resolution (`getPeerFeatures`) grouping track features into cyclical categories:
+    - *Passing Loops & Express Bypasses* (23 features)
+    - *X Crossovers* (8 features)
+    - *Buffer Stops* (23 features)
+    - *Signals* (268 nodes)
+  - Integrated `[ < Prev ] Feature X of Y [ Next > ]` navigation strip into the floating Feature Inspector HUD card.
+  - Added keyboard arrow support (`ArrowLeft` / `ArrowRight` / `ArrowUp` / `ArrowDown`) allowing instant cycling through all peer features across the network.
+  - Added cyclical click behavior to the top infrastructure toolbar buttons (`Passing Loops`, `X Crossovers`, `Buffer Stops`, `Signals`).
+- **Clean Map Filter & Overlay Labels Toggle:**
+  - Added `Clean Map` toolbar button (`activeFeatureLayer = 'none'`), de-selecting active features, hiding floating text tags, and presenting the pristine track layout.
+  - Added `🏷️ Labels ON / OFF` toggle button (`showOverlayLabels`) in the infrastructure toolbar.
+- **Scale-Adaptive Track Widths & Gap Elimination (`SimulationPage.jsx`):**
+  - *Problem:* When zoomed out to network overview, storage yards, stabling sidings, terminal reversal pockets, and depot spurs were vanishing into sub-pixel fractions ($0.016\text{ px}$ to $0.024\text{ px}$) because their line widths were clamped with `Math.min(0.8, ...)` and drawn in faint $45\%$ opacity slate. This produced artificial visual gaps where terminal buffer stops appeared to float in empty space.
+  - *Fix:* Replaced clamping with non-clamping, scale-adaptive formulas guaranteeing minimum screen pixel widths at all zoom scales (`wYard`, `wPlatform`, `wPocket`, `wSpur`, `wSwitch`).
+  - *Corridor 4 & Spur Classification:* Fixed categorization in `backend/core/network_geometry.py` so Corridor 4 (`c4_`) is classified as `regional` and dedicated depot access tracks (`spur_`) are classified as `spur` rather than disappearing under `yard`.
+  - *Result:* 100% continuous track connectivity with zero visual dropouts across the entire 30 km network.
+- **Interactive Railway Track Legend (`SimulationPage.jsx`, `SimulationPage.css`):**
+  - Added an interactive **Railway Network Legend** HUD card accessible via the `Legend` toolbar button.
+  - Displays color swatches, line styles, design speeds, and operational descriptions across:
+    - *High-Speed Express Trunk* ($300\text{ km/h}$, Electric Cyan)
+    - *Regional Passenger Spine* ($120\text{ km/h}$, Deep Amber)
+    - *Maintenance Depot Spurs* ($80\text{ km/h}$, Royal Purple)
+    - *Passenger Platform Bays* ($50\text{ km/h}$, Glowing Gold)
+    - *Stabling & Storage Yards* ($20\text{ km/h}$, Slate Steel)
+    - *Reversal Pockets & Tail Tracks* ($50\text{ km/h}$, Mint Green)
+    - *Passing Loops & Overtaking* ($60\text{ km/h}$, Emerald Teal)
+    - *Double Diamond X Crossovers* ($160\text{ km/h}$, Amber with Gold Diamond plate)
+    - *Buffer Stops (Dead Ends)* ($0\text{ km/h}$, Crimson Crossbar with hazard stripes)
+    - *Interlocking Signals* (Aspect Lens)
+  - Features dynamic positioning that shifts side-by-side with the Feature Focus Card to prevent UI overlap.
+
+
+
 

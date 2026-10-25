@@ -1042,3 +1042,25 @@ Scale full-stack operational capabilities across both backend and frontend layer
   - Confirmed 0 secret leaks and clean working tree.
 - **Git State:** 5 commits ahead of `origin/main` (`d7bbe97`, `dbec4b9`, `5569931`, `a9e4670`, `668b07a`) verified and documented; repository prepared for user review and push.
 
+---
+
+### 25 October 2026 — Phase 21: Junction Throat Substructure Isolation, HUD Card Peer Navigation & Clean Map Filter
+
+#### 1. Visual Topology & Substructure Clean-Up
+- **Substructure Isolation:** Restricted wide ballast beds and cross-ties (sleepers) exclusively to continuous physical tracks (`!lane.is_internal`), eliminating solid grey overlapping polygon slabs and criss-crossing sleeper meshes in complex station throats (e.g., `City_1_Throat1`).
+- **Clean Switch Turnouts:** Rendered internal switch turnouts as slender steel blade lines (`#94a3b8`, $0.2\text{ m}$) cleanly connecting switch points without ballast bloating.
+- **Passing Loop Endpoint Cleanup:** Removed artificial large green circular dots rendered at switch throats.
+- **Topology Pruning:** Pruned 291 SUMO turnaround connections (`dir="t"`) in `backend/core/network_geometry.py` to prevent U-turn internal loops.
+
+#### 2. Infrastructure Card Peer Navigation & Clean Map Filter
+- **Card Peer Navigation:** Added `[ < Prev ] Feature X of Y [ Next > ]` to the floating Feature Inspector HUD card, allowing dispatchers to step sequentially through all 23 Passing Loops/Sidings, 8 X Crossovers, 23 Buffer Stops, and 268 Signals with smooth camera flight.
+- **Keyboard Arrow Support:** Bound `ArrowLeft` and `ArrowRight` (as well as `ArrowUp`/`ArrowDown`) to step through peer features seamlessly.
+- **Clean Map Filter & Labels Toggle:** Added `Clean Map` toolbar mode to reset camera and clear highlights, plus a dedicated `🏷️ Labels ON / OFF` toggle to hide floating badges and eliminate map clutter.
+
+#### 3. Scale-Adaptive Track Widths, Gap Elimination & Network Legend
+- **Track Gap Resolution:** Eliminated sub-pixel vanishing ($0.016\text{ px}$) of storage yards, stabling sidings, reversal pockets, and depot spurs at overview zoom by replacing clamped `Math.min` width bounds with scale-adaptive non-clamping formulas (`wYard`, `wPlatform`, `wPocket`, `wSpur`, `wSwitch`).
+- **Corridor 4 & Spur Categorization:** Fixed categorization in `backend/core/network_geometry.py` ensuring Corridor 4 (`c4_`) and dedicated maintenance depot branches (`spur_`) connect continuously with zero visual gaps.
+- **Interactive Map Legend:** Introduced floating `canvas-map-legend-card` and `Legend` toolbar button, detailing speeds, swatches, and operational classifications across all 9 track and hardware types.
+
+
+
