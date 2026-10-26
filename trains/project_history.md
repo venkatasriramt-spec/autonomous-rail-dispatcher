@@ -472,7 +472,7 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 
 **Objective:** Fully resolve Issue C ("Some planned journey times are too short for the generated routes") by calibrating inter-station running times and declared route distances against the physical SUMO track network (`dense_network.net.xml`), strictly enforcing the theoretical lower bound:
 $$T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$$
-such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with zero violations, eliminating route distance discrepancies $> 1.0\text{ km}$, maintaining turnaround feasibility ($\ge \text{min\_required}$) across all 211 chained rake turnarounds, and verifying clean multi-day simulation with zero collisions, deadlocks, or teleports.
+such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with zero violations, eliminating route distance discrepancies $> 1.0\text{ km}$, maintaining turnaround feasibility ($\text{dwell} \ge T_{\text{min-turnaround}}$) across all 211 chained rake turnarounds, and verifying clean multi-day simulation with zero collisions, deadlocks, or teleports.
 
 #### Phase 17: Physical Runtime Calibration & Network Feasibility Enforcement
 
@@ -506,13 +506,13 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
      - `heavy_freight_cargo`: 30.0 min
      - `intermodal_container_freight`: 30.0 min
      - `electric_trunk_freight`: 25.0 min
-   - All 211 turnaround pairs across the 31 physical rakes strictly satisfy $\text{dwell} \ge \text{min\_required}$ with positive margins (ranging from +0.2 min up to +110 min).
+   - All 211 turnaround pairs across the 31 physical rakes strictly satisfy $\text{dwell} \ge T_{\text{min-turnaround}}$ with positive margins (ranging from +0.2 min up to +110 min).
 
 4. **Standalone Timetable Validation Tool (`scripts/validate_timetable.py`)**:
-   - Implemented an automated CLI auditor calculating $T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$ and $|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$ across all compiled routes.
+   - Implemented an automated CLI auditor calculating $T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$ and $|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}$ across all compiled routes.
    - **Audit Results**:
      - Physical Runtime ($T_{\text{planned}} \ge T_{\min}$): **0 violations** (242 / 242 services pass).
-     - Distance Accuracy ($|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$): **0 violations** (242 / 242 services pass, 0 discrepancies $> 1.0\text{ km}$).
+     - Distance Accuracy ($|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}$): **0 violations** (242 / 242 services pass, 0 discrepancies $> 1.0\text{ km}$).
 
 5. **Multi-Day Headless Simulation Sweep (`scripts/verify_simulation.py --all-days 86400`)**:
    - Executed full 24-hour microscopic simulation sweep (86,400s per day) across all 7 calendar days and the composite schedule:

@@ -91,8 +91,8 @@ Engineer and integrate a production-ready, multi-core CPU-optimized **Autonomous
    - **Departure Dispatch & Holding:** Controls signal authorization (proceed vs. hold 30s / 60s / 120s) to prevent conflicting line reservations with oncoming high-priority trains.
 
 4. **Multi-Class Priority & Knock-On Delay Reward Engine:**
-   - Embedded real-world passenger value-of-time and freight SLAs: High-Speed EMU ($w=1.0$), Regional Commuter ($w=0.6$), Intermodal Freight ($w=0.3$), Bulk Freight ($w=0.15$).
-   - Explicitly penalizes secondary / cascading delays ($N_{\text{knock\_on}}$) to train the model to insulate the network from localized disruptions.
+   - Embedded real-world passenger value-of-time and freight SLAs: High-Speed EMU ($w = 1.0$), Regional Commuter ($w = 0.6$), Intermodal Freight ($w = 0.3$), Bulk Freight ($w = 0.15$).
+   - Explicitly penalizes secondary / cascading delays ($N_{\text{knock-on}}$) to train the model to insulate the network from localized disruptions.
 
 ---
 
@@ -471,7 +471,7 @@ Evaluated under morning peak rolling stock failure across all 242 services (`dis
 #### 8. Frontier 2: Smart Interlocking Gating & Calendar-Aware Working Timetable (WTT) Platform Calibration
 
 1. **Architectural Improvements (Frontier 2):**
-   - **Mainline Passing-Loop Protection:** Suppressed unprovoked passing loop siding diversions when track ahead is clear ($d_{\text{leader}} \ge 1,500\text{m}$, $\text{is\_overtake\_candidate} = 0$), eliminating 2,900+ spurious siding entries.
+   - **Mainline Passing-Loop Protection:** Suppressed unprovoked passing loop siding diversions when track ahead is clear ($d_{\text{leader}} \ge 1,500\text{ m}$, `is_overtake_candidate == 0`), eliminating 2,900+ spurious siding entries.
    - **Mainline Hold Protection:** Barred unprovoked station dwell extensions on consists already experiencing positive delay or with clear track ahead, eliminating artificial transit delay.
    - **Calendar-Aware Working Timetable (WTT) Calibration:** Automatically detects Sunday operating conditions where platform 1 at hub stations is reserved for extended turnaround staging buffers, dynamically reallocating incoming trains to open alternative platforms (tracks 2–6).
 
@@ -682,7 +682,7 @@ Consolidate redundant heuristic platform scheduling and alternative track resolu
      - `find_free_alternative_platform`: Identifies alternative vacant platforms when a train's scheduled track is blocked, verifying length and directional connectivity.
    - Centralized platform assignment across `FIFODispatcher`, `PriorityGreedyDispatcher`, and `MAPPODispatcher`, eliminating code duplication and standardizing platform routing behavior across all dispatchers.
 2. **Accurate Operational Dwell Time Formulation (`MultiAgentObservationBuilder`, `ObservationBuilder`):**
-   - Updated remaining dwell time calculation: $\text{dwell}_{\text{rem}} = \max(\text{scheduled\_departure} - t, \text{stop\_min\_duration})$.
+   - Updated remaining dwell time calculation: `dwell_rem = max(scheduled_departure - t, stop_min_duration)` ($T_{\text{dwell,rem}} = \max(T_{\text{sched}} - t, T_{\text{min}})$).
    - Prevents underestimating dwell times for early-arriving consists that must adhere to mandatory passenger boarding/alighting durations.
 3. **Queueing Conflict Signal Decoupling (`MultiAgentRailwayEnv`):**
    - Refined conflict detection in the reward engine: trains queueing behind a leader actively occupying and dwelling at a station platform are recognized as normal operational headway and are not penalized with artificial conflict penalties.
