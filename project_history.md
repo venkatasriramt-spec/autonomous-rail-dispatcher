@@ -202,10 +202,10 @@ Eliminate artificial dispatcher interventions on free-flowing weekend traffic (w
 
 #### 1. Technical Enhancements & Guardrails
 1. **Domain-Accurate Intervention Penalties (`RewardEngine`):**
-   - Introduced calibrated action penalty weights ($0.5$).
-   - Imposed holding penalties ($-0.25$ to $-1.0$) when a train has clear track ahead ($\ge 2,000\text{m}$) or is running on-time.
-   - Imposed unnecessary passing loop diversion penalties ($-0.40$).
-   - Rewarded the agent ($+0.05$) for selecting `[0, 0, 0]` ("do nothing") on on-time, conflict-free consists.
+   - Introduced calibrated action penalty weights (0.50).
+   - Imposed holding penalties (-0.25 to -1.0) when a train has clear track ahead (≥ 2,000 m) or is running on-time.
+   - Imposed unnecessary passing loop diversion penalties (-0.40).
+   - Rewarded the agent (+0.05) for selecting `[0, 0, 0]` ("do nothing") on on-time, conflict-free consists.
 2. **Platform Reallocation Interlocking Guardrails (`ActionHandler`):**
    - Confined dynamic platform reallocations strictly to multi-platform junction terminals (`City_1` through `City_6`), safeguarding single-track mountain stations (`Town_1` through `Town_12`) against invalid route replacement edges.
 3. **Resilient TraCI Worker Recovery (`RailwayDispatchEnv`):**
@@ -366,8 +366,8 @@ Evaluated under morning peak rolling stock failure across all 242 services (`dis
 
 1. **Physical Interlocking Guardrail Implementation (`ActionHandler`):**
    - **Cumulative Hold Ceiling:** Imposed a hard 120-second cumulative hold limit per station dwell. Prohibits TraCI socket loops from continually resetting dwell countdowns (`setStop`).
-   - **Overdue Consist Protection:** Prohibits issuing holds on any train already experiencing $>120\text{s}$ delay, preventing compounding network gridlock.
-   - **Clear-Track Siding Protection:** Rejects unprovoked passing loop diversions when the mainline ahead is clear for $\ge 1,500\text{m}$.
+   - **Overdue Consist Protection:** Prohibits issuing holds on any train already experiencing > 120s delay, preventing compounding network gridlock.
+   - **Clear-Track Siding Protection:** Rejects unprovoked passing loop diversions when the mainline ahead is clear for ≥ 1,500 m.
 
 2. **28-Task Full 24-Hour Weekly Benchmark Matrix (86,400s / 5,760 Steps per Day):**
    - Evaluated across 28 parallel worker processes on the 32 vCPU VM (`dispatcher/logs/evaluations/weekly_audits/cross_comparison_24h.json`):
@@ -392,7 +392,7 @@ Evaluated under morning peak rolling stock failure across all 242 services (`dis
 | **Trained PPO Dispatcher (AI)** | **83.41s** | **98.3%** | **1,882 events** | **+64.2% (DOMINATES ALL)** |
 
 - **Empirical Breakthroughs:**
-  - **Dominates All Heuristics:** AI dispatcher achieves the lowest average weekly delay (**83.41s**, beating FIFO and Priority Greedy by $15.04\text{s}$ per train, and reducing unmanaged static delay by **$64.2\%$**).
+  - **Dominates All Heuristics:** AI dispatcher achieves the lowest average weekly delay (**83.41s**, beating FIFO and Priority Greedy by 15.04s per train, and reducing unmanaged static delay by **64.2%**).
   - **Suppresses 84.2% of Secondary Knock-On Delays:** Knock-on conflict cascades slashed from **11,944 down to 1,882**.
   - **Comprehensive Visual Suite Generated:**
     - [`weekly_7day_delay_comparison.png`](dispatcher/logs/visual_proofs/weekly_7day_delay_comparison.png)
@@ -446,7 +446,7 @@ Evaluated under morning peak rolling stock failure across all 242 services (`dis
 
 1. **Architectural Motivation (Frontier 1):**
    - In baseline reinforcement learning, the model is queried at every discrete macro-step (5,760 times per 24 hours), occasionally issuing micro-interventions even when trains are running on-time with clear signals ahead.
-   - **Dispatch-by-Exception:** The policy wrapper audits physical track conditions ($d_{\text{leader}} < 1,500\text{m}$, platform occupancy conflict, delay $> 60\text{s}$, station approach). On nominal green signals, trains are left unperturbed on their scheduled timetable routes (`[0, 0, 0]`), intervening only when true operational anomalies occur.
+   - **Dispatch-by-Exception:** The policy wrapper audits physical track conditions ($d_{\text{leader}} < 1,500\text{ m}$, platform occupancy conflict, delay > 60s, station approach). On nominal green signals, trains are left unperturbed on their scheduled timetable routes (`[0, 0, 0]`), intervening only when true operational anomalies occur.
 
 2. **Full 7-Day Regression Audit (Verified No-Regression Guarantee):**
    - Audited across all 7 calendar days (00:00 to 24:00, 28 parallel simulations) to verify that optimizing the gating mechanism did not cause regressions on any day:
@@ -490,8 +490,8 @@ Evaluated under morning peak rolling stock failure across all 242 services (`dis
 | **Weighted Service Mean** | **1,446** | **225.59s** | **96.05s** | **96.05s** | **39.37s** | **98.8%** | **494.1s** | **1,810** | **DOMINATES ALL (-82.5% vs Static, -59.0% vs FIFO)** |
 
 3. **Empirical Breakthroughs:**
-   - **Global Weekly Delay Slashed to 39.86s (Daily Mean) / 39.37s (Weighted Service Mean):** Unweighted average of daily means dropped from 86.71s (Frontier 1) and 233.08s (Static) to **39.86s** (weighted service-level mean across all 1,446 services is **39.37s** vs 225.59s Static and 96.05s FIFO), beating both FIFO and Priority Greedy by nearly 60 seconds per train ($58.59\text{s}$ faster).
-   - **Sunday Transformed into Network's Most Punctual Day:** Sunday delay plunged from **185.54s down to 8.87s** (99.4% punctuality, knock-ons down to 26), beating FIFO (148.45s) and Priority Greedy (148.45s) by $94.0\%$.
+   - **Global Weekly Delay Slashed to 39.86s (Daily Mean) / 39.37s (Weighted Service Mean):** Unweighted average of daily means dropped from 86.71s (Frontier 1) and 233.08s (Static) to **39.86s** (weighted service-level mean across all 1,446 services is **39.37s** vs 225.59s Static and 96.05s FIFO), beating both FIFO and Priority Greedy by nearly 60 seconds per train (58.59s faster).
+   - **Sunday Transformed into Network's Most Punctual Day:** Sunday delay plunged from **185.54s down to 8.87s** (99.4% punctuality, knock-ons down to 26), beating FIFO (148.45s) and Priority Greedy (148.45s) by 94.0%.
    - **Midweek Peak Excellence:** Tuesday and Friday delay plunged to **10.85s / 10.86s** (99.5% punctuality).
    - **Full 7-Day Visual Suite Updated in [`dispatcher/logs/visual_proofs/`](dispatcher/logs/visual_proofs/):**
      - [`weekly_7day_delay_comparison.png`](dispatcher/logs/visual_proofs/weekly_7day_delay_comparison.png)
@@ -515,10 +515,10 @@ To confirm that the Frontier 1 action gating and Frontier 2 interlocking safegua
 
 | Disruption Scenario | Dispatcher Strategy | Mean Delay (s) | Max Delay (s) | Punctuality Rate | Knock-on Cascades | Interventions (Actions) | Status vs Baselines |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Train Breakdown**<br>*(10-min Mainline Stall)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 25.68s<br>25.68s<br>25.68s<br>**26.15s** | 195.0s<br>195.0s<br>195.0s<br>**195.0s** | 94.5%<br>94.5%<br>94.5%<br>**94.9%** | 3<br>3<br>3<br>**3** | 0<br>52<br>52<br>**128** | **+0.4% Punctuality**<br>Actions cut from 164 $\rightarrow$ 128 |
-| **Platform Closure**<br>*(30-min Hub Shutdown)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 3.49s<br>3.49s<br>3.49s<br>**3.49s** | 33.7s<br>33.7s<br>33.7s<br>**33.7s** | 99.9%<br>99.9%<br>99.9%<br>**99.9%** | 3<br>3<br>3<br>**3** | 0<br>37<br>37<br>**61** | **99.9% On-Time Retention**<br>Actions cut from 105 $\rightarrow$ 61 |
-| **Fleet Surge**<br>*(15% Stochastic Jitter)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 4.12s<br>4.12s<br>4.12s<br>**4.12s** | 33.7s<br>33.7s<br>33.7s<br>**33.7s** | 99.9%<br>99.9%<br>99.9%<br>**99.9%** | 3<br>3<br>3<br>**3** | 0<br>35<br>35<br>**65** | **99.9% On-Time Retention**<br>Actions cut from 108 $\rightarrow$ 65 |
-| **Compound Failure**<br>*(Breakdown + Blockage)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 25.68s<br>25.68s<br>25.68s<br>**26.15s** | 195.0s<br>195.0s<br>195.0s<br>**195.0s** | 94.5%<br>94.5%<br>94.5%<br>**94.9%** | 3<br>3<br>3<br>**3** | 0<br>52<br>52<br>**128** | **+0.4% Punctuality**<br>Actions cut from 164 $\rightarrow$ 128 |
+| **Train Breakdown**<br>*(10-min Mainline Stall)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 25.68s<br>25.68s<br>25.68s<br>**26.15s** | 195.0s<br>195.0s<br>195.0s<br>**195.0s** | 94.5%<br>94.5%<br>94.5%<br>**94.9%** | 3<br>3<br>3<br>**3** | 0<br>52<br>52<br>**128** | **+0.4% Punctuality**<br>Actions cut from 164 → 128 |
+| **Platform Closure**<br>*(30-min Hub Shutdown)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 3.49s<br>3.49s<br>3.49s<br>**3.49s** | 33.7s<br>33.7s<br>33.7s<br>**33.7s** | 99.9%<br>99.9%<br>99.9%<br>**99.9%** | 3<br>3<br>3<br>**3** | 0<br>37<br>37<br>**61** | **99.9% On-Time Retention**<br>Actions cut from 105 → 61 |
+| **Fleet Surge**<br>*(15% Stochastic Jitter)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 4.12s<br>4.12s<br>4.12s<br>**4.12s** | 33.7s<br>33.7s<br>33.7s<br>**33.7s** | 99.9%<br>99.9%<br>99.9%<br>**99.9%** | 3<br>3<br>3<br>**3** | 0<br>35<br>35<br>**65** | **99.9% On-Time Retention**<br>Actions cut from 108 → 65 |
+| **Compound Failure**<br>*(Breakdown + Blockage)* | Static Baseline<br>FIFO Heuristic<br>Priority Greedy<br>**Trained PPO (AI)** | 25.68s<br>25.68s<br>25.68s<br>**26.15s** | 195.0s<br>195.0s<br>195.0s<br>**195.0s** | 94.5%<br>94.5%<br>94.5%<br>**94.9%** | 3<br>3<br>3<br>**3** | 0<br>52<br>52<br>**128** | **+0.4% Punctuality**<br>Actions cut from 164 → 128 |
 
 3. **Stress Visualizations Updated in [`dispatcher/logs/visual_proofs/`](dispatcher/logs/visual_proofs/):**
    - [`stress_test_delay_comparison.png`](dispatcher/logs/visual_proofs/stress_test_delay_comparison.png)
@@ -572,9 +572,13 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
         - **Telemetry Footprint:** Centralized PPO transmits a 28-float vector (112 bytes/step, totalling 26.2 KB over 240 steps). Under decentralized execution, each station agent consumes 96 bytes and the corridor controller consumes 56 bytes, totalling 632 bytes per step across all 7 agents (148.1 KB over 240 steps).
 
 4. **Multi-Agent Environment & Reward Blending ([`dispatcher/envs/multi_agent_railway_env.py`](dispatcher/envs/multi_agent_railway_env.py)):**
-   - Implements standard multi-agent gym interface: `{agent_id: action}` $\rightarrow$ `{agent_id: obs}`, `{agent_id: reward}`.
+   - Implements standard multi-agent gym interface: `{agent_id: action}` → `{agent_id: obs}`, `{agent_id: reward}`.
    - **Blended CTDE Cooperative Reward:**
-     $$R_i = (1 - \alpha) \cdot R_{\text{local}, i} + \alpha \cdot R_{\text{global}}$$
+
+     $$
+     R_i = (1 - \alpha) \cdot R_{\text{local}, i} + \alpha \cdot R_{\text{global}}
+     $$
+
      where $\alpha = 0.5$, penalizing local station delays and platform conflicts while ensuring all agents cooperate to maintain global network punctuality and eliminate secondary cascades.
 
 5. **Multi-Agent PPO Policy Architecture ([`dispatcher/agents/mappo_agent.py`](dispatcher/agents/mappo_agent.py)):**
@@ -585,7 +589,7 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 6. **High-Performance Multi-Worker Training Pipeline ([`dispatcher/training/train_mappo.py`](dispatcher/training/train_mappo.py)):**
    - **Hardware-Efficient Multi-Worker Scaling:** Deployed 8 parallel SUMO environments executing via `multiprocessing.Pipe()`, dynamically bound to distinct TraCI socket ports (`12500 + worker_id * 10`) to eliminate port contention on the 32-core VM.
    - **Curriculum Training Parameters:** Executed 10 rollout cycles of 128 steps per worker across 8 parallel environments (1,024 steps/iteration, totaling 10,240 environment timesteps) in 306.6 seconds (~5.1 minutes at 33.4 SPS).
-   - **Optimization & GAE:** Multi-Agent PPO with Generalized Advantage Estimation ($\lambda=0.95, \gamma=0.99$), Adam optimizer (learning rate $3 \times 10^{-4}$), clipped surrogate objective ($\epsilon=0.2$), value loss coefficient ($0.5$), entropy coefficient ($0.01$), mini-batch size 128, and 4 PPO epochs per rollout.
+   - **Optimization & GAE:** Multi-Agent PPO with Generalized Advantage Estimation ($\lambda=0.95, \gamma=0.99$), Adam optimizer (learning rate $\eta = 3 \times 10^{-4}$), clipped surrogate objective ($\epsilon = 0.2$), value loss coefficient (0.50), entropy coefficient (0.01), mini-batch size 128, and 4 PPO epochs per rollout.
    - **Convergence Profile:** Centralized Critic loss dropped decisively from **4.7098** (Iteration 1) down to **0.1034** (Iteration 10) — a **97.8% value estimation error reduction** — while decentralized Actor loss stabilized to **-0.0337**. Checkpoints saved to [`dispatcher/models/mappo_interlocking.pt`](dispatcher/models/mappo_interlocking.pt) and [`dispatcher/models/mappo_best.pt`](dispatcher/models/mappo_best.pt).
 
 7. **Empirical Benchmark: Trained MAPPO vs Centralized PPO vs Baselines ([`dispatcher/evaluation/audit_marl_comparison.py`](dispatcher/evaluation/audit_marl_comparison.py)):**
@@ -611,12 +615,12 @@ With the completion of Frontiers 1 & 2 and the disruption stress benchmark:
 #### 12. Frontier 3 Scaled Multi-Wave Diurnal Curriculum Training & Full 24-Hour 7-Day 5-Model Microscopic Benchmark
 
 1. **Multi-Wave Diurnal Curriculum Training ([`dispatcher/training/train_mappo_curriculum.py`](dispatcher/training/train_mappo_curriculum.py)):**
-   - **Operational Objective:** Expand the localized interlocking actors beyond the morning peak so the policy generalizes across the entire 24-hour diurnal cycle, regularize against over-intervention via an explicit Action Workload Penalty ($-0.10$ per active action in `MultiAgentRailwayEnv`), and tighten approach gating in `MAPPODispatcher`.
+   - **Operational Objective:** Expand the localized interlocking actors beyond the morning peak so the policy generalizes across the entire 24-hour diurnal cycle, regularize against over-intervention via an explicit Action Workload Penalty (-0.10 per active action in `MultiAgentRailwayEnv`), and tighten approach gating in `MAPPODispatcher`.
    - **Hardware Scaling:** Utilized 16 parallel SUMO simulation workers communicating via bidirectional pipes with isolated TraCI sockets (`12500 + worker_id * 10`) on the 32-core VM host.
    - **Curriculum Stages Executed:**
-     - **Phase 1 (Nocturnal Freight Wave, 21:30–02:30):** 20,480 timesteps at ~190 SPS. Critic loss converged from 0.0521 $\rightarrow$ 0.0034; Actor loss: -0.0335.
-     - **Phase 2 (Evening Commuter Peak, 16:00–18:45):** 20,480 timesteps at ~210 SPS. Critic loss dropped $\rightarrow$ 0.0012; Actor loss: -0.0336.
-     - **Phase 3 (Sunday Platform Staging & Turnaround Calibration, 08:00–12:00, Sun):** 20,480 timesteps at ~220 SPS. Critic loss dropped $\rightarrow$ 0.0001; Actor loss: -0.0348.
+     - **Phase 1 (Nocturnal Freight Wave, 21:30–02:30):** 20,480 timesteps at ~190 SPS. Critic loss converged from 0.0521 → 0.0034; Actor loss: -0.0335.
+     - **Phase 2 (Evening Commuter Peak, 16:00–18:45):** 20,480 timesteps at ~210 SPS. Critic loss dropped → 0.0012; Actor loss: -0.0336.
+     - **Phase 3 (Sunday Platform Staging & Turnaround Calibration, 08:00–12:00, Sun):** 20,480 timesteps at ~220 SPS. Critic loss dropped → 0.0001; Actor loss: -0.0348.
      - **Phase 4 (Full 24-Hour Continuous Fleet Synthesis, 05:00–23:00, 242 Runs / 31 Rakes):** 40,960 timesteps at ~55-80 SPS. Consolidated multi-regime policy saved to [`dispatcher/models/mappo_interlocking.pt`](dispatcher/models/mappo_interlocking.pt) and [`dispatcher/models/mappo_best_full_day.pt`](dispatcher/models/mappo_best_full_day.pt).
    - **Total Training Duration:** 816.1 seconds (13.60 minutes) across 16 parallel workers (102,400 total timesteps).
 
@@ -689,7 +693,7 @@ Consolidate redundant heuristic platform scheduling and alternative track resolu
 4. **Dynamic Scheduled Platform Tracking & Exception Gating (`MAPPODispatcher`, `MultiAgentRailwayEnv`):**
    - Dynamically tracks actual scheduled platform indices from TraCI route stops (rather than assuming Platform 1 as default).
    - Passed via step `info` dictionary, enabling precise exception gating where platform switching actions only trigger when the actual scheduled platform is blocked or severely delayed.
-   - Reduced unnecessary action penalties in `marl_reward.py` from $-0.5$ to $-0.05$ to allow adaptive tactical routing during severe congestion.
+   - Reduced unnecessary action penalties in `marl_reward.py` from -0.50 to -0.05 to allow adaptive tactical routing during severe congestion.
 5. **Automated End-to-End Retraining & Benchmarking Pipeline (`dispatcher/training/train_and_benchmark_all.py`):**
    - Implemented a unified script executing the multi-stage training curriculum followed immediately by the 42-run 6-model weekly cross-comparison.
    - Enforces pre-run invalidation of stale output files to ensure that any failed stage immediately halts execution with a non-zero exit code rather than reporting outdated benchmark logs.
@@ -925,15 +929,19 @@ Evolve the web UI and backend API from an initial frontend prototype into a high
 1. **Fritsch-Carlson Monotone Cubic Spline Interpolation:**
    - Standard Bezier or polynomial splines produce unrealistic negative delay overshoots or excessive peaks when interpolating discrete hourly railway metrics.
    - Implemented the Fritsch-Carlson algorithm directly in [`frontend/src/pages/AboutPage.jsx`](frontend/src/pages/AboutPage.jsx), computing exact tangents and monotonic secants across 24 hourly data points:
-     $$\Delta_k = \frac{y_{k+1} - y_k}{x_{k+1} - x_k}, \quad \alpha_k = \frac{d_k}{\Delta_k}, \quad \beta_k = \frac{d_{k+1}}{\Delta_k}$$
-   - Guarantees strictly monotonic, mathematically sound curve trajectories for 24-hour fleet delay visualization with zero visual artifacts.
+
+     $$
+     \Delta_k = \frac{y_{k+1} - y_k}{x_{k+1} - x_k}, \quad \alpha_k = \frac{d_k}{\Delta_k}, \quad \beta_k = \frac{d_{k+1}}{\Delta_k}
+     $$
+
+     Guarantees strictly monotonic, mathematically sound curve trajectories for 24-hour fleet delay visualization with zero visual artifacts.
 
 2. **Interactive Controls & Diurnal Narrative:**
    - Added interactive day pill selectors (`Mon` through `Sun`) and model selector buttons directly within the SVG timeline view.
    - Built a Key Metrics Ribbon displaying:
-     - Peak Morning Rush Delay ($07:00\text{--}09:30$)
-     - Peak Evening Rush Delay ($16:00\text{--}18:45$)
-     - Off-Peak Base Delay ($10:00\text{--}15:00$)
+     - Peak Morning Rush Delay (07:00–09:30)
+     - Peak Evening Rush Delay (16:00–18:45)
+     - Off-Peak Base Delay (10:00–15:00)
      - 24-Hour Network Mean Delay
    - Added a 3-card analytical narrative section explaining the morning commuter wave, midday base recovery, and nocturnal freight traffic window.
 
@@ -1048,7 +1056,7 @@ Scale full-stack operational capabilities across both backend and frontend layer
 
 #### 1. Visual Topology & Substructure Clean-Up
 - **Substructure Isolation:** Restricted wide ballast beds and cross-ties (sleepers) exclusively to continuous physical tracks (`!lane.is_internal`), eliminating solid grey overlapping polygon slabs and criss-crossing sleeper meshes in complex station throats (e.g., `City_1_Throat1`).
-- **Clean Switch Turnouts:** Rendered internal switch turnouts as slender steel blade lines (`#94a3b8`, $0.2\text{ m}$) cleanly connecting switch points without ballast bloating.
+- **Clean Switch Turnouts:** Rendered internal switch turnouts as slender steel blade lines (`#94a3b8`, 0.2 m) cleanly connecting switch points without ballast bloating.
 - **Passing Loop Endpoint Cleanup:** Removed artificial large green circular dots rendered at switch throats.
 - **Topology Pruning:** Pruned 291 SUMO turnaround connections (`dir="t"`) in `backend/core/network_geometry.py` to prevent U-turn internal loops.
 
@@ -1058,7 +1066,7 @@ Scale full-stack operational capabilities across both backend and frontend layer
 - **Clean Map Filter & Labels Toggle:** Added `Clean Map` toolbar mode to reset camera and clear highlights, plus a dedicated `🏷️ Labels ON / OFF` toggle to hide floating badges and eliminate map clutter.
 
 #### 3. Scale-Adaptive Track Widths, Gap Elimination & Network Legend
-- **Track Gap Resolution:** Eliminated sub-pixel vanishing ($0.016\text{ px}$) of storage yards, stabling sidings, reversal pockets, and depot spurs at overview zoom by replacing clamped `Math.min` width bounds with scale-adaptive non-clamping formulas (`wYard`, `wPlatform`, `wPocket`, `wSpur`, `wSwitch`).
+- **Track Gap Resolution:** Eliminated sub-pixel vanishing (0.016 px) of storage yards, stabling sidings, reversal pockets, and depot spurs at overview zoom by replacing clamped `Math.min` width bounds with scale-adaptive non-clamping formulas (`wYard`, `wPlatform`, `wPocket`, `wSpur`, `wSwitch`).
 - **Corridor 4 & Spur Categorization:** Fixed categorization in `backend/core/network_geometry.py` ensuring Corridor 4 (`c4_`) and dedicated maintenance depot branches (`spur_`) connect continuously with zero visual gaps.
 - **Interactive Map Legend:** Introduced floating `canvas-map-legend-card` and `Legend` toolbar button, detailing speeds, swatches, and operational classifications across all 9 track and hardware types.
 
@@ -1079,7 +1087,7 @@ Scale full-stack operational capabilities across both backend and frontend layer
   - Formulated continuous 24-hour operational tracking: `day_end_sec = self.start_time_sec + 86400.0`.
   - When `sim_time_sec >= day_end_sec`, the simulation automatically pauses, asserts `day_completed = True`, and computes the definitive cumulative 24-hour `daily_summary`.
 - **Cumulative Performance Computation (`_compute_daily_summary`):**
-  - Synthesizes mean fleet delay, peak maximum delay, overall punctuality percentage ($\le 180\text{s}$ tolerance), active trains count, secondary knock-on events, and total true dispatcher actions.
+  - Synthesizes mean fleet delay, peak maximum delay, overall punctuality percentage (≤ 180s tolerance), active trains count, secondary knock-on events, and total true dispatcher actions.
   - Aligns with authoritative 56-run benchmark evaluation standards when running under any of the 8 dispatcher paradigms.
 - **Intervention Count Sanitization:**
   - Excluded informational background syncs (`model_switched`, `disruptions_cleared`, `headway_nominal`, `platform_nominal`, `speed_profile_nominal`, `signals_nominal`, `routine_sync`) from `total_actions_count`, ensuring the metric strictly reflects genuine tactical AI interventions and manual operator overrides.
@@ -1105,7 +1113,7 @@ Scale full-stack operational capabilities across both backend and frontend layer
   - Displays cumulative daily statistics: 24-Hour Punctuality %, Mean Fleet Delay, Max Recorded Delay, AI Interventions Count, and Total Active Trains.
   - Provides dual workflow actions:
     - *Replay Same Day (06:00):* Resets timetable to 06:00:00 for the current operating day with fresh metrics.
-    - *Advance to Next Day:* Steps calendar forward (e.g. `Mon` $\to$ `Tue`) and initializes fresh dawn rollout.
+    - *Advance to Next Day:* Steps calendar forward (e.g. `Mon` → `Tue`) and initializes fresh dawn rollout.
 - **Canvas Screen-Space Alert Banners:**
   - Added floating HUD warning banners (`.canvas-hud-alerts-container`) directly overlaid on the canvas for active disruptions and manual overrides, providing immediate visual awareness without cluttering the control sidebar.
 - **Commercial Train Details Display:**
@@ -1156,10 +1164,10 @@ Direct DOM inspection on live GitHub (`venkatasriramt-spec/autonomous-rail-dispa
    - *Fix:* Replaced text-mode underscores with typographically correct hyphenation and standard math subscript notation: `\lambda_{\text{knock-on}} \cdot N_{\text{knock-on}}` and `|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}`.
 2. **Unsupported LaTeX in GitHub Heading Elements (`#`, `##`, `###`):**
    - *Problem:* Headings such as `### A. State Space ($\mathcal{S} \in \mathbb{R}^{28}$)` and `### B. Action Space ($\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])$)` failed to trigger MathJax because GitHub does not process math inside `<h1-h6>` tags, generating broken anchor slugs and raw LaTeX strings.
-   - *Fix:* Streamlined headings to clean text (`### A. State Space`, `### B. Action Space`), elevating the formal state and action tuples into dedicated, centered display equation blocks (`$$ \mathcal{S} \in \mathbb{R}^{28} $$`).
+   - *Fix:* Streamlined headings to clean text (`### A. State Space`, `### B. Action Space`), elevating the formal state and action tuples into dedicated, centered display equation blocks (`$$...$$`).
 3. **CommonMark / LaTeX Inline Parsing Collisions:**
-   - *Problem:* Inline math expressions surrounded by italic asterisks (`*...*`) or containing multiple underscores (e.g. `$w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}$`, `$T_{\text{planned}} \ge T_{\min}$`) caused CommonMark to misinterpret LaTeX subscripts as italic tags (`<em>`).
-   - *Fix:* Utilized GitHub's official backtick-dollar inline math delimiters (`$`...`$`) to shield LaTeX contents from markdown formatting interference.
+   - *Problem:* Inline math expressions containing multiple underscores (e.g. `$w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}$`, `$T_{\text{planned}} \ge T_{\min}$`) can collide with CommonMark emphasis if incorrectly delimited or wrapped in outer italics.
+   - *Fix:* Standardized on GitHub's official inline math syntax (`$math$`) with clean subscript definitions and dedicated display blocks (`$$...$$`) with surrounding blank lines.
 
 ---
 

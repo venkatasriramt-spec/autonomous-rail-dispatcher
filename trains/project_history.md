@@ -16,9 +16,9 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 #### Phase 2: Rolling Stock Fleet Specification (`data/rolling_stock_types.json`)
 - Designed 6 realistic physical rolling stock models with engineering, electrical, and geometric constraints:
   1. **`high_speed_emu_300`**: 16-car, 400.0 m length, 300 km/h (83.33 m/s), 25 kV AC electric, 880 t gross weight (1,050 passenger capacity). Designed for Corridor 1 East–West Trunk express services; strictly fits 800m+ City platforms.
-  2. **`high_speed_emu_single`**: 8-car, 200.0 m length, 300 km/h, 25 kV AC electric, 440 t gross weight (520 passenger capacity). Designed for the High-Speed Diagonal Bypass (`City_2` $\leftrightarrow$ `City_5`).
+  2. **`high_speed_emu_single`**: 8-car, 200.0 m length, 300 km/h, 25 kV AC electric, 440 t gross weight (520 passenger capacity). Designed for the High-Speed Diagonal Bypass (`City_2` ↔ `City_5`).
   3. **`regional_emu_120`**: 6-car, 160.0 m length, 120 km/h (33.33 m/s), dual-voltage 15 kV / 25 kV electric, 240 t gross weight (380 passenger capacity). Designed for stopping services on Corridors 1, 2, 4, and the Bi-Level Hub Flyover Transfer. Fits 400m town platform loops.
-  4. **`regional_dmu_120`**: 4-car, 120.0 m length, 120 km/h, diesel-electric hybrid, 180 t gross weight (240 passenger capacity). Designed for the Northwest Alpine Mountain Line (`City_2` $\leftrightarrow$ `Town_9`).
+  4. **`regional_dmu_120`**: 4-car, 120.0 m length, 120 km/h, diesel-electric hybrid, 180 t gross weight (240 passenger capacity). Designed for the Northwest Alpine Mountain Line (`City_2` ↔ `Town_9`).
   5. **`heavy_freight_cargo`**: 28-wagon, 420.0 m length, 80 km/h (22.22 m/s), heavy diesel cargo locomotive, 3,800 t gross weight. Modeled for bulk mineral runs and utilizing the Alpine Passing Loop siding.
   6. **`intermodal_container_freight`**: 24-wagon, 380.0 m length, 80 km/h, heavy diesel cargo locomotive, 2,600 t gross weight. Modeled for container logistics between `City_5` and dead-end pocket tracks at `Depot_3`.
 
@@ -31,7 +31,7 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
   - **Corridor 3 Northwest Alpine Mountain Line (6 runs)**: Operating on specific days (e.g., Train #12763 on Monday, Thursday, Sunday) between `City_2` and `Town_9`.
   - **Corridor 4 Southern Coastal Arc (8 runs)**: Connecting `City_1` and `City_6` via `Town_10`, `Town_11`, and `Town_12`.
   - **High-Speed Diagonal Bypass (4 runs)**: Direct transit along `bypass_City_2_City_5` avoiding the central hub.
-  - **Trans-Hub Bi-Level Flyover Transfer (4 runs)**: Linking Eastern and Southern termini (`City_4` $\leftrightarrow$ `City_6`) via the 789 m, 1.77% gradient flyover ramp (`transfer_City_3_EW_NS`).
+  - **Trans-Hub Bi-Level Flyover Transfer (4 runs)**: Linking Eastern and Southern termini (`City_4` ↔ `City_6`) via the 789 m, 1.77% gradient flyover ramp (`transfer_City_3_EW_NS`).
   - **Heavy Freight & Logistics Services (6 runs)**: Bulk ore trains utilizing the Alpine Passing Loop (`Town_8_Passing_Loop`) with a 12-minute scheduled hold for passenger overtakes, and logistics feeders to `Depot_3` and `Depot_2`.
 - Implemented **Post-Journey Dispositions**:
   - `turnaround`: Arriving trains clear platform tracks, pull into terminal pocket tracks (`City_4_pocket_1/2`, `City_6_pocket_1/2`), reverse cabs (*Kopfmachen*), and form subsequent scheduled return services.
@@ -75,9 +75,9 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 
 1. **Flaw 1: Coordinated Clockface Timetable (*Taktfahrplan*) & Synchronized Hub Pulses**
    - Eliminated arbitrary fractional departure offsets in favor of memorable repeating cadences:
-     - Corridor 1 High-Speed Express: `:00` Eastbound (`City_1` $\to$ `City_4`), `:30` Westbound (`City_4` $\to$ `City_1`).
+     - Corridor 1 High-Speed Express: `:00` Eastbound (`City_1` → `City_4`), `:30` Westbound (`City_4` → `City_1`).
      - Corridor 1 Regional Local: `:15` Eastbound, `:45` Westbound.
-     - Corridor 2 North–South Spine: `:10` Southbound (`City_5` $\to$ `City_6`), `:40` Northbound (`City_6` $\to$ `City_5`).
+     - Corridor 2 North–South Spine: `:10` Southbound (`City_5` → `City_6`), `:40` Northbound (`City_6` → `City_5`).
      - Corridor 3 Alpine Line: `:10` Uphill, `:40` Downhill (interconnected with Corridor 1 pulses at `City_2`).
      - Corridor 4 Southern Coastal Arc: `:20` Eastbound, `:50` Westbound.
      - High-Speed Diagonal Bypass: `:25` Northeast, `:55` Southwest.
@@ -125,10 +125,10 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 5. **Flaw 5: Dedicated Nocturnal Freight Corridor Wave (21:30–05:25)**
    - Introduced a 7th rolling stock model: **`electric_trunk_freight`** (Vectron Class 193 25kV electric locomotive + 24 container flatcars, 2,400 t, 100 km/h, `sumo_vclass="rail_electric"`).
    - Injected 8 nocturnal freight services utilizing mainline capacity while daytime passenger services sleep:
-     - Nocturnal Mountain Bulk Ore: #68103 (22:30 dep City_2 $\to$ Depot_1) & #68104 (02:00 dep Depot_1 $\to$ City_2).
-     - Nocturnal Northern Container Feeder: #68203 (23:00 dep City_5 $\to$ Depot_3) & #68204 (02:30 dep Depot_3 $\to$ City_5).
-     - Nocturnal Coastal Heavy Cargo: #68303 (21:30 dep Depot_2 $\to$ City_6) & #68304 (01:00 dep City_6 $\to$ Depot_2).
-     - Cross-Corridor East–West Electric Fast Freight: #68401 (23:15 dep City_1 $\to$ City_4 non-stop) & #68402 (01:30 dep City_4 $\to$ City_1 non-stop).
+     - Nocturnal Mountain Bulk Ore: #68103 (22:30 dep City_2 → Depot_1) & #68104 (02:00 dep Depot_1 → City_2).
+     - Nocturnal Northern Container Feeder: #68203 (23:00 dep City_5 → Depot_3) & #68204 (02:30 dep Depot_3 → City_5).
+     - Nocturnal Coastal Heavy Cargo: #68303 (21:30 dep Depot_2 → City_6) & #68304 (01:00 dep City_6 → Depot_2).
+     - Cross-Corridor East–West Electric Fast Freight: #68401 (23:15 dep City_1 → City_4 non-stop) & #68402 (01:30 dep City_4 → City_1 non-stop).
 
 #### Phase 9: Full 24-Hour Simulation & Verification Results
 - **Duarouter Microscopic Route Compilation**:
@@ -171,7 +171,7 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
      - #68204 (Northern Container Return, dep 02:30): corrected from Tue/Thu/Sat to `["Wed", "Fri", "Sun"]` (following #68203 departing 23:00 Tue/Thu/Sat).
      - #68304 (Coastal Bulk Cargo Return, dep 01:00): corrected from Mon/Wed/Fri to `["Tue", "Thu", "Sat"]` (following #68303 departing 21:30 Mon/Wed/Fri).
 3. **Pipeline Regeneration & Simulation Validation**:
-   - Re-executed full toolchain: `generate_master_timetable.py` $\to$ `export_to_db.py` $\to$ `export_to_sumo.py` $\to$ `verify_simulation.py 86400`.
+   - Re-executed full toolchain: `generate_master_timetable.py` → `export_to_db.py` → `export_to_sumo.py` → `verify_simulation.py 86400`.
    - Result: 0 turnaround violations, 152/152 vehicles compiled in Duarouter, 24-hour SUMO simulation verified with 0 fatal errors, 0 collisions, 0 teleports.
 
 ---
@@ -378,10 +378,10 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 
 3. **Turnaround Dwell Precision & Disposition Calibration**:
    - Replaced static placeholder dwell estimates with exact calculated fractional minutes matching physical schedule timestamps:
-     - `#68101` at `Depot_1`: Calibrated from placeholder 240 min to exact **335.0 min** (arr 05:25:00 $\to$ dep 11:00:00).
-     - `#68201` at `Depot_3`: Calibrated from placeholder 300 min to exact **505.0 min** (arr 05:35:00 $\to$ dep 14:00:00).
-     - `#68301` at `City_6`: Calibrated from placeholder 180 min to exact **230.0 min** (arr 04:40:00 $\to$ dep 08:30:00).
-   - Validated multi-day calendar day rotations across midnight for all 4 freight sets (`FRT-Rake-01` to `FRT-Rake-04`), ensuring day-after returns (Mon/Wed/Fri $\to$ Tue/Thu/Sat) match depot availability.
+     - `#68101` at `Depot_1`: Calibrated from placeholder 240 min to exact **335.0 min** (arr 05:25:00 → dep 11:00:00).
+     - `#68201` at `Depot_3`: Calibrated from placeholder 300 min to exact **505.0 min** (arr 05:35:00 → dep 14:00:00).
+     - `#68301` at `City_6`: Calibrated from placeholder 180 min to exact **230.0 min** (arr 04:40:00 → dep 08:30:00).
+   - Validated multi-day calendar day rotations across midnight for all 4 freight sets (`FRT-Rake-01` to `FRT-Rake-04`), ensuring day-after returns (Mon/Wed/Fri → Tue/Thu/Sat) match depot availability.
 
 4. **Microscopic Simulation & Route Compilation Results (`86,400s`)**:
    - `duarouter`: Compiled **242 out of 242 vehicles (100% routing success)** into `sumo_config/trains.rou.xml`.
@@ -471,13 +471,17 @@ A chronological log of how the train scheduling, rolling stock rotation, and tim
 ### 12 October 2026 — Phase 17: Physical Runtime Feasibility & Route Distance Calibration
 
 **Objective:** Fully resolve Issue C ("Some planned journey times are too short for the generated routes") by calibrating inter-station running times and declared route distances against the physical SUMO track network (`dense_network.net.xml`), strictly enforcing the theoretical lower bound:
-$$T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$$
-such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with zero violations, eliminating route distance discrepancies $> 1.0\text{ km}$, maintaining turnaround feasibility ($\text{dwell} \ge T_{\text{min-turnaround}}$) across all 211 chained rake turnarounds, and verifying clean multi-day simulation with zero collisions, deadlocks, or teleports.
+
+$$
+T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j
+$$
+
+such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with zero violations, eliminating route distance discrepancies > 1.0 km, maintaining turnaround feasibility ($\text{dwell} \ge T_{\text{min-turnaround}}$) across all 211 chained rake turnarounds, and verifying clean multi-day simulation with zero collisions, deadlocks, or teleports.
 
 #### Phase 17: Physical Runtime Calibration & Network Feasibility Enforcement
 
 1. **Root-Cause Analysis & Exact Topological Measurements**:
-   - **Kinematic Speed Limit Mismatch**: The generator's `calc_run_time` previously modeled train motion using idealized acceleration and mainline speeds ($33.3\text{ m/s}$ or $83.3\text{ m/s}$) across the entire route distance, ignoring that station approach curves, switch tracks, and platform loop lanes enforce strict $13.89\text{ m/s}$ ($50\text{ km/h}$) speed restrictions. Consequently, 177 / 242 services violated the theoretical lower bound $T_{\min}$, and simulated trains arrived up to 334s late.
+   - **Kinematic Speed Limit Mismatch**: The generator's `calc_run_time` previously modeled train motion using idealized acceleration and mainline speeds (33.3 m/s or 83.3 m/s) across the entire route distance, ignoring that station approach curves, switch tracks, and platform loop lanes enforce strict 13.89 m/s (50 km/h) speed restrictions. Consequently, 177 / 242 services violated the theoretical lower bound $T_{\min}$, and simulated trains arrived up to 334s late.
    - **Distance Discrepancies**: Idealized cumulative station vectors omitted 700m–1900m of approach curves, switch ladders, and station loop track lengths. Consequently, 112 services had discrepancies exceeding 1.0 km between declared timetable distance (`total_distance_km`) and compiled route length.
    - **Freight Over-Padding**: Freight schedules had up to 57 minutes of artificial timetable padding (e.g., C4 freight allocated 70 min for a 13.5 min trip), causing trains to arrive excessively early in simulation.
 
@@ -512,7 +516,7 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
    - Implemented an automated CLI auditor calculating $T_{\min} = \sum_i \frac{L_i}{\min(v_i, v_{\text{train}})} + \sum_j D_j$ and $|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}$ across all compiled routes.
    - **Audit Results**:
      - Physical Runtime ($T_{\text{planned}} \ge T_{\min}$): **0 violations** (242 / 242 services pass).
-     - Distance Accuracy ($|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}$): **0 violations** (242 / 242 services pass, 0 discrepancies $> 1.0\text{ km}$).
+     - Distance Accuracy ($|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}$): **0 violations** (242 / 242 services pass, 0 discrepancies > 1.0 km).
 
 5. **Multi-Day Headless Simulation Sweep (`scripts/verify_simulation.py --all-days 86400`)**:
    - Executed full 24-hour microscopic simulation sweep (86,400s per day) across all 7 calendar days and the composite schedule:
@@ -596,14 +600,14 @@ such that planned journey times satisfy $T_{\text{planned}} \ge T_{\min}$ with z
 
 4. **Comprehensive Multi-Day Simulation Sweep Across All 8 Schedules**:
    - Both continuous rakes mode (`verify_simulation.py -m rakes --all-days 86400`) and discrete services mode (`verify_simulation.py -m services --all-days 86400`) achieved 100% PASS across every calendar day and composite schedule:
-     - **Mon** (31 rakes / 232 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **Tue** (31 rakes / 233 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **Wed** (31 rakes / 229 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **Thu** (31 rakes / 235 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **Fri** (31 rakes / 231 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **Sat** (29 rakes / 145 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **Sun** (27 rakes / 141 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
-     - **All** (31 rakes / 242 services): 0 collisions, 0 teleports, 100% completion, delay $\le 220.0\text{s}$.
+     - **Mon** (31 rakes / 232 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **Tue** (31 rakes / 233 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **Wed** (31 rakes / 229 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **Thu** (31 rakes / 235 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **Fri** (31 rakes / 231 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **Sat** (29 rakes / 145 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **Sun** (27 rakes / 141 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
+     - **All** (31 rakes / 242 services): 0 collisions, 0 teleports, 100% completion, delay ≤ 220.0s.
 
 
 ---

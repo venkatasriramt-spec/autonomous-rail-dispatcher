@@ -55,13 +55,13 @@ The Dispatcher AI operates as a microscopic decision-making layer interfacing wi
 
 ### 3. Priority Greedy Heuristic (`PriorityGreedyDispatcher`)
 * **Paradigm:** Rule-Based Multi-Class Priority Optimization.
-* **Mechanism:** Extends FIFO by incorporating a strict rolling stock priority hierarchy ($`w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}`$). When platform conflicts arise or overtakes are possible, higher-priority express passenger trains are given right-of-way, and slower freight services are diverted to passing loop sidings.
+* **Mechanism:** Extends FIFO by incorporating a strict rolling stock priority hierarchy ($w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}$). When platform conflicts arise or overtakes are possible, higher-priority express passenger trains are given right-of-way, and slower freight services are diverted to passing loop sidings.
 * **Role:** Serves as a strong non-learning benchmark, achieving low mean delays but at the cost of high continuous intervention churn (~6,000 actions/week).
 
 ### 4. Centralized PPO (`ModelAgentWrapper` / `Centralized_PPO`)
 * **Paradigm:** Single-Focus Deep Reinforcement Learning (Actor-Critic).
 * **Architecture:** Multi-layer Perceptron (MLP) policy trained via Proximal Policy Optimization (PPO) using Stable-Baselines3. Consumes a 28-dimensional normalized state vector representing the focal conflict consist, corridor traffic lookahead, and platform occupancy matrix.
-* **Action Space:** $`\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])`$ representing route selection (main vs loop vs bypass), platform track (1..6), and timetable departure hold duration (0s, 30s, 60s, 120s).
+* **Action Space:** $\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])$ representing route selection (main vs loop vs bypass), platform track (1..6), and timetable departure hold duration (0s, 30s, 60s, 120s).
 * **Key Strength:** **Action Efficiency.** Operates with extreme surgical precision, achieving heuristic-level delays (50.07s) with only **649 actions across the entire week**—an **89% reduction in dispatcher interventions** compared to heuristics (5,792–6,004 actions).
 
 ### 5. Multi-Train Centralized PPO (`MultiTrainCentralizedDispatcher`)
@@ -74,7 +74,7 @@ The Dispatcher AI operates as a microscopic decision-making layer interfacing wi
 * **Architecture:** Partitions the railway network into **7 autonomous control zones**:
   - **6 Station-Master Interlocking Agents** (`station_city_1` to `station_city_6`): Control localized platform assignments and departure holds using 24-dimensional station observations.
   - **1 Corridor Line Controller** (`corridor_trunk`): Controls dynamic overtaking at the Corridor 3 loop siding and High-Speed Bypass using 14-dimensional corridor observations.
-* **Critic Formulation:** Centralized value function $`V(\mathbf{S}_{\text{joint}})`$ trained on the concatenated joint state of the entire network during training; decentralized actor networks execute policies locally during inference without central coordination bottlenecks.
+* **Critic Formulation:** Centralized value function $V(\mathbf{S}_{\text{joint}})$ trained on the concatenated joint state of the entire network during training; decentralized actor networks execute policies locally during inference without central coordination bottlenecks.
 
 ### 7. Comm-MAPPO (`CommMAPPODispatcher`)
 * **Paradigm:** Communicative Multi-Agent RL with Churn Suppression.
@@ -148,10 +148,10 @@ $$
 * $R_{\text{complete}} = +1.0$: Terminal mission bonus upon reaching terminus on schedule.
 
 - **Class Priority Hierarchy ($w_i$):**
-  - High-Speed EMU (`high_speed_emu_300` / `single`): $w_i = 1.0$ / $0.85$
-  - Regional Commuter EMU/DMU (`regional_emu_120` / `dmu_120`): $w_i = 0.6$ / $0.5$
+  - High-Speed EMU (`high_speed_emu_300` / `single`): $w_i = 1.0$ / $w_i = 0.85$
+  - Regional Commuter EMU/DMU (`regional_emu_120` / `dmu_120`): $w_i = 0.6$ / $w_i = 0.5$
   - Intermodal Container Freight (`intermodal_container_freight`): $w_i = 0.3$
-  - Heavy Bulk Freight (`heavy_freight_cargo` / `electric_trunk_freight`): $w_i = 0.15$ / $0.25$
+  - Heavy Bulk Freight (`heavy_freight_cargo` / `electric_trunk_freight`): $w_i = 0.15$ / $w_i = 0.25$
 
 ---
 

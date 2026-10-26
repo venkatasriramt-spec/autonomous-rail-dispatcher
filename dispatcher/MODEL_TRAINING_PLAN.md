@@ -13,9 +13,9 @@
 The objective of this subsystem is to train a production-grade, autonomous Reinforcement Learning (RL) dispatcher policy that manages microscopic railway traffic across the entire multi-corridor network in Eclipse SUMO.
 
 Unlike classical static scheduling or greedy priority heuristics, this model makes dynamic, real-time decisions simultaneously across three core operational dimensions:
-1. **Dynamic Rerouting & In-Flight Overtakes:** Diverting slower trains into passing loops (e.g., Alpine loop on Corridor 3) or routing express services over high-speed bypasses (e.g., `City_2` $\leftrightarrow$ `City_5`).
+1. **Dynamic Rerouting & In-Flight Overtakes:** Diverting slower trains into passing loops (e.g., Alpine loop on Corridor 3) or routing express services over high-speed bypasses (e.g., `City_2` ↔ `City_5`).
 2. **Platform Track Assignment:** Dynamically reallocating approaching trains to open, length-compatible platform tracks at multi-platform terminal hubs (`City_1` through `City_6`) to eliminate station throat congestion.
-3. **Timetable Departure Holding & Sequencing:** Holding departing trains by calibrated durations ($30\text{s}, 60\text{s}, 120\text{s}$) when necessary to green-light higher-priority approaching services, preventing downstream junction lockups.
+3. **Timetable Departure Holding & Sequencing:** Holding departing trains by calibrated durations (30s, 60s, 120s) when necessary to green-light higher-priority approaching services, preventing downstream junction lockups.
 
 ---
 
@@ -31,9 +31,9 @@ Every decision made by the model must strictly satisfy the physical, electrical,
 | **`heavy_freight_cargo`** | **420.0 m** | **3,800 t** | Diesel Locomotive (`rail`) | 80 km/h | **0.5 m/s²** | 0 | Bulk mineral cargo on Corridor 3 and Coastal Arc. **High kinetic inertia**; braking distance exceeds 1,500m. Uses Alpine Passing Loop. |
 | **`electric_trunk_freight`**| **400.0 m** | 2,400 t | Electric 25kV AC (`rail_electric`) | 100 km/h | 0.6 m/s² | 0 | Nocturnal express container trains on Corridor 1 mainline. Requires catenary. |
 | **`intermodal_container_freight`**| 380.0 m | 2,600 t | Diesel Locomotive (`rail`) | 80 km/h | 0.55 m/s² | 0 | Logistics transit to `Depot_3` container terminal. |
-| **`high_speed_emu_single`** | 200.0 m | 440 t | Electric 25kV AC (`rail_electric`) | 300 km/h | 1.2 m/s² | 520 | 8-car short consist. Cleared for the 300 km/h High-Speed Bypass (`City_2` $\leftrightarrow$ `City_5`). |
+| **`high_speed_emu_single`** | 200.0 m | 440 t | Electric 25kV AC (`rail_electric`) | 300 km/h | 1.2 m/s² | 520 | 8-car short consist. Cleared for the 300 km/h High-Speed Bypass (`City_2` ↔ `City_5`). |
 | **`regional_emu_120`** | 160.0 m | 240 t | Electric 15kV/25kV (`rail_electric`) | 120 km/h | 1.0 m/s² | 380 | Local stoppers on Corridors 1, 2, 4, and Bi-Level Flyover. Fits 340m town platform loops. |
-| **`regional_dmu_120`** | 120.0 m | 180 t | Diesel-Electric Hybrid (`rail`) | 120 km/h | 0.95 m/s² | 240 | Mountain commuter on Corridor 3 (`City_2` $\leftrightarrow$ `Town_9`). Operates on un-electrified lines. |
+| **`regional_dmu_120`** | 120.0 m | 180 t | Diesel-Electric Hybrid (`rail`) | 120 km/h | 0.95 m/s² | 240 | Mountain commuter on Corridor 3 (`City_2` ↔ `Town_9`). Operates on un-electrified lines. |
 
 ### B. Track & Infrastructure Parameters (`tracks/network_data/`)
 
@@ -188,7 +188,7 @@ SUMO simulation instances run as single-threaded processes. To train an RL polic
    - On the **32-core VM**, we allocate **16 to 24 parallel SUMO worker processes**, reserving remaining cores for the PyTorch master policy backpropagation and TraCI IPC synchronization.
    - **Speedup:** A 16–24 worker setup achieves **50–51 FPS**, completing 200,000+ timesteps in ~69 minutes.
 2. **RAM Allocation (256 GB):**
-   - Microscopic SUMO processes (holding network topology, state vectors, TraCI socket buffers, and train route XML caches) consume approximately 1.5–2.0 GB RAM each ($\approx 45\text{--}55\text{ GB}$).
+   - Microscopic SUMO processes (holding network topology, state vectors, TraCI socket buffers, and train route XML caches) consume approximately 1.5–2.0 GB RAM each (~45–55 GB).
    - Large PPO experience replay buffers (`n_steps=2048`, batch sizes up to 512, trajectory memory) require an additional 15–20 GB.
    - 256 GB RAM guarantees zero page faulting, zero memory swapping, and absolute stability during long training runs.
 
@@ -207,9 +207,9 @@ Option 1 resolves this by:
 ### B. Implementation Details
 - **`dispatcher/envs/reward_engine.py`:**
   - Added `action_penalty_weight: float = 0.5`.
-  - Added hold intervention penalties ($-0.25$ to $-1.0$) when a train has clear track ahead ($d_{\text{leader}} \ge 2,000\text{ m}$) or is operating on schedule ($\text{delay} \le 30\text{ s}$).
-  - Added siding diversion penalties ($-0.40$) when not an overtake candidate.
-  - Added schedule-adherence bonus ($+0.05$) when taking action `[0, 0, 0]` ("do nothing") on on-time, conflict-free trains.
+  - Added hold intervention penalties (-0.25 to -1.0) when a train has clear track ahead ($d_{\text{leader}} \ge 2,000\text{ m}$) or is operating on schedule ($\text{delay} \le 30\text{ s}$).
+  - Added siding diversion penalties (-0.40) when not an overtake candidate.
+  - Added schedule-adherence bonus (+0.05) when taking action `[0, 0, 0]` ("do nothing") on on-time, conflict-free trains.
 - **`dispatcher/envs/railway_dispatch_env.py`:**
   - Passed `applied_veh_id` and `action` to `reward_engine.compute_reward(...)`.
   - Dynamic `instance_id` regeneration per episode and connection map purging in `_close_traci()` to prevent worker restart socket hangs.
@@ -226,7 +226,7 @@ Evaluated across 1 operational hour (25,200s to 28,800s, 145 services):
 | **Static Baseline** | 0.2s | 26.0s | 100.0% | 0 | Unmanaged reference |
 | **FIFO Heuristic** | 0.2s | 26.0s | 100.0% | 0 | Greedy baseline |
 | **Priority Greedy** | 0.2s | 26.0s | 100.0% | 0 | Rule-based |
-| **Trained PPO Dispatcher (Option 1)** | **0.1s** | **16.0s** | **100.0%** | **0** | **Artificial delay eliminated (129.4s $\rightarrow$ 0.1s)!** |
+| **Trained PPO Dispatcher (Option 1)** | **0.1s** | **16.0s** | **100.0%** | **0** | **Artificial delay eliminated (129.4s → 0.1s)!** |
 
 #### 2. Master Composite Disruption Audit (`train_delay` Perturbation)
 Evaluated under morning peak rolling stock failure across all 242 services:
@@ -248,7 +248,7 @@ Option 1 successfully delivers both operational goals:
 
 ### A. Reachability Validation via TraCI `findRoute`
 Dynamic platform reassignment previously relied solely on edge ID string matching. In complex station throats with crossovers, certain platform tracks can be unreachable from specific approach ladders without reverse movements.
-- **Reachability Interception:** `ActionHandler` now executes `traci.simulation.findRoute(current_road, target_platform_edge)`. If `route.edges` is empty or travel time is invalid ($\le 0$), the reallocation is rejected cleanly with zero simulator warnings.
+- **Reachability Interception:** `ActionHandler` now executes `traci.simulation.findRoute(current_road, target_platform_edge)`. If `route.edges` is empty or travel time is invalid (≤ 0), the reallocation is rejected cleanly with zero simulator warnings.
 - **Downstream Connectivity:** Added validation ensuring that the assigned platform track maintains a valid forward path to the train's subsequent scheduled station stop.
 
 ### B. Physical Edge Masking & Station Throat Locking
@@ -258,7 +258,7 @@ Dynamic platform reassignment previously relied solely on edge ID string matchin
 
 ### C. State Detection & Knock-On Telemetry Calibration
 - **Halted State Detection:** Replaced TraCI `isAtStop` with `isStopped` in `RailwayDispatchEnv` to accurately detect physically halted trains regardless of stop schedule flags.
-- **Knock-On Event Deduplication:** Secondary delay events are deduplicated per vehicle per macro step. Trains legitimately halted at scheduled platforms and trains queuing in normal headway spacing are no longer flagged as false positives. Thresholds calibrated to $<150\text{m}$ distance and $<3\text{m/s}$ speed.
+- **Knock-On Event Deduplication:** Secondary delay events are deduplicated per vehicle per macro step. Trains legitimately halted at scheduled platforms and trains queuing in normal headway spacing are no longer flagged as false positives. Thresholds calibrated to < 150 m distance and < 3 m/s speed.
 
 ---
 

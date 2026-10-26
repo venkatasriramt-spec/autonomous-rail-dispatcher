@@ -235,7 +235,7 @@ python3 trains/scripts/export_to_sumo.py --mode both
 ```bash
 python3 trains/scripts/validate_timetable.py --mode both
 ```
-*Audits physical runtimes ($`T_{\text{planned}} \ge T_{\min}`$), route distance adherence ($`\Delta d \le 0.05\text{ km}`$), turnaround intervals, and stabling synchronization.*
+*Audits physical runtimes ($T_{\text{planned}} \ge T_{\min}$), route distance adherence ($\Delta d \le 0.05\text{ km}$), turnaround intervals, and stabling synchronization.*
 
 ### Step 6: Execute Headless Simulation & Safety Audit
 ```bash

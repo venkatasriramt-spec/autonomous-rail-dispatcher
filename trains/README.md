@@ -183,7 +183,7 @@ python3 scripts/export_to_sumo.py --day Sat      # Saturday
 ```
 
 ### 4. Validate Timetable Feasibility, Distances & Rake Lifecycles
-To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($`T_{\text{planned}} \ge T_{\min}`$), route lengths ($`|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}`$), and continuous rake rotation duty cycles are strictly satisfied:
+To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($T_{\text{planned}} \ge T_{\min}$), route lengths ($|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}$), and continuous rake rotation duty cycles are strictly satisfied:
 ```bash
 # Auto-detects mode from active route file:
 python3 scripts/validate_timetable.py

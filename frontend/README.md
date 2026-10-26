@@ -102,7 +102,7 @@ frontend/
 * **24-Hour Operational Cycle Completion Modal:**
   * Automatically triggers when simulation reaches cycle end (`start_time_sec + 86400.0s`).
   * Displays cumulative 24-hour performance: Punctuality %, Mean Fleet Delay, Max Delay, AI Interventions Count, and Active Trains.
-  * Dual operational workflows: "Replay Same Day (06:00)" and "Advance to Next Day" (e.g. `Mon` $\to$ `Tue`).
+  * Dual operational workflows: "Replay Same Day (06:00)" and "Advance to Next Day" (e.g. `Mon` → `Tue`).
 * **Canvas Screen-Space Alert Banners:**
   * Overlaid warning banners (`.canvas-hud-alerts-container`) on the canvas alerting operators to active disruptions and manual overrides.
 * **Rich Commercial Train Telemetry:**
