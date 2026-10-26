@@ -19,21 +19,27 @@ router = APIRouter(prefix="/api/sim", tags=["Simulation Control"])
 
 @router.get("/status", response_model=SimulationStatusResponse)
 def get_simulation_status(
-    response: Response,
-    session: UserSession = Depends(get_user_session)
+    response: Response = None,
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Retrieves current simulation status, time, active trains, and KPIs for the user's isolated session."""
-    response.headers["X-Session-ID"] = session.session_id
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
+    if response is not None:
+        response.headers["X-Session-ID"] = session.session_id
     return session.sim_manager.get_status()
 
 
 @router.get("/telemetry")
 def get_simulation_telemetry(
-    response: Response,
-    session: UserSession = Depends(get_user_session)
+    response: Response = None,
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Retrieves real-time telemetry snapshot for the user's isolated session."""
-    response.headers["X-Session-ID"] = session.session_id
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
+    if response is not None:
+        response.headers["X-Session-ID"] = session.session_id
     mgr = session.sim_manager
     status = mgr.get_status()
     return {
@@ -56,11 +62,14 @@ def get_simulation_telemetry(
 @router.post("/control")
 def control_simulation(
     req: SimulationControlRequest,
-    response: Response,
-    session: UserSession = Depends(get_user_session)
+    response: Response = None,
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Executes a play, pause, step, reset, or speed command in the user's isolated session."""
-    response.headers["X-Session-ID"] = session.session_id
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
+    if response is not None:
+        response.headers["X-Session-ID"] = session.session_id
     mgr = session.sim_manager
     action = req.action.lower()
 
@@ -96,11 +105,14 @@ def control_simulation(
 @router.post("/config")
 def configure_simulation(
     req: SimulationConfigRequest,
-    response: Response,
-    session: UserSession = Depends(get_user_session)
+    response: Response = None,
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Updates simulation settings (day, AI model, speed, mode) for the user's isolated session."""
-    response.headers["X-Session-ID"] = session.session_id
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
+    if response is not None:
+        response.headers["X-Session-ID"] = session.session_id
     status = session.sim_manager.configure(
         day=req.day,
         model=req.model,

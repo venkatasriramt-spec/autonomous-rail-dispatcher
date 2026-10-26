@@ -2200,8 +2200,6 @@ export default function SimulationPage() {
           setSelectedTrain(null);
           setSelectedStation(null);
           setSelectedFeature(null);
-          setShowDisruptionModal(false);
-          setShowOverrideModal(false);
           setDayCompletionDismissed(false);
           if (res.ok) {
             const data = await res.json().catch(() => null);

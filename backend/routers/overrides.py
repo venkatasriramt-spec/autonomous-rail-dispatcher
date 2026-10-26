@@ -3,10 +3,10 @@ backend/routers/overrides.py
 Endpoints for Human-in-the-Loop manual dispatcher interventions for isolated user sessions (Model B).
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends
 from backend.schemas.models import ManualOverrideRequest
-from backend.core.session_manager import get_user_session, UserSession
+from backend.core.session_manager import get_user_session, UserSession, session_manager
 
 router = APIRouter(prefix="/api/override", tags=["Human-in-the-Loop Overrides"])
 
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/override", tags=["Human-in-the-Loop Overrides"])
 @router.post("/action")
 async def apply_manual_override(
     req: ManualOverrideRequest,
-    session: UserSession = Depends(get_user_session)
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """
     Applies an operator manual intervention overriding AI decisions for the user's isolated session:
@@ -23,6 +23,8 @@ async def apply_manual_override(
     - bypass_divert: Force high-speed bypass or passing loop diversion
     - release_hold: Clear active hold immediately
     """
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
     mgr = session.sim_manager
     success = mgr.manual_override(
         vehicle_id=req.vehicle_id,
@@ -42,9 +44,11 @@ async def apply_manual_override(
 
 @router.get("/recent")
 async def get_recent_actions(
-    session: UserSession = Depends(get_user_session)
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Returns the most recent AI and manual dispatch decisions for the user's isolated session."""
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
     mgr = session.sim_manager
     return {
         "session_id": session.session_id,

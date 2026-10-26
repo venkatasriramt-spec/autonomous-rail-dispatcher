@@ -1214,4 +1214,64 @@ Establish an end-to-end multi-stage containerization pipeline deploying both the
 - **Backend Validation Suite:** [`backend/test_backend.py`](backend/test_backend.py) passed 100% across all 24 REST and live HTTP assertions.
 - **Repository Hygiene:** Verified clean working tree, no secrets or credentials exposed.
 
+---
+
+### 26 October 2026 — Client Disconnect Auto-Pause Engine & Resource Conservation
+
+#### Milestone Objective
+Implement an automatic, zero-overhead simulation suspension mechanism that halts CPU execution and microscopic simulation stepping when no browser clients are connected to observe the simulation, automatically resuming once a client reconnects.
+
+---
+
+#### 1. Key Technical Implementations
+- **Subscriber State Tracking (`backend/core/telemetry_streamer.py`):**
+  - Integrated asynchronous subscriber lifecycle callbacks (`on_empty` and `on_active`) into `TelemetryStreamer`.
+  - Configured a 3.0-second debounce timer on client disconnection to prevent spurious pauses during page refreshes or transient network hiccups.
+- **Microscopic Simulation Pausing (`backend/core/sim_manager.py`):**
+  - Added thread-safe `auto_pause_simulation()` and `auto_resume_simulation()` methods.
+  - Set `auto_paused` flag and paused the background simulation step loop when all client connections close.
+  - Broadcasted `auto_paused: true` status flag on telemetry frames, enabling frontend HUD indicators.
+
+---
+
+#### 2. Verification & Validation Audit
+- **Unit Verification:** Verified auto-pause and auto-resume transitions using standalone async test scripts with synthetic WebSocket clients.
+- **Performance Impact:** Idle container CPU utilization drops to near zero when all browser tabs are closed.
+
+---
+
+### 26 October 2026 — Model B Per-User Simulation Isolation & High-Performance Cloud Scaling
+
+#### Milestone Objective
+Transition from single-instance pinned simulation architecture (Model A) to complete per-user sandbox isolation (Model B), enabling multiple simultaneous operators to run distinct simulation experiments (different calendar days, dispatching AI models, and variable playback speeds up to 50x) without cross-talk, backed by performance-scaled Cloud Run resources.
+
+---
+
+#### 1. Key Technical Implementations
+- **User Session Manager (`backend/core/session_manager.py`):**
+  - Created `UserSession` encapsulating a dedicated `SimulationManager`, `TelemetryStreamer`, auto-pause callbacks, and activity timestamps.
+  - Created thread-safe `SessionManager` registry with dynamic session creation and automated background reaping of idle sessions (30-minute threshold with zero active subscribers).
+  - Added `get_user_session` FastAPI dependency extracting session IDs from `X-Session-ID` headers, `sessionId` query params, or cookies.
+- **Module-Level Data Caching & TraCI Switching (`backend/core/sim_manager.py`):**
+  - Added module-level caching (`_GLOBAL_TIMETABLE_CACHE`, `_GLOBAL_BENCHMARKS_CACHE`) to eliminate redundant disk I/O when spawning new user sessions.
+  - Enforced dynamic TraCI context switching (`traci.switch(self.env.instance_id)`) across step and telemetry extraction methods to guarantee safety across parallel simulation instances.
+- **Per-User WebSocket Telemetry (`backend/routers/websocket.py`):**
+  - Binds incoming WebSocket connections (`/ws/telemetry?sessionId=<room_id>`) to the specific user's isolated `TelemetryStreamer`.
+- **Frontend HUD Room Management (`frontend/src/pages/SimulationPage.jsx`):**
+  - Stored persistent `sessionId` in `localStorage` with URL query param fallback.
+  - Added HUD room badge indicator (`Room: <id>`) with connection status pulse and a "New Session" button to spawn fresh rooms on demand.
+  - Attached `X-Session-ID` headers to all simulation control, status, config, and perturbation API calls.
+- **High-Performance Cloud Run Infrastructure (`deploy_cloud_run.sh`):**
+  - Scaled service configuration to **4 dedicated vCPUs** and **8 GiB RAM** per instance.
+  - Enabled **1..4 instance autoscaling** (up to 16 vCPUs / 32 GiB RAM cluster capacity).
+  - Configured `--no-cpu-throttling`, `--cpu-boost`, and `--session-affinity` for pinned user routing.
+
+---
+
+#### 2. Verification & Validation Audit
+- **Multi-User Isolation Suite:** Executed end-to-end multi-user integration tests verifying User A (Tuesday / MAPPO / 50x) and User B (Friday / Heuristic / 10x) run completely isolated.
+- **Live Production Audit:** Verified live Cloud Run deployment at `https://railway-platform-fvgbod7diq-uc.a.run.app`, validating dual-room concurrency, WebSocket isolation, and active session registry tracking.
+- **Test Suite Purity:** `backend/test_backend.py` passed 100% across all 24 REST and HTTP assertions.
+
+
 

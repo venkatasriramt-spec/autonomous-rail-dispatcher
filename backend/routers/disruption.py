@@ -3,10 +3,10 @@ backend/routers/disruption.py
 Endpoints for injecting, monitoring, and clearing simulation perturbations for isolated user sessions (Model B).
 """
 
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 from fastapi import APIRouter, Depends
 from backend.schemas.models import DisruptionRequest
-from backend.core.session_manager import get_user_session, UserSession
+from backend.core.session_manager import get_user_session, UserSession, session_manager
 
 router = APIRouter(prefix="/api/disruption", tags=["Perturbations & Disruptions"])
 
@@ -14,7 +14,7 @@ router = APIRouter(prefix="/api/disruption", tags=["Perturbations & Disruptions"
 @router.post("/inject")
 def inject_disruption(
     req: DisruptionRequest,
-    session: UserSession = Depends(get_user_session)
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """
     Injects a live disruption into the running simulation for the user's isolated session:
@@ -23,6 +23,8 @@ def inject_disruption(
     - fleet_surge: Boarding dwell jitter
     - compound_failure: Breakdown + platform closure
     """
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
     mgr = session.sim_manager
     success = mgr.inject_disruption(
         mode=req.mode,
@@ -44,9 +46,11 @@ def inject_disruption(
 
 @router.post("/clear")
 def clear_all_disruptions(
-    session: UserSession = Depends(get_user_session)
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Clears all active perturbations in the user's isolated session."""
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
     session.sim_manager.clear_disruptions()
     return {
         "success": True,
@@ -57,9 +61,11 @@ def clear_all_disruptions(
 
 @router.get("/active")
 async def get_active_disruptions(
-    session: UserSession = Depends(get_user_session)
+    session: Optional[UserSession] = Depends(get_user_session)
 ):
     """Returns currently active perturbations for the user's isolated session."""
+    if not isinstance(session, UserSession):
+        session = session_manager.get_or_create("default")
     mgr = session.sim_manager
     return {
         "session_id": session.session_id,

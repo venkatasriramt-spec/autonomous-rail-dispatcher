@@ -20,7 +20,8 @@ Welcome to the **Autonomous Railway Traffic Management Backend API** subsystem. 
 │                                                                                        │
 │  [Routers]                                                                             │
 │  ├── /api/sim        - Lifecycle & Playback Controls (play, pause, step, speed)        │
-│  ├── /ws/telemetry   - Real-Time WebSocket Telemetry Broadcast (4-10 Hz)               │
+│  ├── /api/sim/sessions - Active User Sandboxes & Subscriber Registry (Model B)        │
+│  ├── /ws/telemetry   - Real-Time WebSocket Telemetry Broadcast (4-10 Hz, Per-User)    │
 │  ├── /api/network    - 2D Track Vector Geometry, Station Centroids, Platform Bounds    │
 │  ├── /api/timetable  - SQLite Service Schedules (242 runs), 31 Rakes, Station Boards   │
 │  ├── /api/analytics  - Authoritative 56-Run Weekly Benchmarks, Diurnal Curves          │
@@ -28,11 +29,12 @@ Welcome to the **Autonomous Railway Traffic Management Backend API** subsystem. 
 │  └── /api/override   - Human-in-the-Loop Manual Interventions (Holds, Platform Swaps)  │
 │                                                                                        │
 │  [Core Engine]                                                                         │
-│  ├── SimulationManager   - Thread-safe SUMO/TraCI lifecycle & Step Controller          │
-│  ├── DispatcherBridge    - Model Factory (Centralized PPO, MAPPO, Comm-MAPPO, Hybrid)  │
-│  ├── NetworkGeometry     - XML-to-Vector Parser & Cache (2,413 lanes, 18 stations)     │
-│  ├── DatabaseEngine      - Normalized SQLite Query Engine (trains.db)                  │
-│  └── TelemetryStreamer   - Async WebSocket Client Hub                                  │
+│  ├── SessionManager   - Multi-User Sandbox Coordinator & Background Idle Session Reaper │
+│  ├── SimulationManager - Thread-safe SUMO/TraCI lifecycle & Step Controller            │
+│  ├── DispatcherBridge - Model Factory (Centralized PPO, MAPPO, Comm-MAPPO, Hybrid)     │
+│  ├── NetworkGeometry  - XML-to-Vector Parser & Cache (2,413 lanes, 18 stations)        │
+│  ├── DatabaseEngine   - Normalized SQLite Query Engine (trains.db)                     │
+│  └── TelemetryStreamer - Isolated Async WebSocket Client Hub (Auto-Pause Enabled)      │
 └────────────────────────┬─────────────────────────────────────┬─────────────────────────┘
                          │                                     │
                          ▼                                     ▼
@@ -57,14 +59,15 @@ backend/
 ├── requirements.txt          # Python dependency specifications
 ├── network_geometry.json     # Cached web-ready 2D vector geometry for track rendering
 ├── core/
+│   ├── session_manager.py    # Master UserSession and SessionManager multi-user registry
 │   ├── sim_manager.py        # Master SimulationManager thread orchestrating SUMO & AI
 │   ├── dispatcher_bridge.py  # Model loader & inference wrapper for all 8 paradigms
 │   ├── network_geometry.py   # XML parser extracting 2,413 track lanes, 116 platforms, 23 buffers, 268 signals
 │   ├── database.py           # Read-only SQLite query engine for trains.db
-│   └── telemetry_streamer.py # Real-time WebSocket connection hub & broadcaster
+│   └── telemetry_streamer.py # Real-time WebSocket connection hub & auto-pause callbacks
 ├── routers/
-│   ├── simulation.py         # POST /api/sim/control, POST /api/sim/config, GET /api/sim/status
-│   ├── websocket.py          # WS /ws/telemetry
+│   ├── simulation.py         # POST /api/sim/control, POST /api/sim/config, GET /api/sim/status, GET /api/sim/sessions
+│   ├── websocket.py          # WS /ws/telemetry?sessionId=<room_id>
 │   ├── network.py            # GET /api/network/geometry, stations, platforms, bounds
 │   ├── timetable.py          # GET /api/timetable/stations, station/{station_name}, services, rakes
 │   ├── analytics.py          # GET /api/analytics/weekly-summary, diurnal, stress-test

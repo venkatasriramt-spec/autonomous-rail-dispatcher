@@ -108,11 +108,10 @@ frontend/
 * **Rich Commercial Train Telemetry:**
   * Real-time train inspection panel displaying commercial train name (e.g. *Express Sunrise*), train number, origin-to-destination corridor route, and physical rake ID.
 * **Live WebSocket Telemetry Bridge (`/ws/telemetry`):** Streams real-time vehicle vectors at 4 Hz with heading angle, speed, delay, upcoming station, and active platform halts, with seamless 3-second fallback polling.
-* **Predefined Operational Time Jumps:** Quick-jump buttons to fast-forward simulation time to key timetable waves:
-  * **Dawn (06:00):** Initial morning fleet rollout
-  * **Peak (07:30):** High-density morning commuter rush
-  * **Midday (12:00):** Balanced base clockface traffic
-  * **Rush (17:00):** Evening commuter surge
+* **Per-User Simulation Sandboxing (Model B):**
+  * Persistent Room ID allocated per client, stored in `localStorage` and queryable via `?sessionId=...`.
+  * HUD Room Badge displaying the active room with pulse status indicator.
+  * "New Session" button enabling instant generation of a fresh simulation sandbox.
 * **Real-Time Client-Side Train Filtering:** Instantly filters active trains by rolling stock category (`All`, `HighSpeed`, `Regional`, `Intercity`, `Freight`), delay status (`All`, `On-Time`, `Delayed > 60s`), and text search queries.
 * **Dispatcher AI Model Selector:** Dynamically switch active traffic control in-flight across all 8 supported paradigms:
   1. `Centralized_PPO` (Single-focus actor-critic)
@@ -124,14 +123,8 @@ frontend/
   7. `FIFO_Heuristic` (First-in, first-out)
   8. `Static_Baseline` (Unmanaged physical baseline)
 * **Calendar Day Switcher:** Toggle operating schedules across all 7 days (`Mon` through `Sun`).
-* **De-Jittered Optimistic Speed Slider:** Smooth speed acceleration (`1x` to `20x`) with client-side promise queueing and monotonic request IDs to eliminate rubber-banding from network latency.
-* **Disruption Injection Modal:** Interactive operator tool with active vehicle and platform dropdown selectors, supporting:
-  * Mechanical train breakdown / stall
-  * Station platform blockage / closure
-  * Fleet-wide dwell jitter and commuter surge
-  * Compound multi-point failure scenarios
+* **De-Jittered Optimistic Speed Slider:** Smooth speed acceleration (`1x` to `50x`) with client-side promise queueing and monotonic request IDs to eliminate rubber-banding from network latency.
 * **Executive AI Event Log:** Rich, color-coded event stream with severity badges (`danger`, `warning`, `info`, `purple`, `cyan`, `amber`, `emerald`), humanized incident titles, and automatic periodic 30s AI operational status checks.
-* **Human-in-the-Loop Manual Override:** Dispatcher intervention console to manually reroute trains to alternate platforms, enforce departure holds, or divert consists over bypasses.
 
 ### C. Railway Fleet & Timetable Explorer (`/query`)
 A technical railway engineering and diagnostic console structured into 4 interactive tabs:
