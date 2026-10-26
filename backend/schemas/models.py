@@ -75,6 +75,7 @@ class FleetKPIs(BaseModel):
     teleports: int = 0
     day_completed: Optional[bool] = False
     daily_summary: Optional[Dict[str, Any]] = None
+    auto_paused: Optional[bool] = False
 
 
 class TelemetryFrame(BaseModel):
@@ -89,6 +90,7 @@ class TelemetryFrame(BaseModel):
     mode: SimulationMode
     day_completed: Optional[bool] = False
     daily_summary: Optional[Dict[str, Any]] = None
+    auto_paused: Optional[bool] = False
 
 
 # Request Models
@@ -139,6 +141,7 @@ class SimulationStatusResponse(BaseModel):
     active_overrides: Optional[Dict[str, Any]] = None
     day_completed: Optional[bool] = False
     daily_summary: Optional[Dict[str, Any]] = None
+    auto_paused: Optional[bool] = False
 
 
 class TrackLaneGeometry(BaseModel):

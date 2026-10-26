@@ -113,6 +113,7 @@ class SimulationManager:
         self._pause_event = threading.Event()
         self._lock = threading.Lock()
         self.event_loop: Optional[asyncio.AbstractEventLoop] = None
+        self.auto_paused: bool = False
 
     def set_event_loop(self, loop: asyncio.AbstractEventLoop):
         """Sets the main asyncio loop for thread-safe WebSocket broadcasts."""
@@ -154,7 +155,8 @@ class SimulationManager:
                 "active_disruptions_data": list(self.active_disruptions_data),
                 "active_overrides": dict(self.active_overrides),
                 "day_completed": self.day_completed,
-                "daily_summary": self.daily_summary
+                "daily_summary": self.daily_summary,
+                "auto_paused": self.auto_paused
             }
 
     def _load_timetable_cache(self):
@@ -338,6 +340,7 @@ class SimulationManager:
     def play(self) -> bool:
         """Starts or resumes simulation execution."""
         with self._lock:
+            self.auto_paused = False
             if self.day_completed:
                 self.day_completed = False
                 self.sim_time_sec = self.start_time_sec
@@ -369,6 +372,7 @@ class SimulationManager:
     def pause(self) -> bool:
         """Pauses simulation execution."""
         with self._lock:
+            self.auto_paused = False
             if self.state == SimulationState.RUNNING:
                 self.state = SimulationState.PAUSED
                 self._pause_event.set()
@@ -386,6 +390,56 @@ class SimulationManager:
             self._broadcast_frame()
             return True
 
+    def auto_pause_simulation(self) -> bool:
+        """Automatically pauses simulation when no active browser viewers remain to conserve CPU."""
+        with self._lock:
+            if self.state == SimulationState.RUNNING:
+                self.auto_paused = True
+                self.state = SimulationState.PAUSED
+                self._pause_event.set()
+                logger.info(
+                    "[Auto-Pause] All browser client tabs closed. "
+                    "Simulation paused to halt computation."
+                )
+                self._record_action_event({
+                    "type": "auto_pause",
+                    "vid": "System",
+                    "severity": "amber",
+                    "title": "Simulation Auto-Paused",
+                    "details": "All browser client tabs closed. Computation paused to conserve CPU."
+                })
+                self._broadcast_frame()
+                return True
+            return False
+
+    def auto_resume_simulation(self) -> bool:
+        """Automatically resumes simulation when a browser viewer reconnects, if previously auto-paused."""
+        with self._lock:
+            if self.auto_paused and self.state == SimulationState.PAUSED and not self.day_completed:
+                logger.info("[Auto-Resume] Browser viewer reconnected. Resuming simulation.")
+                self.auto_paused = False
+                self._record_action_event({
+                    "type": "auto_resume",
+                    "vid": "System",
+                    "severity": "emerald",
+                    "title": "Simulation Auto-Resumed",
+                    "details": "Browser viewer reconnected. Resuming real-time simulation."
+                })
+                if self._thread and self._thread.is_alive():
+                    self.state = SimulationState.RUNNING
+                    self._pause_event.clear()
+                    self._broadcast_frame()
+                    return True
+                else:
+                    self.state = SimulationState.RUNNING
+                    self._stop_event.clear()
+                    self._pause_event.clear()
+                    self._thread = threading.Thread(target=self._worker_loop, daemon=True)
+                    self._thread.start()
+                    self._broadcast_frame()
+                    return True
+            return False
+
     def reset(self, start_time_sec: Optional[float] = None) -> bool:
         """Stops and resets simulation state to the start of the passenger revenue timetable."""
         self._stop_current_worker()
@@ -396,6 +450,7 @@ class SimulationManager:
             self.sim_time_sec = target_start
             self._simulated_model = self.bridge.active_model_name
             self.state = SimulationState.STOPPED
+            self.auto_paused = False
             self.day_completed = False
             self.daily_summary = None
             self._daily_delay_samples.clear()
@@ -987,7 +1042,9 @@ class SimulationManager:
             "platform_nominal",
             "speed_profile_nominal",
             "signals_nominal",
-            "routine_sync"
+            "routine_sync",
+            "auto_pause",
+            "auto_resume"
         }
         if ch_type not in informational_types:
             self.total_actions_count += 1
@@ -1381,7 +1438,8 @@ class SimulationManager:
                 "collisions": 0,
                 "teleports": 0,
                 "day_completed": self.day_completed,
-                "daily_summary": self.daily_summary
+                "daily_summary": self.daily_summary,
+                "auto_paused": self.auto_paused
             },
             "trains": self.trains_cache,
             "platforms": self.platforms_cache,
@@ -1395,7 +1453,8 @@ class SimulationManager:
             "speed_multiplier": self.speed_multiplier,
             "mode": self.mode,
             "day_completed": self.day_completed,
-            "daily_summary": self.daily_summary
+            "daily_summary": self.daily_summary,
+            "auto_paused": self.auto_paused
         }
 
         try:
@@ -1406,3 +1465,7 @@ class SimulationManager:
 
 # Global singleton instance
 sim_manager = SimulationManager()
+streamer.set_subscriber_callbacks(
+    on_empty=sim_manager.auto_pause_simulation,
+    on_active=sim_manager.auto_resume_simulation
+)

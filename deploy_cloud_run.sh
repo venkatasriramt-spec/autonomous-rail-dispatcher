@@ -48,7 +48,7 @@ gcloud run deploy "$SERVICE_NAME" \
   --execution-environment gen2 \
   --no-cpu-throttling \
   --min-instances 1 \
-  --max-instances 5 \
+  --max-instances 1 \
   --concurrency 80 \
   --timeout 3600 \
   --session-affinity \

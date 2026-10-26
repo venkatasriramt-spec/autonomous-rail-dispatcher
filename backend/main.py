@@ -24,6 +24,7 @@ logger = logging.getLogger("railway_api")
 
 from backend.config import ROOT_DIR, BACKEND_DIR
 from backend.core.sim_manager import sim_manager
+from backend.core.telemetry_streamer import streamer
 from backend.core.network_geometry import parse_network_geometry
 from backend.routers import (
     simulation_router,
@@ -45,6 +46,10 @@ async def lifespan(app: FastAPI):
     logger.info("Initializing Autonomous Railway Simulation API...")
     loop = asyncio.get_running_loop()
     sim_manager.set_event_loop(loop)
+    streamer.set_subscriber_callbacks(
+        on_empty=sim_manager.auto_pause_simulation,
+        on_active=sim_manager.auto_resume_simulation
+    )
 
     # Configure from environment variables if passed from launcher or reloaded worker
     env_mode = os.environ.get("SIM_MODE")
