@@ -45,9 +45,9 @@ The rolling stock specifications in `data/rolling_stock_types.json` strictly adh
 | Consist Type | Power Supply | Gauge | Max Speed | Carriages | Length | Gross Weight | Role & Allowed Tracks |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | **`high_speed_emu_300`** | Electric 25kV AC | 1435 mm | **300 km/h** | 16 Cars | 400.0 m | 880 t | Corridor 1 East-West Trunk express runs; stops only at 800m+ City platforms. |
-| **`high_speed_emu_single`**| Electric 25kV AC | 1435 mm | **300 km/h** | 8 Cars | 200.0 m | 440 t | High-Speed Diagonal Bypass (`City_2` $\leftrightarrow$ `City_5`). |
+| **`high_speed_emu_single`**| Electric 25kV AC | 1435 mm | **300 km/h** | 8 Cars | 200.0 m | 440 t | High-Speed Diagonal Bypass (`City_2` ↔ `City_5`). |
 | **`regional_emu_120`**   | Electric 15kV / 25kV | 1435 mm | **120 km/h** | 6 Cars | 160.0 m | 240 t | Local stoppers on Corridors 1, 2, 4, and Bi-Level Hub Flyover Transfer. |
-| **`regional_dmu_120`**   | Diesel-Electric Hybrid | 1435 mm | **120 km/h** | 4 Cars | 120.0 m | 180 t | Mountain runs on Corridor 3 (`City_2` $\leftrightarrow$ `Town_9`). |
+| **`regional_dmu_120`**   | Diesel-Electric Hybrid | 1435 mm | **120 km/h** | 4 Cars | 120.0 m | 180 t | Mountain runs on Corridor 3 (`City_2` ↔ `Town_9`). |
 | **`heavy_freight_cargo`**| Diesel Locomotive | 1435 mm | **80 km/h** | 28 Wagons | 420.0 m | 3,800 t | Bulk mineral trains utilizing the Alpine Passing Loop; Coastal cargo. |
 | **`intermodal_container_freight`**| Diesel Locomotive | 1435 mm | **80 km/h** | 24 Wagons | 380.0 m | 2,600 t | Logistics transit between `City_5` and `Depot_3` container terminal. |
 | **`electric_trunk_freight`**| Electric 15kV / 25kV | 1435 mm | **100 km/h** | 24 Wagons | 400.0 m | 2,400 t | Nocturnal trunk express freight across Corridor 1 mainlines (`sumo_vclass="rail_electric"`). |
@@ -69,9 +69,9 @@ The schedule in `data/timetable.json` models **242 distinct train services** ope
 
 *Note: The 21:30–05:00 cadence rate is freight-only; late-night passenger services (#12029, #12030, #12042, #21042, #32032, #32043, #32044, #41040) are listed separately, concluding between 21:30 and 22:45 at 4–8 runs/hr.*
 
-### A. Corridor 1: East–West High-Speed Trunk (`City_1` $\leftrightarrow$ `City_4`, 28.2 km)
+### A. Corridor 1: East–West High-Speed Trunk (`City_1` ↔ `City_4`, 28.2 km)
 * **High-Speed Express (42 runs)**:
-  * Clockface cadence: departs `:00` Eastbound (`City_1` $\to$ `City_4`), `:35` Westbound (`City_4` $\to$ `City_1`, and `:05` during peak surge).
+  * Clockface cadence: departs `:00` Eastbound (`City_1` → `City_4`), `:35` Westbound (`City_4` → `City_1`, and `:05` during peak surge).
   * Full-day density scaling (weekdays): continuous hourly clockface from 06:00 to 22:00 without evening gaps on weekdays (with base weekend cadence; departures do not provide unbroken hourly service on weekends), supplemented by 30-min weekday peak surges (07:00–09:00 AM peak and 16:00–18:30 PM peak).
   * Speeds up to 300 km/h on slab track, bypassing towns (`Town_1`, `Town_2`, `Town_3`) via central through-tracks (`_thru_1`, `_thru_2`).
   * Dynamic calibrated dwells: 150s peak / 120s off-peak at `City_1`, `City_2`, and `City_4`; 180s peak / 150s off-peak at `City_3_EW` bi-level interchange.
@@ -82,35 +82,35 @@ The schedule in `data/timetable.json` models **242 distinct train services** ope
   * Dynamic calibrated dwells: 60s peak / 45s off-peak at town platform loops; 110s peak / 90s off-peak at cities; 180s peak / 150s off-peak at `City_3_EW`.
   * Turnaround: 8.2–10.1 min turnaround at `City_4_pocket_2_fw` with the 7.0-minute consist minimum.
 
-### B. Corridor 2: North–South Regional Spine (`City_5` $\leftrightarrow$ `City_6`, 23.2 km)
+### B. Corridor 2: North–South Regional Spine (`City_5` ↔ `City_6`, 23.2 km)
 * **Spine InterCity & Commuter (44 runs)**:
-  * Clockface cadence: departs `:10` Southbound (`City_5` $\to$ `City_6`), `:45` Northbound (`City_6` $\to$ `City_5`, and `:15` during peak).
+  * Clockface cadence: departs `:10` Southbound (`City_5` → `City_6`), `:45` Northbound (`City_6` → `City_5`, and `:15` during peak).
   * Full-day density scaling (weekdays): continuous hourly cadence from 05:10 to 22:10 on weekdays (weekends operate on a reduced base schedule without unbroken hourly coverage), compressed to 30-min headways throughout both weekday rush hours (07:10, 07:40, 08:10, 08:40 AM; 16:10, 16:40, 17:10, 17:40, 18:10 PM) utilizing peak relief rake `REG-C2-06`.
   * Dynamic calibrated dwells: 55s peak / 45s off-peak at towns; 110s peak / 90s off-peak at termini; 180s peak / 150s off-peak at `City_3_NS` viaduct interchange.
   * Turnaround: 7.2–8.7 min turnaround at `City_6_pocket_1_fw` (`rapid_dual_crew`).
 
-### C. Corridor 3: Northwest Alpine Mountain Line (`City_2` $\leftrightarrow$ `Town_9`, 9.9 km regional / 14.4 km freight)
+### C. Corridor 3: Northwest Alpine Mountain Line (`City_2` ↔ `Town_9`, 9.9 km regional / 14.4 km freight)
 * **Alpine Scenic, Glacier, Panorama & Commuter Services (18 passenger runs)**:
   * Multi-day scenic & excursion runs: #12763 (Mon/Thu/Sun), #12765 (Tue/Fri/Sat), #12775 (Daily Shuttle), #12769 (Daily Panorama), #12777 (Daily Express), #12767 (Mon/Thu/Sun), #12779 (Daily Twilight).
   * Weekday commuter surge: #12771 (08:10 AM dep City_2 / 08:38 AM dep Town_9) and #12773 (17:10 PM dep City_2 / 17:38 PM dep Town_9).
   * Clockface cadence: departs `:10` Uphill from `City_2` (synchronized connection from Corridor 1 express), `:40` Downhill from `Town_9` (and `:38` for commuter & twilight shuttles to clear main junction interlocks).
-  * Steep gradient mountain operation ($Z=38\text{ m}$ to $Z=130\text{ m}$) with 75s mountain halts.
+  * Steep gradient mountain operation ($Z = 38\text{ m}$ to $Z = 130\text{ m}$) with 75s mountain halts.
   * Turnaround: 17.2–19.6 min turnaround at `Town_9_yard_1_fw` (`standard_cab_swap`).
 
-### D. Corridor 4: Southern Coastal Arc (`City_1` $\leftrightarrow$ `City_6`, 29.3 km)
+### D. Corridor 4: Southern Coastal Arc (`City_1` ↔ `City_6`, 29.3 km)
 * **Coastal Arc Regional Commuter (40 passenger runs)**:
   * Clockface cadence: departs `:20` Eastbound (`City_1`), `:55` Westbound (`City_6`, and `:25` during peak).
   * Full-day density scaling (weekdays): unbroken hourly clockface from 06:20 to 21:20 on weekdays (weekends operate on a reduced base cadence without unbroken hourly service), compressed to 30-min headway (07:20, 07:50, 08:20, 08:50, 09:20 AM; 16:20, 16:50, 17:20, 17:50 PM) deploying commuter rake `REG-C4-05`.
   * Dynamic calibrated dwells: 60s peak / 45s off-peak at `Town_10`, `Town_11`, and `Town_12`.
   * Turnaround: 7.6–8.7 min turnaround at `City_6_pocket_2_fw`.
 
-### E. Diagonal High-Speed Bypass (`City_2` $\leftrightarrow$ `City_5`, 14.8 km)
+### E. Diagonal High-Speed Bypass (`City_2` ↔ `City_5`, 14.8 km)
 * **Bypass Direct Services (16 runs)**:
   * Direct 300 km/h chord transit along `bypass_City_2_City_5` avoiding the central hub.
   * Full-day density scaling: hourly peak relief during rush hours (07:25, 08:25 AM; 17:25, 18:25 PM) with irregular off-peak runs (10:25, 13:25, 15:25, 20:25) using `HS-Rake-04` (`high_speed_emu_single`).
   * Turnaround: 22.1–23.9 min turnaround at `City_5_yard_2_bw` (`standard_cab_swap`).
 
-### F. Trans-Hub Bi-Level Flyover Transfer (`City_4` $\leftrightarrow$ `City_6`, 23.4 km)
+### F. Trans-Hub Bi-Level Flyover Transfer (`City_4` ↔ `City_6`, 23.4 km)
 * **Interchange Link (26 runs)**:
   * Traverses the 789m, 1.77% gradient flyover ramp (`transfer_City_3_EW_NS`) linking Corridor 1 and Corridor 2.
   * Full-day density scaling: hourly runs throughout the day (07:05, 08:05, 09:05, 10:05, 11:05, 12:05, 14:05, 15:05, 16:05, 17:05, 18:05, 19:05, 20:05) with a gap at 13:05; the 07:05, 09:05, and 16:05–18:05 departures are weekday-only, while the remaining listed departures run daily, including weekends.
@@ -183,7 +183,7 @@ python3 scripts/export_to_sumo.py --day Sat      # Saturday
 ```
 
 ### 4. Validate Timetable Feasibility, Distances & Rake Lifecycles
-To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($T_{\text{planned}} \ge T_{\min}$), route lengths ($|\text{declared} - \text{route\_len}| \le 0.05\text{ km}$), and continuous rake rotation duty cycles are strictly satisfied:
+To audit all scheduled services against the physical track network, verifying that theoretical lower bounds ($`T_{\text{planned}} \ge T_{\min}`$), route lengths ($`|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}`$), and continuous rake rotation duty cycles are strictly satisfied:
 ```bash
 # Auto-detects mode from active route file:
 python3 scripts/validate_timetable.py

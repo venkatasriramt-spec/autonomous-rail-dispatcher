@@ -1139,3 +1139,32 @@ Scale full-stack operational capabilities across both backend and frontend layer
 - **Frontend Production Build:** `npm run build` executed cleanly in 264ms, generating optimized Vite 8 bundles with zero errors.
 - **Frontend Static Linter:** `npm run lint` executed cleanly with 0 errors.
 - **Repository Hygiene:** All caches, models, and test screenshots verified clean; zero credentials, secrets, or untracked artifacts present.
+
+---
+
+### 26 October 2026 — GitHub Markdown Mathematical Formula & Equation Rendering Rectification
+
+#### Milestone Objective
+Resolve broken mathematical equation and LaTeX formula rendering across GitHub repository documentation files (`dispatcher/README.md`, root `README.md`, `trains/README.md`, `dispatcher/MODEL_TRAINING_PLAN.md`), eliminating MathJax/KaTeX syntax parse crashes (`'_' allowed only in math mode`), unrendered markdown headers, and delimiter conflicts.
+
+---
+
+#### 1. Root Cause Analysis of GitHub Math Rendering Failures
+Direct DOM inspection on live GitHub (`venkatasriramt-spec/autonomous-rail-dispatcher`) using browser automation identified three distinct failure modes:
+1. **KaTeX/MathJax Text-Mode Underscore Crash:**
+   - *Problem:* In `dispatcher/README.md` (reward formula), expressions like `\lambda_{\text{knock\_on}} \cdot N_{\text{knock\_on}}` and in `trains/README.md`, `|\text{declared} - \text{route\_len}|` had underscores inside LaTeX `\text{...}` text mode. The CommonMark parser unescaped `\_` to `_`, and MathJax/KaTeX crashed with a red banner error: `'_' allowed only in math mode`.
+   - *Fix:* Replaced text-mode underscores with typographically correct hyphenation and standard math subscript notation: `\lambda_{\text{knock-on}} \cdot N_{\text{knock-on}}` and `|L_{\text{declared}} - L_{\text{route}}| \le 0.05\text{ km}`.
+2. **Unsupported LaTeX in GitHub Heading Elements (`#`, `##`, `###`):**
+   - *Problem:* Headings such as `### A. State Space ($\mathcal{S} \in \mathbb{R}^{28}$)` and `### B. Action Space ($\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])$)` failed to trigger MathJax because GitHub does not process math inside `<h1-h6>` tags, generating broken anchor slugs and raw LaTeX strings.
+   - *Fix:* Streamlined headings to clean text (`### A. State Space`, `### B. Action Space`), elevating the formal state and action tuples into dedicated, centered display equation blocks (`$$ \mathcal{S} \in \mathbb{R}^{28} $$`).
+3. **CommonMark / LaTeX Inline Parsing Collisions:**
+   - *Problem:* Inline math expressions surrounded by italic asterisks (`*...*`) or containing multiple underscores (e.g. `$w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}$`, `$T_{\text{planned}} \ge T_{\min}$`) caused CommonMark to misinterpret LaTeX subscripts as italic tags (`<em>`).
+   - *Fix:* Utilized GitHub's official backtick-dollar inline math delimiters (`$`...`$`) to shield LaTeX contents from markdown formatting interference.
+
+---
+
+#### 2. Verification & Validation Audit
+- **MathJax Engine Testing:** Validated all 16 updated mathematical expressions against live MathJax (`MathJax.tex2chtml`), verifying `isError: false` and `errorText: null` across 100% of expressions.
+- **Backend Test Suite:** [`backend/test_backend.py`](backend/test_backend.py) passed 100% across all 24 REST and HTTP assertions.
+- **Frontend Production Build:** `npm run build` completed with zero warnings or errors.
+- **Git Hygiene:** No sensitive data, untracked test logs, or temporary files introduced.

@@ -55,13 +55,13 @@ The Dispatcher AI operates as a microscopic decision-making layer interfacing wi
 
 ### 3. Priority Greedy Heuristic (`PriorityGreedyDispatcher`)
 * **Paradigm:** Rule-Based Multi-Class Priority Optimization.
-* **Mechanism:** Extends FIFO by incorporating a strict rolling stock priority hierarchy ($w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}$). When platform conflicts arise or overtakes are possible, higher-priority express passenger trains are given right-of-way, and slower freight services are diverted to passing loop sidings.
+* **Mechanism:** Extends FIFO by incorporating a strict rolling stock priority hierarchy ($`w_{\text{High-Speed}} > w_{\text{Regional}} > w_{\text{Freight}}`$). When platform conflicts arise or overtakes are possible, higher-priority express passenger trains are given right-of-way, and slower freight services are diverted to passing loop sidings.
 * **Role:** Serves as a strong non-learning benchmark, achieving low mean delays but at the cost of high continuous intervention churn (~6,000 actions/week).
 
 ### 4. Centralized PPO (`ModelAgentWrapper` / `Centralized_PPO`)
 * **Paradigm:** Single-Focus Deep Reinforcement Learning (Actor-Critic).
 * **Architecture:** Multi-layer Perceptron (MLP) policy trained via Proximal Policy Optimization (PPO) using Stable-Baselines3. Consumes a 28-dimensional normalized state vector representing the focal conflict consist, corridor traffic lookahead, and platform occupancy matrix.
-* **Action Space:** $\text{MultiDiscrete}([3, 7, 4])$ representing route selection (main vs loop vs bypass), platform track (1..6), and timetable departure hold duration (0s, 30s, 60s, 120s).
+* **Action Space:** $`\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])`$ representing route selection (main vs loop vs bypass), platform track (1..6), and timetable departure hold duration (0s, 30s, 60s, 120s).
 * **Key Strength:** **Action Efficiency.** Operates with extreme surgical precision, achieving heuristic-level delays (50.07s) with only **649 actions across the entire week**—an **89% reduction in dispatcher interventions** compared to heuristics (5,792–6,004 actions).
 
 ### 5. Multi-Train Centralized PPO (`MultiTrainCentralizedDispatcher`)
@@ -74,7 +74,7 @@ The Dispatcher AI operates as a microscopic decision-making layer interfacing wi
 * **Architecture:** Partitions the railway network into **7 autonomous control zones**:
   - **6 Station-Master Interlocking Agents** (`station_city_1` to `station_city_6`): Control localized platform assignments and departure holds using 24-dimensional station observations.
   - **1 Corridor Line Controller** (`corridor_trunk`): Controls dynamic overtaking at the Corridor 3 loop siding and High-Speed Bypass using 14-dimensional corridor observations.
-* **Critic Formulation:** Centralized value function $V(\mathbf{S}_{\text{joint}})$ trained on the concatenated joint state of the entire network during training; decentralized actor networks execute policies locally during inference without central coordination bottlenecks.
+* **Critic Formulation:** Centralized value function $`V(\mathbf{S}_{\text{joint}})`$ trained on the concatenated joint state of the entire network during training; decentralized actor networks execute policies locally during inference without central coordination bottlenecks.
 
 ### 7. Comm-MAPPO (`CommMAPPODispatcher`)
 * **Paradigm:** Communicative Multi-Agent RL with Churn Suppression.
@@ -95,35 +95,63 @@ The Dispatcher AI operates as a microscopic decision-making layer interfacing wi
 
 ## 3. Mathematical Formulation
 
-### A. State Space ($\mathcal{S} \in \mathbb{R}^{28}$)
-All continuous features are normalized to $[-1.0, 1.0]$ or $[0.0, 1.0]$:
-- **Global Context (0..4):** Normalized time of day, active train density, mean network delay, max network delay, peak hour flag.
-- **Focus Train Features (5..10):** Class priority weight $w_i$, normalized delay, speed ratio, distance to next station, stop status, decision proximity flag.
-- **Traffic Ahead & Behind (11..15):** Leader distance, leader speed, leader priority weight, overtake candidate flag, upcoming station presence.
-- **Platform Occupancy Matrix (16..27):** 6-platform binary occupancy flags and remaining normalized dwell times.
+### A. State Space
 
-### B. Action Space ($\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])$)
-- **Dimension 0 (Route Choice):**
+The global centralized state vector is formalized as a 28-dimensional normalized observation vector:
+
+$$
+\mathcal{S} \in \mathbb{R}^{28}
+$$
+
+All continuous features are normalized to $[-1.0, 1.0]$ or $[0.0, 1.0]$:
+- **Global Context (features 0..4):** Normalized time of day, active train density, mean network delay, max network delay, peak hour flag.
+- **Focus Train Features (features 5..10):** Class priority weight $w_i$, normalized delay, speed ratio, distance to next station, stop status, decision proximity flag.
+- **Traffic Ahead & Behind (features 11..15):** Leader distance, leader speed, leader priority weight, overtake candidate flag, upcoming station presence.
+- **Platform Occupancy Matrix (features 16..27):** 6-platform binary occupancy flags and remaining normalized dwell times.
+
+### B. Action Space
+
+The action space is formalized as a multi-discrete control tuple:
+
+$$
+\mathcal{A} \in \text{MultiDiscrete}([3, 7, 4])
+$$
+
+- **Dimension 0 (Route Choice, 3 discrete actions):**
   - `0` = Keep Main Line.
   - `1` = Divert into Corridor 3 Alpine Freight Passing Loop siding.
   - `2` = Reroute over electrified High-Speed Bypass between City 2 and City 5.
-- **Dimension 1 (Platform Allocation):**
+- **Dimension 1 (Platform Allocation, 7 discrete actions):**
   - `0` = Default scheduled platform track.
-  - `1..6` = Alternate platform tracks 1 to 6 (verified for train length $\le$ track capacity).
-- **Dimension 2 (Timetable Dispatch & Holding):**
+  - `1..6` = Alternate platform tracks 1 to 6 (verified for train length $L_{\text{train}} \le L_{\text{plat}}$).
+- **Dimension 2 (Timetable Dispatch & Holding, 4 discrete actions):**
   - `0` = Proceed immediately upon dwell completion.
   - `1` = Hold departure for 30 seconds.
   - `2` = Hold departure for 60 seconds.
   - `3` = Hold departure for 120 seconds.
 
 ### C. Multi-Class Priority Reward Function
-$$\text{Reward} = - \sum_{i} w_i \left( \frac{\text{delay}_i}{60} + 0.1 \left(\frac{\text{delay}_i}{60}\right)^2 \right) - \sum_{i} w_i \cdot \Delta \text{delay}_i - \lambda_{\text{knock\_on}} \cdot N_{\text{knock\_on}} + R_{\text{ontime}} + R_{\text{complete}}$$
+
+The multi-objective reward formulation balances cumulative travel delay, schedule rate-of-change, secondary cascade suppression, and punctuality incentives:
+
+$$
+R_t = - \sum_{i} w_i \left( \frac{\text{delay}_i}{60} + 0.1 \left(\frac{\text{delay}_i}{60}\right)^2 \right) - \sum_{i} w_i \cdot \Delta \text{delay}_i - \lambda_{\text{knock-on}} \cdot N_{\text{knock-on}} + R_{\text{ontime}} + R_{\text{complete}}
+$$
+
+**Formula Parameter Definitions:**
+* $w_i$: Priority weight for train $i$ reflecting commercial value-of-time.
+* $\text{delay}_i$: Current delay of train $i$ in seconds.
+* $\Delta \text{delay}_i$: Step-over-step delay delta ($\text{delay}_i(t) - \text{delay}_i(t - \Delta t)$).
+* $\lambda_{\text{knock-on}} = 0.5$: Penalty weight for newly induced secondary delay cascades.
+* $N_{\text{knock-on}}$: Number of downstream trains affected by knock-on queueing.
+* $R_{\text{ontime}} = +0.05$: Adherence bonus for on-time operation ($\text{delay}_i \le 30\text{ s}$).
+* $R_{\text{complete}} = +1.0$: Terminal mission bonus upon reaching terminus on schedule.
 
 - **Class Priority Hierarchy ($w_i$):**
-  - High-Speed EMU (`high_speed_emu_300` / `single`): $w = 1.0$ / $0.85$
-  - Regional Commuter EMU/DMU (`regional_emu_120` / `dmu_120`): $w = 0.6$ / $0.5$
-  - Intermodal Container Freight (`intermodal_container_freight`): $w = 0.3$
-  - Heavy Bulk Freight (`heavy_freight_cargo` / `electric_trunk_freight`): $w = 0.15$ / $0.25$
+  - High-Speed EMU (`high_speed_emu_300` / `single`): $w_i = 1.0$ / $0.85$
+  - Regional Commuter EMU/DMU (`regional_emu_120` / `dmu_120`): $w_i = 0.6$ / $0.5$
+  - Intermodal Container Freight (`intermodal_container_freight`): $w_i = 0.3$
+  - Heavy Bulk Freight (`heavy_freight_cargo` / `electric_trunk_freight`): $w_i = 0.15$ / $0.25$
 
 ---
 
@@ -147,7 +175,7 @@ The [`ActionHandler`](envs/action_handler.py) enforces safety guardrails to ensu
    - Replaces downstream stops via `traci.vehicle.replaceStop()`.
 
 4. **Departure Holding (`hold_act > 0`):**
-   - Rejects holds on trains running significantly late ($>120\text{s}$ delay) to prevent secondary delay compounding.
+   - Rejects holds on trains running significantly late ($\text{delay} > 120\text{ s}$) to prevent secondary delay compounding.
    - Resumes held trains via `traci.vehicle.resume()` once hold timers expire.
 
 ---

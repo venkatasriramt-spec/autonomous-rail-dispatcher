@@ -207,7 +207,7 @@ Option 1 resolves this by:
 ### B. Implementation Details
 - **`dispatcher/envs/reward_engine.py`:**
   - Added `action_penalty_weight: float = 0.5`.
-  - Added hold intervention penalties ($-0.25$ to $-1.0$) when a train has clear track ahead ($\text{leader\_dist} \ge 2000\text{m}$) or is operating on schedule ($\text{delay} \le 30\text{s}$).
+  - Added hold intervention penalties ($-0.25$ to $-1.0$) when a train has clear track ahead ($d_{\text{leader}} \ge 2,000\text{ m}$) or is operating on schedule ($\text{delay} \le 30\text{ s}$).
   - Added siding diversion penalties ($-0.40$) when not an overtake candidate.
   - Added schedule-adherence bonus ($+0.05$) when taking action `[0, 0, 0]` ("do nothing") on on-time, conflict-free trains.
 - **`dispatcher/envs/railway_dispatch_env.py`:**
@@ -306,7 +306,7 @@ To elevate the autonomous dispatcher from a standard RL policy into a production
 * **Impact:** Reduced unneeded dispatcher actions by **48.8%** (from 5,760 down to approximately **2,951 actions/day**, matching `project_history.md`) with zero sacrifice in punctuality.
 
 ### B. Frontier 2: Smart Interlocking Gating & Calendar-Aware Working Timetable (WTT) Calibration
-* **Passing-Loop Siding Protection:** Barred passing loop siding diversions when the mainline track ahead is open ($\text{is\_overtake\_candidate} = 0$), eliminating 2,900+ spurious siding detours.
+* **Passing-Loop Siding Protection:** Barred passing loop siding diversions when the mainline track ahead is open (`is_overtake_candidate == 0`), eliminating 2,900+ spurious siding detours.
 * **Mainline Hold Protection:** Barred unprovoked station dwell extensions on consists already delayed or facing open blocks, preventing TraCI dwell compounding.
 * **Sunday Turnaround Staging Calibration:** Detected Sunday operating conditions where platform 1 at hub stations is reserved for extended turnaround staging buffers, automatically redirecting incoming passenger trains to open tracks (platforms 2–6).
 * **Impact:** Slashed Sunday mean delay from **185.54s down to 8.87s** (99.4% punctuality, 26 knock-ons), drove global weekly delay down to **39.86s** across all 1,446 services (weighted service mean: **39.37s**), and further streamlined interventions to approximately **1,810 actions/day**.
