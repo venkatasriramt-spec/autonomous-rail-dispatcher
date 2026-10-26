@@ -1168,3 +1168,50 @@ Direct DOM inspection on live GitHub (`venkatasriramt-spec/autonomous-rail-dispa
 - **Backend Test Suite:** [`backend/test_backend.py`](backend/test_backend.py) passed 100% across all 24 REST and HTTP assertions.
 - **Frontend Production Build:** `npm run build` completed with zero warnings or errors.
 - **Git Hygiene:** No sensitive data, untracked test logs, or temporary files introduced.
+
+---
+
+### 26 October 2026 — Google Cloud Run Full-Stack Containerization & Deployment Orchestration
+
+#### Milestone Objective
+Establish an end-to-end multi-stage containerization pipeline deploying both the React 19 frontend and the FastAPI autonomous railway simulation backend as an integrated, ultra-high-performance full-stack service on Google Cloud Run (`railway-platform`) with Eclipse SUMO microscopic simulation, CPU-optimized PyTorch reinforcement learning agents, seamless SPA routing, and same-origin encrypted WebSocket telemetry.
+
+---
+
+#### 1. Key Technical Implementations
+- **Multi-Stage Containerization Pipeline (`Dockerfile`):**
+  - **Stage 1 (Frontend Builder):** Built on `node:20-slim`, installing dependencies and compiling the optimized React 19 / Vite single-page application into production bundles.
+  - **Stage 2 (Production Runtime):** Built on `python:3.10-slim`, installing system dependencies (`sumo`, `sumo-tools`, `build-essential`, `curl`), CPU-only PyTorch wheels (`--index-url https://download.pytorch.org/whl/cpu`), and all simulation requirements.
+  - Bundled the freshly compiled frontend into `/app/frontend/dist` within the Python container, enabling unified single-domain hosting.
+- **Single-Domain SPA Architecture & Secure IPC (`backend/main.py`):**
+  - Served static JavaScript, CSS, SVGs, and network geometry files under `/assets` and root endpoints.
+  - Implemented single-page application fallback routing so client-side navigation (`/`, `/simulation`, `/query`, `/about`) resolves directly to `index.html` on direct browser navigation or page refresh.
+  - Eliminated cross-origin security boundaries, CORS latency, and mixed-content issues: both API calls (`/api/*`) and real-time telemetry (`wss:///ws/telemetry`) connect over the same encrypted TLS domain.
+- **Ultra-High-Performance Infrastructure Sizing:**
+  - Upgraded Cloud Run instance resources to **4 dedicated vCPUs** and **8 GiB RAM** (`--memory 8Gi`).
+  - Enabled **Second Generation execution runtime** (`--execution-environment gen2`), **always-allocated CPU** (`--no-cpu-throttling`), **pre-warmed instances** (`--min-instances 1` for zero cold-starts), **session affinity** (`--session-affinity`), and **3600-second WebSocket connection timeouts**.
+- **Automated Deployment Pipeline & Cleanup (`deploy_cloud_run.sh`):**
+  - Automated deletion of the legacy standalone backend service (`railway-backend`).
+  - Deployed the unified full-stack service (`railway-platform`) via Google Cloud Build with non-interactive flags (`--quiet`).
+- **Build Context Optimization (`.dockerignore`, `.gcloudignore`):**
+  - Tailored exclusions to prevent copying 160MB+ `node_modules` or `.git` directories to Cloud Build while ensuring frontend source files compile cleanly in the container.
+
+---
+
+#### 2. Verification & Validation Audit
+- **Cloud Run Deployment Status:** Live and operational at [`https://railway-platform-fvgbod7diq-uc.a.run.app/`](https://railway-platform-fvgbod7diq-uc.a.run.app/).
+  - `GET /` (Browser Accept: `text/html`): `200 OK` (Serves React 19 SPA).
+  - `GET /simulation`, `/query`, `/about`: `200 OK` (HTML5 SPA routing verified).
+  - `GET /assets/index-*.css` & `GET /assets/index-*.js`: `200 OK` (Static bundles loaded cleanly).
+  - `GET /health` & `GET /api/status`: `200 OK` (Liveness probes and JSON metadata verified).
+  - `GET /api/network/bounds`: `200 OK` (Topology geometry verified).
+  - `GET /network_geometry.json`: `200 OK` (2,413 lanes static cache verified).
+  - `WebSocket`: Live telemetry stream ready at `wss://railway-platform-fvgbod7diq-uc.a.run.app/ws/telemetry`.
+- **Frontend UI De-Cluttering & Legacy Cleanup:**
+  - Removed unwanted operational time jump pills (`Dawn`, `Peak`, `Midday`, `Rush`) and HUD action buttons (`Inject Disruption`, `Manual Override`) from `frontend/src/pages/SimulationPage.jsx` and `SimulationPage.css`.
+  - Removed obsolete Disruption Injection and HITL Operator Override modal components and form state.
+  - Recompiled production bundle (`npm run build`) in 311ms and deployed revision `railway-platform-00002-kwl` to Google Cloud Run, verifying 0 occurrences of removed UI elements on live assets.
+- **Backend Validation Suite:** [`backend/test_backend.py`](backend/test_backend.py) passed 100% across all 24 REST and live HTTP assertions.
+- **Repository Hygiene:** Verified clean working tree, no secrets or credentials exposed.
+
+

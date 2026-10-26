@@ -107,42 +107,6 @@
   background: var(--border-light);
 }
 
-.hud-timejumps {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: rgba(0, 0, 0, 0.35);
-  padding: 0.2rem 0.5rem;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--border-light);
-}
-
-.btn-timejump-pill {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #94a3b8;
-  font-size: 0.725rem;
-  font-weight: 600;
-  padding: 0.25rem 0.55rem;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.btn-timejump-pill:hover {
-  background: rgba(0, 240, 255, 0.15);
-  border-color: rgba(0, 240, 255, 0.4);
-  color: #ffffff;
-}
-
-.btn-timejump-pill.active {
-  background: var(--cyan-primary);
-  border-color: var(--cyan-primary);
-  color: #04111d;
-  box-shadow: 0 0 8px rgba(0, 240, 255, 0.35);
-}
-
 .hud-select-group {
   display: flex;
   align-items: center;
@@ -176,48 +140,6 @@
 .hud-model-dropdown {
   color: #c084fc;
 }
-
-.hud-right-group {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.btn-hud-alert {
-  padding: 0.45rem 0.95rem;
-  font-size: 0.825rem;
-  position: relative;
-  color: #fbbf24;
-  border-color: rgba(245, 158, 11, 0.4);
-}
-
-.badge-disruptions-count {
-  background: #ef4444;
-  color: #ffffff;
-  font-size: 0.65rem;
-  padding: 0.1rem 0.35rem;
-  border-radius: 9999px;
-  margin-left: 0.3rem;
-}
-
-.btn-hud-override {
-  padding: 0.45rem 0.95rem;
-  font-size: 0.825rem;
-  color: var(--cyan-primary);
-  border-color: rgba(0, 240, 255, 0.4);
-}
-
-.badge-count {
-  background: var(--cyan-primary);
-  color: #04111d;
-  font-size: 0.65rem;
-  font-weight: 700;
-  padding: 0.1rem 0.35rem;
-  border-radius: 9999px;
-  margin-left: 0.3rem;
-}
-
-
 
 /* Viewport Layout */
 .sim-viewport-container {
@@ -765,9 +687,6 @@
   font-weight: 700;
   color: #ffffff;
 }
-
-.modal-icon-alert { color: #fbbf24; }
-.modal-icon-override { color: var(--cyan-primary); }
 
 .btn-modal-close {
   background: transparent;
@@ -1522,40 +1441,7 @@
   border-color: var(--cyan-primary);
 }
 
-/* ==========================================================================
-   Disruption Modal Enhancements
-   ========================================================================== */
-.disruption-modal-enhanced {
-  max-width: 540px;
-}
 
-.disruption-explanation-card {
-  background: rgba(0, 240, 255, 0.05);
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  border-radius: var(--radius-sm);
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.disruption-explanation-title {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--cyan-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-
-.disruption-explanation-card p {
-  font-size: 0.75rem;
-  line-height: 1.45;
-  color: #e2e8f0;
-  margin: 0;
-}
 
 .modal-checkbox-label {
   display: flex;

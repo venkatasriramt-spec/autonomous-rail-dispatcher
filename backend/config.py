@@ -66,9 +66,9 @@ DISPATCHER_MODELS: List[str] = [
 # Supported Calendar Days
 CALENDAR_DAYS: List[str] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 
-# Server defaults
-DEFAULT_HOST = "127.0.0.1"
-DEFAULT_PORT = 8000
+# Server defaults (respects Cloud Run PORT and HOST environment variables)
+DEFAULT_HOST = os.environ.get("HOST", "0.0.0.0" if os.environ.get("PORT") else "127.0.0.1")
+DEFAULT_PORT = int(os.environ.get("PORT", 8000))
 TELEMETRY_BROADCAST_HZ = 4.0  # 4 updates per second over WebSocket
 DEFAULT_MACRO_STEP_SEC = 15.0 # AI decision interval (seconds)
 DEFAULT_SIM_SPEED = 1.0       # Playback multiplier

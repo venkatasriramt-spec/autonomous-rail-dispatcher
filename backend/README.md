@@ -268,7 +268,51 @@ Once the server is running, navigate to:
 
 ---
 
-## 5. Subsystem Links & References
+## 5. Google Cloud Run Deployment
+
+The backend is fully containerized and production-ready for deployment on **Google Cloud Run**, supporting HTTP/2, WebSockets, and Eclipse SUMO with PyTorch reinforcement learning agents.
+
+### A. Quick Deploy via Cloud Build (Recommended)
+
+Run the automated deployment script:
+```bash
+./deploy_cloud_run.sh [SERVICE_NAME] [REGION]
+```
+
+Or execute directly with the `gcloud` CLI:
+```bash
+gcloud run deploy railway-backend \
+  --source . \
+  --region us-central1 \
+  --platform managed \
+  --allow-unauthenticated \
+  --quiet \
+  --cpu 4 \
+  --memory 4Gi \
+  --execution-environment gen2 \
+  --no-cpu-throttling \
+  --min-instances 1 \
+  --max-instances 5 \
+  --concurrency 80 \
+  --timeout 3600 \
+  --session-affinity \
+  --set-env-vars SIM_MODE=LIVE_SUMO,CORS_ORIGINS="*"
+```
+
+### B. High-Performance Configuration Highlights
+
+* **Dedicated 4 vCPUs & 4 GiB RAM:** Provides independent computational cores for SUMO microscopic simulation, PyTorch neural network forward passes, and FastAPI async 4Hz WebSocket telemetry streaming.
+* **Always-Allocated CPU (`--no-cpu-throttling`):** Prevents CPU throttling between requests, guaranteeing smooth background simulation stepping and zero telemetry jitter.
+* **Zero Cold-Starts (`--min-instances 1`):** Keeps a container instance pre-warmed in memory 24/7 so the first HTTP request or WebSocket connection connects in milliseconds.
+* **Second Generation Runtime (`--execution-environment gen2`):** Full Linux kernel with high-throughput I/O and optimal subprocess performance for SUMO.
+* **WebSocket Longevity (`--timeout 3600`):** Extends connection lifespan to 1 hour for continuous live dispatching dashboards.
+* **Session Affinity (`--session-affinity`):** Ensures stateful simulation control and WebSocket subscriptions map to the same running instance.
+* **Port & Host Binding:** Automatically binds to `0.0.0.0` and respects Cloud Run's `$PORT`.
+* **CORS Flexibility:** Set `CORS_ORIGINS="*"` or supply specific client origins.
+
+---
+
+## 6. Subsystem Links & References
 
 * **Monorepo Architecture:** [Root README](../README.md)
 * **Frontend Web Dashboard:** [frontend/README.md](../frontend/README.md)
@@ -276,4 +320,5 @@ Once the server is running, navigate to:
 * **Fleet Management & Timetables:** [trains/README.md](../trains/README.md)
 * **Autonomous Dispatcher AI:** [dispatcher/README.md](../dispatcher/README.md)
 * **Unified Milestones & History:** [project_history.md](../project_history.md)
+
 

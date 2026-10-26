@@ -1,0 +1,24 @@
+# This file specifies files to exclude from the Cloud Build upload context
+.gcloudignore
+.git
+.github
+.idea
+.vscode
+frontend/node_modules
+frontend/.oxlintrc.json
+.playwright-mcp
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+.venv
+venv
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.mp4
+*.log

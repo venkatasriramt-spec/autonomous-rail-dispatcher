@@ -10,9 +10,9 @@ import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 
 # Setup logging
@@ -78,9 +78,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="Autonomous Railway Traffic Management & Simulation API",
+    title="Autonomous Railway Traffic Management & Simulation Platform",
     description=(
-        "Production backend interfacing microscopic Eclipse SUMO railway simulation, "
+        "Production full-stack platform interfacing microscopic Eclipse SUMO railway simulation, "
         "8-paradigm AI dispatching models (PPO, MAPPO, Comm-MAPPO, Hybrid, Heuristics), "
         "and real-time WebSocket telemetry for interactive web dashboards."
     ),
@@ -99,10 +99,19 @@ FRONTEND_ORIGINS = [
     "http://127.0.0.1:8080"
 ]
 
-# Configure CORS for all frontend development servers
+cors_env = os.environ.get("CORS_ORIGINS")
+if cors_env:
+    if cors_env.strip() == "*":
+        allowed_origins = ["*"]
+    else:
+        allowed_origins = FRONTEND_ORIGINS + [o.strip() for o in cors_env.split(",") if o.strip()]
+else:
+    allowed_origins = FRONTEND_ORIGINS
+
+# Configure CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=FRONTEND_ORIGINS,
+    allow_origins=allowed_origins,
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -117,15 +126,45 @@ app.include_router(analytics_router)
 app.include_router(disruption_router)
 app.include_router(overrides_router)
 
-# Mount static frontend directory if built
+# Mount static frontend directory
 static_dist = ROOT_DIR / "frontend" / "dist"
 if static_dist.exists():
-    app.mount("/app", StaticFiles(directory=str(static_dist), html=True), name="frontend")
+    assets_dir = static_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="static_assets")
+
+    # Serve static assets and icons
+    @app.get("/favicon.svg", include_in_schema=False)
+    async def serve_favicon():
+        fav = static_dist / "favicon.svg"
+        if fav.exists():
+            return FileResponse(str(fav))
+        return JSONResponse(status_code=404, content={"detail": "Not found"})
+
+    @app.get("/icons.svg", include_in_schema=False)
+    async def serve_icons():
+        ic = static_dist / "icons.svg"
+        if ic.exists():
+            return FileResponse(str(ic))
+        return JSONResponse(status_code=404, content={"detail": "Not found"})
+
+    @app.get("/network_geometry.json", include_in_schema=False)
+    async def serve_network_geom():
+        geom_file = static_dist / "network_geometry.json"
+        if geom_file.exists():
+            return FileResponse(str(geom_file))
+        return JSONResponse(content=sim_manager.geometry)
 
 
-@app.get("/", tags=["Health & Info"])
-async def root_status():
-    """API Root providing system metadata and health check."""
+@app.get("/health", tags=["Health & Info"])
+async def health_check():
+    """Liveness probe."""
+    return {"status": "healthy"}
+
+
+@app.get("/api/status", tags=["Health & Info"])
+async def api_status():
+    """System metadata and simulation status JSON."""
     return JSONResponse(content={
         "system": "Autonomous Railway Traffic Management API",
         "version": "1.0.0",
@@ -136,7 +175,51 @@ async def root_status():
     })
 
 
-@app.get("/health", tags=["Health & Info"])
-async def health_check():
-    """Liveness probe."""
-    return {"status": "healthy"}
+@app.get("/", tags=["Health & Info"])
+async def root_endpoint(request: Request):
+    """Serves the frontend SPA index.html for browser requests, or JSON metadata for API clients."""
+    accept = request.headers.get("accept", "")
+    index_html = static_dist / "index.html"
+    if "text/html" in accept and index_html.exists():
+        return FileResponse(
+            str(index_html),
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
+
+    return JSONResponse(content={
+        "system": "Autonomous Railway Traffic Management API",
+        "version": "1.0.0",
+        "status": "online",
+        "docs_url": "/docs",
+        "websocket_endpoint": "/ws/telemetry",
+        "sim_status": sim_manager.get_status()
+    })
+
+
+# Single-Page Application (SPA) client-side routing fallback
+@app.get("/{full_path:path}", include_in_schema=False)
+async def spa_fallback(full_path: str):
+    """Fallback route serving React Router SPA routes (e.g. /simulation, /query, /about)."""
+    if full_path.startswith("api/") or full_path.startswith("ws/") or full_path in ("docs", "redoc", "openapi.json", "health"):
+        return JSONResponse(status_code=404, content={"detail": f"Endpoint '/{full_path}' not found"})
+
+    target_file = static_dist / full_path
+    if target_file.is_file():
+        return FileResponse(str(target_file))
+
+    index_html = static_dist / "index.html"
+    if index_html.exists():
+        return FileResponse(
+            str(index_html),
+            headers={
+                "Cache-Control": "no-cache, no-store, must-revalidate",
+                "Pragma": "no-cache",
+                "Expires": "0"
+            }
+        )
+
+    return JSONResponse(status_code=404, content={"detail": "Not found"})

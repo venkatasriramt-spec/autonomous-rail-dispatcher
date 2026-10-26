@@ -5,7 +5,6 @@ import {
   RotateCcw, 
   FastForward, 
   AlertTriangle, 
-  Sliders, 
   ZoomIn, 
   ZoomOut, 
   Maximize2, 
@@ -15,7 +14,6 @@ import {
   X,
   ChevronLeft,
   ChevronRight,
-  Send,
   RefreshCw,
   GitFork,
   Zap,
@@ -44,13 +42,6 @@ const MODELS = [
   { id: 'Multi_Train_Centralized_PPO', label: 'Multi-Train Centralized PPO' },
   { id: 'Priority_Greedy_Heuristic', label: 'Dynamic Priority Heuristic' },
   { id: 'FIFO_Heuristic', label: 'First-Come First-Served (FIFO)' },
-];
-
-const TIME_JUMPS = [
-  { label: 'Dawn (06:00)', sec: 21600 },
-  { label: 'Peak (07:30)', sec: 27000 },
-  { label: 'Midday (12:00)', sec: 43200 },
-  { label: 'Rush (17:00)', sec: 61200 },
 ];
 
 export default function SimulationPage() {
@@ -102,8 +93,6 @@ export default function SimulationPage() {
   const [isResizingSidebar, setIsResizingSidebar] = useState(false);
   const resizeStartXRef = useRef(0);
   const resizeStartWidthRef = useRef(380);
-  const [showDisruptionModal, setShowDisruptionModal] = useState(false);
-  const [showOverrideModal, setShowOverrideModal] = useState(false);
   const [activeSideTab, setActiveSideTab] = useState('trains'); // 'trains' | 'station'
 
   // Google Maps Railway Feature Navigation & Overlays
@@ -131,24 +120,6 @@ export default function SimulationPage() {
     }
     return geometry.track_features || [];
   }, [geometry]);
-
-  // Disruption Form
-  const [disruptionForm, setDisruptionForm] = useState({
-    mode: 'fleet_surge',
-    vehicle_id: '',
-    platform_id: '',
-    station_id: 'City_1',
-    delay_duration_sec: 180,
-    auto_zoom: true
-  });
-
-  // Override Form
-  const [overrideForm, setOverrideForm] = useState({
-    vehicle_id: '',
-    override_type: 'departure_hold',
-    target_platform: 1,
-    hold_duration_sec: 60
-  });
 
   // Compute Selected Station Topology (Platforms, Converging Inbound, Diverging Outbound, Crossovers, Switches)
   const selectedStationTopology = React.useMemo(() => {
@@ -2276,10 +2247,6 @@ export default function SimulationPage() {
     }
   }, [fetchStatus, simStatus.speed_multiplier]);
 
-  const handleTimeJump = useCallback((sec) => {
-    sendControl('reset', undefined, undefined, sec);
-  }, [sendControl]);
-
   const handleSpeedChange = (s) => {
     selectedSpeedRef.current = s;
     setSimStatus(prev => ({ ...prev, speed_multiplier: s }));
@@ -2334,72 +2301,6 @@ export default function SimulationPage() {
 
 
 
-  // Inject Disruption Handler
-  const handleInjectDisruption = async (e) => {
-    e.preventDefault();
-    try {
-      const payload = {
-        mode: disruptionForm.mode,
-        vehicle_id: disruptionForm.vehicle_id || undefined,
-        platform_id: disruptionForm.platform_id || undefined,
-        station_id: disruptionForm.station_id || undefined,
-        delay_duration_sec: Number(disruptionForm.delay_duration_sec)
-      };
-      const res = await fetch('/api/disruption/inject', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json().catch(() => null);
-      if (data?.active_disruptions_data) {
-        setSimStatus(prev => ({
-          ...prev,
-          active_disruptions: data.active_disruptions || prev.active_disruptions,
-          active_disruptions_data: data.active_disruptions_data
-        }));
-      }
-      setShowDisruptionModal(false);
-
-      // Auto-zoom to affected station or train
-      if (disruptionForm.auto_zoom && geometry?.stations) {
-        let targetStation = null;
-        if (disruptionForm.station_id) {
-          targetStation = geometry.stations.find(s => s.station_name === disruptionForm.station_id);
-        }
-        if (!targetStation && disruptionForm.platform_id) {
-          targetStation = geometry.stations.find(s => 
-            s.station_name === disruptionForm.platform_id || 
-            s.platforms?.some(p => p.platform_id === disruptionForm.platform_id)
-          );
-        }
-        if (!targetStation && disruptionForm.vehicle_id) {
-          const t = trains.find(tr => tr.id === disruptionForm.vehicle_id);
-          if (t) {
-            targetStation = geometry.stations.find(s => s.station_name === t.upcoming_station);
-            if (!targetStation) {
-              zoomToTrain(t);
-            }
-          }
-        }
-        if (!targetStation) {
-          // Default to City 1 Central
-          targetStation = geometry.stations.find(s => s.station_name === 'City_1') || geometry.stations[0];
-        }
-
-        if (targetStation) {
-          zoomToStation(targetStation);
-          setActiveSideTab('station');
-        }
-      } else {
-        setActiveSideTab('station');
-      }
-
-      fetchStatus();
-    } catch (err) {
-      console.error('Disruption injection error:', err);
-    }
-  };
-
   // Clear Disruptions
   const handleClearDisruptions = async () => {
     try {
@@ -2409,39 +2310,9 @@ export default function SimulationPage() {
         active_disruptions: [],
         active_disruptions_data: []
       }));
-      setShowDisruptionModal(false);
       fetchStatus();
     } catch (err) {
       console.error('Clear disruptions error:', err);
-    }
-  };
-
-  // Manual Override Handler
-  const handleApplyOverride = async (e) => {
-    e.preventDefault();
-    try {
-      const payload = {
-        vehicle_id: overrideForm.vehicle_id,
-        override_type: overrideForm.override_type,
-        target_platform: overrideForm.target_platform ? Number(overrideForm.target_platform) : undefined,
-        hold_duration_sec: overrideForm.hold_duration_sec ? Number(overrideForm.hold_duration_sec) : undefined
-      };
-      const res = await fetch('/api/override/action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json().catch(() => null);
-      if (data?.active_overrides) {
-        setSimStatus(prev => ({
-          ...prev,
-          active_overrides: data.active_overrides
-        }));
-      }
-      setShowOverrideModal(false);
-      fetchStatus();
-    } catch (err) {
-      console.error('Override action error:', err);
     }
   };
 
@@ -2499,22 +2370,6 @@ export default function SimulationPage() {
 
           <div className="hud-divider" />
 
-          {/* Operational Time Jumps */}
-          <div className="hud-timejumps">
-            {TIME_JUMPS.map((tj) => (
-              <button
-                key={tj.sec}
-                onClick={() => handleTimeJump(tj.sec)}
-                className={`btn-timejump-pill ${Math.abs((simStatus.sim_time_sec || 0) - tj.sec) < 60 ? 'active' : ''}`}
-                title={`Jump simulation clock to ${tj.label}`}
-              >
-                {tj.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="hud-divider" />
-
           {/* Day Selector */}
           <div className="hud-select-group">
             <span className="hud-select-label">Day:</span>
@@ -2542,38 +2397,6 @@ export default function SimulationPage() {
               ))}
             </select>
           </div>
-        </div>
-
-        {/* HUD Right Actions */}
-        <div className="hud-right-group">
-          <button 
-            onClick={() => setShowDisruptionModal(true)} 
-            className="btn btn-secondary btn-hud-alert"
-          >
-            <AlertTriangle size={15} />
-            <span>Inject Disruption</span>
-            {simStatus.active_disruptions && simStatus.active_disruptions.length > 0 && (
-              <span className="badge badge-disruptions-count">
-                {simStatus.active_disruptions.length}
-              </span>
-            )}
-          </button>
-
-          <button 
-            onClick={() => {
-              if (selectedTrain) setOverrideForm(prev => ({ ...prev, vehicle_id: selectedTrain.id }));
-              setShowOverrideModal(true);
-            }} 
-            className="btn btn-secondary btn-hud-override"
-          >
-            <Sliders size={15} />
-            <span>Manual Override</span>
-            {Object.keys(simStatus.active_overrides || {}).length > 0 && (
-              <span className="badge badge-count">
-                {Object.keys(simStatus.active_overrides).length}
-              </span>
-            )}
-          </button>
         </div>
       </div>
 
@@ -3838,284 +3661,6 @@ export default function SimulationPage() {
                 </button>
               </div>
             </div>
-          </div>
-        </div>
-      )}
-
-      {/* Disruption Injection Modal */}
-      {showDisruptionModal && (
-        <div className="modal-backdrop">
-          <div className="modal-content glass-panel disruption-modal-enhanced">
-            <div className="modal-header">
-              <div className="modal-title-row">
-                <AlertTriangle size={20} className="modal-icon-alert" />
-                <h3>Inject Network Disruption</h3>
-              </div>
-              <button onClick={() => setShowDisruptionModal(false)} className="btn-modal-close"><X size={18} /></button>
-            </div>
-
-            <form onSubmit={handleInjectDisruption} className="modal-form">
-              <div className="form-group">
-                <label>Disruption Scenario:</label>
-                <select 
-                  value={disruptionForm.mode} 
-                  onChange={(e) => setDisruptionForm(prev => ({ ...prev, mode: e.target.value }))}
-                  className="modal-select"
-                >
-                  <option value="fleet_surge">Fleet Surge (Dwell Jitter)</option>
-                  <option value="train_delay">Train Breakdown / Mechanical Stall</option>
-                  <option value="platform_blockage">Platform Track Closure</option>
-                  <option value="compound_failure">Compound Failure (Breakdown + Closure)</option>
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Delay Duration (Seconds):</label>
-                <input 
-                  type="number" 
-                  min="10" 
-                  max="1800" 
-                  value={disruptionForm.delay_duration_sec}
-                  onChange={(e) => setDisruptionForm(prev => ({ ...prev, delay_duration_sec: e.target.value }))}
-                  className="modal-input"
-                />
-              </div>
-
-              {disruptionForm.mode === 'fleet_surge' && (
-                <div className="form-group">
-                  <label>Target Station (Passenger Surge Hub):</label>
-                  <select 
-                    value={disruptionForm.station_id || 'City_1'}
-                    onChange={(e) => setDisruptionForm(prev => ({ ...prev, station_id: e.target.value }))}
-                    className="modal-select"
-                  >
-                    {geometry?.stations?.map(st => (
-                      <option key={st.station_name} value={st.station_name}>
-                        {st.display_name || st.station_name} ({st.platforms?.length || 2} Platforms)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {disruptionForm.mode === 'train_delay' && (
-                <div className="form-group">
-                  <label>Target Train (Breakdown):</label>
-                  <select 
-                    value={disruptionForm.vehicle_id}
-                    onChange={(e) => setDisruptionForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
-                    className="modal-select"
-                  >
-                    <option value="">-- Auto-select leading train --</option>
-                    {filteredTrains.map(t => (
-                      <option key={t.id} value={t.id}>
-                        #{t.train_number || t.id} ({t.category} • {Math.round(t.speed_kmh || (t.speed || 0) * 3.6)} km/h)
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {disruptionForm.mode === 'platform_blockage' && (
-                <div className="form-group">
-                  <label>Target Station & Platform Track:</label>
-                  <select 
-                    value={disruptionForm.platform_id}
-                    onChange={(e) => setDisruptionForm(prev => ({ ...prev, platform_id: e.target.value }))}
-                    className="modal-select"
-                  >
-                    <option value="">-- City 1 Central (Track 1) --</option>
-                    {geometry?.stations?.map(st => (
-                      <optgroup key={st.station_name} label={st.display_name || st.station_name}>
-                        <option value={st.station_name}>
-                          {st.display_name} - All Platforms
-                        </option>
-                        {st.platforms?.map(p => (
-                          <option key={p.platform_id} value={p.platform_id}>
-                            {st.display_name} - Track {p.track} ({p.direction.toUpperCase()})
-                          </option>
-                        ))}
-                      </optgroup>
-                    ))}
-                  </select>
-                </div>
-              )}
-
-              {disruptionForm.mode === 'compound_failure' && (
-                <>
-                  <div className="form-group">
-                    <label>Target Train (Breakdown):</label>
-                    <select 
-                      value={disruptionForm.vehicle_id}
-                      onChange={(e) => setDisruptionForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
-                      className="modal-select"
-                    >
-                      <option value="">-- Auto-select leading train --</option>
-                      {filteredTrains.map(t => (
-                        <option key={t.id} value={t.id}>
-                          #{t.train_number || t.id} ({t.category})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-group">
-                    <label>Target Station & Track (Closure):</label>
-                    <select 
-                      value={disruptionForm.platform_id}
-                      onChange={(e) => setDisruptionForm(prev => ({ ...prev, platform_id: e.target.value }))}
-                      className="modal-select"
-                    >
-                      <option value="">-- City 1 Central (Track 1) --</option>
-                      {geometry?.stations?.map(st => (
-                        <optgroup key={st.station_name} label={st.display_name || st.station_name}>
-                          <option value={st.station_name}>{st.display_name} - All Tracks</option>
-                          {st.platforms?.map(p => (
-                            <option key={p.platform_id} value={p.platform_id}>
-                              {st.display_name} - Track {p.track} ({p.direction.toUpperCase()})
-                            </option>
-                          ))}
-                        </optgroup>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )}
-
-              {/* Disruption Behavior Explanation Card */}
-              <div className="disruption-explanation-card">
-                <div className="disruption-explanation-title">
-                  <Activity size={14} className="text-cyan" />
-                  <span>Abnormal Changes You Will Observe:</span>
-                </div>
-                {disruptionForm.mode === 'fleet_surge' && (
-                  <p>
-                    <strong>⚡ Fleet Surge (Dwell Jitter):</strong> Injects unexpected passenger surge (+40% dwell time, +75s to +180s) at the selected station. Platform tracks remain occupied longer; approaching trains on converging inbound tracks will crawl or hold at throat signals.
-                  </p>
-                )}
-                {disruptionForm.mode === 'train_delay' && (
-                  <p>
-                    <strong>🚨 Mechanical Stall:</strong> Drops train speed immediately to <strong>0 km/h</strong>. Follower trains on the same corridor track will automatically decelerate to maintain safety headways or divert across crossovers.
-                  </p>
-                )}
-                {disruptionForm.mode === 'platform_blockage' && (
-                  <p>
-                    <strong>🛑 Platform Track Closure:</strong> Selected platform track is locked with red interlocking stop aspect. Converging inbound trains scheduled for this track are dynamically rerouted by the AI dispatcher to alternate platforms.
-                  </p>
-                )}
-                {disruptionForm.mode === 'compound_failure' && (
-                  <p>
-                    <strong>⚠️ Compound Failure:</strong> Mainline propulsion failure stalls a train while a key station platform is locked out simultaneously. High congestion spreads across converging tracks.
-                  </p>
-                )}
-              </div>
-
-              {/* Auto-zoom Checkbox */}
-              <div className="form-group checkbox-group">
-                <label className="modal-checkbox-label">
-                  <input 
-                    type="checkbox"
-                    checked={disruptionForm.auto_zoom}
-                    onChange={(e) => setDisruptionForm(prev => ({ ...prev, auto_zoom: e.target.checked }))}
-                  />
-                  <span>Auto-zoom camera into affected station & track network upon injection</span>
-                </label>
-              </div>
-
-              <div className="modal-actions">
-                <button type="button" onClick={handleClearDisruptions} className="btn btn-secondary">
-                  Clear All Incidents
-                </button>
-                <button type="submit" className="btn btn-danger">
-                  Inject Disruption
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Manual Override Modal */}
-      {showOverrideModal && (
-        <div className="modal-backdrop">
-          <div className="modal-content glass-panel">
-            <div className="modal-header">
-              <div className="modal-title-row">
-                <Sliders size={20} className="modal-icon-override" />
-                <h3>Manual Dispatcher Override (HITL)</h3>
-              </div>
-              <button onClick={() => setShowOverrideModal(false)} className="btn-modal-close"><X size={18} /></button>
-            </div>
-
-            <form onSubmit={handleApplyOverride} className="modal-form">
-              <div className="form-group">
-                <label>Target Train:</label>
-                <select 
-                  required
-                  value={overrideForm.vehicle_id}
-                  onChange={(e) => setOverrideForm(prev => ({ ...prev, vehicle_id: e.target.value }))}
-                  className="modal-select"
-                >
-                  <option value="">-- Select train to override --</option>
-                  {filteredTrains.map(t => (
-                    <option key={t.id} value={t.id}>
-                      #{t.train_number || t.id} ({t.category} • {Math.round(t.speed_kmh || (t.speed || 0) * 3.6)} km/h)
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Override Action:</label>
-                <select 
-                  value={overrideForm.override_type} 
-                  onChange={(e) => setOverrideForm(prev => ({ ...prev, override_type: e.target.value }))}
-                  className="modal-select"
-                >
-                  <option value="departure_hold">Hold Train at Station / Signal</option>
-                  <option value="platform_switch">Switch Platform Track (1..6)</option>
-                  <option value="bypass_divert">Bypass / Passing Loop Divert</option>
-                  <option value="release_hold">Release Active Hold Immediately</option>
-                </select>
-              </div>
-
-              {overrideForm.override_type === 'departure_hold' && (
-                <div className="form-group">
-                  <label>Hold Duration (seconds):</label>
-                  <input 
-                    type="number" 
-                    min="10" 
-                    max="600" 
-                    value={overrideForm.hold_duration_sec}
-                    onChange={(e) => setOverrideForm(prev => ({ ...prev, hold_duration_sec: e.target.value }))}
-                    className="modal-input"
-                  />
-                </div>
-              )}
-
-              {overrideForm.override_type === 'platform_switch' && (
-                <div className="form-group">
-                  <label>Target Platform Number (1..6):</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    max="6" 
-                    value={overrideForm.target_platform}
-                    onChange={(e) => setOverrideForm(prev => ({ ...prev, target_platform: e.target.value }))}
-                    className="modal-input"
-                  />
-                </div>
-              )}
-
-              <div className="modal-actions">
-                <button type="button" onClick={() => setShowOverrideModal(false)} className="btn btn-secondary">
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  <Send size={15} />
-                  <span>Execute Override</span>
-                </button>
-              </div>
-            </form>
           </div>
         </div>
       )}
