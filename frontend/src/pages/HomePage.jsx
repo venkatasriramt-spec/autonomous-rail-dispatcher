@@ -32,7 +32,9 @@ export default function HomePage() {
     let mounted = true;
     const fetchSimState = async () => {
       try {
-        const res = await fetch('/api/sim/status');
+        const storedSid = localStorage.getItem('railway_sim_session_id');
+        const headers = storedSid ? { 'X-Session-ID': storedSid } : {};
+        const res = await fetch('/api/sim/status', { headers });
         if (res.ok) {
           const data = await res.json();
           if (mounted) {

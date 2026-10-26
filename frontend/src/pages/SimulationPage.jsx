@@ -45,6 +45,37 @@ const MODELS = [
 ];
 
 export default function SimulationPage() {
+  // Model B: Per-User Isolated Simulation Session ID
+  const [sessionId, setSessionId] = useState(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlSid = params.get('session') || params.get('sessionId');
+      if (urlSid) return urlSid;
+      const stored = localStorage.getItem('railway_sim_session_id');
+      if (stored) return stored;
+      const newSid = 'sess_' + (typeof crypto !== 'undefined' && crypto.randomUUID
+        ? crypto.randomUUID().replace(/-/g, '').slice(0, 10)
+        : Math.random().toString(36).substring(2, 10));
+      localStorage.setItem('railway_sim_session_id', newSid);
+      return newSid;
+    } catch {
+      return 'sess_default';
+    }
+  });
+  const sessionIdRef = useRef(sessionId);
+  sessionIdRef.current = sessionId;
+
+  const handleNewSession = useCallback(() => {
+    const newSid = 'sess_' + (typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID().replace(/-/g, '').slice(0, 10)
+      : Math.random().toString(36).substring(2, 10));
+    try {
+      localStorage.setItem('railway_sim_session_id', newSid);
+    } catch {}
+    setSessionId(newSid);
+    sessionIdRef.current = newSid;
+  }, []);
+
   // Sim state
   const [simStatus, setSimStatus] = useState({
     running: false,
@@ -584,7 +615,9 @@ export default function SimulationPage() {
   const fetchStatus = useCallback(async () => {
     const snapshotConfirmedId = latestConfirmedSpeedReqIdRef.current;
     try {
-      const res = await fetch('/api/sim/status');
+      const res = await fetch('/api/sim/status', {
+        headers: { 'X-Session-ID': sessionIdRef.current }
+      });
       if (res.ok) {
         const data = await res.json();
         // Apply snapshot speeds only when they are not older than the latest successful speed request
@@ -642,8 +675,8 @@ export default function SimulationPage() {
   useEffect(() => {
     let isMounted = true;
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    // Use current host so Vite proxy forwards to backend
-    const wsUrl = `${protocol}//${window.location.host}/ws/telemetry`;
+    // Use current host so Vite proxy forwards to backend with session isolation
+    const wsUrl = `${protocol}//${window.location.host}/ws/telemetry?sessionId=${encodeURIComponent(sessionId)}`;
     let ws = null;
     let reconnectTimeout = null;
 
@@ -790,7 +823,7 @@ export default function SimulationPage() {
         }
       }
     };
-  }, []);
+  }, [sessionId]);
 
   // 4. Canvas Drawing Loop
   const renderCanvas = useCallback(() => {
@@ -2118,7 +2151,10 @@ export default function SimulationPage() {
       if (action === 'set_speed') {
         const res = await fetch('/api/sim/config', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Session-ID': sessionIdRef.current
+          },
           body: JSON.stringify({ speed: targetSpeed })
         });
         if (res.ok) {
@@ -2154,7 +2190,10 @@ export default function SimulationPage() {
         }
         const res = await fetch('/api/sim/control', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Session-ID': sessionIdRef.current
+          },
           body: JSON.stringify(payload)
         });
         if (action === 'reset') {
@@ -2266,7 +2305,10 @@ export default function SimulationPage() {
       }
       const res = await fetch('/api/sim/config', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Session-ID': sessionIdRef.current
+        },
         body: JSON.stringify({ day, model })
       });
       setSelectedDay(day);
@@ -2304,7 +2346,10 @@ export default function SimulationPage() {
   // Clear Disruptions
   const handleClearDisruptions = async () => {
     try {
-      await fetch('/api/disruption/clear', { method: 'POST' });
+      await fetch('/api/disruption/clear', { 
+        method: 'POST',
+        headers: { 'X-Session-ID': sessionIdRef.current }
+      });
       setSimStatus(prev => ({
         ...prev,
         active_disruptions: [],
@@ -2396,6 +2441,25 @@ export default function SimulationPage() {
                 <option key={m.id} value={m.id}>{m.label}</option>
               ))}
             </select>
+          </div>
+
+          <div className="hud-divider" />
+
+          {/* Session Sandbox Group (Model B: Per-User Isolated Control Room) */}
+          <div className="hud-session-group" title={`Session ID: ${sessionId} (Model B: Isolated Simulation Sandbox)`}>
+            <div className="hud-session-badge">
+              <span className="hud-session-pulse" />
+              <span className="hud-session-label">Session:</span>
+              <span className="hud-session-id">{sessionId.replace('sess_', '').slice(0, 8)}</span>
+            </div>
+            <button 
+              onClick={handleNewSession}
+              className="btn-new-session" 
+              title="Spawn a new private simulation sandbox"
+            >
+              <RefreshCw size={12} />
+              <span>New Session</span>
+            </button>
           </div>
         </div>
       </div>

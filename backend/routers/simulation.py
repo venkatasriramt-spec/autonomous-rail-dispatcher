@@ -1,10 +1,10 @@
 """
 backend/routers/simulation.py
-Simulation control and configuration endpoints.
+Simulation control and configuration endpoints supporting per-user isolated sessions (Model B).
 """
 
-from typing import List, Dict, Any
-from fastapi import APIRouter, HTTPException
+from typing import List, Dict, Any, Optional
+from fastapi import APIRouter, HTTPException, Depends, Response
 
 from backend.config import DISPATCHER_MODELS, CALENDAR_DAYS
 from backend.schemas.models import (
@@ -12,22 +12,32 @@ from backend.schemas.models import (
     SimulationConfigRequest,
     SimulationStatusResponse
 )
-from backend.core.sim_manager import sim_manager
+from backend.core.session_manager import get_user_session, UserSession, session_manager
 
 router = APIRouter(prefix="/api/sim", tags=["Simulation Control"])
 
 
 @router.get("/status", response_model=SimulationStatusResponse)
-def get_simulation_status():
-    """Retrieves current simulation status, time, active trains, and KPIs."""
-    return sim_manager.get_status()
+def get_simulation_status(
+    response: Response,
+    session: UserSession = Depends(get_user_session)
+):
+    """Retrieves current simulation status, time, active trains, and KPIs for the user's isolated session."""
+    response.headers["X-Session-ID"] = session.session_id
+    return session.sim_manager.get_status()
 
 
 @router.get("/telemetry")
-def get_simulation_telemetry():
-    """Retrieves real-time telemetry snapshot: active trains, platforms, KPIs, and decisions."""
-    status = sim_manager.get_status()
+def get_simulation_telemetry(
+    response: Response,
+    session: UserSession = Depends(get_user_session)
+):
+    """Retrieves real-time telemetry snapshot for the user's isolated session."""
+    response.headers["X-Session-ID"] = session.session_id
+    mgr = session.sim_manager
+    status = mgr.get_status()
     return {
+        "session_id": session.session_id,
         "status": status,
         "kpis": {
             "sim_time_sec": status.get("sim_time_sec", 21600.0),
@@ -37,46 +47,61 @@ def get_simulation_telemetry():
             "punctuality_pct": status.get("punctuality_pct", 100.0),
             "total_actions_taken": status.get("total_actions_taken", 0),
         },
-        "trains": sim_manager.trains_cache,
-        "platforms": sim_manager.platforms_cache,
-        "recent_actions": sim_manager.recent_actions[:15],
+        "trains": mgr.trains_cache,
+        "platforms": mgr.platforms_cache,
+        "recent_actions": mgr.recent_actions[:15],
     }
 
 
 @router.post("/control")
-def control_simulation(req: SimulationControlRequest):
-    """Executes a play, pause, step, reset, or speed command."""
+def control_simulation(
+    req: SimulationControlRequest,
+    response: Response,
+    session: UserSession = Depends(get_user_session)
+):
+    """Executes a play, pause, step, reset, or speed command in the user's isolated session."""
+    response.headers["X-Session-ID"] = session.session_id
+    mgr = session.sim_manager
     action = req.action.lower()
 
     if req.speed is not None and req.speed > 0:
-        sim_manager.speed_multiplier = req.speed
+        mgr.speed_multiplier = req.speed
 
     if action == "play":
-        success = sim_manager.play()
+        success = mgr.play()
     elif action == "pause":
-        success = sim_manager.pause()
+        success = mgr.pause()
     elif action == "step":
-        success = sim_manager.step()
+        success = mgr.step()
     elif action == "reset":
-        success = sim_manager.reset(start_time_sec=req.start_time_sec)
+        success = mgr.reset(start_time_sec=req.start_time_sec)
     elif action in ("set_speed", "speed"):
         success = True
     else:
-        raise HTTPException(status_code=400, detail=f"Invalid action '{req.action}'. Expected play, pause, step, reset, set_speed.")
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid action '{req.action}'. Expected play, pause, step, reset, set_speed."
+        )
 
     return {
         "success": success,
         "action": action,
-        "current_status": sim_manager.get_status(),
-        "trains": sim_manager.trains_cache,
-        "platforms": sim_manager.platforms_cache
+        "session_id": session.session_id,
+        "current_status": mgr.get_status(),
+        "trains": mgr.trains_cache,
+        "platforms": mgr.platforms_cache
     }
 
 
 @router.post("/config")
-def configure_simulation(req: SimulationConfigRequest):
-    """Updates simulation settings such as calendar day, dispatcher model, speed, or mode."""
-    status = sim_manager.configure(
+def configure_simulation(
+    req: SimulationConfigRequest,
+    response: Response,
+    session: UserSession = Depends(get_user_session)
+):
+    """Updates simulation settings (day, AI model, speed, mode) for the user's isolated session."""
+    response.headers["X-Session-ID"] = session.session_id
+    status = session.sim_manager.configure(
         day=req.day,
         model=req.model,
         mode=req.mode,
@@ -85,7 +110,17 @@ def configure_simulation(req: SimulationConfigRequest):
     )
     return {
         "success": True,
+        "session_id": session.session_id,
         "updated_status": status
+    }
+
+
+@router.get("/sessions")
+async def list_active_sessions():
+    """Lists currently active user simulation sessions."""
+    return {
+        "active_sessions_count": len(session_manager._sessions),
+        "sessions": session_manager.list_sessions()
     }
 
 

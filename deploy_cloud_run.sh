@@ -21,7 +21,7 @@ echo " Project:       $PROJECT_ID"
 echo " Service Name:  $SERVICE_NAME"
 echo " Region:        $REGION"
 echo " Source:        $(pwd)"
-echo " Resources:     4 vCPUs / 8 GiB RAM (Gen2, Always Allocated)"
+echo " Resources:     4 vCPUs / 8 GiB RAM (Gen2, Always Allocated, Autoscaling 1..4 Instances)"
 echo "=========================================================="
 
 # 1. Enable required Google Cloud APIs
@@ -47,8 +47,9 @@ gcloud run deploy "$SERVICE_NAME" \
   --memory 8Gi \
   --execution-environment gen2 \
   --no-cpu-throttling \
+  --cpu-boost \
   --min-instances 1 \
-  --max-instances 1 \
+  --max-instances 4 \
   --concurrency 80 \
   --timeout 3600 \
   --session-affinity \

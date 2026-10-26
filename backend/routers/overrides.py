@@ -1,26 +1,30 @@
 """
 backend/routers/overrides.py
-Endpoints for Human-in-the-Loop manual dispatcher interventions.
+Endpoints for Human-in-the-Loop manual dispatcher interventions for isolated user sessions (Model B).
 """
 
 from typing import List, Dict, Any
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from backend.schemas.models import ManualOverrideRequest
-from backend.core.sim_manager import sim_manager
+from backend.core.session_manager import get_user_session, UserSession
 
 router = APIRouter(prefix="/api/override", tags=["Human-in-the-Loop Overrides"])
 
 
 @router.post("/action")
-async def apply_manual_override(req: ManualOverrideRequest):
+async def apply_manual_override(
+    req: ManualOverrideRequest,
+    session: UserSession = Depends(get_user_session)
+):
     """
-    Applies an operator manual intervention overriding AI decisions:
+    Applies an operator manual intervention overriding AI decisions for the user's isolated session:
     - platform_switch: Force alternate platform track (1..6)
     - departure_hold: Force timetable hold (30s, 60s, 120s)
     - bypass_divert: Force high-speed bypass or passing loop diversion
     - release_hold: Clear active hold immediately
     """
-    success = sim_manager.manual_override(
+    mgr = session.sim_manager
+    success = mgr.manual_override(
         vehicle_id=req.vehicle_id,
         override_type=req.override_type,
         target_platform=req.target_platform,
@@ -28,17 +32,22 @@ async def apply_manual_override(req: ManualOverrideRequest):
     )
     return {
         "success": success,
+        "session_id": session.session_id,
         "vehicle_id": req.vehicle_id,
         "override_type": req.override_type,
-        "active_overrides": sim_manager.active_overrides,
-        "recent_actions": sim_manager.recent_actions[:15]
+        "active_overrides": mgr.active_overrides,
+        "recent_actions": mgr.recent_actions[:15]
     }
 
 
 @router.get("/recent")
-async def get_recent_actions():
-    """Returns the most recent AI and manual dispatch decisions."""
+async def get_recent_actions(
+    session: UserSession = Depends(get_user_session)
+):
+    """Returns the most recent AI and manual dispatch decisions for the user's isolated session."""
+    mgr = session.sim_manager
     return {
-        "total_actions_taken": sim_manager.total_actions_count,
-        "recent_actions": sim_manager.recent_actions
+        "session_id": session.session_id,
+        "total_actions_taken": mgr.total_actions_count,
+        "recent_actions": mgr.recent_actions
     }

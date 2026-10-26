@@ -26,6 +26,7 @@ from backend.config import ROOT_DIR, BACKEND_DIR
 from backend.core.sim_manager import sim_manager
 from backend.core.telemetry_streamer import streamer
 from backend.core.network_geometry import parse_network_geometry
+from backend.core.session_manager import session_manager
 from backend.routers import (
     simulation_router,
     websocket_router,
@@ -45,6 +46,7 @@ async def lifespan(app: FastAPI):
     """Lifecycle event handler for server startup and clean shutdown."""
     logger.info("Initializing Autonomous Railway Simulation API...")
     loop = asyncio.get_running_loop()
+    session_manager.set_event_loop(loop)
     sim_manager.set_event_loop(loop)
     streamer.set_subscriber_callbacks(
         on_empty=sim_manager.auto_pause_simulation,
@@ -78,6 +80,7 @@ async def lifespan(app: FastAPI):
     yield
 
     logger.info("Shutting down Railway Simulation API...")
+    session_manager.cleanup_all()
     sim_manager.reset()
     logger.info("Simulation cleaned up cleanly.")
 
@@ -120,6 +123,7 @@ app.add_middleware(
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["X-Session-ID"],
 )
 
 # Register Subsystem Routers

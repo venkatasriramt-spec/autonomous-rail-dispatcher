@@ -72,10 +72,15 @@ def format_sim_time(sim_sec: float) -> str:
 DEFAULT_START_TIME_SEC: float = 21600.0  # Default 06:00 AM (Dawn / morning start of revenue timetable)
 
 
+# Module-level shared caches for timetable and benchmark profiles
+_GLOBAL_TIMETABLE_CACHE: Optional[Dict[str, List[Dict[str, Any]]]] = None
+_GLOBAL_BENCHMARKS_CACHE: Optional[Dict[Tuple[str, str], Dict[str, Any]]] = None
+
+
 class SimulationManager:
     """Coordinates the railway simulation lifecycle, AI dispatching, and streaming."""
 
-    def __init__(self):
+    def __init__(self, streamer: Optional[Any] = None):
         self.state: SimulationState = SimulationState.STOPPED
         self.mode: SimulationMode = SimulationMode.LIVE_SUMO
         self.day: str = "Mon"
@@ -87,6 +92,18 @@ class SimulationManager:
         self.bridge: DispatcherBridge = DispatcherBridge(default_model="Centralized_PPO")
         self.env: Any = None
         self.geometry = parse_network_geometry()
+
+        # Telemetry streamer (each user session gets its own isolated streamer)
+        if streamer is not None:
+            self.streamer = streamer
+        else:
+            from backend.core.telemetry_streamer import TelemetryStreamer
+            self.streamer = TelemetryStreamer()
+
+        self.streamer.set_subscriber_callbacks(
+            on_empty=self.auto_pause_simulation,
+            on_active=self.auto_resume_simulation
+        )
 
         # Telemetry state
         self.trains_cache: List[Dict[str, Any]] = []
@@ -161,33 +178,41 @@ class SimulationManager:
 
     def _load_timetable_cache(self):
         """Preloads timetable data grouped by assigned_rake for instantaneous service lookups."""
-        self._timetable_by_rake: Dict[str, List[Dict[str, Any]]] = {}
-        if TIMETABLE_JSON.exists():
-            try:
-                with open(TIMETABLE_JSON, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    for item in data:
-                        rake = item.get("assigned_rake")
-                        if rake:
-                            self._timetable_by_rake.setdefault(rake, []).append(item)
-            except Exception as e:
-                logger.warning(f"Error loading timetable cache: {e}")
+        global _GLOBAL_TIMETABLE_CACHE
+        if _GLOBAL_TIMETABLE_CACHE is None:
+            cache: Dict[str, List[Dict[str, Any]]] = {}
+            if TIMETABLE_JSON.exists():
+                try:
+                    with open(TIMETABLE_JSON, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        for item in data:
+                            rake = item.get("assigned_rake")
+                            if rake:
+                                cache.setdefault(rake, []).append(item)
+                except Exception as e:
+                    logger.warning(f"Error loading timetable cache: {e}")
+            _GLOBAL_TIMETABLE_CACHE = cache
+        self._timetable_by_rake = _GLOBAL_TIMETABLE_CACHE
 
     def _load_weekly_benchmarks(self):
         """Preloads cross-comparison 24h benchmark audit profiles for all 8 dispatchers across all 7 days."""
-        self._benchmarks_by_day_model: Dict[Tuple[str, str], Dict[str, Any]] = {}
-        if WEEKLY_BENCHMARK_JSON.exists():
-            try:
-                with open(WEEKLY_BENCHMARK_JSON, "r", encoding="utf-8") as f:
-                    data = json.load(f)
-                    for item in data:
-                        d = item.get("day")
-                        m = item.get("dispatcher")
-                        if d and m:
-                            self._benchmarks_by_day_model[(d, m)] = item
-                logger.info(f"Loaded {len(self._benchmarks_by_day_model)} 24h benchmark audit profiles.")
-            except Exception as e:
-                logger.warning(f"Error loading weekly benchmark audit logs: {e}")
+        global _GLOBAL_BENCHMARKS_CACHE
+        if _GLOBAL_BENCHMARKS_CACHE is None:
+            cache: Dict[Tuple[str, str], Dict[str, Any]] = {}
+            if WEEKLY_BENCHMARK_JSON.exists():
+                try:
+                    with open(WEEKLY_BENCHMARK_JSON, "r", encoding="utf-8") as f:
+                        data = json.load(f)
+                        for item in data:
+                            d = item.get("day")
+                            m = item.get("dispatcher")
+                            if d and m:
+                                cache[(d, m)] = item
+                    logger.info(f"Loaded {len(cache)} 24h benchmark audit profiles.")
+                except Exception as e:
+                    logger.warning(f"Error loading weekly benchmark audit logs: {e}")
+            _GLOBAL_BENCHMARKS_CACHE = cache
+        self._benchmarks_by_day_model = _GLOBAL_BENCHMARKS_CACHE
 
     def get_benchmark_profile(self, day: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
         """Returns the authoritative 24-hour audit metrics for the specified day and dispatcher model."""
@@ -746,6 +771,12 @@ class SimulationManager:
     def _step_live_sumo(self):
         """Steps microscopic SUMO environment with active AI dispatcher."""
         try:
+            if traci is not None and hasattr(self.env, "instance_id") and hasattr(traci, "switch"):
+                try:
+                    traci.switch(self.env.instance_id)
+                except Exception:
+                    pass
+
             is_marl = self.bridge.is_marl_model()
             obs = getattr(self.env, "last_obs", None)
             info = getattr(self.env, "_get_info", lambda: {})() if hasattr(self.env, "_get_info") else {}
@@ -806,6 +837,11 @@ class SimulationManager:
         """Extracts spatial train telemetry via TraCI."""
         if traci is None:
             return
+        if hasattr(self.env, "instance_id") and hasattr(traci, "switch"):
+            try:
+                traci.switch(self.env.instance_id)
+            except Exception:
+                pass
         trains = []
         try:
             active_ids = traci.vehicle.getIDList()
@@ -863,6 +899,11 @@ class SimulationManager:
         """Extracts platform occupancy states from TraCI."""
         if traci is None:
             return
+        if hasattr(self.env, "instance_id") and hasattr(traci, "switch"):
+            try:
+                traci.switch(self.env.instance_id)
+            except Exception:
+                pass
         platforms_out = []
         for st in self.geometry.get("stations", []):
             st_name = st["station_name"]
@@ -1458,14 +1499,11 @@ class SimulationManager:
         }
 
         try:
-            asyncio.run_coroutine_threadsafe(streamer.broadcast(frame), self.event_loop)
+            if self.event_loop and not self.event_loop.is_closed():
+                asyncio.run_coroutine_threadsafe(self.streamer.broadcast(frame), self.event_loop)
         except Exception:
             pass
 
 
 # Global singleton instance
-sim_manager = SimulationManager()
-streamer.set_subscriber_callbacks(
-    on_empty=sim_manager.auto_pause_simulation,
-    on_active=sim_manager.auto_resume_simulation
-)
+sim_manager = SimulationManager(streamer=streamer)
